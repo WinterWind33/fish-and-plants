@@ -1,2 +1,3 @@
-# fish-and-plants
-Trying to create an automated greenhouse
+# Fish And Plants
+
+We are trying to automate an aeroponic greenhouse. This is a WIP project, more information soon!
