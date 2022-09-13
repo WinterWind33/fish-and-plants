@@ -23,7 +23,7 @@ if(MSVC)
     # is created during the compilation. We don't want that
     # so we can have an uniform folder configuration accross
     # platforms.
-    set_target_properties(popl_test
+    set_target_properties(test_app
         PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
         LIBRARY_OUTPUT_DIRECTORY_RELEASE ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
