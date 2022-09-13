@@ -20,8 +20,14 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - name: Initialization
+        run: mkdir tmp
+
       - name: Write Changes files
-        run: git diff-tree --no-commit-id --name-only -r HEAD@{0} > ./build/rpi_gc_changes.txt
+        run: git diff-tree --no-commit-id --name-only -r HEAD@{0} > ./tmp/rpi_gc_changes.txt
 
       - name: Check RPI_GC Changes
         run: .github/workflows/check-software-changes.sh rpi_gc
+
+      - name: Cleanup
+        run: rm -f -r tmp
