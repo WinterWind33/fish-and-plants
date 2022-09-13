@@ -21,7 +21,7 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Initialization
-        run: mkdir tmp
+        run: mkdir tmp && chmod +x .github/workflows/check-software-changes.sh
 
       - name: Write Changes files
         run: git diff-tree --no-commit-id --name-only -r HEAD@{0} > ./tmp/rpi_gc_changes.txt
