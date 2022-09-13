@@ -21,13 +21,13 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Initialization
-        run: mkdir tmp && chmod +x .github/workflows/check-software-changes.sh
+        run: mkdir tmp && chmod +x .github/scripts/check-software-changes.sh
 
       - name: Write Changes files
         run: git diff-tree --no-commit-id --name-only -r HEAD@{0} > ./tmp/rpi_gc_changes.txt
 
       - name: Check RPI_GC Changes
-        run: .github/workflows/check-software-changes.sh rpi_gc
+        run: .github/scripts/check-software-changes.sh rpi_gc
 
       - name: Cleanup
         run: rm -f -r tmp
