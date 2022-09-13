@@ -27,7 +27,14 @@ endif()
 set(PRODUCTION_EXE_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/bin")
 set(PRODUCTION_LIB_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/lib")
 
+# === Options ===
+
+option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 as testing framework." ON)
+
 # === SUB-PROJECTS ===
 
 # Add the greenhouse controller application to the build system.
 add_subdirectory("src/rpi_gc")
+
+# Tests project
+add_subdirectory("test")
