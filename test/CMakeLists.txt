@@ -18,6 +18,20 @@ set_target_properties(test_app
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
+if(MSVC)
+    # Under Windows there is also the Release folder that
+    # is created during the compilation. We don't want that
+    # so we can have an uniform folder configuration accross
+    # platforms.
+    set_target_properties(popl_test
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY_RELEASE ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        RUNTIME_OUTPUT_DIRECTORY_RELEASE ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
+    )
+endif()
+
+
 # === Third party submodules configuration ===
 if(USE_CATCH2_AS_TESTING_FRAMEWORK)
     message("[INFO] => Using Catch2 as testing framework.")
