@@ -7,4 +7,6 @@
 #define rpi_gc_VERSION_MINOR 0
 #define rpi_gc_VERSION_PATCH 0
 
+#define TEST_CHANGE 1
+
 #endif // TEST_CONFIG_FILE_HPP
