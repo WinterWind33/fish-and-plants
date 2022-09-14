@@ -5,14 +5,13 @@
 # This is the input file where the file changes are.
 input_file="./tmp/$1_changes.txt"
 
-echo "$input_file"
-
 # Now we load the files lines (the changed files) and if we find
 # files whose path starts with src/$1 then we increment the software
 # version.
 changes_found=false
 while IFS= read -r line
 do
+    echo "[INFO] => Current line: $line"
     if [ [["$line" == "src/$1/"*]] ]
     then
         # We pass the configuration file and the component name to the python file.
