@@ -13,7 +13,9 @@ while IFS= read -r line
 do
     if [ [["$line" == "src/$1/"*]] ]
     then
-        echo "Found!"
+        # We pass the configuration file and the component name to the python file.
+        echo "[INFO] => Calling python script for incrementing the version number."
+        python3 .github/scripts/increment-version.py $2 $1
         changes_found=true
         break
     fi

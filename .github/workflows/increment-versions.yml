@@ -27,7 +27,7 @@ jobs:
         run: git diff-tree --no-commit-id --name-only -r HEAD@{0} > ./tmp/rpi_gc_changes.txt
 
       - name: Check RPI_GC Changes
-        run: .github/scripts/check-software-changes.sh rpi_gc
+        run: .github/scripts/check-software-changes.sh rpi_gc src/rpi_gc/rpi_gc-config-file.hpp
 
       - name: Cleanup
         run: rm -f -r tmp
