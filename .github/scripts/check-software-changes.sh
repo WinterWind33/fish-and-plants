@@ -2,6 +2,9 @@
 
 # Copyright (C) 2022 Andrea Ballestrazzi
 
+echo "[INFO] => Received first parameter: $1"
+echo "[INFO] => Received second parameter: $2"
+
 # This is the input file where the file changes are.
 input_file="./tmp/$1_changes.txt"
 
@@ -11,8 +14,8 @@ input_file="./tmp/$1_changes.txt"
 changes_found=false
 while IFS= read -r line
 do
-    echo "[INFO] => Current line: $line"
-    if [ [["$line" == "src/$1/"*]] ]
+    echo "[INFO] => Current change: $line"
+    if [[ $line =~ ^"src/$1" ]]
     then
         # We pass the configuration file and the component name to the python file.
         echo "[INFO] => Calling python script for incrementing the version number."
