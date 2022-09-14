@@ -1,10 +1,14 @@
 # Copyright (C) 2022 Andrea Ballestrazzi
 
 # RPI_GC's header files
-set(RPI_GC_HEADER_FILES)
+set(RPI_GC_HEADER_FILES
+    "rpi_gc-config-file.hpp"
+)
 
 # RPI_GC's source files
-set(RPI_GC_SOURCE_FILES "entry-point.cpp")
+set(RPI_GC_SOURCE_FILES
+    "entry-point.cpp"
+)
 
 add_executable(rpi_gc ${RPI_GC_HEADER_FILES} ${RPI_GC_SOURCE_FILES})
 
