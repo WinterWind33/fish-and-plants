@@ -7,14 +7,12 @@
 name: Increment Versions
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types: [closed]
 
 jobs:
-  increment-version:
-    if: ${{ github.event.pull_request.merged }}
+  increment-version:    
     runs-on: ubuntu-latest
 
     steps:
