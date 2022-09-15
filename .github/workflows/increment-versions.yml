@@ -12,8 +12,7 @@ on:
       - main
 
 jobs:
-  increment-version:
-    if: ${{ github.event.pull_request.merged }}
+  increment-version:    
     runs-on: ubuntu-latest
 
     steps:
