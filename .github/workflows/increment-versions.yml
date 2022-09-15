@@ -21,16 +21,20 @@ jobs:
           ref: ${{ github.head_ref }}
           fetch-depth: 2
 
-      - name: Initialization
+      - name: Git initialization
+        run: |
+          git config user.name "IV_BOT"
+          git config user.email "WinterWind33@users.noreply.github.com"
+
+      - name: Files and Folders initialization
         run: |
           mkdir tmp
           chmod +x .github/scripts/check-software-changes.sh
-          git reflog
 
-      - name: Write Changes files
+      - name: Retrieve changed files
         run: git diff-tree --no-commit-id --name-only -r HEAD@{0} | tee ./tmp/rpi_gc_changes.txt
 
-      - name: Check RPI_GC Changes
+      - name: (RPI_GC) Increment Version
         run: .github/scripts/check-software-changes.sh rpi_gc src/rpi_gc/rpi_gc-config-file.hpp
 
       - name: Cleanup

@@ -1,7 +1,6 @@
 # Copyright (C) 2022 Andrea Ballestrazzi
 import sys
 import copy
-import subprocess
 
 # Represents the version of our component (component = sub software)
 class ComponentVersion:
@@ -135,14 +134,6 @@ def IncrementVersion(argv, beforeVersion) -> ComponentVersion:
 
     return newVersion
 
-class GitManager:
-    def __init__(self, userName, userEmail):
-        process = subprocess.run(["git", "config", "user.name", userName], stdout=subprocess.PIPE)
-        print(process.stdout)
-
-        process = subprocess.run(["git", "config", "user.email", userEmail], stdout=subprocess.PIPE)
-        print(process.stdout)
-
 if __name__ == "__main__":
     # We need to load up the current version before incrementing it.
     configFileController = ConfigurationFileController(sys.argv[1], sys.argv[2])
@@ -165,5 +156,3 @@ if __name__ == "__main__":
 
     print(f"[INFO] => Incremented {sys.argv[2]} version to {afterMajor}.{afterMinor}.{afterPatch}.")
     print(f"[INFO] => Version changes have been written to {sys.argv[1]}.")
-
-    gitManager = GitManager("IV_BOT", "WinterWind33@user.noreply.github.com")
