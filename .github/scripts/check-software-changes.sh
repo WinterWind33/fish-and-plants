@@ -27,9 +27,13 @@ done < "$input_file"
 if [ "$changes_found" = false ] ; then
     echo "[INFO] => No changes found for this component."
 else
+    echo "[INFO] => Retrieving version info for commit."
+    newVersion=$(head -n 1 ./tmp/new_version.txt)
+    echo "[INFO] => Found new version: $newVersion"
+
     # Here we commit the new changes.
     echo "[INFO] => Committing and pushing changes."
     git add "$2"
-    git commit -m "[$1](INCREMENT VERSION) Automatic version increment."
+    git commit -m "[IV_BOT](Version Increment) Updated $1 version to $newVersion."
     git push
 fi

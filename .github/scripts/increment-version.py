@@ -162,7 +162,9 @@ if __name__ == "__main__":
 
     # Now we save the version string into a file so we can retrieve it later
     # for the git commit.
-    # with open("./tmp/new_version.txt", "a") as newVersionFile:
-        # newVersionFile.write(f"{afterMajor}.{afterMinor}.{afterPatch}\n")
+    with open("./tmp/new_version.txt", "a") as newVersionFile:
+        newVersionFile.write(f"{afterMajor}.{afterMinor}.{afterPatch}\n")
 
-    # newVersionFile.close()
+    newVersionFile.close()
+
+    print("[INFO] => The new version has been written to new_version.txt file.")
