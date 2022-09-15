@@ -1,0 +1,43 @@
+# Copyright (C) 2022 Andrea Ballestrazzi
+
+# This workflow will increment softwares versions if the last
+# push on the main branch contains changes in the softwares folders
+# NOTE: This needs to exclude only-tests changes, as they don't
+# change production code.
+name: Increment Versions
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+jobs:
+  increment-version:
+    if: ${{ github.event.pull_request.merged }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 2
+
+      - name: Git initialization
+        run: |
+          git config user.name "IV_BOT"
+          git config user.email "WinterWind33@users.noreply.github.com"
+
+      - name: Files and Folders initialization
+        run: |
+          mkdir tmp
+          chmod +x .github/scripts/check-software-changes.sh
+
+      - name: Retrieve changed files
+        run: git diff-tree --no-commit-id --name-only -r HEAD@{0} | tee ./tmp/rpi_gc_changes.txt
+
+      - name: (RPI_GC) Increment Version
+        run: .github/scripts/check-software-changes.sh rpi_gc src/rpi_gc/rpi_gc-config-file.hpp
+
+      - name: Cleanup
+        run: rm -f -r tmp

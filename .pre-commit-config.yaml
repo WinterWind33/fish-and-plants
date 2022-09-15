@@ -10,3 +10,4 @@ repos:
         args: [--fix=lf]
       - id: check-yaml
       - id: fix-byte-order-marker
+      - id: end-of-file-fixer
