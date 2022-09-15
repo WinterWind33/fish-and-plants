@@ -7,10 +7,9 @@
 name: Increment Versions
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types: [closed]
 
 jobs:
   increment-version:
