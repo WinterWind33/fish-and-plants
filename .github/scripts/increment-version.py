@@ -137,13 +137,11 @@ def IncrementVersion(argv, beforeVersion) -> ComponentVersion:
 
 class GitManager:
     def __init__(self, userName, userEmail):
-        process = subprocess.Popen(["git", "config", "user.name", userName], stdout=subprocess.PIPE)
-        output = process.communicate()[0]
-        print(output)
+        process = subprocess.run(["git", "config", "user.name", userName], stdout=subprocess.PIPE)
+        print(process.stdout)
 
-        process = subprocess.Popen(["git", "config", "user.email", userEmail], stdout=subprocess.PIPE)
-        output = process.communicate()[0]
-        print(output)
+        process = subprocess.run(["git", "config", "user.email", userEmail], stdout=subprocess.PIPE)
+        print(process.stdout)
 
 if __name__ == "__main__":
     # We need to load up the current version before incrementing it.
