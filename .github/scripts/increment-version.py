@@ -1,6 +1,7 @@
 # Copyright (C) 2022 Andrea Ballestrazzi
 import sys
 import copy
+import os
 
 # Represents the version of our component (component = sub software)
 class ComponentVersion:
@@ -135,6 +136,8 @@ def IncrementVersion(argv, beforeVersion) -> ComponentVersion:
     return newVersion
 
 if __name__ == "__main__":
+    print(f"[INFO] => Python script working dir: {os.getcwd()}")
+
     # We need to load up the current version before incrementing it.
     configFileController = ConfigurationFileController(sys.argv[1], sys.argv[2])
     beforeVersion = configFileController.loadVersionNumbers()
@@ -156,3 +159,10 @@ if __name__ == "__main__":
 
     print(f"[INFO] => Incremented {sys.argv[2]} version to {afterMajor}.{afterMinor}.{afterPatch}.")
     print(f"[INFO] => Version changes have been written to {sys.argv[1]}.")
+
+    # Now we save the version string into a file so we can retrieve it later
+    # for the git commit.
+    # with open("./tmp/new_version.txt", "a") as newVersionFile:
+        # newVersionFile.write(f"{afterMajor}.{afterMinor}.{afterPatch}\n")
+
+    # newVersionFile.close()
