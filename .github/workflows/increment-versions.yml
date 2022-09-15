@@ -22,22 +22,16 @@ jobs:
           fetch-depth: 2
 
       - name: Initialization
-        run: mkdir tmp && chmod +x .github/scripts/check-software-changes.sh && git reflog
+        run: |
+          mkdir tmp
+          chmod +x .github/scripts/check-software-changes.sh
+          git reflog
 
       - name: Write Changes files
-        run: git diff-tree --no-commit-id --name-only -r HEAD@{0} > ./tmp/rpi_gc_changes.txt
+        run: git diff-tree --no-commit-id --name-only -r HEAD@{0} | tee ./tmp/rpi_gc_changes.txt
 
       - name: Check RPI_GC Changes
         run: .github/scripts/check-software-changes.sh rpi_gc src/rpi_gc/rpi_gc-config-file.hpp
-
-      - name: Commit changes
-        run: |
-          git config user.name "IncrementVersion_Bot"
-          git config user.email "WinterWind33@users.noreply.github.com"
-          git status --short
-          git add src/*
-          git commit -m "[IV_BOT] Versions PATCH incremented automatically."
-          git push
 
       - name: Cleanup
         run: rm -f -r tmp
