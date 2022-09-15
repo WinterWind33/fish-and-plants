@@ -5,7 +5,7 @@
 
 #define rpi_gc_VERSION_MAJOR 0
 #define rpi_gc_VERSION_MINOR 0
-#define rpi_gc_VERSION_PATCH 3
+#define rpi_gc_VERSION_PATCH 4
 
 #define TEST_CHANGE 2112
 
