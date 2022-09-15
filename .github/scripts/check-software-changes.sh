@@ -14,7 +14,6 @@ input_file="./tmp/$1_changes.txt"
 changes_found=false
 while IFS= read -r line
 do
-    echo "[INFO] => Current change: $line"
     if [[ $line =~ ^"src/$1" ]]
     then
         # We pass the configuration file and the component name to the python file.
@@ -27,4 +26,10 @@ done < "$input_file"
 
 if [ "$changes_found" = false ] ; then
     echo "[INFO] => No changes found for this component."
+else
+    # Here we commit the new changes.
+    echo "[INFO] => Committing and pushing changes."
+    git add "$2"
+    git commit -m "[$1](INCREMENT VERSION) Automatic version increment."
+    git push
 fi
