@@ -1,5 +1,6 @@
 # Copyright (C) 2022 Andrea Ballestrazzi
 import sys
+import copy
 
 # Represents the version of our component (component = sub software)
 class ComponentVersion:
@@ -19,6 +20,9 @@ class ComponentVersion:
 
     def getVersionNumbers(self):
         return [self.major, self.minor, self.patch]
+
+    def equals(self, otherVersion):
+        return self.major == otherVersion.major and self.minor == otherVersion.minor and self.patch == otherVersion.patch
 
 class ConfigurationFileController:
     def __init__(self, configFileName, componentName):
@@ -101,7 +105,7 @@ class ConfigurationFileController:
 #   - <COMP_NAME>_VERSION_MINOR
 #   - <COMP_NAME>_VERSION_PATCH
 # If no option is given, then the patch is automatically increased.
-def IncrementVersion(argv) -> ComponentVersion:
+def IncrementVersion(argv, beforeVersion) -> ComponentVersion:
     assert len(argv) >= 3, "You need to provide at least the configuration file and the component name."
     bIncrementMajor = False
     bIncrementMinor = False
@@ -118,26 +122,37 @@ def IncrementVersion(argv) -> ComponentVersion:
     if not bIncrementMajor and not bIncrementMinor and not bIncrementPatch:
         bIncrementPatch = True
 
-    configFileController = ConfigurationFileController(argv[1], argv[2])
-
-    # Now we load the version from the file controller
-    compCurrentVersion = configFileController.loadVersionNumbers()
+    newVersion = copy.deepcopy(beforeVersion)
 
     # Now that we have the component we can increment the version
     if bIncrementMajor:
-        compCurrentVersion.incrementMajor(1)
+        newVersion.incrementMajor(1)
     if bIncrementMinor:
-        compCurrentVersion.incrementMinor(1)
+        newVersion.incrementMinor(1)
     if bIncrementPatch:
-        compCurrentVersion.incrementPatch(1)
+        newVersion.incrementPatch(1)
 
-    # And now we can write out the changes to the config file.
-    configFileController.commitNewVersion(compCurrentVersion)
-
-    return compCurrentVersion
+    return newVersion
 
 if __name__ == "__main__":
-    [newMajor, newMinor, newPatch] = IncrementVersion(sys.argv).getVersionNumbers()
+    # We need to load up the current version before incrementing it.
+    configFileController = ConfigurationFileController(sys.argv[1], sys.argv[2])
+    beforeVersion = configFileController.loadVersionNumbers()
+    [beforeMajor, beforeMinor, beforePatch] = beforeVersion.getVersionNumbers()
 
-    print(f"[INFO] => Increment {sys.argv[2]} version to {newMajor}.{newMinor}.{newPatch}.")
-    print(f"[INFO] => Version changes have been written inside {sys.argv[1]}.")
+    # If we get -1.-1.-1 we had a problem loading the numbers.
+    assert beforeMajor >= 0 and beforeMinor >= 0 and beforePatch >= 0
+
+    print(f"[INFO] => Found version {beforeMajor}.{beforeMinor}.{beforePatch}.")
+    # Now we can increment the version according to the desired given options.
+
+    incrementedVersion = IncrementVersion(sys.argv, beforeVersion)
+    if incrementedVersion.equals(beforeVersion):
+        print(f"[ERROR] => Could not increment the version. Skipping changes commit.")
+        exit(1)
+
+    configFileController.commitNewVersion(incrementedVersion)
+    [afterMajor, afterMinor, afterPatch] = incrementedVersion.getVersionNumbers()
+
+    print(f"[INFO] => Incremented {sys.argv[2]} version to {afterMajor}.{afterMinor}.{afterPatch}.")
+    print(f"[INFO] => Version changes have been written to {sys.argv[1]}.")
