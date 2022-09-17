@@ -20,11 +20,11 @@ if(USE_SPDLOG)
         RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
     )
 
-    target_include_directories(rpi_gc PRIVATE "spdlog/include")
-    target_link_libraries(rpi_gc PRIVATE spdlog)
+    target_include_directories(rpi_gc PUBLIC "spdlog/include")
+    target_link_libraries(rpi_gc PUBLIC spdlog)
 
     # Add USE_SPDLOG macro to the compilations.
-    target_compile_definitions(rpi_gc PUBLIC USE_SPDLOG)
+    target_compile_definitions(rpi_gc PUBLIC "USE_SPDLOG")
 endif()
 
 if(USE_CPPGPIO AND UNIX)
@@ -44,4 +44,8 @@ if(USE_CPPGPIO AND UNIX)
         LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
         RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
     )
+
+    target_include_directories(rpi_gc PUBLIC "CppGPIO")
+    target_link_libraries(rpi_gc PUBLIC cppgpio)
+    target_compile_definitions(rpi_gc PUBLIC "USE_CPPGPIO")
 endif()
