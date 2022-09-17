@@ -1,8 +1,16 @@
 # Copyright (c) 2022 Andrea Ballestrazzi
 
+include(FetchContent)
+
 if(USE_SPDLOG)
     message("[INFO] => Use spdlog as logger framework.")
-    add_subdirectory("spdlog")
+
+    FetchContent_Declare(spdlog
+        GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
+        GIT_TAG "v1.x"
+    )
+
+    FetchContent_MakeAvailable(spdlog)
 
     # Compilation configurations.
     set_target_properties(spdlog
