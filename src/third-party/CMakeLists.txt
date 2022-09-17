@@ -27,18 +27,18 @@ if(USE_SPDLOG)
     target_compile_definitions(rpi_gc PUBLIC USE_SPDLOG)
 endif()
 
-if(USE_CPPGPIO)
+if(USE_CPPGPIO AND UNIX)
     message("[INFO] => Using CppGPIO as the main I/O communication module.")
 
-    FetchContent_Declare(CppGPIO
-        GIT_REPOSITORY " https://github.com/JoachimSchurig/CppGPIO.git"
+    FetchContent_Declare(cppgpio
+        GIT_REPOSITORY "https://github.com/JoachimSchurig/CppGPIO.git"
         GIT_TAG "master"
     )
 
-    FetchContent_MakeAvailable(CppGPIO)
+    FetchContent_MakeAvailable(cppgpio)
 
     # Compilation configurations.
-    set_target_properties(CppGPIO
+    set_target_properties(cppgpio
         PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
         LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
