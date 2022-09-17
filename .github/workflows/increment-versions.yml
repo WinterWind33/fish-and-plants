@@ -12,7 +12,7 @@ on:
       - main
 
 jobs:
-  increment-version:    
+  increment-version:
     runs-on: ubuntu-latest
 
     steps:

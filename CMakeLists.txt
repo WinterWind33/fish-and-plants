@@ -30,6 +30,8 @@ set(PRODUCTION_LIB_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/lib")
 # === Options ===
 
 option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 as testing framework." ON)
+option(USE_SPDLOG "Use SPDLOG submodule as logging framework." ON)
+option(USE_CPPGPIO "Use CppGPIO submodule as the main I/O ports communication module." ON)
 
 # === SUB-PROJECTS ===
 
@@ -38,3 +40,6 @@ add_subdirectory("src/rpi_gc")
 
 # Tests project
 add_subdirectory("test")
+
+# Add third party libraries.
+add_subdirectory("src/third-party")
