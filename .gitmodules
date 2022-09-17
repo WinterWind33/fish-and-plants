@@ -1,3 +1,6 @@
 [submodule "test/third-party/Catch2"]
 	path = test/third-party/Catch2
 	url = https://github.com/catchorg/Catch2.git
+[submodule "src/third-party/spdlog"]
+	path = src/third-party/spdlog
+	url = https://github.com/gabime/spdlog.git
