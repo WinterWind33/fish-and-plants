@@ -43,3 +43,6 @@ add_subdirectory("test")
 
 # Add third party libraries.
 add_subdirectory("src/third-party")
+
+# Add wrapper libraries.
+add_subdirectory("src/wrappers")
