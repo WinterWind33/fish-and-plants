@@ -2,17 +2,19 @@
 #ifndef GH_LOG_LOGGER_HPP
 #define GH_LOG_LOGGER_HPP
 
+#include <gh-log-lib-base.hpp>
+
 namespace gh_log {
 
 struct Logger {
     virtual ~Logger() noexcept = default;
 
-    virtual void logTrace() = 0;
-    virtual void logDebug() = 0;
-    virtual void logInfo() = 0;
-    virtual void logWarning() = 0;
-    virtual void logError() = 0;
-    virtual void logCritical() = 0;
+    virtual void logTrace(const LogStringType& msg) = 0;
+    virtual void logDebug(const LogStringType& msg) = 0;
+    virtual void logInfo(const LogStringType& msg) = 0;
+    virtual void logWarning(const LogStringType& msg) = 0;
+    virtual void logError(const LogStringType& msg) = 0;
+    virtual void logCritical(const LogStringType& msg) = 0;
 };
 
 } // namespace gh_log
