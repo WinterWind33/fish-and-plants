@@ -1,10 +1,11 @@
 # Copyright (c) 2022 Andrea Ballestrazzi
 
 set(GH_LOG_SOURCE_FILES
-    spl-logger.cpp
+    "spl-logger.cpp"
 )
 set(GH_LOG_HEADER_FILES
     "gh-log-lib-base.hpp"
+    "logger.hpp"
 )
 
 # We create a static library
