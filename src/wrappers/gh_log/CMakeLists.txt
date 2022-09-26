@@ -6,6 +6,7 @@ set(GH_LOG_SOURCE_FILES
 set(GH_LOG_HEADER_FILES
     "gh-log-lib-base.hpp"
     "logger.hpp"
+    "spl-logger.hpp"
 )
 
 # We create a static library
