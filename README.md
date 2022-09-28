@@ -1,6 +1,6 @@
 # Fish And Plants
 
-@ INTRODUCTION @
+# INTRODUCTION
 One of the most dangerous problem on earth is the amount of GHGs present in the air. 
 Agricultural practices causes the 21% of the entire GHGs produced and causes the rising of temperature on earth (and more).
 In this scenario, is obvious to see that our farming system is not efficient. 
