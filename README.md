@@ -12,9 +12,16 @@ A lot of solutions are good candidate to try to fix this problem. Our choices ar
 because of their limit consumption of water and chemical products.
 
 # Development
+Our control system's brain is a Raspberry Pi 3B+ (but could be another type of mini-computer), that will run the code. Some temperature and moisture sensors will be used to acquire data and analyse the systems.
+We have divided our job in three parts:
+ 1. Aeroponic greenhouse, where the code have to determine when irrigate and what percentage of N,P and K crops needs.
+ 2. Hydroponics greenhouse, where the code have to determine crop’s needs and provide to satisfy them. Then, we will want to use a robotic arm to try to harvest crops.
+3. Aquaponics greenhouse, where code have to maintain water temperature constant, feed fishes and harvest crops.
+
 ## Aeroponic greenhouse
-This code, collect data from Raspberry Pi temperature and moisture sensors and evaluate when is the perfect time to irrigate, in order to reduce the water waste. It also evaluate the life conditions of plants and change the percentage of N, P and K in order to be efficient.
+This code, collect data from a Raspberry's temperature and moisture sensors and evaluate when is the perfect time to irrigate, in order to reduce the water waste. It also evaluate the life conditions of plants and change the percentage of N, P and K in order to be efficient.
 
 
+# Next milestones
+We want to achieve point 1 of Development by April 2023.
 
-This is a WIP project, more information soon!
