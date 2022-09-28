@@ -24,4 +24,8 @@ This code, collect data from a Raspberry's temperature and moisture sensors and 
 
 # Next milestones
 We want to achieve point 1 of Development by April 2023.
+Next we probably have to fix some future problems that we will meet :D.
+Then, we will go to develop the second and the third point of development.
+Stay tuned ;-)
 
+Fish&Plants Team
