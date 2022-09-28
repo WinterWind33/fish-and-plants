@@ -11,7 +11,8 @@ For many years, researchers have been trying to study different agricultural pra
 A lot of solutions are good candidate to try to fix this problem. Our choices are the aeroponic greenhouse farming and the aquaponics greenhouse farming, 
 because of their limit consumption of water and chemical products.
 
-Step 1 - Aeroponic greenhouse
+# Development
+## Aeroponic greenhouse
 This code, collect data from Raspberry Pi temperature and moisture sensors and evaluate when is the perfect time to irrigate, in order to reduce the water waste. It also evaluate the life conditions of plants and change the percentage of N, P and K in order to be efficient.
 
 
