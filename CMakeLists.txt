@@ -35,14 +35,14 @@ option(USE_CPPGPIO "Use CppGPIO submodule as the main I/O ports communication mo
 
 # === SUB-PROJECTS ===
 
-# Tests project
-add_subdirectory("test")
-
-# Add the greenhouse controller application to the build system.
-add_subdirectory("src/rpi_gc")
-
 # Add wrapper libraries.
 add_subdirectory("src/wrappers")
 
 # Add third party libraries.
 add_subdirectory("src/third-party")
+
+# Add the greenhouse controller application to the build system.
+add_subdirectory("src/rpi_gc")
+
+# Tests project
+add_subdirectory("test")

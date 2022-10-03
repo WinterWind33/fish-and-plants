@@ -18,3 +18,9 @@ set_target_properties(rpi_gc
     LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
+
+target_include_directories(rpi_gc PUBLIC ${GH_LOG_INCLUDE_DIR})
+target_include_directories(rpi_gc PUBLIC ${GH_HAL_INCLUDE_DIR})
+
+target_link_libraries(rpi_gc PUBLIC gh_hal)
+target_link_libraries(rpi_gc PUBLIC gh_log)
