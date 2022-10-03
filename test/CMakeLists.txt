@@ -92,6 +92,7 @@ if(USE_CATCH2_AS_TESTING_FRAMEWORK)
     # For now we don't need our implementation of the entry point so we
     # can use the Catch2 one.
     target_link_libraries(test_app PRIVATE Catch2::Catch2WithMain)
+    target_compile_definitions(test_app PUBLIC USE_CATCH2_AS_TESTING_FRAMEWORK)
 endif()
 
 if(USE_GMOCK)
