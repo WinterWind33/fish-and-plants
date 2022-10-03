@@ -6,11 +6,15 @@ include(FetchContent)
 # === Test App target configuration ===
 set(TEST_APP_HEADER_FILES
     "catch2-gmock-listener.hpp"
+
+    # Test doubles
+    "gh_hal/test-doubles/hal-context.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
     "test-app-entry-point.cpp"
     "catch2-gmock-listener.cpp"
+    "gh_hal/hal-module-tests.cpp"
 )
 
 add_executable(test_app ${TEST_APP_HEADER_FILES} ${TEST_APP_SOURCE_FILES})
