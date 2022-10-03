@@ -19,6 +19,7 @@ set_target_properties(rpi_gc
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
+# Dependencies
 target_include_directories(rpi_gc PUBLIC ${GH_LOG_INCLUDE_DIR})
 target_include_directories(rpi_gc PUBLIC ${GH_HAL_INCLUDE_DIR})
 
