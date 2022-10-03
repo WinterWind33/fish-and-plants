@@ -27,7 +27,7 @@ target_include_directories(gh_log PUBLIC ${GH_LOG_INCLUDE_DIR})
 target_link_libraries(gh_hal PUBLIC gh_log)
 
 if(USE_CPPGPIO AND UNIX)
-    target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/third-party/CppGPIO/include")
+    target_include_directories(gh_hal PUBLIC ${CPPGPIO_INCLUDE_DIR})
     target_link_libraries(gh_hal PRIVATE cppgpio)
     target_compile_definitions(gh_hal PUBLIC "USE_CPPGPIO")
 endif()

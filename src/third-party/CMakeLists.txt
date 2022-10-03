@@ -20,10 +20,10 @@ if(USE_SPDLOG)
         RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
     )
 
-    set(SPDLOG_INCLUDE_DIR "spdlog/include")
+    set(SPDLOG_INCLUDE_DIR "{PROJECT_SOURCE_DIR}/src/third-party/spdlog/include")
 
     target_include_directories(gh_log PUBLIC ${SPDLOG_INCLUDE_DIR})
-    target_link_libraries(gh_log PRIVATE spdlog)
+    target_link_libraries(gh_log PUBLIC spdlog)
 
     set(SPDLOG_USE_MACRO_DEF "USE_SPDLOG")
 
@@ -48,4 +48,6 @@ if(USE_CPPGPIO AND UNIX)
         LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
         RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
     )
+
+    set(CPPGPIO_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/CppGPIO/include")
 endif()

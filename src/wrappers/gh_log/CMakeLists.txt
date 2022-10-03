@@ -20,6 +20,6 @@ set_target_properties(gh_log
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
-set(GH_LOG_INCLUDE_DIR ".")
+set(GH_LOG_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/wrappers/gh_log")
 
 target_include_directories(gh_log PUBLIC ${GH_LOG_INCLUDE_DIR})
