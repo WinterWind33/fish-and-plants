@@ -22,6 +22,7 @@ set_target_properties(test_app
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
+target_include_directories(test_app PUBLIC ".")
 target_include_directories(gh_log PUBLIC ${GH_LOG_INCLUDE_DIR})
 target_include_directories(gh_hal PUBLIC ${GH_HAL_INCLUDE_DIR})
 target_link_libraries(test_app PRIVATE gh_log)
