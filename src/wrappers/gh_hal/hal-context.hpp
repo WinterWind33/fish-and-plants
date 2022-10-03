@@ -13,15 +13,18 @@ namespace gh_hal {
     public:
         using logger_pointer = std::shared_ptr<gh_log::Logger>;
 
-        HALContext(logger_pointer logger) noexcept;
+        HALContext(logger_pointer logger, const bool bIsSim) noexcept;
         virtual ~HALContext() noexcept = default;
 
         virtual const logger_pointer& getLogger() const noexcept {
             return m_logger;
         }
 
+        virtual bool isSimulation() const noexcept { return m_bIsSimulation; }
+
     private:
         logger_pointer m_logger{};
+        bool m_bIsSimulation{};
     };
 
 } // namespace gh_hal

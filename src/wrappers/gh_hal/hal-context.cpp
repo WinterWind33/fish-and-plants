@@ -3,7 +3,8 @@
 
 namespace gh_hal {
 
-    HALContext::HALContext(logger_pointer logger) noexcept :
-        m_logger{std::move(logger)} {}
+    HALContext::HALContext(logger_pointer logger, const bool bIsSim) noexcept :
+        m_logger{std::move(logger)},
+        m_bIsSimulation{bIsSim} {}
 
 } // namespace gh_hal
