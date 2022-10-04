@@ -20,8 +20,9 @@ set_target_properties(rpi_gc
 )
 
 # Dependencies
-target_include_directories(rpi_gc PUBLIC ${GH_LOG_INCLUDE_DIR})
-target_include_directories(rpi_gc PUBLIC ${GH_HAL_INCLUDE_DIR})
+# Here we don't want to include gh_hal and gh_log directly as this will result
+# in possible includes clash. Instead, we include their parent directory.
+target_include_directories(rpi_gc PUBLIC "${PROJECT_SOURCE_DIR}/wrappers")
 
 target_link_libraries(rpi_gc PUBLIC gh_hal)
 target_link_libraries(rpi_gc PUBLIC gh_log)

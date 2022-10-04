@@ -14,7 +14,6 @@ set(TEST_APP_HEADER_FILES
 set(TEST_APP_SOURCE_FILES
     "test-app-entry-point.cpp"
     "catch2-gmock-listener.cpp"
-    "gh_hal/hal-module-tests.cpp"
 )
 
 add_executable(test_app ${TEST_APP_HEADER_FILES} ${TEST_APP_SOURCE_FILES})
@@ -27,8 +26,9 @@ set_target_properties(test_app
 )
 
 target_include_directories(test_app PUBLIC ".")
-target_include_directories(gh_log PUBLIC ${GH_LOG_INCLUDE_DIR})
-target_include_directories(gh_hal PUBLIC ${GH_HAL_INCLUDE_DIR})
+target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src")
+target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/wrappers")
+
 target_link_libraries(test_app PRIVATE gh_log)
 target_link_libraries(test_app PUBLIC gh_hal)
 

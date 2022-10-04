@@ -18,7 +18,7 @@ set_target_properties(gh_hal
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
-set(GH_HAL_INCLUDE_DIR ".")
+set(GH_HAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/wrappers/gh_hal")
 
 # Dependencies
 target_include_directories(gh_hal PUBLIC ${GH_HAL_INCLUDE_DIR})
