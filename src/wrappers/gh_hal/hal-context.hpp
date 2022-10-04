@@ -2,7 +2,7 @@
 #ifndef HAL_CONTEXT_HPP
 #define HAL_CONTEXT_HPP
 
-#include <logger.hpp>
+#include <gh_log/logger.hpp>
 
 // C++ STL
 #include <memory>

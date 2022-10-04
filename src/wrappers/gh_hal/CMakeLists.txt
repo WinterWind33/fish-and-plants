@@ -22,7 +22,7 @@ set(GH_HAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/wrappers/gh_hal")
 
 # Dependencies
 target_include_directories(gh_hal PUBLIC ${GH_HAL_INCLUDE_DIR})
-target_include_directories(gh_log PUBLIC ${GH_LOG_INCLUDE_DIR})
+target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 
 target_link_libraries(gh_hal PUBLIC gh_log)
 
