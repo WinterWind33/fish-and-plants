@@ -7,6 +7,7 @@ set(GH_HAL_HEADER_FILES
     "hal-context.hpp"
     "hal-error.hpp"
     "hal-definitions.hpp"
+    "hal-digital-output.hpp"
 )
 
 # We create a static library
