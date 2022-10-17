@@ -14,6 +14,7 @@ set(TEST_APP_HEADER_FILES
 set(TEST_APP_SOURCE_FILES
     "test-app-entry-point.cpp"
     "catch2-gmock-listener.cpp"
+    "gh_hal/hal-board-pin.tests.cpp"
 )
 
 add_executable(test_app ${TEST_APP_HEADER_FILES} ${TEST_APP_SOURCE_FILES})
