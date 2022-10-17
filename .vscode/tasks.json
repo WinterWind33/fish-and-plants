@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "[BUILD] (Debug) Build All",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--target",
+				"ALL_BUILD"
+			],
+			"problemMatcher":"$msCompile",
+			"group": "build"
+		}
+	]
+}
