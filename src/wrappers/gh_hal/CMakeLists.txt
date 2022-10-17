@@ -25,7 +25,6 @@ set_target_properties(gh_hal
 
 # Dependencies
 if(USE_CPPGPIO AND UNIX)
-    target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/third-party/CppGPIO/include")
     target_link_libraries(gh_hal PUBLIC cppgpio)
     target_compile_definitions(gh_hal PUBLIC "USE_CPPGPIO")
 endif()
