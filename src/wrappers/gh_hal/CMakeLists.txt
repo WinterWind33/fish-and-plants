@@ -35,7 +35,7 @@ if(USE_CPPGPIO AND UNIX)
     set(CPPGPIO_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/CppGPIO/include/")
     message("[INFO] => Linking CppGPIO to gh_hal. Include dir: ${CPPGPIO_INCLUDE_DIR}")
 
-    target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/third-party/CppGPIO/include/")
+    target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/third-party")
     target_link_libraries(gh_hal PUBLIC cppgpio)
     target_compile_definitions(gh_hal PUBLIC "USE_CPPGPIO")
 endif()
