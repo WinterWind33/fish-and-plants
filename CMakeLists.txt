@@ -36,11 +36,11 @@ option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
 
 # === SUB-PROJECTS ===
 
-# Add wrapper libraries.
-add_subdirectory("src/wrappers")
-
 # Add third party libraries.
 add_subdirectory("src/third-party")
+
+# Add wrapper libraries.
+add_subdirectory("src/wrappers")
 
 # Add the greenhouse controller application to the build system.
 add_subdirectory("src/rpi_gc")
