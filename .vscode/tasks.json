@@ -12,9 +12,29 @@
 				"--build",
 				".",
 				"--target",
-				"ALL_BUILD"
+				"ALL_BUILD",
+				"--config",
+				"Debug"
 			],
-			"problemMatcher":"$msCompile",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[BUILD] (Release) Build All",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--target",
+				"ALL_BUILD",
+				"--config",
+				"Release"
+			],
+			"problemMatcher": [],
 			"group": "build"
 		}
 	]

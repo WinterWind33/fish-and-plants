@@ -8,7 +8,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "name": "(Windows) Launch All Tests",
-            "program": "${workspaceRoot}/bin/Debug/test_app.exe",
+            "program": "${workspaceRoot}/bin/test_app.exe",
             "args": [
                 "-b"
             ],
@@ -19,7 +19,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "name": "(Windows) Launch All Unit Tests",
-            "program": "${workspaceRoot}/bin/Debug/test_app.exe",
+            "program": "${workspaceRoot}/bin/test_app.exe",
             "args": [
                 "-b",
                 "[unit]"
