@@ -2,8 +2,6 @@
 #ifndef HAL_DIGITAL_OUTPUT_HPP
 #define HAL_DIGITAL_OUTPUT_HPP
 
-#include <hal-definitions.hpp>
-
 namespace gh_hal {
 
     struct HALDigitalOutput {
