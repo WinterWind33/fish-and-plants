@@ -36,6 +36,6 @@ if(USE_CPPGPIO AND UNIX)
     message("[INFO] => Linking CppGPIO to gh_hal. Include dir: ${CPPGPIO_INCLUDE_DIR}")
 
     target_include_directories(gh_hal PUBLIC ${CPPGPIO_INCLUDE_DIR})
-    target_link_libraries(gh_hal PRIVATE cppgpio)
+    target_link_libraries(gh_hal PUBLIC cppgpio)
     target_compile_definitions(gh_hal PUBLIC "USE_CPPGPIO")
 endif()
