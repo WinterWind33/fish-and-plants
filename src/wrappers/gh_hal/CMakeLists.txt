@@ -2,6 +2,7 @@
 
 set(GH_HAL_SOURCE_FILES
     "hal-context.cpp"
+    "hal-board-pin.cpp"
 )
 set(GH_HAL_HEADER_FILES
     "hal-context.hpp"
