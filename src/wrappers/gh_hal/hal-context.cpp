@@ -1,5 +1,5 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
-#include <hal-context.hpp>
+#include <gh_hal/hal-context.hpp>
 
 namespace gh_hal {
 

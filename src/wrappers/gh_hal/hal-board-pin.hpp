@@ -2,11 +2,11 @@
 #ifndef HAL_BOARD_PIN_HPP
 #define HAL_BOARD_PIN_HPP
 
-#include <hal-definitions.hpp>
-#include <hal-digital-output.hpp>
+#include <gh_hal/hal-definitions.hpp>
+#include <gh_hal/hal-digital-output.hpp>
 
 #ifdef USE_CPPGPIO
-#include <CppGPIO/include/cppgpio.hpp>
+#include <cppgpio.hpp>
 #else
 #include <chrono>
 #endif // USE_CPPGPIO

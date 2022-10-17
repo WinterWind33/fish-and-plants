@@ -23,19 +23,12 @@ set_target_properties(gh_hal
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
-set(GH_HAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/wrappers/gh_hal")
-
 # Dependencies
-target_include_directories(gh_hal PUBLIC ${GH_HAL_INCLUDE_DIR})
+target_link_libraries(gh_hal PUBLIC gh_log)
 target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 
-target_link_libraries(gh_hal PUBLIC gh_log)
-
 if(USE_CPPGPIO AND UNIX)
-    set(CPPGPIO_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/CppGPIO/include/")
-    message("[INFO] => Linking CppGPIO to gh_hal. Include dir: ${CPPGPIO_INCLUDE_DIR}")
-
-    target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/third-party")
+    target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/third-party/CppGPIO/include")
     target_link_libraries(gh_hal PUBLIC cppgpio)
     target_compile_definitions(gh_hal PUBLIC "USE_CPPGPIO")
 endif()
