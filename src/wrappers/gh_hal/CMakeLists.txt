@@ -32,6 +32,10 @@ target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 target_link_libraries(gh_hal PUBLIC gh_log)
 
 if(USE_CPPGPIO AND UNIX)
+    message("[INFO] => Linking CppGPIO to gh_hal.")
+
+    set(CPPGPIO_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/CppGPIO/include")
+
     target_include_directories(gh_hal PUBLIC ${CPPGPIO_INCLUDE_DIR})
     target_link_libraries(gh_hal PRIVATE cppgpio)
     target_compile_definitions(gh_hal PUBLIC "USE_CPPGPIO")
