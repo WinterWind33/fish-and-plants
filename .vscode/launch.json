@@ -12,7 +12,8 @@
             "args": [
                 "-b"
             ],
-            "cwd": "${workspaceRoot}/bin/Debug"
+            "cwd": "${workspaceRoot}/bin/Debug",
+            "preLaunchTask": "[BUILD] (Debug) Build All"
         },
         {
             "type": "cppvsdbg",
@@ -23,7 +24,8 @@
                 "-b",
                 "[unit]"
             ],
-            "cwd": "${workspaceRoot}/bin/Debug"
+            "cwd": "${workspaceRoot}/bin/Debug",
+            "preLaunchTask": "[BUILD] (Debug) Build All"
         }
     ]
 }
