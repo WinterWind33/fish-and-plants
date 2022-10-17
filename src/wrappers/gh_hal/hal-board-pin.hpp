@@ -6,7 +6,7 @@
 #include <gh_hal/hal-digital-output.hpp>
 
 #ifdef USE_CPPGPIO
-#include <cppgpio.hpp>
+#include <include/cppgpio.hpp>
 #else
 #include <chrono>
 #endif // USE_CPPGPIO
