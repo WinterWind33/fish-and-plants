@@ -8,6 +8,7 @@ if(USE_SPDLOG)
     FetchContent_Declare(spdlog
         GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
         GIT_TAG "v1.x"
+        SOURCE_DIR "spdlog"
     )
 
     FetchContent_MakeAvailable(spdlog)
@@ -29,6 +30,7 @@ if(USE_CPPGPIO AND UNIX)
     FetchContent_Declare(cppgpio
         GIT_REPOSITORY "https://github.com/JoachimSchurig/CppGPIO.git"
         GIT_TAG "master"
+        SOURCE_DIR "CppGPIO"
     )
 
     FetchContent_MakeAvailable(cppgpio)
