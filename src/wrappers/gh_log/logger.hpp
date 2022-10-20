@@ -2,10 +2,12 @@
 #ifndef GH_LOG_LOGGER_HPP
 #define GH_LOG_LOGGER_HPP
 
-#include <gh-log-lib-base.hpp>
+#include <gh_log/gh-log-lib-base.hpp>
 
 namespace gh_log {
 
+//! \brief Represents the basic interface of a logger capable of logging
+//!  different levels of severity.
 struct Logger {
     virtual ~Logger() noexcept = default;
 

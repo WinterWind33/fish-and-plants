@@ -34,6 +34,4 @@ if(USE_CPPGPIO AND UNIX)
     target_compile_definitions(gh_hal PUBLIC "USE_CPPGPIO")
 endif()
 
-if(USE_SPDLOG)
-    target_link_libraries(gh_hal PUBLIC gh_log)
-endif()
+target_link_libraries(gh_hal PUBLIC gh_log)

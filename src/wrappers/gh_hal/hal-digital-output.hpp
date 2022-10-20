@@ -4,6 +4,8 @@
 
 namespace gh_hal {
 
+    //! \brief Represents the basic interface of a digital output, i.e.
+    //!  an output on the electronic board that sends a digital signal.
     struct HALDigitalOutput {
         virtual ~HALDigitalOutput() noexcept = default;
 

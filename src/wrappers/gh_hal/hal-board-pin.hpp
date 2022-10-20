@@ -34,6 +34,9 @@ namespace gh_hal {
 #endif // USE_CPPGPIO
     } // namespace details
 
+    //! \brief This class represents a pin on the electronic board.
+    //! It can be instatiated with the pin ID and it can turn on or off
+    //! the board pin.
     class HALBoardPin : public HALDigitalOutput {
     public:
         using native_type = details::BoardPinNativeType;

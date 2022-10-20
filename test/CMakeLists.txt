@@ -112,7 +112,7 @@ if(USE_GMOCK)
     FetchContent_MakeAvailable(googletest)
 
     # For Windows: Prevent overriding the parent project's compiler/linker settings
-	set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     # We only want GMock.
     set(BUILD_GTEST OFF CACHE BOOL "" FORCE)
 

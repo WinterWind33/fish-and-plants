@@ -4,14 +4,15 @@
 
 #ifdef USE_SPDLOG
 #include <spdlog/spdlog.h>
-
-#include <logger.hpp>
+#include <gh_log/logger.hpp>
 
 // C++ STL
 #include <memory>
 
 namespace gh_log {
 
+    //! \brief Represents a logger that delegates the implementation to
+    //!  an spdlog logger object.
     class SPLLogger : public Logger {
     public:
         using logger_type = spdlog::logger;

@@ -1,6 +1,6 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
 #ifdef USE_SPDLOG
-#include <spl-logger.hpp>
+#include <gh_log/spl-logger.hpp>
 
 // C++ STL
 #include <cassert>
@@ -48,4 +48,4 @@ void SPLLogger::logCritical(const LogStringType& msg) {
 
 } // namespace gh_log
 
-#endif // !USE_SPDLOG
+#endif // USE_SPDLOG
