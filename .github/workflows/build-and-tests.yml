@@ -28,9 +28,6 @@ jobs:
     - name: Git Update
       run: git submodule update --recursive --init
 
-    - name: List files
-      run: ls -l --recursive
-
     - name: CMake Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
