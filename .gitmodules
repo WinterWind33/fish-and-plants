@@ -7,3 +7,6 @@
 [submodule "src/third-party/CppGPIO"]
 	path = src/third-party/CppGPIO
 	url = https://github.com/JoachimSchurig/CppGPIO.git
+[submodule "test/third-party/googletest"]
+	path = test/third-party/googletest
+	url = https://github.com/google/googletest.git

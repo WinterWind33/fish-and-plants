@@ -32,14 +32,18 @@ set(PRODUCTION_LIB_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/lib")
 option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 as testing framework." ON)
 option(USE_SPDLOG "Use SPDLOG submodule as logging framework." ON)
 option(USE_CPPGPIO "Use CppGPIO submodule as the main I/O ports communication module." ON)
+option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
 
 # === SUB-PROJECTS ===
+
+# Add third party libraries.
+add_subdirectory("src/third-party")
+
+# Add wrapper libraries.
+add_subdirectory("src/wrappers")
 
 # Add the greenhouse controller application to the build system.
 add_subdirectory("src/rpi_gc")
 
 # Tests project
 add_subdirectory("test")
-
-# Add third party libraries.
-add_subdirectory("src/third-party")

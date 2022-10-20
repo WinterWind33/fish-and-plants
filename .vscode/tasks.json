@@ -1,0 +1,41 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "[BUILD] (Debug) Build All",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--target",
+				"ALL_BUILD",
+				"--config",
+				"Debug"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[BUILD] (Release) Build All",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--target",
+				"ALL_BUILD",
+				"--config",
+				"Release"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

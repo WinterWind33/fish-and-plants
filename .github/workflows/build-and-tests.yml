@@ -21,6 +21,8 @@ jobs:
     - uses: actions/setup-node@v3
 
     - uses: actions/checkout@v3
+      with:
+        submodules: recursive
 
     - name: CMake Configure
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
@@ -28,8 +30,5 @@ jobs:
     - name: CMake Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Unit Tests Run
-      run: ${{github.workspace}}/bin/test_app --order rand [unit]
-
-    - name: Integration Tests Run
-      run: ${{github.workspace}}/bin/test_app --order rand [integration]
+    - name: Static Tests Run
+      run: ${{github.workspace}}/bin/test_app --order rand [static]
