@@ -13,9 +13,23 @@ set(TEST_APP_HEADER_FILES
 
 set(TEST_APP_SOURCE_FILES
     "test-app-entry-point.cpp"
-    "catch2-gmock-listener.cpp"
     "gh_hal/hal-board-pin.tests.cpp"
 )
+
+if(USE_CATCH2_AS_TESTING_FRAMEWORK AND USE_GMOCK)
+    # If we can use both catch2 and googletest we need to add
+    # the Catch2 listener on GMock in order to fail the test whenever
+    # a GMock assertion fails.
+    list(APPEND TEST_APP_SOURCE_FILES
+        "catch2-gmock-listener.cpp"
+    )
+
+    # If we use catch2 as the main test kernel with GMock, we have
+    # conflicts on some MACROS. Defining the following two macros
+    # prevents this clash.
+    add_compile_definitions(GTEST_DONT_DEFINE_FAIL)
+    add_compile_definitions(GTEST_DONT_DEFINE_SUCCEED)
+endif()
 
 add_executable(test_app ${TEST_APP_HEADER_FILES} ${TEST_APP_SOURCE_FILES})
 
@@ -47,21 +61,6 @@ if(MSVC)
 endif()
 
 # === Third party submodules configuration ===
-
-if(USE_CATCH2_AS_TESTING_FRAMEWORK AND USE_GMOCK)
-    # If we can use both catch2 and googletest we need to add
-    # the Catch2 listener on GMock in order to fail the test whenever
-    # a GMock assertion falis.
-    #list(APPEND CRYPASS_TESTS_CPP_FILES
-    #    "framework/catch2-listener-on-gmock.cpp"
-    #)
-
-    # If we use catch2 as the main test kernel with GMock, we have
-    # conflicts on some MACROS. Defining the following two macros
-    # prevents this clash.
-    add_compile_definitions(GTEST_DONT_DEFINE_FAIL)
-    add_compile_definitions(GTEST_DONT_DEFINE_SUCCEED)
-endif()
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK)
     message("[INFO] => Using Catch2 as testing framework.")

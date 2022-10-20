@@ -25,11 +25,10 @@ set(GH_LOG_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/wrappers/gh_log")
 target_include_directories(gh_log PUBLIC ${GH_LOG_INCLUDE_DIR})
 
 if(USE_SPDLOG)
+    set(SPDLOG_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/spdlog/include")
     target_include_directories(gh_log PUBLIC ${SPDLOG_INCLUDE_DIR})
     target_link_libraries(gh_log PUBLIC spdlog)
 
-    set(SPDLOG_USE_MACRO_DEF "USE_SPDLOG")
-
     # Add USE_SPDLOG macro to the compilations.
-    target_compile_definitions(gh_log PUBLIC ${SPDLOG_USE_MACRO_DEF})
+    target_compile_definitions(gh_log PUBLIC "USE_SPDLOG")
 endif()
