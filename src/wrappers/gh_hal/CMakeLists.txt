@@ -27,6 +27,11 @@ set_target_properties(gh_hal
 if(USE_CPPGPIO AND UNIX)
     target_link_libraries(gh_hal PUBLIC cppgpio)
     target_compile_definitions(gh_hal PUBLIC "USE_CPPGPIO")
+
+    set(CPPGPIO_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/CppGPIO/include")
+    message("[INFO] => Include dir: ${CPPGPIO_INCLUDE_DIR}")
+
+    target_include_directories(gh_hal PUBLIC ${CPPGPIO_INCLUDE_DIR})
 endif()
 
 target_link_libraries(gh_hal PUBLIC gh_log)
