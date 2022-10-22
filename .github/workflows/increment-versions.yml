@@ -20,6 +20,9 @@ on:
       - 'CI-UPDATE/IV-**'
       - 'update-increment-version-CI'
 
+env:
+  RPI_GC_CONFIGURATION_FILE: src/rpi_gc/rpi_gc-config-file.hpp rpi_gc
+
 jobs:
   increment-version:
     runs-on: ubuntu-latest
@@ -36,18 +39,18 @@ jobs:
           git config user.name "IV_BOT"
           git config user.email "WinterWind33@users.noreply.github.com"
 
-      - name: Retrieve changed files
-        id: changed-files
+      - name: (RPI_GC) Check changed files
+        id: RPI_GC-changed-files
         uses: tj-actions/changed-files@v33
+        with:
+          files: |
+            src/rpi_gc/**
 
-      - name: List all changed files
+      - name: (RPI_GC) Increment Version
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
-            echo "$file was changed"
-          done
-
-      # - name: (RPI_GC) Increment Version
-      #   run: .github/scripts/check-software-changes.sh rpi_gc src/rpi_gc/rpi_gc-config-file.hpp
-
-      # - name: Cleanup
-      #   run: rm -f -r tmp
+          mkdir tmp
+          python3 .github/scripts/increment-version.py ${{env.RPI_GC_CONFIGURATION_FILE}} rpi_gc --patch
+          git add ${{env.RPI_GC_CONFIGURATION_FILE}}
+          git commit -m "[IV_BOT](Version Increment) Updated rpi_gc version to $(head -n 1 ./tmp/new_version.txt)."
+          git push
