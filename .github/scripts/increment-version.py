@@ -12,9 +12,12 @@ class ComponentVersion:
 
     def incrementMajor(self, n):
         self.major += n
+        self.minor = 0
+        self.patch = 0
 
     def incrementMinor(self, n):
         self.minor += n
+        self.patch = 0
 
     def incrementPatch(self, n):
         self.patch += n
@@ -110,22 +113,29 @@ def IncrementVersion(argv, beforeVersion) -> ComponentVersion:
     assert len(argv) >= 3, "You need to provide at least the configuration file and the component name."
     bIncrementMajor = False
     bIncrementMinor = False
-    bIncrementPatch = False
+    # The default option is to increment the patch version
+    bIncrementPatch = True
 
-    # Here we check which version number we need to increment
-    if len(argv) > 3:
-        for i in range(3, len(argv)):
-            bIncrementMajor = (bIncrementMajor or (argv[i] == "-M"))
-            bIncrementMinor = (bIncrementMinor or (argv[i] == "-m"))
-            bIncrementPatch = (bIncrementPatch or (argv[i] == "-p"))
+    # Here we check which version number we need to increment.
+    for i in range(3, len(argv)):
+        if argv[i] == "--major":
+            bIncrementMajor = True
 
-    # If none of the above flags are checked, we increment the patch number by default.
-    if not bIncrementMajor and not bIncrementMinor and not bIncrementPatch:
-        bIncrementPatch = True
+        if argv[i] == "--minor":
+            bIncrementMinor = True
+
+        if argv[i] == "--patch":
+            bIncrementPatch = True
 
     newVersion = copy.deepcopy(beforeVersion)
 
-    # Now that we have the component we can increment the version
+    # Now that we have the component we can increment the version. The order
+    # of update is given by the following order:
+    # - Major: if the user wants the major to be update then we need
+    # to update the major version but we also need to reset
+    # the minor and the patch.
+    # - Minor: if the user wants to update the minor version we need to
+    # reset the patch version.
     if bIncrementMajor:
         newVersion.incrementMajor(1)
     if bIncrementMinor:
@@ -135,6 +145,8 @@ def IncrementVersion(argv, beforeVersion) -> ComponentVersion:
 
     return newVersion
 
+# Usage:
+# python3 increment-version.py <configFileName> <component-name> [--major, --minor, (--patch)]
 if __name__ == "__main__":
     print(f"[INFO] => Python script working dir: {os.getcwd()}")
 

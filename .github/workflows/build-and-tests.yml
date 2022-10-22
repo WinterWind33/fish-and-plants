@@ -6,6 +6,9 @@ on:
   push:
     branches-ignore:
       - main
+# We don't need to run this workflow for branches that
+# updates only CI/CD scripts. We ignore those branches.
+      - 'CI-UPDATE/**'
 
 env:
   BUILD_TYPE: Release
