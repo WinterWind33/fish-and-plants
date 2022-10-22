@@ -9,13 +9,17 @@ name: Increment Versions
 on:
   pull_request:
     types:
-      - edited
+      - closed
     branches:
       - 'main'
+  push:
+    branches:
+      - 'update-increment-version-CI'
 
 jobs:
   increment-version:
     runs-on: ubuntu-latest
+    ##if: github.event.pull_request.merged == true
 
     steps:
       - uses: actions/checkout@v3
@@ -28,13 +32,20 @@ jobs:
           git config user.name "IV_BOT"
           git config user.email "WinterWind33@users.noreply.github.com"
 
-      - name: Files and Folders initialization
-        run: |
-          mkdir tmp
-          chmod +x .github/scripts/check-software-changes.sh
+      # - name: Files and Folders initialization
+      #   run: |
+      #     mkdir tmp
+      #     chmod +x .github/scripts/check-software-changes.sh
 
       - name: Retrieve changed files
-        run: git diff-tree --no-commit-id --name-only -r HEAD@{0} | tee ./tmp/rpi_gc_changes.txt
+        id: changed-files
+        uses: tj-actions/changed-files@v33
+
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+            echo "$file was changed"
+          done
 
       # - name: (RPI_GC) Increment Version
       #   run: .github/scripts/check-software-changes.sh rpi_gc src/rpi_gc/rpi_gc-config-file.hpp
