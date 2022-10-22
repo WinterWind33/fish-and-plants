@@ -48,7 +48,7 @@ jobs:
 
       - name: List all changed files
         run: |
-          for file in ${{ steps.RPI_GC-changed-files.outputs.all_changed_files }}; do
+          for file in ${{ steps.RPI_GC-changed-files.outputs.any_changed }}; do
             echo "$file was changed"
           done
 
