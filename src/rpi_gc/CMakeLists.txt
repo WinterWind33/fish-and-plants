@@ -27,3 +27,5 @@ target_include_directories(rpi_gc PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 
 target_link_libraries(rpi_gc PUBLIC gh_hal)
 target_link_libraries(rpi_gc PUBLIC gh_log)
+
+# Test changes
