@@ -7,9 +7,11 @@
 name: Increment Versions
 
 on:
-  push:
+  pull_request:
+    types:
+      - edited
     branches:
-      - main
+      - 'main'
 
 jobs:
   increment-version:
@@ -18,8 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 2
+          ref: 'update-increment-version-CI'
+          fetch-depth: 0
 
       - name: Git initialization
         run: |
@@ -34,8 +36,8 @@ jobs:
       - name: Retrieve changed files
         run: git diff-tree --no-commit-id --name-only -r HEAD@{0} | tee ./tmp/rpi_gc_changes.txt
 
-      - name: (RPI_GC) Increment Version
-        run: .github/scripts/check-software-changes.sh rpi_gc src/rpi_gc/rpi_gc-config-file.hpp
+      # - name: (RPI_GC) Increment Version
+      #   run: .github/scripts/check-software-changes.sh rpi_gc src/rpi_gc/rpi_gc-config-file.hpp
 
-      - name: Cleanup
-        run: rm -f -r tmp
+      # - name: Cleanup
+      #   run: rm -f -r tmp
