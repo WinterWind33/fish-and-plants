@@ -46,6 +46,12 @@ jobs:
           files: |
             src/rpi_gc/**
 
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
+
       - name: (RPI_GC) Increment Version
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
