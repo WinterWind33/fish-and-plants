@@ -9,7 +9,6 @@ on:
 # We don't need to run this workflow for branches that
 # updates only CI/CD scripts. We ignore those branches.
       - 'CI-UPDATE/**'
-      - 'update-increment-version-CI'
 
 env:
   BUILD_TYPE: Release

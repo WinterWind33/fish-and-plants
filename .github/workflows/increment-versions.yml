@@ -18,7 +18,6 @@ on:
   push:
     branches:
       - 'CI-UPDATE/IV-**'
-      - 'update-increment-version-CI'
 
 env:
   RPI_GC_CONFIGURATION_FILE: src/rpi_gc/rpi_gc-config-file.hpp
@@ -45,12 +44,6 @@ jobs:
         with:
           files: |
             src/rpi_gc/**
-
-      - name: List all changed files
-        run: |
-          for file in ${{ steps.RPI_GC-changed-files.outputs.any_changed }}; do
-            echo "$file was changed"
-          done
 
       - name: (RPI_GC) Increment Version
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
