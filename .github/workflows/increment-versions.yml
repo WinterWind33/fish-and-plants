@@ -21,7 +21,7 @@ on:
       - 'update-increment-version-CI'
 
 env:
-  RPI_GC_CONFIGURATION_FILE: src/rpi_gc/rpi_gc-config-file.hpp rpi_gc
+  RPI_GC_CONFIGURATION_FILE: src/rpi_gc/rpi_gc-config-file.hpp
 
 jobs:
   increment-version:
