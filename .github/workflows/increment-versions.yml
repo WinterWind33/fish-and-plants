@@ -12,30 +12,29 @@ on:
       - closed
     branches:
       - 'main'
+
+# For debugging purposes we trigger this job on all the branches
+# that starts with "CI-UPDATE/IV-**"
   push:
     branches:
+      - 'CI-UPDATE/IV-**'
       - 'update-increment-version-CI'
 
 jobs:
   increment-version:
     runs-on: ubuntu-latest
-    ##if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
 
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: 'update-increment-version-CI'
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Git initialization
         run: |
           git config user.name "IV_BOT"
           git config user.email "WinterWind33@users.noreply.github.com"
-
-      # - name: Files and Folders initialization
-      #   run: |
-      #     mkdir tmp
-      #     chmod +x .github/scripts/check-software-changes.sh
 
       - name: Retrieve changed files
         id: changed-files
