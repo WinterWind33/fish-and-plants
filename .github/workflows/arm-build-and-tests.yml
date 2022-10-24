@@ -32,6 +32,4 @@ jobs:
           commands: |
               test `uname -m` = ${{ matrix.arch }}
               grep Model /proc/cpuinfo
-
-      - name: CMake Configure
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+              cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
