@@ -3,15 +3,18 @@
 name: ARM Build and Tests
 
 on:
-   push:
-    branches-ignore:
-      - main
+   workflow_run:
+     workflows:
+      - "Increment Versions"
+     types:
+      - completed
+     branches: [main]
 
 env:
   BUILD_TYPE: Release
 
 jobs:
-  build:
+  on-success:
     runs-on: ubuntu-latest
     strategy:
       matrix:
