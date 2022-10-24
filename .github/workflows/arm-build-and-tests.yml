@@ -19,6 +19,7 @@ jobs:
             base-image: raspios_lite_arm64:latest
             cpu_info: raspberry_zero_2_w_arm64_w
     steps:
+      - uses: actions/setup-node@v3
       - uses: actions/checkout@v3
         with:
           submodules: recursive
@@ -31,3 +32,6 @@ jobs:
           commands: |
               test `uname -m` = ${{ matrix.arch }}
               grep Model /proc/cpuinfo
+
+      - name: CMake Configure
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
