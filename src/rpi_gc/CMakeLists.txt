@@ -3,6 +3,7 @@
 # RPI_GC's header files
 set(RPI_GC_HEADER_FILES
     "rpi_gc-config-file.hpp"
+    "greenhouse-controller-application.hpp"
     "application/application.hpp"
 )
 
