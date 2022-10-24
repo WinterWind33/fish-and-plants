@@ -16,8 +16,8 @@ jobs:
         include:
           - arch: aarch64
             cpu: cortex-a53
-            base-image: raspios_lite_arm64:latest
-            cpu_info: raspberry_zero_2_w_arm64_w
+            base_image: raspios_lite_arm64:latest
+            cpu_info: cpuinfo/raspberrypi_zero2_w_arm64
     steps:
       - uses: actions/setup-node@v3
       - uses: actions/checkout@v3
