@@ -10,6 +10,7 @@ set(RPI_GC_HEADER_FILES
 # RPI_GC's source files
 set(RPI_GC_SOURCE_FILES
     "entry-point.cpp"
+    "greenhouse-controller-application.cpp"
 )
 
 add_executable(rpi_gc ${RPI_GC_HEADER_FILES} ${RPI_GC_SOURCE_FILES})
