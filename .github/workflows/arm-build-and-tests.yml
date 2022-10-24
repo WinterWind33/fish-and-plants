@@ -30,6 +30,8 @@ jobs:
           cpu: ${{ matrix.cpu }}
           cpu_info: ${{ matrix.cpu_info }}
           commands: |
-              test `uname -m` = ${{ matrix.arch }}
-              grep Model /proc/cpuinfo
+              wget -q http://archive.raspberrypi.org/debian/pool/main/r/raspberrypi-firmware/raspberrypi-kernel-headers_${kernel_version}_${arch}.deb
+              dpkg --install raspberrypi-kernel-headers_${kernel_version}_${arch}.deb
+              apt-get update -y --allow-releaseinfo-change
+              apt-get install --no-install-recommends -y libasound2-dev cmake gcc libc6-dev
               cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
