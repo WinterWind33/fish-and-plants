@@ -16,6 +16,8 @@ namespace rpi_gc {
         GreenhouseControllerApplication(ostream_ref outputStream) noexcept;
         ~GreenhouseControllerApplication() noexcept override = default;
 
+        void run() noexcept override;
+
     private:
         ostream_ref m_outputStream;
     };
