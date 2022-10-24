@@ -1,0 +1,12 @@
+# Copyright (C) 2022 Andrea Ballestrazzi
+
+name: ARM Build and Tests
+
+on:
+   push:
+    branches-ignore:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
