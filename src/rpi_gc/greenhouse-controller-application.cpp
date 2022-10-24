@@ -1,4 +1,12 @@
 // Copyright (C) 2022 Andrea Ballestrazzi
 #include <greenhouse-controller-application.hpp>
 
-namespace rpi_gc {} // namespace rpi_gc
+// C++ STL
+#include <utility>
+
+namespace rpi_gc {
+
+    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream) noexcept :
+        m_outputStream{std::move(outputStream)} {}
+
+} // namespace rpi_gc
