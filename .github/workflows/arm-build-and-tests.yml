@@ -41,4 +41,4 @@ jobs:
               apt-get update -y --allow-releaseinfo-change
               apt-get install --no-install-recommends -y libasound2-dev cmake gcc libc6-dev git
               cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-              cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+              cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target rpi_gc
