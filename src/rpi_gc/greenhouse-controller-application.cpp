@@ -6,8 +6,9 @@
 
 namespace rpi_gc {
 
-    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream) noexcept :
-        m_outputStream{std::move(outputStream)} {}
+    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept :
+        m_outputStream{std::move(outputStream)},
+        m_inputStream{std::move(inputStream)} {}
 
     void GreenhouseControllerApplication::run() noexcept {}
 

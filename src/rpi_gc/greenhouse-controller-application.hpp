@@ -13,8 +13,9 @@ namespace rpi_gc {
     class GreenhouseControllerApplication : public Application {
     public:
         using ostream_ref = std::reference_wrapper<OutputStream>;
+        using istream_ref = std::reference_wrapper<InputStream>;
 
-        GreenhouseControllerApplication(ostream_ref outputStream) noexcept;
+        GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept;
         ~GreenhouseControllerApplication() noexcept override = default;
 
         //! \brief Does nothing for now.
@@ -22,6 +23,7 @@ namespace rpi_gc {
 
     private:
         ostream_ref m_outputStream;
+        istream_ref m_inputStream;
     };
 
 } // namespace rpi_gc
