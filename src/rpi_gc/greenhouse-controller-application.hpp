@@ -9,6 +9,7 @@
 
 namespace rpi_gc {
 
+    //! \brief Represents the main greenhouse controller application.
     class GreenhouseControllerApplication : public Application {
     public:
         using ostream_ref = std::reference_wrapper<OutputStream>;
@@ -16,6 +17,7 @@ namespace rpi_gc {
         GreenhouseControllerApplication(ostream_ref outputStream) noexcept;
         ~GreenhouseControllerApplication() noexcept override = default;
 
+        //! \brief Does nothing for now.
         void run() noexcept override;
 
     private:
