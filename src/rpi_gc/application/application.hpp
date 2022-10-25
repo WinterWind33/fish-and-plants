@@ -4,9 +4,11 @@
 
 // C++ STL
 #include <ostream>
+#include <istream>
 
 namespace rpi_gc {
     using OutputStream = std::ostream;
+    using InputStream = std::istream;
 
     //! \brief Represents the basic interface of an application object that
     //!  directs the application logic.
