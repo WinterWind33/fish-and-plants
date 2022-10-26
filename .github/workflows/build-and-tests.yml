@@ -35,3 +35,6 @@ jobs:
 
     - name: Static Tests Run
       run: ${{github.workspace}}/bin/test_app --order rand [static]
+
+    - name: Unit Tests Run
+      run: ${{github.workspace}}/bin/test_app --order rand [unit]
