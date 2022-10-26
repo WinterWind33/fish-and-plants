@@ -14,6 +14,7 @@ set(TEST_APP_HEADER_FILES
 set(TEST_APP_SOURCE_FILES
     "test-app-entry-point.cpp"
     "gh_hal/hal-board-pin.tests.cpp"
+    "rpi_gc/greenhouse-controller-application.tests.cpp"
 )
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK AND USE_GMOCK)
@@ -41,11 +42,12 @@ set_target_properties(test_app
 )
 
 target_include_directories(test_app PUBLIC ".")
-target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src")
+target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/wrappers")
 
+target_link_libraries(test_app PRIVATE rpi_gc_lib)
 target_link_libraries(test_app PRIVATE gh_log)
-target_link_libraries(test_app PUBLIC gh_hal)
+target_link_libraries(test_app PRIVATE gh_hal)
 
 if(MSVC)
     # Under Windows there is also the Release folder that
