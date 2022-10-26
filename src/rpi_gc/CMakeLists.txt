@@ -9,11 +9,27 @@ set(RPI_GC_HEADER_FILES
 
 # RPI_GC's source files
 set(RPI_GC_SOURCE_FILES
-    "entry-point.cpp"
     "greenhouse-controller-application.cpp"
 )
 
-add_executable(rpi_gc ${RPI_GC_HEADER_FILES} ${RPI_GC_SOURCE_FILES})
+# Here we add a library target so we can use it to link it against
+# the test app.
+add_library(rpi_gc_lib STATIC ${RPI_GC_HEADER_FILES} ${RPI_GC_SOURCE_FILES})
+set_target_properties(rpi_gc_lib
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+    LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+    RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
+)
+
+target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
+target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
+
+target_link_libraries(rpi_gc_lib PRIVATE gh_hal)
+target_link_libraries(rpi_gc_lib PRIVATE gh_log)
+
+
+add_executable(rpi_gc "entry-point.cpp")
 
 set_target_properties(rpi_gc
     PROPERTIES
@@ -28,7 +44,4 @@ set_target_properties(rpi_gc
 target_include_directories(rpi_gc PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(rpi_gc PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 
-target_link_libraries(rpi_gc PUBLIC gh_hal)
-target_link_libraries(rpi_gc PUBLIC gh_log)
-
-# Test changes 2
+target_link_libraries(rpi_gc PRIVATE rpi_gc_lib)
