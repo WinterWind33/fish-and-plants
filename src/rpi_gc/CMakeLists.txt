@@ -5,6 +5,7 @@ set(RPI_GC_HEADER_FILES
     "rpi_gc-config-file.hpp"
     "greenhouse-controller-application.hpp"
     "application/application.hpp"
+    "common/types.hpp"
 )
 
 # RPI_GC's source files
