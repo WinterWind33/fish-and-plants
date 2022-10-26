@@ -23,8 +23,10 @@ namespace rpi_gc {
 
     void GreenhouseControllerApplication::print_app_header() {
         constexpr std::string_view APPLICATION_NAME{"Greenhouse Controller"};
+        constexpr std::string_view COPYRIGHT_DISCLAIMER{"Copyright (c) 2022 Andrea Ballestrazzi"};
 
-        m_outputStream.get() << APPLICATION_NAME << " " << GreenhouseControllerApplication::create_version_string();
+        m_outputStream.get() << APPLICATION_NAME << " " << GreenhouseControllerApplication::create_version_string() << std::endl;
+        m_outputStream.get() << COPYRIGHT_DISCLAIMER << std::endl;
     }
 
     std::string GreenhouseControllerApplication::create_version_string() {
