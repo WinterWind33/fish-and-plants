@@ -6,15 +6,19 @@
 
 // C++ STL
 #include <sstream>
+#include <cstdint>
 
 namespace tests {
 
-    void VerifyApplicationHeaderFirstLine(std::ostringstream& actual, std::string expected) {
-        std::string firstLine{};
+    void VerifyApplicationHeaderLine(const std::size_t lineNum, std::ostringstream& actual, std::string expected) {
+        std::string lineUnderTest{};
         std::istringstream linesStream{actual.str()};
-        std::getline(linesStream, firstLine);
+        for(std::size_t i{}; i < lineNum; ++i) {
+            lineUnderTest.clear();
+            std::getline(linesStream, lineUnderTest);
+        }
 
-        CHECK(firstLine == expected);
+        CHECK(lineUnderTest == expected);
     }
 
     std::string GenerateVersionString() noexcept {
@@ -35,10 +39,16 @@ TEST_CASE("GreenhouseControllerApplication Unit Tests", "[unit][solitary][rpi_gc
     GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
 
     SECTION("When running the application") {
-        SECTION("It should correctly print the application header") {
+        SECTION("It should correctly print the application name and version (first line)") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyApplicationHeaderFirstLine(outputStream, std::string{"Greenhouse Controller "} + tests::GenerateVersionString());
+            tests::VerifyApplicationHeaderLine(1, outputStream, std::string{"Greenhouse Controller "} + tests::GenerateVersionString());
+        }
+
+        SECTION("It should correctly print the copyright disclaimer (second line)") {
+            REQUIRE_NOTHROW(applicationUnderTest.run());
+
+            tests::VerifyApplicationHeaderLine(2, outputStream, "Copyright (c) 2022 Andrea Ballestrazzi");
         }
     }
 }
