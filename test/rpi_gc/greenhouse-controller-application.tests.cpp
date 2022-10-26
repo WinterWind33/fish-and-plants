@@ -10,7 +10,7 @@
 
 namespace tests {
 
-    void VerifyApplicationHeaderLine(const std::size_t lineNum, std::ostringstream& actual, std::string expected) {
+    void VerifyLineEqual(const std::size_t lineNum, std::ostringstream& actual, std::string expected) {
         std::string lineUnderTest{};
         std::istringstream linesStream{actual.str()};
         for(std::size_t i{}; i < lineNum; ++i) {
@@ -21,7 +21,7 @@ namespace tests {
         CHECK(lineUnderTest == expected);
     }
 
-    void VerifyEmptyLine(const std::size_t lineNum, std::ostringstream& actual) {
+    void VerifyLineEmpty(const std::size_t lineNum, std::ostringstream& actual) {
         std::string lineUnderTest{};
         std::istringstream linesStream{actual.str()};
         for(std::size_t i{}; i < lineNum; ++i) {
@@ -53,31 +53,31 @@ TEST_CASE("Application Header Lines", "[unit][solitary][rpi_gc][GreenhouseContro
         SECTION("It should correctly print the application name and version (first line)") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyApplicationHeaderLine(1, outputStream, std::string{"Greenhouse Controller "} + tests::GenerateVersionString());
+            tests::VerifyLineEqual(1, outputStream, std::string{"Greenhouse Controller "} + tests::GenerateVersionString());
         }
 
         SECTION("It should correctly print the copyright disclaimer (second line)") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyApplicationHeaderLine(2, outputStream, "Copyright (c) 2022 Andrea Ballestrazzi");
+            tests::VerifyLineEqual(2, outputStream, "Copyright (c) 2022 Andrea Ballestrazzi");
         }
 
         SECTION("It should correctly print the team credit") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyApplicationHeaderLine(4, outputStream, "-- Fish&Plants Team --");
+            tests::VerifyLineEqual(4, outputStream, "-- Fish&Plants Team --");
         }
 
         SECTION("It should add an end line between the disclaimer and the team credit") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyEmptyLine(3, outputStream);
+            tests::VerifyLineEmpty(3, outputStream);
         }
 
         SECTION("It should add an end line after the team credit") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyEmptyLine(5, outputStream);
+            tests::VerifyLineEmpty(5, outputStream);
         }
     }
 }
