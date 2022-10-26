@@ -15,10 +15,21 @@ namespace tests {
         std::istringstream linesStream{actual.str()};
         for(std::size_t i{}; i < lineNum; ++i) {
             lineUnderTest.clear();
-            std::getline(linesStream, lineUnderTest);
+            REQUIRE(std::getline(linesStream, lineUnderTest).good());
         }
 
         CHECK(lineUnderTest == expected);
+    }
+
+    void VerifyEmptyLine(const std::size_t lineNum, std::ostringstream& actual) {
+        std::string lineUnderTest{};
+        std::istringstream linesStream{actual.str()};
+        for(std::size_t i{}; i < lineNum; ++i) {
+            lineUnderTest.clear();
+            REQUIRE(std::getline(linesStream, lineUnderTest).good());
+        }
+
+        CHECK(lineUnderTest.empty());
     }
 
     std::string GenerateVersionString() noexcept {
@@ -30,7 +41,7 @@ namespace tests {
 
 } // namespace tests
 
-TEST_CASE("GreenhouseControllerApplication Unit Tests", "[unit][solitary][rpi_gc][GreenhouseControllerApplication]") {
+TEST_CASE("Application Header Lines", "[unit][solitary][rpi_gc][GreenhouseControllerApplication][application-header]") {
     using namespace rpi_gc;
 
     std::ostringstream outputStream{};
@@ -49,6 +60,24 @@ TEST_CASE("GreenhouseControllerApplication Unit Tests", "[unit][solitary][rpi_gc
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
             tests::VerifyApplicationHeaderLine(2, outputStream, "Copyright (c) 2022 Andrea Ballestrazzi");
+        }
+
+        SECTION("It should correctly print the team credit") {
+            REQUIRE_NOTHROW(applicationUnderTest.run());
+
+            tests::VerifyApplicationHeaderLine(4, outputStream, "-- Fish&Plants Team --");
+        }
+
+        SECTION("It should add an end line between the disclaimer and the team credit") {
+            REQUIRE_NOTHROW(applicationUnderTest.run());
+
+            tests::VerifyEmptyLine(3, outputStream);
+        }
+
+        SECTION("It should add an end line after the team credit") {
+            REQUIRE_NOTHROW(applicationUnderTest.run());
+
+            tests::VerifyEmptyLine(5, outputStream);
         }
     }
 }
