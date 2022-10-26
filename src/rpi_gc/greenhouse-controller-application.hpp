@@ -24,6 +24,9 @@ namespace rpi_gc {
     private:
         ostream_ref m_outputStream;
         istream_ref m_inputStream;
+
+        void print_app_header();
+        static std::string create_version_string();
     };
 
 } // namespace rpi_gc
