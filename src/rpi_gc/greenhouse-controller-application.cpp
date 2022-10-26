@@ -22,9 +22,11 @@ namespace rpi_gc {
     }
 
     void GreenhouseControllerApplication::print_app_header() {
-        constexpr std::string_view APPLICATION_NAME{"Greenhouse Controller"};
-        constexpr std::string_view COPYRIGHT_DISCLAIMER{"Copyright (c) 2022 Andrea Ballestrazzi"};
-        constexpr std::string_view TEAM_CREDIT{"-- Fish&Plants Team --"};
+        using StringView = std::basic_string_view<CharType>;
+
+        constexpr StringView APPLICATION_NAME{"Greenhouse Controller"};
+        constexpr StringView COPYRIGHT_DISCLAIMER{"Copyright (c) 2022 Andrea Ballestrazzi"};
+        constexpr StringView TEAM_CREDIT{"-- Fish&Plants Team --"};
 
         m_outputStream.get() << APPLICATION_NAME << " " << GreenhouseControllerApplication::create_version_string() << std::endl;
         m_outputStream.get() << COPYRIGHT_DISCLAIMER << std::endl;
@@ -33,8 +35,8 @@ namespace rpi_gc {
         m_outputStream.get() << std::endl;
     }
 
-    std::string GreenhouseControllerApplication::create_version_string() {
-        std::ostringstream versionStream{};
+    StringType GreenhouseControllerApplication::create_version_string() {
+        OutputStringStream versionStream{};
         versionStream << rpi_gc_VERSION_MAJOR << ".";
         versionStream << rpi_gc_VERSION_MINOR << ".";
         versionStream << rpi_gc_VERSION_PATCH;

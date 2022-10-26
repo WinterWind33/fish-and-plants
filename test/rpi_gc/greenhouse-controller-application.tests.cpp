@@ -10,9 +10,9 @@
 
 namespace tests {
 
-    void VerifyLineEqual(const std::size_t lineNum, std::ostringstream& actual, std::string expected) {
-        std::string lineUnderTest{};
-        std::istringstream linesStream{actual.str()};
+    void VerifyLineEqual(const std::size_t lineNum, rpi_gc::OutputStringStream& actual, rpi_gc::StringType expected) {
+        rpi_gc::StringType lineUnderTest{};
+        rpi_gc::InputStringStream linesStream{actual.str()};
         for(std::size_t i{}; i < lineNum; ++i) {
             lineUnderTest.clear();
             REQUIRE(std::getline(linesStream, lineUnderTest).good());
@@ -21,9 +21,9 @@ namespace tests {
         CHECK(lineUnderTest == expected);
     }
 
-    void VerifyLineEmpty(const std::size_t lineNum, std::ostringstream& actual) {
-        std::string lineUnderTest{};
-        std::istringstream linesStream{actual.str()};
+    void VerifyLineEmpty(const std::size_t lineNum, rpi_gc::OutputStringStream& actual) {
+        rpi_gc::StringType lineUnderTest{};
+        rpi_gc::InputStringStream linesStream{actual.str()};
         for(std::size_t i{}; i < lineNum; ++i) {
             lineUnderTest.clear();
             REQUIRE(std::getline(linesStream, lineUnderTest).good());
@@ -32,8 +32,8 @@ namespace tests {
         CHECK(lineUnderTest.empty());
     }
 
-    std::string GenerateVersionString() noexcept {
-        std::ostringstream stream{};
+    rpi_gc::StringType GenerateVersionString() noexcept {
+        rpi_gc::OutputStringStream stream{};
         stream << rpi_gc_VERSION_MAJOR << "." << rpi_gc_VERSION_MINOR << "." << rpi_gc_VERSION_PATCH;
 
         return stream.str();
@@ -44,8 +44,8 @@ namespace tests {
 TEST_CASE("Application Header Lines", "[unit][solitary][rpi_gc][GreenhouseControllerApplication][application-header]") {
     using namespace rpi_gc;
 
-    std::ostringstream outputStream{};
-    std::istringstream inputStream{};
+    rpi_gc::OutputStringStream outputStream{};
+    rpi_gc::InputStringStream inputStream{};
 
     GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
 
@@ -53,7 +53,7 @@ TEST_CASE("Application Header Lines", "[unit][solitary][rpi_gc][GreenhouseContro
         SECTION("It should correctly print the application name and version (first line)") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyLineEqual(1, outputStream, std::string{"Greenhouse Controller "} + tests::GenerateVersionString());
+            tests::VerifyLineEqual(1, outputStream, rpi_gc::StringType{"Greenhouse Controller "} + tests::GenerateVersionString());
         }
 
         SECTION("It should correctly print the copyright disclaimer (second line)") {

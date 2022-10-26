@@ -2,6 +2,7 @@
 #ifndef GREENHOUSE_CONTROLLER_APPLICATION_HPP
 #define GREENHOUSE_CONTROLLER_APPLICATION_HPP
 
+#include <common/types.hpp>
 #include <application/application.hpp>
 
 // C++ STL
@@ -26,7 +27,7 @@ namespace rpi_gc {
         istream_ref m_inputStream;
 
         void print_app_header();
-        static std::string create_version_string();
+        static StringType create_version_string();
     };
 
 } // namespace rpi_gc
