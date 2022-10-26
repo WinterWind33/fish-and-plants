@@ -36,6 +36,24 @@
 			],
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "[BUILD] (Debug) Build RPI_GC",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--target",
+				"rpi_gc",
+				"--config",
+				"Debug"
+			],
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }
