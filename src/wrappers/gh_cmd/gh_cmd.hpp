@@ -93,7 +93,7 @@ namespace gh_cmd {
 
     template<typename C>
     inline void Switch<C>::acceptVisitor(const OptionVisitor& visitor) const noexcept {
-        visitor->visit(*m_switchImpl);
+        visitor.visit(*m_switchImpl);
     }
 
 } // namespace gh_cmd
