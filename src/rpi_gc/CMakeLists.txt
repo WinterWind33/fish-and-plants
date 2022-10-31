@@ -28,7 +28,7 @@ target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers
 
 target_link_libraries(rpi_gc_lib PRIVATE gh_hal)
 target_link_libraries(rpi_gc_lib PRIVATE gh_log)
-target_link_libraries(rpi_gc_lib PRIVATE gh_cmd)
+target_link_libraries(rpi_gc_lib INTERFACE gh_cmd)
 
 add_executable(rpi_gc "entry-point.cpp")
 

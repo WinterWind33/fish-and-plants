@@ -1,6 +1,6 @@
 # Copyright (c) 2022 Andrea Ballestrazzi
 
-set(GH_CMD_HEADER_FILES)
+set(GH_CMD_HEADER_FILES "gh_cmd.hpp")
 
 add_library(gh_cmd INTERFACE ${GH_CMD_HEADER_FILES})
 target_include_directories(gh_cmd INTERFACE "${PROJECT_SOURCE_DIR}/src/wrappers/gh_cmd")

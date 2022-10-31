@@ -6,6 +6,6 @@
 #include <popl20/popl.hpp>
 #else
 #error "There is no alternative to POPL20 right now, you must choose it."
-#endif
+#endif // USE_POPL20
 
 #endif // !GH_CMD_HPP
