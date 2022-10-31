@@ -12,6 +12,7 @@
 #include <string>
 #include <type_traits>
 #include <memory>
+#include <ostream>
 
 namespace gh_cmd {
 
@@ -59,6 +60,15 @@ namespace gh_cmd {
 
     private:
         std::unique_ptr<impl_type> m_switchImpl{};
+    };
+
+    template<typename CharType>
+    struct OptionParser {
+        using char_type = std::decay_t<CharType>;
+
+        virtual void parseCommandLine(const std::int32_t argc, const char_type* const argv[]) noexcept = 0;
+        virtual void reset() noexcept = 0;
+        virtual void printHelp(std::basic_ostream<char_type>& outputStream) const noexcept;
     };
 
     // Switch implementation
