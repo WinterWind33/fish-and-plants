@@ -41,3 +41,9 @@ if(USE_CPPGPIO AND UNIX)
         RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
     )
 endif()
+
+if(USE_POPL20)
+    message("[INFO] => Using popl20 header only library as command-line interpreter.")
+
+    add_subdirectory("popl20")
+endif()
