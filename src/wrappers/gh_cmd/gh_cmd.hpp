@@ -204,7 +204,7 @@ namespace gh_cmd {
             }
 
         private:
-            option_parser_ref m_optionParser{};
+            option_parser_ref m_optionParser;
         };
     } // namespace details
 
