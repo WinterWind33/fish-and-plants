@@ -103,8 +103,24 @@ if(USE_CATCH2_AS_TESTING_FRAMEWORK AND NOT WIN32)
 else(WIN32)
     message("[INFO] => Using Catch2 Win32")
 
-    target_link_libraries(test_app PRIVATE "${PROJECT_SOURCE_DIR}/test/third-party/lib/Catch2-3.1.1/Windows-x64-Release/Catch2.lib")
-    target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/test/third-party/lib/Catch2-3.1.1/include")
+    find_package(Catch2 3 REQUIRED)
+
+    set_target_properties(Catch2::Catch2
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
+    )
+
+    set_target_properties(Catch2::Catch2WithMain
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
+    )
+
+    target_link_libraries(test_app PRIVATE Catch2::Catch2)
+    target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/test/third-party/Catch2-3.1.1/include")
     target_compile_definitions(test_app PUBLIC "USE_CATCH2_AS_TESTING_FRAMEWORK")
 endif()
 
