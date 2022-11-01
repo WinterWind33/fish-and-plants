@@ -99,7 +99,7 @@ if(USE_CATCH2_AS_TESTING_FRAMEWORK)
 
     # We add the include directory to the test target so its files
     # can include Catch2 headers.
-    target_include_directories(test_app PUBLIC "third-party/Catch2/src")
+    target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/test/third-party/Catch2/src")
 
     # For now we don't need our implementation of the entry point so we
     # can use the Catch2 one.
@@ -155,7 +155,7 @@ if(USE_GMOCK)
     target_compile_definitions(test_app PUBLIC USE_GMOCK)
 
     # We ony want the google mock subdirectory.
-	target_include_directories(test_app PUBLIC "third-party/googletest/googlemock/include")
+	target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/test/third-party/googletest/googlemock/include")
 	target_link_libraries(test_app PRIVATE GTest::gmock)
 
 endif()
