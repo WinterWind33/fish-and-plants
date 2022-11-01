@@ -3,17 +3,15 @@
 include(FetchContent)
 
 if(USE_SPDLOG)
-    message("[INFO] => Using spdlog as logger framework.")
+    message("[INFO] => Using spdlog v1.10.0 as logger framework.")
 
     FetchContent_Declare(spdlog
-        GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
-        GIT_TAG "v1.x"
-        SOURCE_DIR "spdlog"
+        URL "https://github.com/gabime/spdlog/archive/refs/tags/v1.10.0.zip"
+        SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/spdlog-1.10.0"
     )
 
     FetchContent_MakeAvailable(spdlog)
 
-    # Compilation configurations.
     set_target_properties(spdlog
         PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}

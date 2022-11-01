@@ -1,6 +1,5 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
 #include <catch2-gmock-listener.hpp>
-#include <catch2/internal/catch_assertion_handler.hpp>
 
 // C++ STL
 #include <string>
