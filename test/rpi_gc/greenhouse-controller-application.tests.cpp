@@ -1,5 +1,5 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
-#include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_amalgamated.hpp>
 
 #include <greenhouse-controller-application.hpp>
 #include <rpi_gc-config-file.hpp>
