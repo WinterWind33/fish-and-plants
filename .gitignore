@@ -29,7 +29,7 @@
 *.la
 *.a
 *.lib
-!test/third-party/lib/**/**/*.lib
+!test/third-party/**
 
 # Executables
 *.exe
