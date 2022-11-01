@@ -200,7 +200,7 @@ namespace gh_cmd {
                 m_optionParser{std::move(optionParser)} {}
 
             void visit(std::shared_ptr<popl::Option> option) noexcept override {
-                m_optionParser.get().add<popl::Switch>(std::move(option));
+                m_optionParser.get().template add<popl::Switch>(std::move(option));
             }
 
         private:
