@@ -64,46 +64,20 @@ endif()
 
 # === Third party submodules configuration ===
 
-if(USE_CATCH2_AS_TESTING_FRAMEWORK AND NOT WIN32)
-    message("[INFO] => Using Catch2 as testing framework.")
+if(USE_CATCH2_AS_TESTING_FRAMEWORK)
+    message("[INFO] => Using amalgamated Catch2 v3.1.1 as testing framework.")
 
-    FetchContent_Declare(Catch2
-        GIT_REPOSITORY "https://github.com/catchorg/Catch2.git"
-        GIT_TAG "devel"
-        SOURCE_DIR "third-party/Catch2"
+    set(CATCH2_3_1_1_DIR "third-party/Catch2-3.1.1")
+
+    set(CATCH2_COMPILATION_FILES
+        "${CATCH2_3_1_1_DIR}/include/catch2/catch_amalgamated.cpp"
+        "${CATCH2_3_1_1_DIR}/include/catch2/catch_amalgamated.hpp"
     )
 
-    FetchContent_MakeAvailable(Catch2)
+    add_library(Catch2 STATIC ${CATCH2_COMPILATION_FILES})
 
-    set(CATCH_DEVELOPMENT_BUILD ON)
-
-    set_target_properties(Catch2
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
-
-    set_target_properties(Catch2WithMain
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
-
-    # We add the include directory to the test target so its files
-    # can include Catch2 headers.
-    target_include_directories(test_app PUBLIC "third-party/Catch2/src")
-
-    # For now we don't need our implementation of the entry point so we
-    # can use the Catch2 one.
-    target_link_libraries(test_app PRIVATE Catch2::Catch2)
-    target_compile_definitions(test_app PUBLIC USE_CATCH2_AS_TESTING_FRAMEWORK)
-
-else(WIN32)
-    message("[INFO] => Using Catch2 Win32")
-
-    add_library(Catch2 STATIC "third-party/Catch2-3.1.1/include/catch2/catch_amalgamated.cpp" "third-party/Catch2-3.1.1/include/catch2/catch_amalgamated.hpp")
+    # We want our custom main so we need to define this MACRO so
+    # the compilation won't generate its custom main.
     target_compile_definitions(Catch2 PUBLIC "CATCH_AMALGAMATED_CUSTOM_MAIN")
     set_target_properties(Catch2
         PROPERTIES
@@ -113,8 +87,8 @@ else(WIN32)
     )
 
     target_link_libraries(test_app PRIVATE Catch2)
-    target_include_directories(test_app PRIVATE "third-party/Catch2-3.1.1/include")
-    target_compile_definitions(test_app PUBLIC "USE_CATCH2_AS_TESTING_FRAMEWORK")
+    target_include_directories(test_app PRIVATE "${CATCH2_3_1_1_DIR}/include")
+    target_compile_definitions(test_app PRIVATE "USE_CATCH2_AS_TESTING_FRAMEWORK")
 endif()
 
 if(USE_GMOCK)
