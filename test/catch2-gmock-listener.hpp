@@ -4,7 +4,7 @@
 
 #if defined(USE_CATCH2_AS_TESTING_FRAMEWORK) && defined(USE_GMOCK)
 
-#include <catch2/catch_amalgamated.hpp>
+#include <testing-core.hpp>
 #include <gmock/gmock.h>
 
 //! \brief Represents the listener used by GMock when using its

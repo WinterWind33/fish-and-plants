@@ -5,6 +5,7 @@ include(FetchContent)
 
 # === Test App target configuration ===
 set(TEST_APP_HEADER_FILES
+    "testing-core.hpp"
     "catch2-gmock-listener.hpp"
 
     # Test doubles
