@@ -96,15 +96,14 @@ if(USE_GMOCK)
 
     FetchContent_Declare(
         googletest
-        GIT_REPOSITORY "https://github.com/google/googletest.git"
-        GIT_TAG "main" # This is the stable working branch.
-        SOURCE_DIR "third-party/googletest"
+        URL "https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip"
+        SOURCE_DIR "${PROJECT_SOURCE_DIR}/test/third-party/GoogleTest-1.2.1"
     )
-
-    FetchContent_MakeAvailable(googletest)
 
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+
     # We only want GMock.
     set(BUILD_GTEST OFF CACHE BOOL "" FORCE)
 
@@ -139,7 +138,6 @@ if(USE_GMOCK)
     target_compile_definitions(test_app PUBLIC USE_GMOCK)
 
     # We ony want the google mock subdirectory.
-	target_include_directories(test_app PUBLIC "third-party/googletest/googlemock/include")
+	target_include_directories(test_app PUBLIC "third-party/GoogleTest-1.2.1/googlemock/include")
 	target_link_libraries(test_app PRIVATE GTest::gmock)
-
 endif()

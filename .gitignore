@@ -29,7 +29,6 @@
 *.la
 *.a
 *.lib
-!test/third-party/**
 
 # Executables
 *.exe
@@ -117,6 +116,10 @@ _deps
 
 # End of https://www.toptal.com/developers/gitignore/api/cmake
 
-build/*
-bin/*
-lib/*
+build
+bin
+lib
+
+# We exclude the GTest package as it's automatically downloaded when running
+# cmake build
+test/third-party/GoogleTest-*
