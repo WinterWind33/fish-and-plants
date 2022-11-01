@@ -123,3 +123,4 @@ lib
 # We exclude the GTest package as it's automatically downloaded when running
 # cmake build
 test/third-party/GoogleTest-*
+src/third-party/spdlog-*

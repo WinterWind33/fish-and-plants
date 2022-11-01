@@ -4,6 +4,20 @@ include(FetchContent)
 
 if(USE_SPDLOG)
     message("[INFO] => Using spdlog v1.10.0 as logger framework.")
+
+    FetchContent_Declare(spdlog
+        URL "https://github.com/gabime/spdlog/archive/refs/tags/v1.10.0.zip"
+        SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/spdlog-1.10.0"
+    )
+
+    FetchContent_MakeAvailable(spdlog)
+
+    set_target_properties(spdlog
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
+    )
 endif()
 
 if(USE_CPPGPIO AND UNIX)
