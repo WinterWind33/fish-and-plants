@@ -64,7 +64,7 @@ endif()
 
 # === Third party submodules configuration ===
 
-if(USE_CATCH2_AS_TESTING_FRAMEWORK)
+if(USE_CATCH2_AS_TESTING_FRAMEWORK AND NOT WIN32)
     message("[INFO] => Using Catch2 as testing framework.")
 
     FetchContent_Declare(Catch2
@@ -99,6 +99,13 @@ if(USE_CATCH2_AS_TESTING_FRAMEWORK)
     # can use the Catch2 one.
     target_link_libraries(test_app PRIVATE Catch2::Catch2)
     target_compile_definitions(test_app PUBLIC USE_CATCH2_AS_TESTING_FRAMEWORK)
+
+else(WIN32)
+    message("[INFO] => Using Catch2 Win32")
+
+    target_link_libraries(test_app PRIVATE "${PROJECT_SOURCE_DIR}/test/third-party/lib/Catch2-3.1.1/Windows-x64-Release/Catch2.lib")
+    target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/test/third-party/lib/Catch2-3.1.1/include")
+    target_compile_definitions(test_app PUBLIC "USE_CATCH2_AS_TESTING_FRAMEWORK")
 endif()
 
 if(USE_GMOCK)
