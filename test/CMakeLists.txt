@@ -46,7 +46,7 @@ set_target_properties(test_app
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
-target_include_directories(test_app PUBLIC ".")
+target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/test")
 target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 
