@@ -2,6 +2,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <gh_cmd/gh_cmd.hpp>
 
+// Test doubles
+#include <gh_cmd/test-doubles/option-visitor.mock.hpp>
+
 // C++ STL
 #include <string_view>
 

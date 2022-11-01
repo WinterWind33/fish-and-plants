@@ -10,6 +10,18 @@
 
 namespace gh_cmd::mocks {
 
+    template<typename OptionType>
+    class OptionVisitorMock : public OptionVisitor<OptionType> {
+    public:
+        MOCK_METHOD(void, visit, (OptionType), (noexcept, override));
+    };
+
+    template<typename OptionType>
+    class ConstOptionVisitorMock : public ConstOptionVisitor<OptionType> {
+    public:
+        MOCK_METHOD(void, visit, (const OptionType), (const, noexcept, override));
+    };
+
 } // namespace gh_cmd::mocks
 
 #endif // !OPTION_VISITOR_MOCK_HPP
