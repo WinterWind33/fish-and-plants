@@ -10,11 +10,17 @@ set(TEST_APP_HEADER_FILES
 
     # Test doubles
     "gh_hal/test-doubles/hal-context.mock.hpp"
+    "gh_cmd/test-doubles/option-visitor.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
     "test-app-entry-point.cpp"
+
+    # Modules
     "gh_hal/hal-board-pin.tests.cpp"
+    "gh_cmd/switch.tests.cpp"
+    "gh_cmd/default-option-parser.tests.cpp"
+
     "rpi_gc/greenhouse-controller-application.tests.cpp"
 )
 
@@ -42,13 +48,14 @@ set_target_properties(test_app
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
-target_include_directories(test_app PUBLIC ".")
+target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/test")
 target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
-target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/wrappers")
+target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 
 target_link_libraries(test_app PRIVATE rpi_gc_lib)
 target_link_libraries(test_app PRIVATE gh_log)
 target_link_libraries(test_app PRIVATE gh_hal)
+target_link_libraries(test_app PRIVATE gh_cmd)
 
 if(MSVC)
     # Under Windows there is also the Release folder that

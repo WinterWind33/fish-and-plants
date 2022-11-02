@@ -4,7 +4,7 @@
 
 #ifdef USE_GMOCK
 #include <gmock/gmock.h>
-#endif
+#endif // USE_GMOCK
 
 #include <hal-context.hpp>
 
@@ -20,4 +20,4 @@ public:
 
 } // namespace mocks
 
-#endif //! HAL_CONTEXT_MOCK_HPP
+#endif // !HAL_CONTEXT_MOCK_HPP

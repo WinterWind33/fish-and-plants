@@ -54,6 +54,24 @@
 			],
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "[BUILD] (Debug) Build test_app",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--target",
+				"test_app",
+				"--config",
+				"Debug"
+			],
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }
