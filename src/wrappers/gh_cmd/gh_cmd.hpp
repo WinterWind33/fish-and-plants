@@ -21,16 +21,28 @@
 
 namespace gh_cmd {
 
+    //! \brief Represents a visitor used to access the internal implementation of command
+    //!  options as they are wrappers for third-party definitions. This visitor can modify the
+    //!  state of the implementation.
+    //! \tparam OptionType The type of the option that need to be passed to the visitor.
+    //!  Can be a smart pointer, a reference etc.
     template<typename OptionType>
     struct OptionVisitor {
         virtual void visit(OptionType option) noexcept = 0;
     };
 
+    //! \brief Represents a read-only visitor used to access the internal implementation of command
+    //!  options as they are wrappers for third-party definitions.
+    //! \tparam OptionType The type of the option that need to be passed to the visitor.
+    //!  Can be a smart pointer, a reference etc.
     template<typename OptionType>
     struct ConstOptionVisitor {
         virtual void visit(const OptionType option) const noexcept = 0;
     };
 
+    //! \brief Represents the basic interface of a command's option.
+    //!
+    //! \tparam CharType The type of the characters to be used.
     template<typename CharType>
     class CommandOption {
     public:
@@ -42,13 +54,25 @@ namespace gh_cmd {
 
         virtual ~CommandOption() noexcept = default;
 
+        //! \brief Retrieves the short name of this option.
         virtual short_name_type getShortName() const noexcept = 0;
+
+        //! \brief Retrieves the long name of this option.
         virtual long_name_type getLongName() const noexcept = 0;
+
+        //! \brief Retrieves the description of this option.
         virtual string_type getDescription() const noexcept = 0;
+
+        //! \brief Accepts an external read-only visitor.
         virtual void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept = 0;
+
+        //! \brief Accepts an external visitor that can modify the internal implementation's state.
         virtual void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept = 0;
     };
 
+    //! \brief Represents an option with boolean value.
+    //!
+    //! \tparam CharType The char type to be used.
     template<typename CharType>
     class Switch : public CommandOption<CharType> {
     public:
@@ -77,18 +101,37 @@ namespace gh_cmd {
         std::shared_ptr<impl_type> m_switchImpl{};
     };
 
+    //! \brief Represents the basic interface of an option parser, i.e. an object that,
+    //!  given an input line, it extracts all of the command's options.
+    //!
+    //! \tparam CharType The char type to be used.
     template<typename CharType>
     struct OptionParser {
         using char_type = std::decay_t<CharType>;
         using string_type = std::basic_string<char_type>;
 
+        //! \brief Adds a switch to the command representation.
         virtual void addSwitch(std::shared_ptr<Switch<char_type>> option) noexcept = 0;
+
+        //! \brief Parses the given input tokens searching for options, unknown options and
+        //!  non-options tokens. These tokens can be retrieve by the getters below.
         virtual void parse(const std::vector<string_type>& args) noexcept = 0;
+
+        //! \brief Resets the state of this parser, erasing all of the previous saved
+        //!  options, unknowns etc.
         virtual void reset() noexcept = 0;
+
+        //! \brief Prints to the given output stream the help page extracted from
+        //!  the configuration of this parser.
         virtual void printHelp(std::basic_ostream<char_type>& outputStream) const noexcept = 0;
 
+        //! \brief Retrieves all of the options saved inside this parser configuration.
         virtual std::vector<std::shared_ptr<const CommandOption<char_type>>> getOptions() const noexcept = 0;
+
+        //! \brief Retrieves all of the non-option arguments parsed by this object.
         virtual std::vector<string_type> getNonOptionArguments() const noexcept = 0;
+
+        //! \brief Retrieves all of the unknown options parsed by this object.
         virtual std::vector<string_type> getUnknownOptions() const noexcept = 0;
     };
 
@@ -225,7 +268,7 @@ namespace gh_cmd {
     inline void DefaultOptionParser<C>::parse(const std::vector<string_type>& args) noexcept {
         // Before proceeding we need to create a vector of const char* because the
         // popl parser uses primitive types and not string types.
-        std::vector<const C*> rawStrings{};
+        std::vector<const char_type*> rawStrings{};
         for(const string_type& str : args)
             rawStrings.push_back(str.c_str());
 
