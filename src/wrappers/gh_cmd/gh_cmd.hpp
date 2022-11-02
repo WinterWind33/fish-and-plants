@@ -123,7 +123,7 @@ namespace gh_cmd {
     // Switch implementation
     template<typename C>
     inline Switch<C>::Switch(short_name_type shortName, long_name_type longName, string_type description) noexcept :
-        m_switchImpl{std::make_shared<impl_type>(std::string{shortName}, std::move(longName), std::move(description))} {}
+        m_switchImpl{std::make_shared<impl_type>(std::string{{shortName, '\0'}}, std::move(longName), std::move(description))} {}
 
     template<typename C>
     inline auto Switch<C>::getShortName() const noexcept -> short_name_type {
@@ -191,7 +191,6 @@ namespace gh_cmd {
 
     namespace details {
         // Internal use only, should not be used outside the wrapper.
-        template<typename CharType>
         class SwitchInserterVisitor : public OptionVisitor<std::shared_ptr<popl::Option>> {
         public:
             using option_parser_ref = std::reference_wrapper<popl::OptionParser>;
@@ -200,7 +199,8 @@ namespace gh_cmd {
                 m_optionParser{std::move(optionParser)} {}
 
             void visit(std::shared_ptr<popl::Option> option) noexcept override {
-                m_optionParser.get().template add<popl::Switch>(std::move(option));
+                std::shared_ptr<popl::Switch> switchPtr{std::static_pointer_cast<popl::Switch>(std::move(option))};
+                m_optionParser.get().template add_shared<popl::Switch>(std::move(switchPtr));
             }
 
         private:
@@ -212,7 +212,7 @@ namespace gh_cmd {
     inline void DefaultOptionParser<C>::addSwitch(std::shared_ptr<Switch<char_type>> option) noexcept {
         assert(option != nullptr);
 
-        details::SwitchInserterVisitor<C> inserter{*m_implParser};
+        details::SwitchInserterVisitor inserter{*m_implParser};
         option->acceptVisitor(inserter);
 
         m_options.push_back(std::move(option));
@@ -220,7 +220,13 @@ namespace gh_cmd {
 
     template<typename C>
     inline void DefaultOptionParser<C>::parse(const std::vector<string_type>& args) noexcept {
-        m_implParser->parse(static_cast<std::int32_t>(args.size()), args.data());
+        // Before proceeding we need to create a vector of const char* because the
+        // popl parser uses primitive types and not string types.
+        std::vector<const C*> rawStrings{};
+        for(const string_type& str : args)
+            rawStrings.push_back(str.c_str());
+
+        m_implParser->parse(static_cast<std::int32_t>(rawStrings.size()), rawStrings.data());
     }
 
 } // namespace gh_cmd
