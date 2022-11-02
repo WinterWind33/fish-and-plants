@@ -1,5 +1,5 @@
 # Copyright (C) 2022 Andrea Ballestrazzi
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.19)
 
 project(FishAndPlants)
 
