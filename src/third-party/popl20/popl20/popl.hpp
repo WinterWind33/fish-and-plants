@@ -25,6 +25,7 @@
 #endif // NOMINMAX
 
 #include <algorithm>
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
@@ -331,6 +332,9 @@ public:
     /// @param Ts the Option's parameter
     template <typename T, typename... Ts>
     std::shared_ptr<T> add(Ts&&... params);
+
+    template<typename T>
+    void add_shared(std::shared_ptr<T> option);
 
     /// Parse an ini file into the added Options
     /// @param ini_filename full path of the ini file
@@ -846,6 +850,21 @@ inline OptionParser::OptionParser(std::string description) : description_(std::m
 {
 }
 
+template<typename T>
+inline void OptionParser::add_shared(std::shared_ptr<T> option) {
+    static_assert(std::is_base_of_v<Option, typename std::decay<T>::type>, "type T must be Switch, Value or Implicit");
+    assert(option != nullptr);
+
+    for (const auto& o : options_) {
+        if ((option->short_name() != 0) && (option->short_name() == o->short_name()))
+            throw std::invalid_argument("duplicate short option name '-" + std::string(1, option->short_name()) + "'");
+        if (!option->long_name().empty() && (option->long_name() == (o->long_name())))
+            throw std::invalid_argument("duplicate long option name '--" + option->long_name() + "'");
+    }
+
+    option->set_attribute(Attribute::optional);
+    options_.push_back(std::move(option));
+}
 
 template <typename T, typename... Ts>
 inline std::shared_ptr<T> OptionParser::add(Ts&&... params)
@@ -1001,8 +1020,8 @@ inline void OptionParser::parse(int argc, const char* const argv[])
         if (arg == "--")
         {
             /// from here on only non opt args
-            for (int m = n + 1; m < argc; ++m)
-                non_option_args_.emplace_back(argv[m]);
+            for (++n; n < argc; ++n)
+                non_option_args_.emplace_back(argv[n]);
         }
         else if (arg.find("--") == 0)
         {
