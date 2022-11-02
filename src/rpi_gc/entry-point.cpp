@@ -1,6 +1,5 @@
 // Copyright (C) 2022 Andrea Ballestrazzi
 #include <greenhouse-controller-application.hpp>
-#include <gh_cmd/gh_cmd.hpp>
 
 // C++ STL
 #include <iostream>

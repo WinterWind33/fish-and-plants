@@ -3,6 +3,7 @@
 
 // Resources
 #include <rpi_gc-config-file.hpp>
+#include <gh_cmd/gh_cmd.hpp>
 
 // C++ STL
 #include <utility>
@@ -33,6 +34,17 @@ namespace rpi_gc {
         m_outputStream.get() << std::endl;
         m_outputStream.get() << TEAM_CREDIT << std::endl;
         m_outputStream.get() << std::endl;
+
+        // Now we begin the user input loop.
+        constexpr StringView EXIT_COMMAND{"exit"};
+        std::string inputLine{};
+
+        while(inputLine != EXIT_COMMAND) {
+            m_outputStream.get() << "user@controller/home$ ";
+            std::getline(m_inputStream.get(), inputLine);
+        }
+
+        m_outputStream.get() << "Goodbye." << std::endl;
     }
 
     StringType GreenhouseControllerApplication::create_version_string() {
