@@ -43,11 +43,16 @@ namespace rpi_gc {
             assert(lineTokens.size() > 0);
             const StringType commandName{lineTokens[0]};
 
+            // If the user requested to exit the program we can exit the
+            // execution.
+            if(commandName == EXIT_COMMAND)
+                continue;
+
             if(!m_commandsOptionParsers.contains(commandName)) {
-                constexpr StringView UNKNOWN_COMMAND_FEEDBACK{"Unknown command."};
+                constexpr StringView UNKNOWN_COMMAND_FEEDBACK{"command not recognized."};
 
                 // The user typed an unknown command.
-                m_outputStream.get() << UNKNOWN_COMMAND_FEEDBACK << std::endl << std::endl;
+                m_outputStream.get() << commandName << ": " << UNKNOWN_COMMAND_FEEDBACK << std::endl << std::endl;
                 continue;
             }
 
@@ -55,9 +60,10 @@ namespace rpi_gc {
             m_commandsOptionParsers[commandName]->parse(lineTokens);
         }
 
-        m_outputStream.get() << "Goodbye." << std::endl;
-
+        m_outputStream.get() << "Tearing down...";
         teardown();
+        m_outputStream.get() << "Done." << std::endl;
+        m_outputStream.get() << "Goodbye." << std::endl;
     }
 
     void GreenhouseControllerApplication::addSupportedCommand(StringType commandName, std::unique_ptr<gh_cmd::OptionParser<CharType>> commandOptionParser) noexcept {
