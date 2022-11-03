@@ -11,6 +11,7 @@ set(TEST_APP_HEADER_FILES
     # Test doubles
     "gh_hal/test-doubles/hal-context.mock.hpp"
     "gh_cmd/test-doubles/option-visitor.mock.hpp"
+    "gh_cmd/test-doubles/option-parser.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
