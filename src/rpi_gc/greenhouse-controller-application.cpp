@@ -98,6 +98,8 @@ namespace rpi_gc {
     void GreenhouseControllerApplication::teardown() noexcept {
         m_inputStream.get().clear(std::ios::goodbit);
         m_outputStream.get().clear(std::ios::goodbit);
+
+        m_commandsOptionParsers.clear();
     }
 
 } // namespace rpi_gc
