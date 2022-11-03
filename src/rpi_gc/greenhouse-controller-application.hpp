@@ -26,8 +26,9 @@ namespace rpi_gc {
         ostream_ref m_outputStream;
         istream_ref m_inputStream;
 
-        void print_app_header();
-        static StringType create_version_string();
+        void print_app_header() noexcept;
+        void teardown() noexcept;
+        static StringType create_version_string() noexcept;
     };
 
 } // namespace rpi_gc

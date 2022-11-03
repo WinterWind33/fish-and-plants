@@ -41,11 +41,11 @@ namespace tests {
 
 } // namespace tests
 
-TEST_CASE("Application Header Lines", "[unit][solitary][rpi_gc][GreenhouseControllerApplication][application-header]") {
+TEST_CASE("Application Header Lines", "[functional][rpi_gc][GreenhouseControllerApplication][application-header]") {
     using namespace rpi_gc;
 
     rpi_gc::OutputStringStream outputStream{};
-    rpi_gc::InputStringStream inputStream{};
+    rpi_gc::InputStringStream inputStream{"exit"};
 
     GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
 
