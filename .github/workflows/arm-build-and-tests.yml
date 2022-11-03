@@ -44,9 +44,8 @@ jobs:
               dpkg --install raspberrypi-kernel-headers_${kernel_version}_${arch}.deb
               apt-get update -y --allow-releaseinfo-change
               apt-get install --no-install-recommends -y libasound2-dev gcc libc6-dev git
-              apt-get update && apt-get install -y curl
               CMAKE_VERSION="3.24.2"
-              curl -sSL https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh -o install-cmake.sh
+              curl -sSL https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-aarch64.sh -o install-cmake.sh
               chmod +x install-cmake.sh
               ./install-cmake.sh --prefix=/usr/local --skip-license
               cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
