@@ -7,15 +7,14 @@ on:
     workflows: [Increment Versions]
     types:
       - completed
-  push:
-    branches-ignore:
-      - "main"
+  pull_request:
+    types: [ready_for_review]
 
 env:
   BUILD_TYPE: Release
 
 jobs:
-  on-success:
+  on_success:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -44,7 +43,7 @@ jobs:
               dpkg --install raspberrypi-kernel-headers_${kernel_version}_${arch}.deb
               apt-get update -y --allow-releaseinfo-change
               apt-get install --no-install-recommends -y libasound2-dev gcc libc6-dev git
-              CMAKE_VERSION="3.24.2"
+              CMAKE_VERSION="3.24.3"
               curl -sSL https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-aarch64.sh -o install-cmake.sh
               chmod +x install-cmake.sh
               ./install-cmake.sh --prefix=/usr/local --skip-license
