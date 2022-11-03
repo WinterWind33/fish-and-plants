@@ -56,3 +56,7 @@ jobs:
           git commit -m "[IV_BOT](Version Increment) Updated rpi_gc version to $(head -n 1 ./tmp/new_version.txt)."
           git push
           rm -r -f tmp
+
+      - name: Delete remote branch
+        if: ${{ github.head_ref }} != 'main'
+        run: git push -d origin ${{ github.head_ref }}
