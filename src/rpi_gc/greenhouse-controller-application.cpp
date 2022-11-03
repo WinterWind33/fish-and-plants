@@ -29,6 +29,30 @@ namespace rpi_gc {
         while(inputLine != EXIT_COMMAND && m_inputStream.get().good()) {
             m_outputStream.get() << "user@controller/home$ ";
             std::getline(m_inputStream.get(), inputLine);
+
+            // Empty line: we can skip this iteration as the user hasn't typed
+            // anything.
+            if(inputLine.empty())
+                continue;
+
+            InputStringStream inputLineStream{inputLine};
+            std::vector<StringType> lineTokens{};
+            for(StringType currentToken{}; inputLineStream >> currentToken;)
+                lineTokens.push_back(std::move(currentToken));
+
+            assert(lineTokens.size() > 0);
+            const StringType commandName{lineTokens[0]};
+
+            if(!m_commandsOptionParsers.contains(commandName)) {
+                constexpr StringView UNKNOWN_COMMAND_FEEDBACK{"Unknown command."};
+
+                // The user typed an unknown command.
+                m_outputStream.get() << UNKNOWN_COMMAND_FEEDBACK << std::endl << std::endl;
+                continue;
+            }
+
+            assert(m_commandsOptionParsers[commandName] != nullptr);
+            m_commandsOptionParsers[commandName]->parse(lineTokens);
         }
 
         m_outputStream.get() << "Goodbye." << std::endl;
