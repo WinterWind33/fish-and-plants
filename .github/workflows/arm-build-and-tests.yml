@@ -7,6 +7,9 @@ on:
     workflows: [Increment Versions]
     types:
       - completed
+  push:
+    branches-ignore:
+      - "main"
 
 env:
   BUILD_TYPE: Release
@@ -46,5 +49,41 @@ jobs:
               curl -sSL https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh -o install-cmake.sh
               chmod +x install-cmake.sh
               ./install-cmake.sh --prefix=/usr/local --skip-license
+              cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+              cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target rpi_gc
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [aarch64]
+        include:
+          - arch: aarch64
+            cpu: cortex-a53
+            base_image: raspios_lite_arm64:latest
+            cpu_info: cpuinfo/raspberrypi_zero2_w_arm64
+    steps:
+      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - uses: pguyot/arm-runner-action@v2
+        with:
+          image_additional_mb: 1024
+          base_image: ${{ matrix.base_image }}
+          cpu: ${{ matrix.cpu }}
+          cpu_info: ${{ matrix.cpu_info }}
+          commands: |
+              kernel_version=`apt list --installed | grep raspberrypi-kernel | awk '{ print $2 }' | sed -e 's|1:||g'`
+              arch=`apt list --installed | grep raspberrypi-kernel | awk '{ print $3 }'`
+              wget -q http://archive.raspberrypi.org/debian/pool/main/r/raspberrypi-firmware/raspberrypi-kernel-headers_${kernel_version}_${arch}.deb
+              dpkg --install raspberrypi-kernel-headers_${kernel_version}_${arch}.deb
+              apt-get update -y --allow-releaseinfo-change
+              apt-get install --no-install-recommends -y libasound2-dev gcc libc6-dev git
+              apt-get update && apt-get install -y curl
+              CMAKE_VERSION="3.24.2"
+              curl -sSL https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-x86_64.sh -o install-cmake.sh
+              chmod +x install-cmake.sh
+              ./install-cmake.sh --skip-license
               cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
               cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target rpi_gc
