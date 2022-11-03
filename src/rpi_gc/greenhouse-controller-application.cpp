@@ -3,7 +3,6 @@
 
 // Resources
 #include <rpi_gc-config-file.hpp>
-#include <gh_cmd/gh_cmd.hpp>
 
 // C++ STL
 #include <utility>
@@ -35,6 +34,12 @@ namespace rpi_gc {
         m_outputStream.get() << "Goodbye." << std::endl;
 
         teardown();
+    }
+
+    void GreenhouseControllerApplication::addSupportedCommand(StringType commandName, std::unique_ptr<gh_cmd::OptionParser<CharType>> commandOptionParser) noexcept {
+        assert(!m_commandsOptionParsers.contains(commandName));
+
+        m_commandsOptionParsers.emplace(std::move(commandName), std::move(commandOptionParser));
     }
 
     void GreenhouseControllerApplication::print_app_header() noexcept {

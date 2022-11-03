@@ -5,8 +5,13 @@
 #include <common/types.hpp>
 #include <application/application.hpp>
 
+// Wrappers
+#include <gh_cmd/gh_cmd.hpp>
+
 // C++ STL
 #include <functional>
+#include <memory>
+#include <map>
 
 namespace rpi_gc {
 
@@ -22,9 +27,15 @@ namespace rpi_gc {
         //! \brief Does nothing for now.
         void run() noexcept override;
 
+        void addSupportedCommand(StringType commandName, std::unique_ptr<gh_cmd::OptionParser<CharType>> commandOptionParser) noexcept;
+
     private:
+        using CommandOptionParser = gh_cmd::OptionParser<CharType>;
+
         ostream_ref m_outputStream;
         istream_ref m_inputStream;
+
+        std::map<StringType, std::unique_ptr<CommandOptionParser>> m_commandsOptionParsers{};
 
         void print_app_header() noexcept;
         void teardown() noexcept;
