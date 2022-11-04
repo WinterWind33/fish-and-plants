@@ -110,6 +110,8 @@ namespace gh_cmd {
         using char_type = std::decay_t<CharType>;
         using string_type = std::basic_string<char_type>;
 
+        virtual ~OptionParser() noexcept = default;
+
         //! \brief Adds a switch to the command representation.
         virtual void addSwitch(std::shared_ptr<Switch<char_type>> option) noexcept = 0;
 

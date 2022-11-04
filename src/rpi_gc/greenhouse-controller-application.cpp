@@ -3,7 +3,6 @@
 
 // Resources
 #include <rpi_gc-config-file.hpp>
-#include <gh_cmd/gh_cmd.hpp>
 
 // C++ STL
 #include <utility>
@@ -30,11 +29,47 @@ namespace rpi_gc {
         while(inputLine != EXIT_COMMAND && m_inputStream.get().good()) {
             m_outputStream.get() << "user@controller/home$ ";
             std::getline(m_inputStream.get(), inputLine);
+
+            // Empty line: we can skip this iteration as the user hasn't typed
+            // anything.
+            if(inputLine.empty())
+                continue;
+
+            InputStringStream inputLineStream{inputLine};
+            std::vector<StringType> lineTokens{};
+            for(StringType currentToken{}; inputLineStream >> currentToken;)
+                lineTokens.push_back(std::move(currentToken));
+
+            assert(lineTokens.size() > 0);
+            const StringType commandName{lineTokens[0]};
+
+            // If the user requested to exit the program we can exit the
+            // execution.
+            if(commandName == EXIT_COMMAND)
+                continue;
+
+            if(!m_commandsOptionParsers.contains(commandName)) {
+                constexpr StringView UNKNOWN_COMMAND_FEEDBACK{"command not recognized."};
+
+                // The user typed an unknown command.
+                m_outputStream.get() << commandName << ": " << UNKNOWN_COMMAND_FEEDBACK << std::endl << std::endl;
+                continue;
+            }
+
+            assert(m_commandsOptionParsers[commandName] != nullptr);
+            m_commandsOptionParsers[commandName]->parse(lineTokens);
         }
 
-        m_outputStream.get() << "Goodbye." << std::endl;
-
+        m_outputStream.get() << "Tearing down...";
         teardown();
+        m_outputStream.get() << "Done." << std::endl;
+        m_outputStream.get() << "Goodbye." << std::endl;
+    }
+
+    void GreenhouseControllerApplication::addSupportedCommand(StringType commandName, std::unique_ptr<gh_cmd::OptionParser<CharType>> commandOptionParser) noexcept {
+        assert(!m_commandsOptionParsers.contains(commandName));
+
+        m_commandsOptionParsers.emplace(std::move(commandName), std::move(commandOptionParser));
     }
 
     void GreenhouseControllerApplication::print_app_header() noexcept {
@@ -63,6 +98,8 @@ namespace rpi_gc {
     void GreenhouseControllerApplication::teardown() noexcept {
         m_inputStream.get().clear(std::ios::goodbit);
         m_outputStream.get().clear(std::ios::goodbit);
+
+        m_commandsOptionParsers.clear();
     }
 
 } // namespace rpi_gc

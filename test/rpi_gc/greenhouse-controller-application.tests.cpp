@@ -4,6 +4,9 @@
 #include <greenhouse-controller-application.hpp>
 #include <rpi_gc-config-file.hpp>
 
+// Test doubles
+#include <gh_cmd/test-doubles/option-parser.mock.hpp>
+
 // C++ STL
 #include <sstream>
 #include <cstdint>
@@ -78,6 +81,90 @@ TEST_CASE("Application Header Lines", "[functional][rpi_gc][GreenhouseController
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
             tests::VerifyLineEmpty(5, outputStream);
+        }
+    }
+}
+
+TEST_CASE("Commands execution", "[unit][sociable][GreenhouseControllerApplication][commands]") {
+    using namespace rpi_gc;
+
+    GIVEN("An application controller with a command registered") {
+        using testing::StrictMock;
+
+        InputStringStream inputStream{};
+        OutputStringStream outputStream{};
+        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
+
+        constexpr std::string_view COMMAND_NAME{"dummyName"};
+        std::unique_ptr<StrictMock<gh_cmd::mocks::OptionParserMock<char>>> optionParserMockPtr{
+            std::make_unique<StrictMock<gh_cmd::mocks::OptionParserMock<char>>>()};
+
+        // We keep a reference to the mock so we can set the expectations later.
+        gh_cmd::mocks::OptionParserMock<char>& optionParserMock{*optionParserMockPtr};
+
+        applicationUnderTest.addSupportedCommand(StringType{COMMAND_NAME}, std::move(optionParserMockPtr));
+
+        WHEN("The user executes the application and types the registered command (no options)") {
+            // We mimic the user that types our command.
+            inputStream.str(StringType{COMMAND_NAME});
+
+            THEN("Its command parser should be called with the single command") {
+                EXPECT_CALL(optionParserMock, parse(std::vector<StringType>{StringType{COMMAND_NAME}})).Times(1);
+                CHECK_NOTHROW(applicationUnderTest.run());
+            }
+        }
+
+        WHEN("The user executes the application and types the registered command with options") {
+            constexpr std::string_view COMMAND_OPTIONS[] = {
+                "--option-1",
+                "--option-2",
+                "-o",
+                "-option-4=453"
+            };
+
+            // We mimic the user that types our command.
+            StringType finalCommand{COMMAND_NAME};
+            for (const std::string_view& option : COMMAND_OPTIONS)
+                finalCommand += (StringType{" "} + StringType{option});
+
+            inputStream.str(finalCommand);
+
+            THEN("Its command parser should be called with the command and its options") {
+                std::vector<StringType> expectedTokens{StringType{COMMAND_NAME}};
+                for (const std::string_view& option : COMMAND_OPTIONS)
+                    expectedTokens.push_back(StringType{option});
+
+                EXPECT_CALL(optionParserMock, parse(expectedTokens)).Times(1);
+                CHECK_NOTHROW(applicationUnderTest.run());
+            }
+        }
+
+        WHEN("The user types an unknown command") {
+            constexpr std::string_view UNKNOWN_COMMAND_NAME{"unknown-command"};
+            inputStream.str(StringType{UNKNOWN_COMMAND_NAME});
+
+            THEN("It shouldn\'t be called the option parser of the good command") {
+                EXPECT_CALL(optionParserMock, parse).Times(0);
+                CHECK_NOTHROW(applicationUnderTest.run());
+            }
+        }
+
+        WHEN("The user types the exit command") {
+            inputStream.str("exit");
+
+            THEN("It shouldn\'t be called the option parser of the good command") {
+                EXPECT_CALL(optionParserMock, parse).Times(0);
+                CHECK_NOTHROW(applicationUnderTest.run());
+            }
+        }
+
+        WHEN("The user types and empty line (press enter)") {
+            inputStream.str(StringType{"\n"});
+
+            THEN("It shouldn\'t be called the option parser of the good command") {
+                EXPECT_CALL(optionParserMock, parse).Times(0);
+                CHECK_NOTHROW(applicationUnderTest.run());
+            }
         }
     }
 }
