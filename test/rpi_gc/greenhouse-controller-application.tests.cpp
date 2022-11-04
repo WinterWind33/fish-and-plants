@@ -110,7 +110,7 @@ TEST_CASE("Commands execution", "[unit][sociable][GreenhouseControllerApplicatio
 
             THEN("Its command parser should be called with the single command") {
                 EXPECT_CALL(optionParserMock, parse(std::vector<StringType>{StringType{COMMAND_NAME}})).Times(1);
-                applicationUnderTest.run();
+                CHECK_NOTHROW(applicationUnderTest.run());
             }
         }
 
@@ -135,7 +135,35 @@ TEST_CASE("Commands execution", "[unit][sociable][GreenhouseControllerApplicatio
                     expectedTokens.push_back(StringType{option});
 
                 EXPECT_CALL(optionParserMock, parse(expectedTokens)).Times(1);
-                applicationUnderTest.run();
+                CHECK_NOTHROW(applicationUnderTest.run());
+            }
+        }
+
+        WHEN("The user types an unknown command") {
+            constexpr std::string_view UNKNOWN_COMMAND_NAME{"unknown-command"};
+            inputStream.str(StringType{UNKNOWN_COMMAND_NAME});
+
+            THEN("It shouldn\'t be called the option parser of the good command") {
+                EXPECT_CALL(optionParserMock, parse).Times(0);
+                CHECK_NOTHROW(applicationUnderTest.run());
+            }
+        }
+
+        WHEN("The user types the exit command") {
+            inputStream.str("exit");
+
+            THEN("It shouldn\'t be called the option parser of the good command") {
+                EXPECT_CALL(optionParserMock, parse).Times(0);
+                CHECK_NOTHROW(applicationUnderTest.run());
+            }
+        }
+
+        WHEN("The user types and empty line (press enter)") {
+            inputStream.str(StringType{"\n"});
+
+            THEN("It shouldn\'t be called the option parser of the good command") {
+                EXPECT_CALL(optionParserMock, parse).Times(0);
+                CHECK_NOTHROW(applicationUnderTest.run());
             }
         }
     }
