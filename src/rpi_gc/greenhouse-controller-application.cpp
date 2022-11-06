@@ -8,6 +8,7 @@
 #include <utility>
 #include <string_view>
 #include <sstream>
+#include <vector>
 
 namespace rpi_gc {
 
@@ -17,6 +18,14 @@ namespace rpi_gc {
         m_terminalInputOptionParser{std::move(optionParser)} {}
 
     bool GreenhouseControllerApplication::processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept {
+        assert(m_terminalInputOptionParser != nullptr);
+
+        std::vector<StringType> tokens{};
+        for(std::int32_t i{}; i < argc; ++i)
+            tokens.push_back(argv[i]);
+
+        m_terminalInputOptionParser->parse(tokens);
+
         return true;
     }
 
