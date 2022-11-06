@@ -16,8 +16,9 @@ TEST_CASE("DefaultOptionParser unit tests", "[unit][sociable][gh_cmd][DefaultOpt
             constexpr char SWITCH_SHORT_NAME{'h'};
             constexpr std::string_view SWITCH_LONG_NAME{"help"};
             constexpr std::string_view SWITCH_DESCRIPTION{"Prints the help page"};
+            std::shared_ptr<Switch<char>> switchOption{std::make_shared<Switch<char>>(SWITCH_SHORT_NAME, std::string{SWITCH_LONG_NAME}, std::string{SWITCH_DESCRIPTION})};
 
-            parserUnderTest.addSwitch(std::make_shared<Switch<char>>(SWITCH_SHORT_NAME, std::string{SWITCH_LONG_NAME}, std::string{SWITCH_DESCRIPTION}));
+            parserUnderTest.addSwitch(switchOption);
 
             AND_WHEN("parse() is invoked with a command with the switch - short name") {
                 parserUnderTest.parse({"dummy-command", "-h"});
@@ -28,6 +29,10 @@ TEST_CASE("DefaultOptionParser unit tests", "[unit][sociable][gh_cmd][DefaultOpt
 
                 THEN("It shouldn\'t have any non-option arguments") {
                     CHECK(parserUnderTest.getNonOptionArguments().empty());
+                }
+
+                THEN("The switch option should be set") {
+                    CHECK(switchOption->isSet());
                 }
             }
 
@@ -40,6 +45,10 @@ TEST_CASE("DefaultOptionParser unit tests", "[unit][sociable][gh_cmd][DefaultOpt
 
                 THEN("It shouldn\'t have any non-option arguments") {
                     CHECK(parserUnderTest.getNonOptionArguments().empty());
+                }
+
+                THEN("The switch option should be set") {
+                    CHECK(switchOption->isSet());
                 }
             }
 
@@ -61,6 +70,10 @@ TEST_CASE("DefaultOptionParser unit tests", "[unit][sociable][gh_cmd][DefaultOpt
                 THEN("It shouldn\'t have any non-option arguments") {
                     CHECK(parserUnderTest.getNonOptionArguments().empty());
                 }
+
+                THEN("The switch option should not be set") {
+                    CHECK_FALSE(switchOption->isSet());
+                }
             }
 
             AND_WHEN("parse() is invoked with the switch (long name) and non-option arguments") {
@@ -80,6 +93,10 @@ TEST_CASE("DefaultOptionParser unit tests", "[unit][sociable][gh_cmd][DefaultOpt
                     REQUIRE_FALSE(parserUnderTest.getNonOptionArguments().empty());
 
                     CHECK(parserUnderTest.getNonOptionArguments()[0] == NON_OPTION_ARG);
+                }
+
+                THEN("The switch option should be set") {
+                    CHECK(switchOption->isSet());
                 }
             }
         }

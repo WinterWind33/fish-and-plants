@@ -68,6 +68,9 @@ namespace gh_cmd {
 
         //! \brief Accepts an external visitor that can modify the internal implementation's state.
         virtual void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept = 0;
+
+        //! \brief Checks whether or not this option is set in the given input lines.
+        virtual bool isSet() const noexcept = 0;
     };
 
     //! \brief Represents an option with boolean value.
@@ -94,6 +97,8 @@ namespace gh_cmd {
 
         void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept override;
         void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
+
+        bool isSet() const noexcept override;
 
     private:
         // We use shared_ptr for now as the popl implementation
@@ -196,6 +201,11 @@ namespace gh_cmd {
     template<typename C>
     inline void Switch<C>::acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept {
         visitor.visit(m_switchImpl);
+    }
+
+    template<typename C>
+    inline bool Switch<C>::isSet() const noexcept {
+        return m_switchImpl->is_set();
     }
 
     // DefaultOptionParser implementation
