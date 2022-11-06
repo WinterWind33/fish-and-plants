@@ -15,6 +15,10 @@ namespace rpi_gc {
         m_outputStream{std::move(outputStream)},
         m_inputStream{std::move(inputStream)} {}
 
+    bool GreenhouseControllerApplication::processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept {
+        return true;
+    }
+
     void GreenhouseControllerApplication::run() noexcept {
         using StringView = std::basic_string_view<CharType>;
 
