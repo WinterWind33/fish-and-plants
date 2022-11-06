@@ -18,10 +18,11 @@ namespace rpi_gc {
     //! \brief Represents the main greenhouse controller application.
     class GreenhouseControllerApplication : public Application {
     public:
+        using option_parser = gh_cmd::OptionParser<CharType>;
         using ostream_ref = std::reference_wrapper<OutputStream>;
         using istream_ref = std::reference_wrapper<InputStream>;
 
-        GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept;
+        GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, std::unique_ptr<option_parser> optionParser) noexcept;
         ~GreenhouseControllerApplication() noexcept override = default;
 
         //! \brief Does nothing for now.
@@ -31,15 +32,14 @@ namespace rpi_gc {
 
         //! \brief Adds a command with its option parser to the internal command parsers map.
         //!  The command MUST not exist inside the internal pool. The option parser must be valid.
-        void addSupportedCommand(StringType commandName, std::unique_ptr<gh_cmd::OptionParser<CharType>> commandOptionParser) noexcept;
+        void addSupportedCommand(StringType commandName, std::unique_ptr<option_parser> commandOptionParser) noexcept;
 
     private:
-        using CommandOptionParser = gh_cmd::OptionParser<CharType>;
-
         ostream_ref m_outputStream;
         istream_ref m_inputStream;
 
-        std::map<StringType, std::unique_ptr<CommandOptionParser>> m_commandsOptionParsers{};
+        std::map<StringType, std::unique_ptr<option_parser>> m_commandsOptionParsers{};
+        std::unique_ptr<option_parser> m_terminalInputOptionParser{};
 
         void print_app_header() noexcept;
         void teardown() noexcept;

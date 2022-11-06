@@ -50,7 +50,7 @@ TEST_CASE("Application Header Lines", "[functional][rpi_gc][GreenhouseController
     rpi_gc::OutputStringStream outputStream{};
     rpi_gc::InputStringStream inputStream{"exit"};
 
-    GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
+    GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_unique<testing::StrictMock<gh_cmd::mocks::OptionParserMock<CharType>>>()};
 
     SECTION("When running the application") {
         SECTION("It should correctly print the application name and version (first line)") {
@@ -93,7 +93,7 @@ TEST_CASE("Commands execution", "[unit][sociable][GreenhouseControllerApplicatio
 
         InputStringStream inputStream{};
         OutputStringStream outputStream{};
-        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
+        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_unique<testing::StrictMock<gh_cmd::mocks::OptionParserMock<CharType>>>()};
 
         constexpr std::string_view COMMAND_NAME{"dummyName"};
         std::unique_ptr<StrictMock<gh_cmd::mocks::OptionParserMock<char>>> optionParserMockPtr{
