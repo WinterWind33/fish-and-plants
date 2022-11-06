@@ -44,7 +44,7 @@ namespace tests {
 
 } // namespace tests
 
-TEST_CASE("Application Header Lines", "[functional][rpi_gc][GreenhouseControllerApplication][application-header]") {
+TEST_CASE("GreenhouseControllerApplication Header Lines", "[functional][rpi_gc][GreenhouseControllerApplication][application-header]") {
     using namespace rpi_gc;
 
     rpi_gc::OutputStringStream outputStream{};
@@ -85,7 +85,7 @@ TEST_CASE("Application Header Lines", "[functional][rpi_gc][GreenhouseController
     }
 }
 
-TEST_CASE("Commands execution", "[unit][sociable][GreenhouseControllerApplication][commands]") {
+TEST_CASE("GreenhouseControllerApplication commands execution", "[unit][sociable][rpi_gc][GreenhouseControllerApplication][commands]") {
     using namespace rpi_gc;
 
     GIVEN("An application controller with a command registered") {
@@ -164,6 +164,32 @@ TEST_CASE("Commands execution", "[unit][sociable][GreenhouseControllerApplicatio
             THEN("It shouldn\'t be called the option parser of the good command") {
                 EXPECT_CALL(optionParserMock, parse).Times(0);
                 CHECK_NOTHROW(applicationUnderTest.run());
+            }
+        }
+    }
+}
+
+TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][solitary][rpi_gc][GreenhouseControllerApplication][terminal-input]") {
+    using namespace rpi_gc;
+
+    GIVEN("An application controller") {
+        InputStringStream inputStream{};
+        OutputStringStream outputStream{};
+
+        using TerminalOptionParserMock = testing::StrictMock<gh_cmd::mocks::OptionParserMock<CharType>>;
+        std::unique_ptr<TerminalOptionParserMock> parserMockPtr{std::make_unique<TerminalOptionParserMock>()};
+
+        TerminalOptionParserMock* terminalParserMock{parserMockPtr.get()};
+
+        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::move(parserMockPtr)};
+
+        WHEN("an option is given into the terminal buffer") {
+            std::vector<const CharType*> strings{"rpi_gc", "--help"};
+
+            THEN("The parser should be called one time") {
+                EXPECT_CALL(*terminalParserMock, parse(std::vector<StringType>({StringType{"rpi_gc"}, StringType{"--help"}}))).Times(1);
+
+                applicationUnderTest.processInputOptions(2, strings.data());
             }
         }
     }
