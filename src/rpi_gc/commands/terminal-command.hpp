@@ -17,11 +17,11 @@ namespace rpi_gc {
     //!!
     //! \brief Represents a command that is being executed after the user typed it
     //!  through the command line.
-    //! \tparam CharType The type of the character used to encode strings.
-    template<typename CharType>
+    //! \tparam CharT The type of the character used to encode strings.
+    template<typename CharT>
     struct TerminalCommand : public Command {
-        using char_type = std::decay_t<CharType>;
-        using string_type = std::basic_string<CharType>;
+        using char_type = std::decay_t<CharT>;
+        using string_type = std::basic_string<char_type>;
         using non_options_vector = std::vector<string_type>;
         using unknown_options_vector = std::vector<string_type>;
         using options_vector = std::vector<gh_cmd::CommandOption<char_type>>;
@@ -40,6 +40,8 @@ namespace rpi_gc {
         virtual bool processOptions(const options_vector& options, const non_options_vector& nonOptions,
             const unknown_options_vector& unknowns) noexcept;
     };
+
+    using TerminalCommandType = TerminalCommand<CharType>;
 
 } // namespace rpi_gc
 
