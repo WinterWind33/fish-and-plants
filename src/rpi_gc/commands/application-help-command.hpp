@@ -2,6 +2,27 @@
 #ifndef APPLICATION_HELP_COMMAND_HPP
 #define APPLICATION_HELP_COMMAND_HPP
 
-namespace rpi_gc {} // namespace rpi_gc
+#include <commands/terminal-command.hpp>
+#include <gh_cmd/gh_cmd.hpp>
+
+// C++ STL
+#include <functional>
+#include <ostream>
+
+namespace rpi_gc {
+
+    class ApplicationHelpCommand : public TerminalCommandType {
+    public:
+        using ostream_ref = std::reference_wrapper<std::basic_ostream<char_type>>;
+        using option_parser_ref = std::reference_wrapper<gh_cmd::OptionParser<char_type>>;
+
+        ApplicationHelpCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept;
+
+    private:
+        ostream_ref m_outputStream;
+        option_parser_ref m_optionParser;
+    };
+
+} // namespace rpi_gc
 
 #endif // !APPLICATION_HELP_COMMAND_HPP

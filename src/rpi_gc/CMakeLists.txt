@@ -14,6 +14,7 @@ set(RPI_GC_HEADER_FILES
 # RPI_GC's source files
 set(RPI_GC_SOURCE_FILES
     "greenhouse-controller-application.cpp"
+    "commands/application-help-command.cpp"
 )
 
 # Here we add a library target so we can use it to link it against
