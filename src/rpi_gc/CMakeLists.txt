@@ -6,7 +6,7 @@ set(RPI_GC_HEADER_FILES
     "greenhouse-controller-application.hpp"
     "application/application.hpp"
     "common/types.hpp"
-    "commands/command-event-handler.hpp"
+    "commands/command.hpp"
 )
 
 # RPI_GC's source files
