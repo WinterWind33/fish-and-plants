@@ -2,8 +2,6 @@
 #ifndef COMMAND_HPP
 #define COMMAND_HPP
 
-#include <common/types.hpp>
-
 namespace rpi_gc {
 
     //! \brief Represents a command that can be executed. This is the

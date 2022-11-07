@@ -7,6 +7,7 @@ set(RPI_GC_HEADER_FILES
     "application/application.hpp"
     "common/types.hpp"
     "commands/command.hpp"
+    "commands/terminal-command.hpp"
 )
 
 # RPI_GC's source files
