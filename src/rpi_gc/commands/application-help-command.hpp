@@ -18,6 +18,11 @@ namespace rpi_gc {
 
         ApplicationHelpCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept;
 
+        bool processOptions(const options_vector& options, const non_options_vector& nonOptions,
+            const unknown_options_vector& unknowns) noexcept override;
+
+        bool execute() noexcept override;
+
     private:
         ostream_ref m_outputStream;
         option_parser_ref m_optionParser;
