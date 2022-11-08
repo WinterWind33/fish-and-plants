@@ -25,7 +25,7 @@ namespace rpi_gc {
 
     bool ApplicationHelpCommand::execute() noexcept {
         constexpr std::string_view APPLICATION_NAME{"Greenhouse Controller"};
-        constexpr std::string_view APPLICATION_LICENSE{"Copyright (c) 2022 Andrea Ballestrazzi"};
+        constexpr std::string_view COPYRIGHT_DISCLAIMER{"Copyright (c) 2022 Andrea Ballestrazzi"};
         constexpr std::string_view TEAM_NAME{"Fish&Plants Team"};
 
         // We initially print the help page header.
@@ -33,9 +33,12 @@ namespace rpi_gc {
             rpi_gc_VERSION_MAJOR << "." <<
             rpi_gc_VERSION_MINOR << "." <<
             rpi_gc_VERSION_PATCH << std::endl;
-        m_outputStream.get() << APPLICATION_LICENSE << std::endl;
+        m_outputStream.get() << COPYRIGHT_DISCLAIMER << std::endl;
         m_outputStream.get() << std::endl;
         m_outputStream.get() << "Developed by " << TEAM_NAME << std::endl;
+        m_outputStream.get() << std::endl;
+
+        m_optionParser.get().printHelp(m_outputStream.get());
         m_outputStream.get() << std::endl;
 
         return true;
