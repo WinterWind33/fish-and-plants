@@ -6,6 +6,7 @@
 
 // Test doubles
 #include <gh_cmd/test-doubles/option-parser.mock.hpp>
+#include <rpi_gc/test-doubles/commands/terminal-command.mock.hpp>
 
 // C++ STL
 #include <sstream>
@@ -183,11 +184,21 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
 
         GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::move(parserMockPtr)};
 
-        WHEN("an option is given into the terminal buffer") {
+        WHEN("A supported option (help) is given into the terminal buffer") {
             std::vector<const CharType*> strings{"rpi_gc", "--help"};
 
             THEN("The parser should be called one time") {
-                EXPECT_CALL(*terminalParserMock, parse(std::vector<StringType>({StringType{"rpi_gc"}, StringType{"--help"}}))).Times(1);
+                mocks::TerminalCommandMock<CharType>* appCommandMock{};
+                auto commandMockPtr = std::make_unique<testing::NiceMock<mocks::TerminalCommandMock<CharType>>>();
+                appCommandMock = commandMockPtr.get();
+
+                applicationUnderTest.setApplicationCommand(std::move(commandMockPtr));
+                ON_CALL(*appCommandMock, processOptions).WillByDefault(testing::Return(true));
+
+                testing::Expectation exp1 = EXPECT_CALL(*terminalParserMock, parse(std::vector<StringType>({StringType{"rpi_gc"}, StringType{"--help"}}))).Times(1);
+                EXPECT_CALL(*terminalParserMock, getOptions).After(exp1);
+                EXPECT_CALL(*terminalParserMock, getNonOptionArguments).After(exp1);
+                EXPECT_CALL(*terminalParserMock, getUnknownOptions).After(exp1);
 
                 applicationUnderTest.processInputOptions(2, strings.data());
             }

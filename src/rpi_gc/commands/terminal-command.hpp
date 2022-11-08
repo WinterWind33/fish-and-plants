@@ -38,7 +38,7 @@ namespace rpi_gc {
         //! \param unknowns The unknown options that the user typed.
         //! \return bool True if the state was correctly set and the command can execute, false otherwise.
         virtual bool processOptions(const options_vector& options, const non_options_vector& nonOptions,
-            const unknown_options_vector& unknowns) noexcept;
+            const unknown_options_vector& unknowns) noexcept = 0;
     };
 
     using TerminalCommandType = TerminalCommand<CharType>;
