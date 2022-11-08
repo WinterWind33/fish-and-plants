@@ -3,6 +3,7 @@
 
 #include <gh_cmd/gh_cmd.hpp>
 #include <commands/application-command.hpp>
+#include <commands/version-command.hpp>
 
 // C++ STL
 #include <iostream>
@@ -24,6 +25,7 @@ int main(int argc, char* argv[]) {
 
     GreenhouseControllerApplication mainApplication{std::cout, std::cin, std::move(terminalOptionParser)};
     mainApplication.setApplicationCommand(std::move(applicationCommand));
+    mainApplication.addSupportedCommand(std::make_unique<VersionCommand>(std::cout), std::make_unique<TerminalOptionParser>("version command - displays the software version"));
 
     if(!mainApplication.processInputOptions(argc, argv))
         return 0;

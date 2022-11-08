@@ -24,6 +24,9 @@ namespace rpi_gc {
             const non_options_vector& nonOptions, const unknown_options_vector& unknown) noexcept override;
 
         bool execute() noexcept override;
+
+    private:
+        ostream_ref m_outputStream;
     };
 
 } // namespace rpi_gc

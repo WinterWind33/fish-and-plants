@@ -107,6 +107,10 @@ namespace rpi_gc {
             if(bCanExec) {
                 m_commands[commandName]->execute();
             }
+
+            // We add a new line after the command execution so the user feedback
+            // is more clean.
+            m_outputStream.get() << std::endl;
         }
 
         m_outputStream.get() << "Tearing down...";
