@@ -2,12 +2,18 @@
 #ifndef COMMAND_HPP
 #define COMMAND_HPP
 
+#include <common/types.hpp>
+
 namespace rpi_gc {
 
     //! \brief Represents a command that can be executed. This is the
     //!  most basic interface for a command.
     struct Command {
         virtual ~Command() noexcept = default;
+
+        //!!
+        //! \brief Get the name of this command
+        virtual StringType getName() const noexcept = 0;
 
         //! \brief Executes the command.
         //! \return True if the command execution went without errors, false

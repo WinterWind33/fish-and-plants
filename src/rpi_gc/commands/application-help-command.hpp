@@ -23,6 +23,10 @@ namespace rpi_gc {
 
         bool execute() noexcept override;
 
+        constexpr StringType getName() const noexcept override {
+            return StringType{"help"};
+        }
+
     private:
         ostream_ref m_outputStream;
         option_parser_ref m_optionParser;
