@@ -59,7 +59,7 @@ namespace rpi_gc {
         auto isOptionSet = [&supportedOptions](const option_type::short_name_type shortName) -> bool {
             const auto resIt = std::find_if(supportedOptions.cbegin(), supportedOptions.cend(),
             [shortName](const std::shared_ptr<const option_type>& option) -> bool {
-                return option->getShortName() == shortName;
+                return option->getShortName() == shortName && option->isSet();
             });
 
             return resIt != supportedOptions.cend();
