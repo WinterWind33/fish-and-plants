@@ -101,9 +101,11 @@ TEST_CASE("GreenhouseControllerApplication commands execution", "[unit][sociable
             std::make_unique<StrictMock<gh_cmd::mocks::OptionParserMock<char>>>()};
 
         // We keep a reference to the mock so we can set the expectations later.
-        gh_cmd::mocks::OptionParserMock<char>& optionParserMock{*optionParserMockPtr};
+        gh_cmd::mocks::OptionParserMock<CharType>& optionParserMock{*optionParserMockPtr};
+        auto commandMock{std::make_unique<StrictMock<mocks::TerminalCommandMock<CharType>>>()};
+        EXPECT_CALL(*commandMock, getName).WillOnce(testing::Return(StringType{COMMAND_NAME}));
 
-        applicationUnderTest.addSupportedCommand(StringType{COMMAND_NAME}, std::move(optionParserMockPtr));
+        applicationUnderTest.addSupportedCommand(std::move(commandMock), std::move(optionParserMockPtr));
 
         WHEN("The user executes the application and types the registered command (no options)") {
             // We mimic the user that types our command.

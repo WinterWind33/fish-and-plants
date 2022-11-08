@@ -9,7 +9,9 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/Debug/rpi_gc.exe",
-            "args": [],
+            "args": [
+                "--version"
+            ],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

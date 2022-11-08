@@ -33,7 +33,7 @@ namespace rpi_gc {
 
         //! \brief Adds a command with its option parser to the internal command parsers map.
         //!  The command MUST not exist inside the internal pool. The option parser must be valid.
-        void addSupportedCommand(StringType commandName, std::unique_ptr<option_parser> commandOptionParser) noexcept;
+        void addSupportedCommand(std::unique_ptr<TerminalCommandType> command, std::unique_ptr<option_parser> commandOptionParser) noexcept;
 
         //!!
         //! \brief Sets the supported terminal command for this application, i.e. the command that the user
@@ -45,6 +45,7 @@ namespace rpi_gc {
         istream_ref m_inputStream;
 
         std::map<StringType, std::unique_ptr<option_parser>> m_commandsOptionParsers{};
+        std::map<StringType, std::unique_ptr<TerminalCommandType>> m_commands{};
         std::unique_ptr<option_parser> m_terminalInputOptionParser{};
         std::unique_ptr<TerminalCommandType> m_applicationCommand{};
 

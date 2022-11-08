@@ -109,9 +109,12 @@ namespace rpi_gc {
         m_outputStream.get() << "Goodbye." << std::endl;
     }
 
-    void GreenhouseControllerApplication::addSupportedCommand(StringType commandName, std::unique_ptr<option_parser> commandOptionParser) noexcept {
+    void GreenhouseControllerApplication::addSupportedCommand(std::unique_ptr<TerminalCommandType> command, std::unique_ptr<option_parser> commandOptionParser) noexcept {
+        const StringType commandName{command->getName()};
         assert(!m_commandsOptionParsers.contains(commandName));
+        assert(!m_commands.contains(commandName));
 
+        m_commands[commandName] = std::move(command);
         m_commandsOptionParsers.emplace(std::move(commandName), std::move(commandOptionParser));
     }
 
