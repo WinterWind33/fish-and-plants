@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
     terminalOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('h', "help", "Prints the help page (does not run the app)."));
     terminalOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('v', "version", "Displays the version of the application (does not run the app)."));
 
-    std::unique_ptr<ApplicationCommand> applicationCommand{std::make_unique<ApplicationCommand>(std::cout, std::ref(*terminalOptionParser))};
+    std::unique_ptr<ApplicationCommand> applicationCommand{std::make_unique<ApplicationCommand>(std::cout, *terminalOptionParser)};
 
     GreenhouseControllerApplication mainApplication{std::cout, std::cin, std::move(terminalOptionParser)};
     mainApplication.setApplicationCommand(std::move(applicationCommand));
