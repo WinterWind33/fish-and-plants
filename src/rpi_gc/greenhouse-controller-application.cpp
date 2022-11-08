@@ -100,7 +100,13 @@ namespace rpi_gc {
             }
 
             assert(m_commandsOptionParsers[commandName] != nullptr);
-            m_commandsOptionParsers[commandName]->parse(lineTokens);
+            const auto& optionParser = m_commandsOptionParsers.at(commandName);
+
+            assert(m_commands.contains(commandName));
+            const bool bCanExec = m_commands[commandName]->processOptions(optionParser->getOptions(), optionParser->getNonOptionArguments(), optionParser->getUnknownOptions());
+            if(bCanExec) {
+                m_commands[commandName]->execute();
+            }
         }
 
         m_outputStream.get() << "Tearing down...";
