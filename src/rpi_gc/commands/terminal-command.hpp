@@ -24,7 +24,7 @@ namespace rpi_gc {
         using string_type = std::basic_string<char_type>;
         using non_options_vector = std::vector<string_type>;
         using unknown_options_vector = std::vector<string_type>;
-        using options_vector = std::vector<gh_cmd::CommandOption<char_type>>;
+        using options_vector = std::vector<std::shared_ptr<const gh_cmd::CommandOption<char_type>>>;
 
         ~TerminalCommand() noexcept override = default;
 
