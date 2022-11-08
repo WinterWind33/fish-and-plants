@@ -4,6 +4,7 @@
 
 #include <common/types.hpp>
 #include <application/application.hpp>
+#include <commands/terminal-command.hpp>
 
 // Wrappers
 #include <gh_cmd/gh_cmd.hpp>
@@ -34,12 +35,20 @@ namespace rpi_gc {
         //!  The command MUST not exist inside the internal pool. The option parser must be valid.
         void addSupportedCommand(StringType commandName, std::unique_ptr<option_parser> commandOptionParser) noexcept;
 
+        //!!
+        //! \brief Sets the supported terminal command for this application, i.e. the command that the user
+        //!  types when he launches the application along with its options.
+        void setApplicationCommand(std::unique_ptr<TerminalCommandType> applicationCommand) noexcept;
+
     private:
         ostream_ref m_outputStream;
         istream_ref m_inputStream;
 
         std::map<StringType, std::unique_ptr<option_parser>> m_commandsOptionParsers{};
         std::unique_ptr<option_parser> m_terminalInputOptionParser{};
+        std::unique_ptr<TerminalCommandType> m_applicationCommand{};
+
+        bool m_bCanApplicationCommandExecute{};
 
         void print_app_header() noexcept;
         void teardown() noexcept;

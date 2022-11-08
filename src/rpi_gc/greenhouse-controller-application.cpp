@@ -24,13 +24,42 @@ namespace rpi_gc {
         for(std::int32_t i{}; i < argc; ++i)
             tokens.push_back(argv[i]);
 
-        m_terminalInputOptionParser->parse(tokens);
+        // We execute the parsing only if there are tokens to parse apart
+        // from the application itselt (the first token).
+        if(tokens.size() > 1) {
+            assert(m_applicationCommand != nullptr);
+            m_terminalInputOptionParser->parse(tokens);
+
+            m_bCanApplicationCommandExecute = m_applicationCommand->processOptions(
+                m_terminalInputOptionParser->getOptions(),
+                m_terminalInputOptionParser->getNonOptionArguments(),
+                m_terminalInputOptionParser->getUnknownOptions()
+            );
+
+            // If we are in this conditional branch then for now we don't have
+            // situations where this can be false.
+            assert(m_bCanApplicationCommandExecute);
+        }
 
         return true;
     }
 
     void GreenhouseControllerApplication::run() noexcept {
         using StringView = std::basic_string_view<CharType>;
+
+        // Firstly we run the the application command if the user
+        // typed some options during the application launching.
+        if(m_bCanApplicationCommandExecute) {
+            assert(m_applicationCommand != nullptr);
+
+            // If the execution is already satisfied the we can safely exit
+            // the execution (maybe the user typed --help or similar).
+            const bool bCanProceed{m_applicationCommand->execute()};
+            if(!bCanProceed) {
+                teardown();
+                return;
+            }
+        }
 
         // The first thing we do is to print the application header,
         // i.e. the first few lines of the application presentation.
@@ -114,6 +143,10 @@ namespace rpi_gc {
         m_outputStream.get().clear(std::ios::goodbit);
 
         m_commandsOptionParsers.clear();
+    }
+
+    void GreenhouseControllerApplication::setApplicationCommand(std::unique_ptr<TerminalCommandType> appCommand) noexcept {
+        m_applicationCommand = std::move(appCommand);
     }
 
 } // namespace rpi_gc
