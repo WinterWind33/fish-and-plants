@@ -13,7 +13,7 @@ namespace rpi_gc::mocks {
     template<typename CharT>
     class TerminalCommandMock : public TerminalCommand<CharT> {
     public:
-        using Command::name_type;
+        using typename TerminalCommand<CharT>::name_type;
         using typename TerminalCommand<CharT>::options_vector;
         using typename TerminalCommand<CharT>::non_options_vector;
         using typename TerminalCommand<CharT>::unknown_options_vector;
