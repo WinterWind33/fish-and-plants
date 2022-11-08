@@ -8,6 +8,8 @@
 // C++ STL
 #include <functional>
 #include <ostream>
+#include <map>
+#include <memory>
 
 namespace rpi_gc {
 
@@ -15,6 +17,8 @@ namespace rpi_gc {
     public:
         using ostream_ref = std::reference_wrapper<std::basic_ostream<char_type>>;
         using option_parser_ref = std::reference_wrapper<gh_cmd::OptionParser<char_type>>;
+        using option_type = gh_cmd::CommandOption<CharType>;
+        using option_pointer = std::shared_ptr<option_type>;
 
         ApplicationCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept;
 
@@ -30,6 +34,11 @@ namespace rpi_gc {
     private:
         ostream_ref m_outputStream;
         option_parser_ref m_optionParser;
+
+        std::map<option_type::short_name_type, std::function<void()>> m_optionsCallbacks{};
+
+        void print_help() noexcept;
+        void print_version() noexcept;
     };
 
 } // namespace rpi_gc
