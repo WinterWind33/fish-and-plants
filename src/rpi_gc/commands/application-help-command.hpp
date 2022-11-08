@@ -23,8 +23,8 @@ namespace rpi_gc {
 
         bool execute() noexcept override;
 
-        constexpr StringType getName() const noexcept override {
-            return StringType{"help"};
+        constexpr name_type getName() const noexcept override {
+            return name_type{"help"};
         }
 
     private:
