@@ -1,5 +1,5 @@
 // Copyright (C) 2022 Andrea Ballestrazzi
-#include <commands/application-help-command.hpp>
+#include <commands/application-command.hpp>
 
 #include <rpi_gc-config-file.hpp> // For printing the version.
 
@@ -9,11 +9,11 @@
 
 namespace rpi_gc {
 
-    ApplicationHelpCommand::ApplicationHelpCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept :
+    ApplicationCommand::ApplicationCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept :
         m_outputStream{std::move(outputStream)},
         m_optionParser{std::move(optionParser)} {}
 
-    bool ApplicationHelpCommand::processOptions(const options_vector& options, const non_options_vector& nonOptions,
+    bool ApplicationCommand::processOptions(const options_vector& options, const non_options_vector& nonOptions,
             const unknown_options_vector& unknowns) noexcept {
         // Note: this command shouldn't have any option. There isn't something like help --help.
         // So here we should have only unknowns options. If there are valid options then the developer
@@ -23,7 +23,7 @@ namespace rpi_gc {
         return true;
     }
 
-    bool ApplicationHelpCommand::execute() noexcept {
+    bool ApplicationCommand::execute() noexcept {
         constexpr std::string_view APPLICATION_NAME{"Greenhouse Controller"};
         constexpr std::string_view COPYRIGHT_DISCLAIMER{"Copyright (c) 2022 Andrea Ballestrazzi"};
         constexpr std::string_view TEAM_NAME{"Fish&Plants Team"};

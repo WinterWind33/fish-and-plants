@@ -11,12 +11,12 @@
 
 namespace rpi_gc {
 
-    class ApplicationHelpCommand : public TerminalCommandType {
+    class ApplicationCommand : public TerminalCommandType {
     public:
         using ostream_ref = std::reference_wrapper<std::basic_ostream<char_type>>;
         using option_parser_ref = std::reference_wrapper<gh_cmd::OptionParser<char_type>>;
 
-        ApplicationHelpCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept;
+        ApplicationCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept;
 
         bool processOptions(const options_vector& options, const non_options_vector& nonOptions,
             const unknown_options_vector& unknowns) noexcept override;
@@ -24,7 +24,7 @@ namespace rpi_gc {
         bool execute() noexcept override;
 
         constexpr name_type getName() const noexcept override {
-            return name_type{"help"};
+            return name_type{"rpi_gc"};
         }
 
     private:
