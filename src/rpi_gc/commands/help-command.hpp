@@ -33,6 +33,9 @@ namespace rpi_gc {
     private:
         option_parsers_map m_optionParsers{};
         ostream_ref m_outputStream;
+
+        void print_header() noexcept;
+        void print_description() noexcept;
     };
 
 } // namespace rpi_gc
