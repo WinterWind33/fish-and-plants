@@ -15,7 +15,7 @@ namespace rpi_gc {
     public:
         using ostream_ref = std::reference_wrapper<std::ostream>;
 
-        VersionCommand(ostream_ref outputStream) noexcept;
+        explicit VersionCommand(ostream_ref outputStream) noexcept;
         ~VersionCommand() noexcept override = default;
 
         constexpr name_type getName() const noexcept override { return name_type{"version"}; }
