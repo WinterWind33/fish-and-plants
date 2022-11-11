@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "[BUILD] (Debug) Build All",
+			"label": "[BUILD] (Windows Debug) Build All",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -20,7 +20,7 @@
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Release) Build All",
+			"label": "[BUILD] (Windows Release) Build All",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -38,7 +38,7 @@
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Debug) Build RPI_GC",
+			"label": "[BUILD] (Windows Debug) Build RPI_GC",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -56,7 +56,7 @@
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Debug) Build test_app",
+			"label": "[BUILD] (Windows Debug) Build test_app",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -69,6 +69,55 @@
 				"test_app",
 				"--config",
 				"Debug"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "(Linux) Clean build folder",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/buildLinux"
+			},
+			"command": "rm",
+			"args": [
+				"-r",
+				"-f",
+				"./*"
+			],
+			"group": "build"
+		},
+		{
+			"label": "[CMake] (Aarch64 Debug) Configure",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/buildLinux"
+			},
+			"dependsOn": "(Linux) Clean build folder",
+			"command": "cmake",
+			"args": [
+				"..",
+				"-DCOMPILE_AARCH64_ON_LINUX=True",
+				"--toolchain",
+				"toolchains/aarch64-toolchain.cmake"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[BUILD] (Aarch64 Release) Perform release",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/buildLinux"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--config",
+				"Release",
+				"--target",
+				"ALL_BUILD"
 			],
 			"problemMatcher": [],
 			"group": "build"
