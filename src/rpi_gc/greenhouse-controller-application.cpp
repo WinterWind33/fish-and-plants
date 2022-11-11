@@ -67,7 +67,10 @@ namespace rpi_gc {
 
         // Now we begin the user input loop.
         constexpr StringView EXIT_COMMAND{"exit"};
+        constexpr StringView TYPE_HELP_FEEDBACK{"Type \'help\' for a list of the available commands."};
         std::string inputLine{};
+
+        m_outputStream.get() << TYPE_HELP_FEEDBACK << std::endl;
 
         while(inputLine != EXIT_COMMAND && m_inputStream.get().good()) {
             m_outputStream.get() << "user@controller/home$ ";
@@ -95,7 +98,7 @@ namespace rpi_gc {
                 constexpr StringView UNKNOWN_COMMAND_FEEDBACK{"command not recognized."};
 
                 // The user typed an unknown command.
-                m_outputStream.get() << commandName << ": " << UNKNOWN_COMMAND_FEEDBACK << std::endl << std::endl;
+                m_outputStream.get() << commandName << ": " << UNKNOWN_COMMAND_FEEDBACK << " " << TYPE_HELP_FEEDBACK << std::endl << std::endl;
                 continue;
             }
 
