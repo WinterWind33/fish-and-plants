@@ -7,8 +7,6 @@ on:
     workflows: [Increment Versions]
     types:
       - completed
-  pull_request:
-    types: [ready_for_review]
 
 env:
   BUILD_TYPE: Release
