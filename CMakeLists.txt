@@ -1,7 +1,29 @@
 # Copyright (C) 2022 Andrea Ballestrazzi
 cmake_minimum_required(VERSION 3.19)
 
-project(FishAndPlants)
+if(COMPILE_AARCH64_ON_LINUX)
+    # Note: if aarch64 compilation is triggered then a valid aarch64 toolchain
+    # should be passed. See the "toolchains" folder for options.
+    message("[INFO] => Compiling for aarch64 on Linux.")
+
+    # Target operating system name.
+    set(CMAKE_SYSTEM_NAME Linux)
+    set(CMAKE_SYSTEM_PROCESSOR aarch64)
+
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
+
+    if(COMPILE_FOR_CORTEX_A53)
+        message("[INFO] => Compiling for Cortex A53 processors.")
+
+        add_compile_options("-mcpu=cortex-a53")
+    endif()
+endif()
+
+project(FishAndPlants CXX)
+enable_language(CXX)
 
 # === C++ and Compilation Configuration ===
 
