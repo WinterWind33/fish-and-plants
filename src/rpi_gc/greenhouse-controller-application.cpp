@@ -8,15 +8,58 @@
 #include <utility>
 #include <string_view>
 #include <sstream>
+#include <vector>
 
 namespace rpi_gc {
 
-    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept :
+    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, std::unique_ptr<option_parser> optionParser) noexcept :
         m_outputStream{std::move(outputStream)},
-        m_inputStream{std::move(inputStream)} {}
+        m_inputStream{std::move(inputStream)},
+        m_terminalInputOptionParser{std::move(optionParser)} {}
+
+    bool GreenhouseControllerApplication::processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept {
+        assert(m_terminalInputOptionParser != nullptr);
+
+        std::vector<StringType> tokens{};
+        for(std::int32_t i{}; i < argc; ++i)
+            tokens.push_back(argv[i]);
+
+        // We execute the parsing only if there are tokens to parse apart
+        // from the application itselt (the first token).
+        if(tokens.size() > 1) {
+            assert(m_applicationCommand != nullptr);
+            m_terminalInputOptionParser->parse(tokens);
+
+            m_bCanApplicationCommandExecute = m_applicationCommand->processOptions(
+                m_terminalInputOptionParser->getOptions(),
+                m_terminalInputOptionParser->getNonOptionArguments(),
+                m_terminalInputOptionParser->getUnknownOptions()
+            );
+
+            // If we are in this conditional branch then for now we don't have
+            // situations where this can be false.
+            assert(m_bCanApplicationCommandExecute);
+        }
+
+        return true;
+    }
 
     void GreenhouseControllerApplication::run() noexcept {
         using StringView = std::basic_string_view<CharType>;
+
+        // Firstly we run the the application command if the user
+        // typed some options during the application launching.
+        if(m_bCanApplicationCommandExecute) {
+            assert(m_applicationCommand != nullptr);
+
+            // If the execution is already satisfied the we can safely exit
+            // the execution (maybe the user typed --help or similar).
+            const bool bCanProceed{m_applicationCommand->execute()};
+            if(!bCanProceed) {
+                teardown();
+                return;
+            }
+        }
 
         // The first thing we do is to print the application header,
         // i.e. the first few lines of the application presentation.
@@ -24,7 +67,10 @@ namespace rpi_gc {
 
         // Now we begin the user input loop.
         constexpr StringView EXIT_COMMAND{"exit"};
+        constexpr StringView TYPE_HELP_FEEDBACK{"Type \'help\' for a list of the available commands."};
         std::string inputLine{};
+
+        m_outputStream.get() << TYPE_HELP_FEEDBACK << std::endl;
 
         while(inputLine != EXIT_COMMAND && m_inputStream.get().good()) {
             m_outputStream.get() << "user@controller/home$ ";
@@ -52,12 +98,22 @@ namespace rpi_gc {
                 constexpr StringView UNKNOWN_COMMAND_FEEDBACK{"command not recognized."};
 
                 // The user typed an unknown command.
-                m_outputStream.get() << commandName << ": " << UNKNOWN_COMMAND_FEEDBACK << std::endl << std::endl;
+                m_outputStream.get() << commandName << ": " << UNKNOWN_COMMAND_FEEDBACK << " " << TYPE_HELP_FEEDBACK << std::endl << std::endl;
                 continue;
             }
 
             assert(m_commandsOptionParsers[commandName] != nullptr);
-            m_commandsOptionParsers[commandName]->parse(lineTokens);
+            const auto& optionParser = m_commandsOptionParsers.at(commandName);
+
+            assert(m_commands.contains(commandName));
+            const bool bCanExec = m_commands[commandName]->processOptions(optionParser->getOptions(), optionParser->getNonOptionArguments(), optionParser->getUnknownOptions());
+            if(bCanExec) {
+                m_commands[commandName]->execute();
+            }
+
+            // We add a new line after the command execution so the user feedback
+            // is more clean.
+            m_outputStream.get() << std::endl;
         }
 
         m_outputStream.get() << "Tearing down...";
@@ -66,9 +122,12 @@ namespace rpi_gc {
         m_outputStream.get() << "Goodbye." << std::endl;
     }
 
-    void GreenhouseControllerApplication::addSupportedCommand(StringType commandName, std::unique_ptr<gh_cmd::OptionParser<CharType>> commandOptionParser) noexcept {
+    void GreenhouseControllerApplication::addSupportedCommand(std::unique_ptr<TerminalCommandType> command, std::unique_ptr<option_parser> commandOptionParser) noexcept {
+        const StringType commandName{command->getName()};
         assert(!m_commandsOptionParsers.contains(commandName));
+        assert(!m_commands.contains(commandName));
 
+        m_commands[commandName] = std::move(command);
         m_commandsOptionParsers.emplace(std::move(commandName), std::move(commandOptionParser));
     }
 
@@ -100,6 +159,10 @@ namespace rpi_gc {
         m_outputStream.get().clear(std::ios::goodbit);
 
         m_commandsOptionParsers.clear();
+    }
+
+    void GreenhouseControllerApplication::setApplicationCommand(std::unique_ptr<TerminalCommandType> appCommand) noexcept {
+        m_applicationCommand = std::move(appCommand);
     }
 
 } // namespace rpi_gc

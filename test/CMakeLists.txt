@@ -12,6 +12,7 @@ set(TEST_APP_HEADER_FILES
     "gh_hal/test-doubles/hal-context.mock.hpp"
     "gh_cmd/test-doubles/option-visitor.mock.hpp"
     "gh_cmd/test-doubles/option-parser.mock.hpp"
+    "rpi_gc/test-doubles/commands/terminal-command.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES

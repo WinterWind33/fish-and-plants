@@ -29,6 +29,19 @@
             "console": "externalTerminal"
         },
         {
+            "name": "(Windows) Launch GreenhouseControllerApplication Tests",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/Debug/test_app.exe",
+            "args": [
+                "-b",
+                "[GreenhouseControllerApplication]"
+            ],
+            "cwd": "${workspaceRoot}/bin/Debug",
+            "preLaunchTask": "[BUILD] (Debug) Build All",
+            "console": "externalTerminal"
+        },
+        {
             "name": "(Windows) Launch All Unit Tests",
             "type": "cppvsdbg",
             "request": "launch",
