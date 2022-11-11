@@ -117,8 +117,10 @@ _deps
 # End of https://www.toptal.com/developers/gitignore/api/cmake
 
 build
+buildLinux
 bin
 lib
+releases
 
 # We exclude the GTest package as it's automatically downloaded when running
 # cmake build
