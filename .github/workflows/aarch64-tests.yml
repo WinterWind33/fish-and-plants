@@ -1,12 +1,8 @@
 # Copyright (C) 2022 Andrea Ballestrazzi
 
-name: ARM64 Build
+name: aarch64 Tests
 
 on:
-  workflow_run:
-    workflows: [Increment Versions]
-    types:
-      - completed
   pull_request:
     types: [ready_for_review]
 
@@ -14,7 +10,7 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  on-success:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -48,4 +44,5 @@ jobs:
               chmod +x install-cmake.sh
               ./install-cmake.sh --prefix=/usr/local --skip-license
               cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-              cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target rpi_gc
+              cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target test_app
+              ./bin/test_app
