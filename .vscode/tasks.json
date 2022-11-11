@@ -20,6 +20,24 @@
 			"group": "build"
 		},
 		{
+			"label": "[BUILD] (Linux Debug) Build All",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/buildLinux"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--target",
+				"ALL_BUILD",
+				"--config",
+				"Debug"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
 			"label": "[BUILD] (Windows Release) Build All",
 			"type": "shell",
 			"options": {

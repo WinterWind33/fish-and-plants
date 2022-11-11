@@ -1,6 +1,6 @@
 # Copyright (C) 2022 Andrea Ballestrazzi
 
-name: ARM64 Build
+name: aarch64 Build
 
 on:
   workflow_run:

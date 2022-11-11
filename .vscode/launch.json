@@ -14,7 +14,7 @@
             "cwd": "${fileDirname}",
             "environment": [],
             "console": "externalTerminal",
-            "preLaunchTask": "[BUILD] (Debug) Build RPI_GC"
+            "preLaunchTask": "[BUILD] (Windows Debug) Build RPI_GC"
         },
         {
             "name": "(Windows) Launch All Tests",
@@ -25,7 +25,7 @@
                 "-b"
             ],
             "cwd": "${workspaceRoot}/bin/Debug",
-            "preLaunchTask": "[BUILD] (Debug) Build All",
+            "preLaunchTask": "[BUILD] (Windows Debug) Build All",
             "console": "externalTerminal"
         },
         {
@@ -38,7 +38,7 @@
                 "[GreenhouseControllerApplication]"
             ],
             "cwd": "${workspaceRoot}/bin/Debug",
-            "preLaunchTask": "[BUILD] (Debug) Build All",
+            "preLaunchTask": "[BUILD] (Windows Debug) Build All",
             "console": "externalTerminal"
         },
         {
@@ -52,7 +52,7 @@
                 "[unit]"
             ],
             "cwd": "${workspaceRoot}/bin/Debug",
-            "preLaunchTask": "[BUILD] (Debug) Build All",
+            "preLaunchTask": "[BUILD] (Windows Debug) Build All",
             "console": "externalTerminal"
         },
         {
@@ -75,7 +75,7 @@
                 "ignoreFailures": true
               }
             ],
-            "preLaunchTask": "[BUILD] (Debug) Build test_app"
+            "preLaunchTask": "[BUILD] (Linux Debug) Build test_app"
         },
     ]
 }
