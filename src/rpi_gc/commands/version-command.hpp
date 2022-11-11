@@ -11,6 +11,9 @@
 
 namespace rpi_gc {
 
+    //!!
+    //! \brief Represents the Version command, i.e. the command executed when the user
+    //!  types "version" in the app home prompt.
     class VersionCommand : public TerminalCommand<CharType> {
     public:
         using ostream_ref = std::reference_wrapper<std::ostream>;
@@ -20,9 +23,16 @@ namespace rpi_gc {
 
         constexpr name_type getName() const noexcept override { return name_type{"version"}; }
 
+        //!!
+        //! \brief Does nothing. Note: the options vector must be empty, the version command doesn't
+        //!  accept any option.
+        //! \return True
         bool processOptions(const options_vector& options,
             const non_options_vector& nonOptions, const unknown_options_vector& unknown) noexcept override;
 
+        //!!
+        //! \brief Prints the name of the application and its version.
+        //! \return True.
         bool execute() noexcept override;
 
     private:
