@@ -4,6 +4,9 @@
 #include <greenhouse-controller-application.hpp>
 #include <rpi_gc-config-file.hpp>
 
+// User interface
+#include <user-interface/application-strings.hpp>
+
 // Test doubles
 #include <gh_cmd/test-doubles/option-parser.mock.hpp>
 #include <rpi_gc/test-doubles/commands/terminal-command.mock.hpp>
@@ -57,19 +60,19 @@ TEST_CASE("GreenhouseControllerApplication Header Lines", "[functional][rpi_gc][
         SECTION("It should correctly print the application name and version (first line)") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyLineEqual(1, outputStream, rpi_gc::StringType{"Greenhouse Controller "} + tests::GenerateVersionString());
+            tests::VerifyLineEqual(1, outputStream, StringType{strings::application::NAME} + StringType{" "} + tests::GenerateVersionString());
         }
 
         SECTION("It should correctly print the copyright disclaimer (second line)") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyLineEqual(2, outputStream, "Copyright (c) 2022 Andrea Ballestrazzi");
+            tests::VerifyLineEqual(2, outputStream, StringType{strings::application::COPYRIGHT_DISCLAIMER});
         }
 
         SECTION("It should correctly print the team credit") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyLineEqual(4, outputStream, "-- Fish&Plants Team --");
+            tests::VerifyLineEqual(4, outputStream, StringType{"-- "} + StringType{strings::application::TEAM_NAME} + StringType{" --"});
         }
 
         SECTION("It should add an end line between the disclaimer and the team credit") {
