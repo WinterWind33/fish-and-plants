@@ -11,6 +11,7 @@ set(RPI_GC_HEADER_FILES
     "commands/application-command.hpp"
     "commands/version-command.hpp"
     "commands/help-command.hpp"
+    "user-interface/application-strings.hpp"
 )
 
 # RPI_GC's source files
