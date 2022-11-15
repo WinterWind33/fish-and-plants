@@ -4,9 +4,6 @@
 
 #include <common/types.hpp>
 
-// C++ STL
-#include <string_view>
-
 namespace rpi_gc::strings::application {
 
     constexpr StringViewType NAME{"Greenhouse Controller"};
