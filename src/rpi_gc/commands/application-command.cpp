@@ -5,8 +5,7 @@
 
 // C++ STL
 #include <cassert>
-#include <string_view>
-#include <algorithm>
+#include <algorithm> // for std::find_if
 
 namespace rpi_gc {
 
@@ -27,9 +26,10 @@ namespace rpi_gc {
 
             return resIt != supportedOptions.cend();
         };
-#endif // !NDEBUG
+
         assert(checkSupportedOption('h')); // Supports help option
         assert(checkSupportedOption('v')); // Supports version option
+#endif // !NDEBUG
 
         // We initialize the supported options callbacks for this application here.
         // NOTE: possible DIP breaking?
@@ -96,14 +96,11 @@ namespace rpi_gc {
     }
 
     void ApplicationCommand::print_help() noexcept {
-        constexpr std::string_view COPYRIGHT_DISCLAIMER{"Copyright (c) 2022 Andrea Ballestrazzi"};
-        constexpr std::string_view TEAM_NAME{"Fish&Plants Team"};
-
         // We initially print the help page header.
         print_version();
-        m_outputStream.get() << COPYRIGHT_DISCLAIMER << std::endl;
+        m_outputStream.get() << strings::application::COPYRIGHT_DISCLAIMER << std::endl;
         m_outputStream.get() << std::endl;
-        m_outputStream.get() << "Developed by " << TEAM_NAME << std::endl;
+        m_outputStream.get() << "Developed by " << strings::application::TEAM_NAME << std::endl;
         m_outputStream.get() << std::endl;
 
         m_optionParser.get().printHelp(m_outputStream.get());
@@ -111,8 +108,7 @@ namespace rpi_gc {
     }
 
     void ApplicationCommand::print_version() noexcept {
-        constexpr std::string_view APPLICATION_NAME{"Greenhouse Controller"};
-        m_outputStream.get() << APPLICATION_NAME << " - Version " <<
+        m_outputStream.get() << strings::application::NAME << " - Version " <<
             rpi_gc_VERSION_MAJOR << "." <<
             rpi_gc_VERSION_MINOR << "." <<
             rpi_gc_VERSION_PATCH << std::endl;

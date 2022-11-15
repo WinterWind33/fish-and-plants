@@ -14,9 +14,7 @@ namespace rpi_gc {
     }
 
     bool VersionCommand::execute() noexcept {
-        constexpr std::string_view APPLICATION_NAME{"Greenhouse Controller"};
-
-        m_outputStream.get() << APPLICATION_NAME << " - Version " <<
+        m_outputStream.get() << strings::application::NAME << " - Version " <<
             rpi_gc_VERSION_MAJOR << "." << rpi_gc_VERSION_MINOR << "." << rpi_gc_VERSION_PATCH;
         m_outputStream.get() << std::endl;
 

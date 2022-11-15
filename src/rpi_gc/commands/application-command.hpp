@@ -3,11 +3,10 @@
 #define APPLICATION_HELP_COMMAND_HPP
 
 #include <commands/terminal-command.hpp>
-#include <gh_cmd/gh_cmd.hpp>
+#include <user-interface/commands-strings.hpp>
 
 // C++ STL
 #include <functional>
-#include <ostream>
 #include <map>
 #include <memory>
 
@@ -15,7 +14,7 @@ namespace rpi_gc {
 
     class ApplicationCommand : public TerminalCommandType {
     public:
-        using ostream_ref = std::reference_wrapper<std::basic_ostream<char_type>>;
+        using ostream_ref = std::reference_wrapper<OutputStream>;
         using option_parser_ref = std::reference_wrapper<gh_cmd::OptionParser<char_type>>;
         using option_type = gh_cmd::CommandOption<CharType>;
         using option_pointer = std::shared_ptr<option_type>;
@@ -28,7 +27,7 @@ namespace rpi_gc {
         bool execute() noexcept override;
 
         constexpr name_type getName() const noexcept override {
-            return name_type{"rpi_gc"};
+            return name_type{strings::commands::APPLICATION};
         }
 
     private:

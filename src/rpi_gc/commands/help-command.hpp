@@ -4,12 +4,11 @@
 
 #include <common/types.hpp>
 #include <commands/terminal-command.hpp>
-#include <gh_cmd/gh_cmd.hpp>
+#include <user-interface/commands-strings.hpp>
 
 // C++ STL
 #include <functional>
 #include <map>
-#include <ostream>
 
 namespace rpi_gc {
 
@@ -21,7 +20,7 @@ namespace rpi_gc {
         using option_parser = gh_cmd::OptionParser<CharType>;
         using option_parser_ref = std::reference_wrapper<option_parser>;
         using option_parsers_map = std::map<name_type, option_parser_ref>;
-        using ostream_ref = std::reference_wrapper<std::ostream>;
+        using ostream_ref = std::reference_wrapper<OutputStream>;
 
         //!!
         //! \brief Construct a new Help Command object with the given output stream and a map
@@ -29,7 +28,7 @@ namespace rpi_gc {
         HelpCommand(ostream_ref outputStream, option_parsers_map optionParsers) noexcept;
         ~HelpCommand() noexcept override = default;
 
-        constexpr name_type getName() const noexcept override { return "help"; }
+        constexpr name_type getName() const noexcept override { return strings::commands::HELP; }
 
         //!!
         //! \brief Does nothing. Note: the options vector must be empty, the help command doesn't

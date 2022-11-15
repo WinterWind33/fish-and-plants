@@ -4,7 +4,6 @@
 
 // C++ STL
 #include <cassert>
-#include <string_view>
 
 namespace rpi_gc {
 
@@ -39,19 +38,17 @@ namespace rpi_gc {
         }
 
         // We also print the exit command that is not listed with the option parser.
-        m_outputStream.get() << "> " << "exit" << std::endl;
+        m_outputStream.get() << "> " << strings::commands::EXIT << std::endl;
         m_outputStream.get() << "Description: exits the application releasing all the resources (soft exit):" << std::endl;
 
         return true;
     }
 
     void HelpCommand::print_header() noexcept {
-        constexpr std::string_view APPLICATION_NAME{"Greenhouse Controller"};
-        constexpr std::string_view TEAM_CREDIT{"Fish&Plants Team"};
         ostream_ref::type& out = m_outputStream.get();
 
-        out << APPLICATION_NAME << " - Version " << rpi_gc_VERSION_MAJOR << '.' << rpi_gc_VERSION_MINOR << '.' << rpi_gc_VERSION_PATCH << '.' << std::endl;
-        out << "Developed by " << TEAM_CREDIT << std::endl;
+        out << strings::application::NAME << " - Version " << rpi_gc_VERSION_MAJOR << '.' << rpi_gc_VERSION_MINOR << '.' << rpi_gc_VERSION_PATCH << '.' << std::endl;
+        out << "Developed by " << strings::application::TEAM_NAME << std::endl;
     }
 
     void HelpCommand::print_description() noexcept {
