@@ -51,8 +51,8 @@ namespace tests {
 TEST_CASE("GreenhouseControllerApplication Header Lines", "[functional][rpi_gc][GreenhouseControllerApplication][application-header]") {
     using namespace rpi_gc;
 
-    rpi_gc::OutputStringStream outputStream{};
-    rpi_gc::InputStringStream inputStream{"exit"};
+    OutputStringStream outputStream{};
+    InputStringStream inputStream{"exit"};
 
     GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_unique<testing::StrictMock<gh_cmd::mocks::OptionParserMock<CharType>>>()};
 
@@ -104,7 +104,7 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
         GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::move(parserMockPtr)};
 
         WHEN("A supported option (help) is given into the terminal buffer") {
-            std::vector<const CharType*> strings{"rpi_gc", "--help"};
+            std::vector<const CharType*> strings{strings::application::EXECUTABLE_NAME.data(), "--help"};
 
             THEN("The parser should be called one time") {
                 mocks::TerminalCommandMock<CharType>* appCommandMock{};
@@ -114,7 +114,7 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
                 applicationUnderTest.setApplicationCommand(std::move(commandMockPtr));
                 ON_CALL(*appCommandMock, processOptions).WillByDefault(testing::Return(true));
 
-                testing::Expectation exp1 = EXPECT_CALL(*terminalParserMock, parse(std::vector<StringType>({StringType{"rpi_gc"}, StringType{"--help"}}))).Times(1);
+                testing::Expectation exp1 = EXPECT_CALL(*terminalParserMock, parse(std::vector<StringType>({StringType{strings::application::EXECUTABLE_NAME}, StringType{"--help"}}))).Times(1);
                 EXPECT_CALL(*terminalParserMock, getOptions).After(exp1);
                 EXPECT_CALL(*terminalParserMock, getNonOptionArguments).After(exp1);
                 EXPECT_CALL(*terminalParserMock, getUnknownOptions).After(exp1);
