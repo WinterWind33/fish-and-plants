@@ -11,6 +11,7 @@ set(RPI_GC_HEADER_FILES
     "commands/application-command.hpp"
     "commands/version-command.hpp"
     "commands/help-command.hpp"
+    "commands/bivalent-command.hpp"
     "user-interface/application-strings.hpp"
     "user-interface/commands-strings.hpp"
 )
