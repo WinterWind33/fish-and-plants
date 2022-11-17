@@ -51,7 +51,7 @@ namespace rpi_gc {
         //! \param options The options to parse.
         //! \return bool Returns true if the state of the command permits a correct execution,
         //!  false otherwise.
-        virtual bool proccessInputOptions(const std::vector<string_type>& options) noexcept {}
+        virtual bool proccessInputOptions(const std::vector<string_type>& options) noexcept { return false; }
 
         //!!
         //! \brief Prints the help page of thic command to the given output stream.
