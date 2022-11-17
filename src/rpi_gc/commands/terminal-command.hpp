@@ -22,6 +22,9 @@ namespace rpi_gc {
     struct TerminalCommand : public Command {
         using char_type = std::decay_t<CharT>;
         using string_type = std::basic_string<char_type>;
+        using help_ostream_type = std::basic_ostream<char_type>;
+
+        // Deprecated aliases
         using non_options_vector = std::vector<string_type>;
         using unknown_options_vector = std::vector<string_type>;
         using options_vector = std::vector<std::shared_ptr<const gh_cmd::CommandOption<char_type>>>;
@@ -37,8 +40,23 @@ namespace rpi_gc {
         //! \param nonOptions The non-options that the user typed.
         //! \param unknowns The unknown options that the user typed.
         //! \return bool True if the state was correctly set and the command can execute, false otherwise.
+        [[deprecated("Do not use this, prefer processInputOptions")]]
         virtual bool processOptions(const options_vector& options, const non_options_vector& nonOptions,
             const unknown_options_vector& unknowns) noexcept = 0;
+
+        //!!
+        //! \brief Processes the given options. The vector MUST contains only the options without
+        //!  the initial command.
+        //!
+        //! \param options The options to parse.
+        //! \return bool Returns true if the state of the command permits a correct execution,
+        //!  false otherwise.
+        virtual bool proccessInputOptions(const std::vector<string_type>& options) noexcept {}
+
+        //!!
+        //! \brief Prints the help page of thic command to the given output stream.
+        //!
+        virtual void printHelp(help_ostream_type& outputStream) const noexcept {};
     };
 
     using TerminalCommandType = TerminalCommand<CharType>;
