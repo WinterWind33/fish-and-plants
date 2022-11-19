@@ -18,6 +18,7 @@ namespace gh_cmd::mocks {
 
         ~OptionParserMock() noexcept override = default;
 
+        MOCK_METHOD(void, addOption, (std::shared_ptr<CommandOption<char_type>>), (noexcept, override));
         MOCK_METHOD(void, addSwitch, (std::shared_ptr<Switch<char_type>>), (noexcept, override));
         MOCK_METHOD(void, parse, (const std::vector<string_type>&), (noexcept, override));
         MOCK_METHOD(void, reset, (), (noexcept, override));
