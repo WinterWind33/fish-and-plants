@@ -8,11 +8,9 @@
 #include <user-interface/application-strings.hpp>
 
 // Test doubles
-#include <gh_cmd/test-doubles/option-parser.mock.hpp>
 #include <rpi_gc/test-doubles/commands/terminal-command.mock.hpp>
 
 // C++ STL
-#include <sstream>
 #include <cstdint>
 
 namespace tests {
@@ -54,7 +52,7 @@ TEST_CASE("GreenhouseControllerApplication Header Lines", "[functional][rpi_gc][
     OutputStringStream outputStream{};
     InputStringStream inputStream{"exit"};
 
-    GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_unique<testing::StrictMock<gh_cmd::mocks::OptionParserMock<CharType>>>()};
+    GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
 
     SECTION("When running the application") {
         SECTION("It should correctly print the application name and version (first line)") {
