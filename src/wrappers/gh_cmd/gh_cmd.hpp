@@ -117,6 +117,8 @@ namespace gh_cmd {
 
         virtual ~OptionParser() noexcept = default;
 
+        virtual void addOption(std::shared_ptr<CommandOption<char_type>> option) noexcept = 0;
+
         //! \brief Adds a switch to the command representation.
         virtual void addSwitch(std::shared_ptr<Switch<char_type>> option) noexcept = 0;
 
@@ -154,6 +156,7 @@ namespace gh_cmd {
         DefaultOptionParser() noexcept;
         DefaultOptionParser(string_type description) noexcept;
 
+        void addOption(std::shared_ptr<CommandOption<char_type>> option) noexcept override;
         void addSwitch(std::shared_ptr<Switch<char_type>> option) noexcept override;
         void parse(const std::vector<string_type>& args) noexcept override;
         void reset() noexcept override;
@@ -249,28 +252,40 @@ namespace gh_cmd {
 
     namespace details {
         // Internal use only, should not be used outside the wrapper.
-        class SwitchInserterVisitor : public OptionVisitor<std::shared_ptr<popl::Option>> {
+        template<typename OptionType>
+        class CommandOptionInserterVisitor : public OptionVisitor<std::shared_ptr<popl::Option>> {
         public:
             using option_parser_ref = std::reference_wrapper<popl::OptionParser>;
 
-            SwitchInserterVisitor(option_parser_ref optionParser) noexcept :
+            CommandOptionInserterVisitor(option_parser_ref optionParser) noexcept :
                 m_optionParser{std::move(optionParser)} {}
 
             void visit(std::shared_ptr<popl::Option> option) noexcept override {
-                std::shared_ptr<popl::Switch> switchPtr{std::static_pointer_cast<popl::Switch>(std::move(option))};
-                m_optionParser.get().template add_shared<popl::Switch>(std::move(switchPtr));
+                std::shared_ptr<OptionType> optionPtr{std::static_pointer_cast<OptionType>(std::move(option))};
+                m_optionParser.get().template add_shared<OptionType>(std::move(optionPtr));
             }
 
         private:
             option_parser_ref m_optionParser;
         };
+
     } // namespace details
+
+    template<typename C>
+    inline void DefaultOptionParser<C>::addOption(std::shared_ptr<CommandOption<char_type>> option) noexcept {
+        assert(option != nullptr);
+
+        details::CommandOptionInserterVisitor<typename CommandOption<char_type>::base_impl_type> inserter{*m_implParser};
+        option->acceptVisitor(inserter);
+
+        m_options.push_back(std::move(option));
+    }
 
     template<typename C>
     inline void DefaultOptionParser<C>::addSwitch(std::shared_ptr<Switch<char_type>> option) noexcept {
         assert(option != nullptr);
 
-        details::SwitchInserterVisitor inserter{*m_implParser};
+        details::CommandOptionInserterVisitor<typename Switch<char_type>::impl_type> inserter{*m_implParser};
         option->acceptVisitor(inserter);
 
         m_options.push_back(std::move(option));
