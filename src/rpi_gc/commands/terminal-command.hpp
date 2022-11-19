@@ -8,6 +8,7 @@
 #include <gh_cmd/gh_cmd.hpp>
 
 // C++ STL
+#include <functional>
 #include <type_traits>
 #include <vector>
 #include <string>
