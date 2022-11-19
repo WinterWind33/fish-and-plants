@@ -95,30 +95,18 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
     GIVEN("An application controller") {
         InputStringStream inputStream{};
         OutputStringStream outputStream{};
-
-        using TerminalOptionParserMock = testing::StrictMock<gh_cmd::mocks::OptionParserMock<CharType>>;
-        std::unique_ptr<TerminalOptionParserMock> parserMockPtr{std::make_unique<TerminalOptionParserMock>()};
-
-        TerminalOptionParserMock* terminalParserMock{parserMockPtr.get()};
-
-        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::move(parserMockPtr)};
+        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
 
         WHEN("A supported option (help) is given into the terminal buffer") {
             std::vector<const CharType*> strings{strings::application::EXECUTABLE_NAME.data(), "--help"};
 
-            THEN("The parser should be called one time") {
-                mocks::TerminalCommandMock<CharType>* appCommandMock{};
-                auto commandMockPtr = std::make_unique<testing::NiceMock<mocks::TerminalCommandMock<CharType>>>();
-                appCommandMock = commandMockPtr.get();
+            THEN("The application command should correctly parse the input line") {
+                auto commandMockPtr = std::make_unique<testing::StrictMock<mocks::TerminalCommandMock<CharType>>>();
+                testing::Expectation exp1 = EXPECT_CALL(*commandMockPtr, processInputOptions(std::vector<StringType>{"rpi_gc", "--help"}))
+                   .Times(1)
+                   .WillOnce(testing::Return(true));
 
                 applicationUnderTest.setApplicationCommand(std::move(commandMockPtr));
-                ON_CALL(*appCommandMock, processOptions).WillByDefault(testing::Return(true));
-
-                testing::Expectation exp1 = EXPECT_CALL(*terminalParserMock, parse(std::vector<StringType>({StringType{strings::application::EXECUTABLE_NAME}, StringType{"--help"}}))).Times(1);
-                EXPECT_CALL(*terminalParserMock, getOptions).After(exp1);
-                EXPECT_CALL(*terminalParserMock, getNonOptionArguments).After(exp1);
-                EXPECT_CALL(*terminalParserMock, getUnknownOptions).After(exp1);
-
                 applicationUnderTest.processInputOptions(2, strings.data());
             }
         }
