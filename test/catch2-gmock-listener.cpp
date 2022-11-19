@@ -24,7 +24,10 @@ void GMCatch2Listener::OnTestPartResult(const testing::TestPartResult& result) {
 
     // Here we retrieve info about the failure, i.e. the file
     // name and the line-number.
-    const std::string sourceFilename{result.file_name()};
+    const char* const fileName{result.file_name()};
+    std::string sourceFilename{};
+    if(fileName != nullptr)
+        sourceFilename = fileName;
     std::size_t lineNumber{};
 
     if (result.line_number() >= 0)
