@@ -26,8 +26,22 @@ namespace rpi_gc {
         //! \brief Builds and retrieves an option starting from the command state.
         //!
         //! \return option_pointer The command represented as an option.
-        virtual option_pointer getAsOption() const noexcept = default;
+        virtual option_pointer getAsOption() const noexcept = 0;
+
+        //!!
+        //! \brief Executes the command but as an option of another command.
+        //!
+        //! \return bool True if the execution succeeded, false otherwise.
+        virtual bool executeAsOption() noexcept = 0;
     };
+
+    template<typename CharType>
+    void PrintHelpAsOption(const BivalentCommand<CharType>& bivalentCommand, typename BivalentCommand<CharType>::help_ostream_type& outputStream) noexcept {
+        typename BivalentCommand<CharType>::option_pointer asOption{bivalentCommand.getAsOption()};
+        assert(asOption != nullptr);
+
+        outputStream << asOption->getDescription() << std::endl;
+    }
 
 } // namespace rpi_gc
 

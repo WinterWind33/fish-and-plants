@@ -5,7 +5,8 @@
 namespace rpi_gc {
 
     VersionCommand::VersionCommand(ostream_ref outputStream) noexcept :
-        m_outputStream{std::move(outputStream)} {}
+        m_outputStream{std::move(outputStream)},
+        m_asOption{std::make_shared<gh_cmd::Switch<char_type>>('v', "version", "Displays the version of this application.")} {}
 
     bool VersionCommand::processOptions(const options_vector& options, const non_options_vector& nonOptions, const unknown_options_vector& unknowns) noexcept {
         // This command shouldn't have any valid options.
@@ -19,6 +20,11 @@ namespace rpi_gc {
         m_outputStream.get() << std::endl;
 
         return true;
+    }
+
+    void VersionCommand::printHelp(help_ostream_type& outputStream) const noexcept {
+        outputStream << ">>> version" << std::endl;
+        outputStream << "\tDescription: prints the name of the application and its version;";
     }
 
 } // namespace rpi_gc

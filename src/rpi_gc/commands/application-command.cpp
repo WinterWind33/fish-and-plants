@@ -11,34 +11,11 @@ namespace rpi_gc {
 
     ApplicationCommand::ApplicationCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept :
         m_outputStream{std::move(outputStream)},
-        m_optionParser{std::move(optionParser)} {
-
-#ifndef NDEBUG
-        // Note: this is a temporary implementation in order to reach the end of the MVP UX.0. In the future
-        // this behaviour needs to be injectable.
-        const auto supportedOptions{m_optionParser.get().getOptions()};
-
-        auto checkSupportedOption = [&supportedOptions](const option_type::short_name_type shortName) -> bool {
-            const auto resIt = std::find_if(supportedOptions.cbegin(), supportedOptions.cend(),
-            [shortName](const std::shared_ptr<const option_type>& option) -> bool {
-                return option->getShortName() == shortName;
-            });
-
-            return resIt != supportedOptions.cend();
-        };
-
-        assert(checkSupportedOption('h')); // Supports help option
-        assert(checkSupportedOption('v')); // Supports version option
-#endif // !NDEBUG
-
-        // We initialize the supported options callbacks for this application here.
-        // NOTE: possible DIP breaking?
-        m_optionsCallbacks['h'] = [this](){ print_help(); };
-        m_optionsCallbacks['v'] = [this](){ print_version(); };
-    }
+        m_optionParser{std::move(optionParser)} {}
 
     bool ApplicationCommand::processOptions(const options_vector& options, const non_options_vector& nonOptions,
             const unknown_options_vector& unknowns) noexcept {
+
         // Here we don't need to do anything because we already have the reference to the option parser that
         // contains all the supported options.
         // Here we simply check that the given parameters are the same as the ones inside the option
@@ -50,49 +27,30 @@ namespace rpi_gc {
         return true;
     }
 
+    bool ApplicationCommand::processInputOptions(const std::vector<string_type>& options) noexcept {
+        m_optionParser.get().parse(options);
+
+        return true;
+    }
+
     bool ApplicationCommand::execute() noexcept {
-        bool bCanContinueExecution{true};
-        std::vector<std::function<void()>> callbacksToExecute{};
-
-        const auto supportedOptions{m_optionParser.get().getOptions()};
-
-        auto isOptionSet = [&supportedOptions](const option_type::short_name_type shortName) -> bool {
-            const auto resIt = std::find_if(supportedOptions.cbegin(), supportedOptions.cend(),
-            [shortName](const std::shared_ptr<const option_type>& option) -> bool {
-                return option->getShortName() == shortName && option->isSet();
-            });
-
-            return resIt != supportedOptions.cend();
-        };
-
-        if(isOptionSet('h')) {
-            assert(m_optionsCallbacks.contains('h'));
-            m_optionsCallbacks['h']();
-
-            // Tipically we don't want to execute the application if the
-            // user typed --help
-            return false;
-        }
-
-        for(const auto& option : supportedOptions) {
+        // For each option we check if a bivalent command is set as an option.
+        bool bCanContinue{true};
+        const auto commandOptions{m_optionParser.get().getOptions()};
+        for(const auto& option : commandOptions) {
             assert(option != nullptr);
+            const bool bIsSet = option->isSet();
+            const auto longName = option->getLongName();
 
-            if(option->isSet()) {
-                assert(m_optionsCallbacks[option->getShortName()]);
+            if(bIsSet && m_bivalentCommands.contains(longName)) {
+                bCanContinue = m_bivalentCommands.at(option->getLongName()).get().executeAsOption();
 
-                callbacksToExecute.push_back(m_optionsCallbacks[option->getShortName()]);
-
-                // Tipically we don't want to execute the application if the
-                // user typed --version
-                if(option->getShortName() == 'v')
-                    bCanContinueExecution = false;
+                if(!bCanContinue)
+                break;
             }
         }
 
-        for(std::function<void()> callback : callbacksToExecute)
-            callback();
-
-        return bCanContinueExecution;
+        return bCanContinue;
     }
 
     void ApplicationCommand::print_help() noexcept {
@@ -112,6 +70,16 @@ namespace rpi_gc {
             rpi_gc_VERSION_MAJOR << "." <<
             rpi_gc_VERSION_MINOR << "." <<
             rpi_gc_VERSION_PATCH << std::endl;
+    }
+
+    void ApplicationCommand::addBivalentCommand(bivalent_command_ref bivalentCommand) noexcept {
+        bivalent_command_ref::type::option_pointer asOption{bivalentCommand.get().getAsOption()};
+
+        assert(asOption != nullptr);
+        assert(!m_bivalentCommands.contains(asOption->getLongName()));
+
+        m_optionParser.get().addOption(asOption);
+        m_bivalentCommands.emplace(asOption->getLongName(), std::move(bivalentCommand));
     }
 
 } // namespace rpi_gc

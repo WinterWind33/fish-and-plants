@@ -7,9 +7,17 @@
 
 namespace rpi_gc {
 
-    HelpCommand::HelpCommand(ostream_ref outputStream, option_parsers_map optionParsers) noexcept :
+    HelpCommand::HelpCommand(ostream_ref outputStream, std::vector<TerminalCommandType*> commands) noexcept :
         m_outputStream{std::move(outputStream)},
-        m_optionParsers{std::move(optionParsers)} {}
+        m_asOption{std::make_shared<gh_cmd::Switch<char_type>>('h', "help", "Displays this help page.")} {
+
+        // Here we need to retrieve the help page of all the input commands.
+        for(const auto& command : commands) {
+            OutputStringStream formatStream{};
+            command->printHelp(formatStream);
+            m_commandsHelpPages.push_back(formatStream.str());
+        }
+    }
 
     bool HelpCommand::processOptions(const options_vector& options,
             const non_options_vector& nonOptions, const unknown_options_vector& unknown) noexcept {
@@ -25,23 +33,36 @@ namespace rpi_gc {
         print_description();
         m_outputStream.get() << std::endl;
 
-        // For every option parser we print the help page as it should contain both
-        // the command description and its options as well.
-        m_outputStream.get() << "===> IMPLEMENTED COMMANDS <===" << std::endl;
+        m_outputStream.get() << "===> COMMANDS <===" << std::endl;
         m_outputStream.get() << std::endl;
-        for(const auto& optionParser : m_optionParsers) {
-            m_outputStream.get() << "> " << std::get<0>(optionParser) << std::endl;
-            m_outputStream.get() << "Description: ";
-            std::get<1>(optionParser).get().printHelp(m_outputStream.get());
 
+        // Time to print the help page of this command. We print it first
+        // as the help is the most important command.
+        printHelp(m_outputStream.get());
+        m_outputStream.get() << std::endl;
+        m_outputStream.get() << std::endl;
+
+        // Next we print the "exit" command help page so it doesn't get buried
+        // under the others
+        m_outputStream.get() << ">>> exit" << std::endl;
+        m_outputStream.get() << "\tDescription: stops the application execution releasing the resources and waiting for them (soft exit);" << std::endl;
+        m_outputStream.get() << std::endl;
+
+        for(const auto& helpPage : m_commandsHelpPages) {
+            m_outputStream.get() << helpPage << std::endl;
             m_outputStream.get() << std::endl;
         }
 
-        // We also print the exit command that is not listed with the option parser.
-        m_outputStream.get() << "> " << strings::commands::EXIT << std::endl;
-        m_outputStream.get() << "Description: exits the application releasing all the resources (soft exit):" << std::endl;
-
         return true;
+    }
+
+    bool HelpCommand::executeAsOption() noexcept {
+        print_header();
+        m_outputStream.get() << m_applicationHelp << std::endl;
+
+        // We don't want to continue with the application if the user
+        // requrested the application help.
+        return false;
     }
 
     void HelpCommand::print_header() noexcept {
@@ -49,6 +70,11 @@ namespace rpi_gc {
 
         out << strings::application::NAME << " - Version " << rpi_gc_VERSION_MAJOR << '.' << rpi_gc_VERSION_MINOR << '.' << rpi_gc_VERSION_PATCH << '.' << std::endl;
         out << "Developed by " << strings::application::TEAM_NAME << std::endl;
+    }
+
+    void HelpCommand::printHelp(help_ostream_type& outputStream) const noexcept {
+        outputStream << ">>> help" << std::endl;
+        outputStream << "\tDescription: prints this help page;";
     }
 
     void HelpCommand::print_description() noexcept {
@@ -65,8 +91,8 @@ namespace rpi_gc {
         out << std::endl;
         out << "===> DESCRIPTION <===" << std::endl;
         out << "The main scope of this software is to read values from the external sensors, that are attached "
-            << "to the greenhouse\'s plants, and provide actions based on these values. Example: if the humidity"
-            << "is below a certain temperature value, the software informs the hardware to provide water to the"
+            << "to the greenhouse\'s plants, and provide actions based on these values. Example: if the humidity "
+            << "is below a certain temperature value, the software informs the hardware to provide water to the "
             << "plants." << std::endl;
         out << std::endl;
         out << "===> USAGE <===" << std::endl;

@@ -44,9 +44,7 @@ namespace rpi_gc {
         ostream_ref m_outputStream;
         istream_ref m_inputStream;
 
-        std::map<StringType, std::unique_ptr<option_parser>> m_commandsOptionParsers{};
         std::map<StringType, std::unique_ptr<TerminalCommandType>> m_commands{};
-        std::unique_ptr<option_parser> m_terminalInputOptionParser{};
         std::unique_ptr<TerminalCommandType> m_applicationCommand{};
 
         bool m_bCanApplicationCommandExecute{};

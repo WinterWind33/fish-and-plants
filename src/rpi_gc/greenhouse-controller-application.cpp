@@ -13,12 +13,9 @@ namespace rpi_gc {
 
     GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, std::unique_ptr<option_parser> optionParser) noexcept :
         m_outputStream{std::move(outputStream)},
-        m_inputStream{std::move(inputStream)},
-        m_terminalInputOptionParser{std::move(optionParser)} {}
+        m_inputStream{std::move(inputStream)} {}
 
     bool GreenhouseControllerApplication::processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept {
-        assert(m_terminalInputOptionParser != nullptr);
-
         std::vector<StringType> tokens{};
         for(std::int32_t i{}; i < argc; ++i)
             tokens.push_back(argv[i]);
@@ -27,13 +24,7 @@ namespace rpi_gc {
         // from the application itselt (the first token).
         if(tokens.size() > 1) {
             assert(m_applicationCommand != nullptr);
-            m_terminalInputOptionParser->parse(tokens);
-
-            m_bCanApplicationCommandExecute = m_applicationCommand->processOptions(
-                m_terminalInputOptionParser->getOptions(),
-                m_terminalInputOptionParser->getNonOptionArguments(),
-                m_terminalInputOptionParser->getUnknownOptions()
-            );
+            m_bCanApplicationCommandExecute = m_applicationCommand->processInputOptions(tokens);
 
             // If we are in this conditional branch then for now we don't have
             // situations where this can be false.
@@ -91,18 +82,14 @@ namespace rpi_gc {
             if(commandName == strings::commands::EXIT)
                 continue;
 
-            if(!m_commandsOptionParsers.contains(commandName)) {
+            if(!m_commands.contains(commandName)) {
                 // The user typed an unknown command.
                 m_outputStream.get() << commandName << ": " << strings::commands::feedbacks::UNRECOGNIZED_COMMAND << " "
                     << strings::commands::feedbacks::TYPE_HELP << std::endl << std::endl;
                 continue;
             }
 
-            assert(m_commandsOptionParsers[commandName] != nullptr);
-            const auto& optionParser = m_commandsOptionParsers.at(commandName);
-
-            assert(m_commands.contains(commandName));
-            const bool bCanExec = m_commands[commandName]->processOptions(optionParser->getOptions(), optionParser->getNonOptionArguments(), optionParser->getUnknownOptions());
+            const bool bCanExec = m_commands.at(commandName)->processInputOptions(lineTokens);
             if(bCanExec) {
                 m_commands[commandName]->execute();
             }
@@ -120,11 +107,9 @@ namespace rpi_gc {
 
     void GreenhouseControllerApplication::addSupportedCommand(std::unique_ptr<TerminalCommandType> command, std::unique_ptr<option_parser> commandOptionParser) noexcept {
         const StringType commandName{command->getName()};
-        assert(!m_commandsOptionParsers.contains(commandName));
         assert(!m_commands.contains(commandName));
 
-        m_commands[commandName] = std::move(command);
-        m_commandsOptionParsers.emplace(std::move(commandName), std::move(commandOptionParser));
+        m_commands.emplace(commandName, std::move(command));
     }
 
     void GreenhouseControllerApplication::print_app_header() noexcept {
@@ -149,8 +134,6 @@ namespace rpi_gc {
     void GreenhouseControllerApplication::teardown() noexcept {
         m_inputStream.get().clear(std::ios::goodbit);
         m_outputStream.get().clear(std::ios::goodbit);
-
-        m_commandsOptionParsers.clear();
     }
 
     void GreenhouseControllerApplication::setApplicationCommand(std::unique_ptr<TerminalCommandType> appCommand) noexcept {
