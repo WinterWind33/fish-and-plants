@@ -17,9 +17,6 @@ namespace rpi_gc {
     //!  app home prompt.
     class HelpCommand : public BivalentCommand<CharType> {
     public:
-        using option_parser = gh_cmd::OptionParser<CharType>;
-        using option_parser_ref = std::reference_wrapper<option_parser>;
-        using option_parsers_map = std::map<name_type, option_parser_ref>;
         using ostream_ref = std::reference_wrapper<OutputStream>;
 
         HelpCommand(ostream_ref outputStream, std::vector<TerminalCommandType*> commands) noexcept;

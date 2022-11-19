@@ -29,7 +29,7 @@ namespace rpi_gc {
             const auto longName = option->getLongName();
 
             if(bIsSet && m_bivalentCommands.contains(longName)) {
-                bCanContinue = m_bivalentCommands.at(option->getLongName()).get().executeAsOption();
+                bCanContinue = m_bivalentCommands.at(longName).get().executeAsOption();
 
                 if(!bCanContinue)
                     break;

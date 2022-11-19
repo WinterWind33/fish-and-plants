@@ -19,7 +19,6 @@ namespace rpi_gc {
     //! \brief Represents the main greenhouse controller application.
     class GreenhouseControllerApplication : public Application {
     public:
-        using option_parser = gh_cmd::OptionParser<CharType>;
         using ostream_ref = std::reference_wrapper<OutputStream>;
         using istream_ref = std::reference_wrapper<InputStream>;
 

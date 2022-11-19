@@ -18,7 +18,6 @@ namespace rpi_gc {
         using ostream_ref = std::reference_wrapper<OutputStream>;
         using option_parser_ref = std::reference_wrapper<gh_cmd::OptionParser<char_type>>;
         using option_type = gh_cmd::CommandOption<CharType>;
-        using option_pointer = std::shared_ptr<option_type>;
         using bivalent_command_ref = std::reference_wrapper<BivalentCommand<char_type>>;
 
         ApplicationCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept;
