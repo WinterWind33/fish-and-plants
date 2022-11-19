@@ -33,7 +33,7 @@ namespace rpi_gc {
 
         void addBivalentCommand(bivalent_command_ref bivalentCommand) noexcept;
 
-        void printHelp(help_ostream_type& outputStream) const noexcept override;
+        constexpr void printHelp(help_ostream_type outputStream) const noexcept override {}
 
     private:
         ostream_ref m_outputStream;

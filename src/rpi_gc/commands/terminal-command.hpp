@@ -22,7 +22,7 @@ namespace rpi_gc {
     struct TerminalCommand : public Command {
         using char_type = std::decay_t<CharT>;
         using string_type = std::basic_string<char_type>;
-        using help_ostream_type = std::basic_ostream<char_type>;
+        using help_ostream_type = std::reference_wrapper<std::basic_ostream<char_type>>;
 
         ~TerminalCommand() noexcept override = default;
 
@@ -38,7 +38,7 @@ namespace rpi_gc {
         //!!
         //! \brief Prints the help page of thic command to the given output stream.
         //!
-        virtual void printHelp(help_ostream_type& outputStream) const noexcept = 0;
+        virtual void printHelp(help_ostream_type outputStream) const noexcept = 0;
     };
 
     using TerminalCommandType = TerminalCommand<CharType>;

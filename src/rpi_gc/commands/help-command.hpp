@@ -43,7 +43,7 @@ namespace rpi_gc {
             m_applicationHelp = std::move(helpString);
         }
 
-        void printHelp(help_ostream_type& outputStream) const noexcept override;
+        void printHelp(help_ostream_type outputStream) const noexcept override;
 
     private:
         ostream_ref m_outputStream;

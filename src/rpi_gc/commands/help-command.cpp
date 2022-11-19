@@ -64,9 +64,9 @@ namespace rpi_gc {
         out << "Developed by " << strings::application::TEAM_NAME << std::endl;
     }
 
-    void HelpCommand::printHelp(help_ostream_type& outputStream) const noexcept {
-        outputStream << ">>> help" << std::endl;
-        outputStream << "\tDescription: prints this help page;";
+    void HelpCommand::printHelp(help_ostream_type outputStream) const noexcept {
+        outputStream.get() << ">>> help" << std::endl;
+        outputStream.get() << "\tDescription: prints this help page;";
     }
 
     void HelpCommand::print_description() noexcept {

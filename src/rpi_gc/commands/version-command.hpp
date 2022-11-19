@@ -40,7 +40,7 @@ namespace rpi_gc {
 
         option_pointer getAsOption() const noexcept { return m_asOption; }
 
-        void printHelp(help_ostream_type& outputStream) const noexcept override;
+        void printHelp(help_ostream_type outputStream) const noexcept override;
 
     private:
         ostream_ref m_outputStream;

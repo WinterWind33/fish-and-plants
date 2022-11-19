@@ -49,16 +49,4 @@ namespace rpi_gc {
         m_bivalentCommands.emplace(asOption->getLongName(), std::move(bivalentCommand));
     }
 
-    void ApplicationCommand::printHelp(help_ostream_type& outputStream) const noexcept {
-        // We initially print the help page header.
-        // print_version();
-        // m_outputStream.get() << strings::application::COPYRIGHT_DISCLAIMER << std::endl;
-        // m_outputStream.get() << std::endl;
-        // m_outputStream.get() << "Developed by " << strings::application::TEAM_NAME << std::endl;
-        // m_outputStream.get() << std::endl;
-
-        // m_optionParser.get().printHelp(m_outputStream.get());
-        // m_outputStream.get() << std::endl;
-    }
-
 } // namespace rpi_gc
