@@ -24,6 +24,7 @@ set(TEST_APP_SOURCE_FILES
     "gh_cmd/default-option-parser.tests.cpp"
 
     "rpi_gc/greenhouse-controller-application.tests.cpp"
+    "rpi_gc/commands/application-command.tests.cpp"
 )
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK AND USE_GMOCK)
