@@ -15,6 +15,11 @@ namespace rpi_gc {
         m_outputStream{std::move(outputStream)},
         m_inputStream{std::move(inputStream)} {}
 
+    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept :
+        m_outputStream{std::move(outputStream)},
+        m_inputStream{std::move(inputStream)} {}
+
+
     bool GreenhouseControllerApplication::processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept {
         std::vector<StringType> tokens{};
         for(std::int32_t i{}; i < argc; ++i)

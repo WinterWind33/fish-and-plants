@@ -23,7 +23,9 @@ namespace rpi_gc {
         using ostream_ref = std::reference_wrapper<OutputStream>;
         using istream_ref = std::reference_wrapper<InputStream>;
 
+        [[deprecated("This constructor should not be used anymore")]]
         GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, std::unique_ptr<option_parser> optionParser) noexcept;
+        GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept;
         ~GreenhouseControllerApplication() noexcept override = default;
 
         //! \brief Does nothing for now.
