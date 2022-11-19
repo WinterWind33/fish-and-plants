@@ -38,7 +38,6 @@ namespace rpi_gc {
         ostream_ref m_outputStream;
         option_parser_ref m_optionParser;
 
-        std::map<option_type::short_name_type, std::function<void()>> m_optionsCallbacks{};
         std::map<option_type::long_name_type, bivalent_command_ref> m_bivalentCommands{};
     };
 
