@@ -11,10 +11,6 @@
 
 namespace rpi_gc {
 
-    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, std::unique_ptr<option_parser> optionParser) noexcept :
-        m_outputStream{std::move(outputStream)},
-        m_inputStream{std::move(inputStream)} {}
-
     GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept :
         m_outputStream{std::move(outputStream)},
         m_inputStream{std::move(inputStream)} {}
@@ -110,7 +106,7 @@ namespace rpi_gc {
         m_outputStream.get() << strings::commands::feedbacks::GOODBYE << std::endl;
     }
 
-    void GreenhouseControllerApplication::addSupportedCommand(std::unique_ptr<TerminalCommandType> command, std::unique_ptr<option_parser> commandOptionParser) noexcept {
+    void GreenhouseControllerApplication::addSupportedCommand(std::unique_ptr<TerminalCommandType> command) noexcept {
         const StringType commandName{command->getName()};
         assert(!m_commands.contains(commandName));
 

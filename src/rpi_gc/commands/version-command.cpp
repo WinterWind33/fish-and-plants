@@ -8,12 +8,6 @@ namespace rpi_gc {
         m_outputStream{std::move(outputStream)},
         m_asOption{std::make_shared<gh_cmd::Switch<char_type>>('v', "version", "Displays the version of this application.")} {}
 
-    bool VersionCommand::processOptions(const options_vector& options, const non_options_vector& nonOptions, const unknown_options_vector& unknowns) noexcept {
-        // This command shouldn't have any valid options.
-        assert(options.empty());
-        return true;
-    }
-
     bool VersionCommand::execute() noexcept {
         m_outputStream.get() << strings::application::NAME << " - Version " <<
             rpi_gc_VERSION_MAJOR << "." << rpi_gc_VERSION_MINOR << "." << rpi_gc_VERSION_PATCH;

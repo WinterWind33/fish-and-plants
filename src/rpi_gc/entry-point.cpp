@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
         std::vector<TerminalCommandType*>{versionCommand.get()}
     )};
 
-    std::unique_ptr<ApplicationOptionParser> applicationOptionParser{std::make_unique<ApplicationOptionParser>("rpi_gc option parser")};
+    std::unique_ptr<ApplicationOptionParser> applicationOptionParser{std::make_unique<ApplicationOptionParser>("rpi_gc command options")};
     std::unique_ptr<ApplicationCommand> applicationCommand{std::make_unique<ApplicationCommand>(std::cout, *applicationOptionParser)};
     applicationCommand->addBivalentCommand(*versionCommand);
     applicationCommand->addBivalentCommand(*helpCommand);
@@ -35,13 +35,13 @@ int main(int argc, char* argv[]) {
     applicationOptionParser->printHelp(applicationHelpStream);
     helpCommand->setApplicationHelp(applicationHelpStream.str());
 
-    GreenhouseControllerApplication mainApplication{std::cout, std::cin, nullptr};
-    mainApplication.addSupportedCommand(std::move(versionCommand), nullptr);
-    mainApplication.addSupportedCommand(std::move(helpCommand), nullptr);
+    GreenhouseControllerApplication mainApplication{std::cout, std::cin};
+    mainApplication.addSupportedCommand(std::move(versionCommand));
+    mainApplication.addSupportedCommand(std::move(helpCommand));
     mainApplication.setApplicationCommand(std::move(applicationCommand));
 
     if(!mainApplication.processInputOptions(argc, argv))
-        return 0;
+        return 1;
 
     mainApplication.run();
 

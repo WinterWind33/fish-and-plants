@@ -19,14 +19,6 @@ namespace rpi_gc {
         }
     }
 
-    bool HelpCommand::processOptions(const options_vector& options,
-            const non_options_vector& nonOptions, const unknown_options_vector& unknown) noexcept {
-        // The help command shouldn't have any option.
-        assert(options.empty());
-
-        return true;
-    }
-
     bool HelpCommand::execute() noexcept {
         print_header();
         m_outputStream.get() << std::endl;

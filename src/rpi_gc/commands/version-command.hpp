@@ -23,13 +23,6 @@ namespace rpi_gc {
 
         constexpr name_type getName() const noexcept override { return strings::commands::VERSION; }
 
-        //!!
-        //! \brief Does nothing. Note: the options vector must be empty, the version command doesn't
-        //!  accept any option.
-        //! \return True
-        bool processOptions(const options_vector& options,
-            const non_options_vector& nonOptions, const unknown_options_vector& unknown) noexcept override;
-
         constexpr bool processInputOptions(const std::vector<string_type>& options) noexcept override { return true; }
 
         //!!

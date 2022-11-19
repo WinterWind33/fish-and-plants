@@ -23,9 +23,6 @@ namespace rpi_gc {
 
         ApplicationCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept;
 
-        bool processOptions(const options_vector& options, const non_options_vector& nonOptions,
-            const unknown_options_vector& unknowns) noexcept override;
-
         bool processInputOptions(const std::vector<string_type>& options) noexcept override;
 
         bool execute() noexcept override;
@@ -36,15 +33,14 @@ namespace rpi_gc {
 
         void addBivalentCommand(bivalent_command_ref bivalentCommand) noexcept;
 
+        void printHelp(help_ostream_type& outputStream) const noexcept override;
+
     private:
         ostream_ref m_outputStream;
         option_parser_ref m_optionParser;
 
         std::map<option_type::short_name_type, std::function<void()>> m_optionsCallbacks{};
         std::map<option_type::long_name_type, bivalent_command_ref> m_bivalentCommands{};
-
-        void print_help() noexcept;
-        void print_version() noexcept;
     };
 
 } // namespace rpi_gc

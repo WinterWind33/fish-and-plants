@@ -23,8 +23,6 @@ namespace rpi_gc {
         using ostream_ref = std::reference_wrapper<OutputStream>;
         using istream_ref = std::reference_wrapper<InputStream>;
 
-        [[deprecated("This constructor should not be used anymore")]]
-        GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, std::unique_ptr<option_parser> optionParser) noexcept;
         GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept;
         ~GreenhouseControllerApplication() noexcept override = default;
 
@@ -35,7 +33,7 @@ namespace rpi_gc {
 
         //! \brief Adds a command with its option parser to the internal command parsers map.
         //!  The command MUST not exist inside the internal pool. The option parser must be valid.
-        void addSupportedCommand(std::unique_ptr<TerminalCommandType> command, std::unique_ptr<option_parser> commandOptionParser) noexcept;
+        void addSupportedCommand(std::unique_ptr<TerminalCommandType> command) noexcept;
 
         //!!
         //! \brief Sets the supported terminal command for this application, i.e. the command that the user
