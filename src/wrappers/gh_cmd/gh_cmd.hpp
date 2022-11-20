@@ -117,6 +117,7 @@ namespace gh_cmd {
 
         virtual ~OptionParser() noexcept = default;
 
+        //! \brief Adds an option to the option parser.
         virtual void addOption(std::shared_ptr<CommandOption<char_type>> option) noexcept = 0;
 
         //! \brief Adds a switch to the command representation.
