@@ -23,6 +23,7 @@ set(RPI_GC_SOURCE_FILES
     "commands/application-command.cpp"
     "commands/version-command.cpp"
     "commands/help-command.cpp"
+    "commands/automatic-watering/automatic-watering-command.cpp"
 )
 
 # Here we add a library target so we can use it to link it against
