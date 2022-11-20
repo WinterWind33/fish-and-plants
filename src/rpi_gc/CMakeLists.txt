@@ -12,6 +12,7 @@ set(RPI_GC_HEADER_FILES
     "commands/version-command.hpp"
     "commands/help-command.hpp"
     "commands/bivalent-command.hpp"
+    "commands/automatic-watering/automatic-watering-command.hpp"
     "user-interface/application-strings.hpp"
     "user-interface/commands-strings.hpp"
 )
