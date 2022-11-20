@@ -11,11 +11,12 @@
 namespace rpi_gc::mocks {
 
     template<typename CharT>
-    class BivalentCommandMock : public BivalentCommand {
+    class BivalentCommandMock : public BivalentCommand<CharT> {
     public:
         using typename TerminalCommand<CharT>::name_type;
         using typename TerminalCommand<CharT>::string_type;
         using typename TerminalCommand<CharT>::help_ostream_type;
+        using typename BivalentCommand<CharT>::option_pointer;
 
         ~BivalentCommandMock() noexcept override = default;
 

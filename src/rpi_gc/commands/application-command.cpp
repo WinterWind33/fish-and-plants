@@ -2,7 +2,6 @@
 #include <commands/application-command.hpp>
 
 #include <rpi_gc-config-file.hpp> // For printing the version.
-#include <user-interface/commands-strings.hpp>
 
 // C++ STL
 #include <cassert>
