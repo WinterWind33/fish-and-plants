@@ -90,5 +90,62 @@ TEST_CASE("ApplicationCommand generic unit tests", "[unit][solitary][rpi_gc][App
 }
 
 TEST_CASE("ApplicationCommand execution unit tests", "[unit][solitary][rpi_gc][ApplicationCommand][execution]") {
+    using namespace rpi_gc;
+    using testing::NiceMock;
+    using testing::StrictMock;
 
+    using OptionParserMock = NiceMock<gh_cmd::mocks::OptionParserMock<CharType>>;
+    using BivalentCommandMock = mocks::BivalentCommandMock<CharType>;
+    using CommandOptionMock = gh_cmd::mocks::CommandOptionMock<CharType>;
+
+    OutputStringStream outputStream{};
+    OptionParserMock optionParser{};
+    ApplicationCommand commandUnderTest{outputStream, optionParser};
+
+    GIVEN("An input line with a valid option") {
+        using OptionPointer = std::shared_ptr<const gh_cmd::CommandOption<CharType>>;
+
+        std::vector<ApplicationCommand::string_type> inputLine{
+            StringType{strings::application::EXECUTABLE_NAME},
+            "--version"
+        };
+
+        std::shared_ptr<NiceMock<CommandOptionMock>> commandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
+        ON_CALL(*commandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::VERSION}));
+        ON_CALL(*commandOptionMock, isSet).WillByDefault(testing::Return(true));
+
+        ON_CALL(optionParser, getOptions).WillByDefault(testing::Return(std::vector<OptionPointer>{commandOptionMock}));
+
+        StrictMock<BivalentCommandMock> commandMock{};
+        EXPECT_CALL(commandMock, getAsOption).WillRepeatedly(testing::Return(commandOptionMock));
+
+        commandUnderTest.addBivalentCommand(commandMock);
+        commandUnderTest.processInputOptions(inputLine);
+
+        WHEN("The command is executed") {
+            THEN("It should be called the related command") {
+                EXPECT_CALL(commandMock, executeAsOption)
+                    .Times(1)
+                    .WillOnce(testing::Return(true));
+
+                commandUnderTest.execute();
+            }
+
+            THEN("It should return the same result as the option execution") {
+                EXPECT_CALL(commandMock, executeAsOption)
+                    .WillOnce(testing::Return(true))
+                    .WillOnce(testing::Return(false));
+
+                bool bRes{commandUnderTest.execute()};
+                CHECK(bRes);
+
+                bRes = commandUnderTest.execute();
+                CHECK_FALSE(bRes);
+            }
+        }
+    }
+
+    GIVEN("An input line with two options and one is the help one.") {
+
+    }
 }
