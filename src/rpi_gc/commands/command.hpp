@@ -4,9 +4,6 @@
 
 #include <common/types.hpp>
 
-// C++ STL
-#include <string_view>
-
 namespace rpi_gc {
 
     //! \brief Represents a command that can be executed. This is the
@@ -14,7 +11,7 @@ namespace rpi_gc {
     struct Command {
         virtual ~Command() noexcept = default;
 
-        using name_type = std::basic_string_view<CharType>;
+        using name_type = StringViewType;
 
         //!!
         //! \brief Get the name of this command

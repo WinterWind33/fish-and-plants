@@ -6,7 +6,7 @@
 // C++ STL
 #include <string_view>
 
-TEST_CASE("DefaultOptionParser unit tests", "[unit][sociable][gh_cmd][DefaultOptionParser]") {
+TEST_CASE("DefaultOptionParser parse() method unit tests", "[unit][sociable][gh_cmd][DefaultOptionParser]") {
     using namespace gh_cmd;
 
     GIVEN("A DefaultOptionParser") {

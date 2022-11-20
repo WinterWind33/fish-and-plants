@@ -4,12 +4,13 @@
 #include <greenhouse-controller-application.hpp>
 #include <rpi_gc-config-file.hpp>
 
+// User interface
+#include <user-interface/application-strings.hpp>
+
 // Test doubles
-#include <gh_cmd/test-doubles/option-parser.mock.hpp>
 #include <rpi_gc/test-doubles/commands/terminal-command.mock.hpp>
 
 // C++ STL
-#include <sstream>
 #include <cstdint>
 
 namespace tests {
@@ -48,28 +49,28 @@ namespace tests {
 TEST_CASE("GreenhouseControllerApplication Header Lines", "[functional][rpi_gc][GreenhouseControllerApplication][application-header]") {
     using namespace rpi_gc;
 
-    rpi_gc::OutputStringStream outputStream{};
-    rpi_gc::InputStringStream inputStream{"exit"};
+    OutputStringStream outputStream{};
+    InputStringStream inputStream{"exit"};
 
-    GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_unique<testing::StrictMock<gh_cmd::mocks::OptionParserMock<CharType>>>()};
+    GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
 
     SECTION("When running the application") {
         SECTION("It should correctly print the application name and version (first line)") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyLineEqual(1, outputStream, rpi_gc::StringType{"Greenhouse Controller "} + tests::GenerateVersionString());
+            tests::VerifyLineEqual(1, outputStream, StringType{strings::application::NAME} + StringType{" "} + tests::GenerateVersionString());
         }
 
         SECTION("It should correctly print the copyright disclaimer (second line)") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyLineEqual(2, outputStream, "Copyright (c) 2022 Andrea Ballestrazzi");
+            tests::VerifyLineEqual(2, outputStream, StringType{strings::application::COPYRIGHT_DISCLAIMER});
         }
 
         SECTION("It should correctly print the team credit") {
             REQUIRE_NOTHROW(applicationUnderTest.run());
 
-            tests::VerifyLineEqual(4, outputStream, "-- Fish&Plants Team --");
+            tests::VerifyLineEqual(4, outputStream, StringType{"-- "} + StringType{strings::application::TEAM_NAME} + StringType{" --"});
         }
 
         SECTION("It should add an end line between the disclaimer and the team credit") {
@@ -92,30 +93,18 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
     GIVEN("An application controller") {
         InputStringStream inputStream{};
         OutputStringStream outputStream{};
-
-        using TerminalOptionParserMock = testing::StrictMock<gh_cmd::mocks::OptionParserMock<CharType>>;
-        std::unique_ptr<TerminalOptionParserMock> parserMockPtr{std::make_unique<TerminalOptionParserMock>()};
-
-        TerminalOptionParserMock* terminalParserMock{parserMockPtr.get()};
-
-        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::move(parserMockPtr)};
+        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
 
         WHEN("A supported option (help) is given into the terminal buffer") {
-            std::vector<const CharType*> strings{"rpi_gc", "--help"};
+            std::vector<const CharType*> strings{strings::application::EXECUTABLE_NAME.data(), "--help"};
 
-            THEN("The parser should be called one time") {
-                mocks::TerminalCommandMock<CharType>* appCommandMock{};
-                auto commandMockPtr = std::make_unique<testing::NiceMock<mocks::TerminalCommandMock<CharType>>>();
-                appCommandMock = commandMockPtr.get();
+            THEN("The application command should correctly parse the input line") {
+                auto commandMockPtr = std::make_unique<testing::StrictMock<mocks::TerminalCommandMock<CharType>>>();
+                testing::Expectation exp1 = EXPECT_CALL(*commandMockPtr, processInputOptions(std::vector<StringType>{strings::application::EXECUTABLE_NAME.data(), "--help"}))
+                   .Times(1)
+                   .WillOnce(testing::Return(true));
 
                 applicationUnderTest.setApplicationCommand(std::move(commandMockPtr));
-                ON_CALL(*appCommandMock, processOptions).WillByDefault(testing::Return(true));
-
-                testing::Expectation exp1 = EXPECT_CALL(*terminalParserMock, parse(std::vector<StringType>({StringType{"rpi_gc"}, StringType{"--help"}}))).Times(1);
-                EXPECT_CALL(*terminalParserMock, getOptions).After(exp1);
-                EXPECT_CALL(*terminalParserMock, getNonOptionArguments).After(exp1);
-                EXPECT_CALL(*terminalParserMock, getUnknownOptions).After(exp1);
-
                 applicationUnderTest.processInputOptions(2, strings.data());
             }
         }

@@ -3,23 +3,20 @@
 
 // Resources
 #include <rpi_gc-config-file.hpp>
+#include <user-interface/commands-strings.hpp>
 
 // C++ STL
 #include <utility>
-#include <string_view>
-#include <sstream>
 #include <vector>
 
 namespace rpi_gc {
 
-    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, std::unique_ptr<option_parser> optionParser) noexcept :
+    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept :
         m_outputStream{std::move(outputStream)},
-        m_inputStream{std::move(inputStream)},
-        m_terminalInputOptionParser{std::move(optionParser)} {}
+        m_inputStream{std::move(inputStream)} {}
+
 
     bool GreenhouseControllerApplication::processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept {
-        assert(m_terminalInputOptionParser != nullptr);
-
         std::vector<StringType> tokens{};
         for(std::int32_t i{}; i < argc; ++i)
             tokens.push_back(argv[i]);
@@ -28,13 +25,7 @@ namespace rpi_gc {
         // from the application itselt (the first token).
         if(tokens.size() > 1) {
             assert(m_applicationCommand != nullptr);
-            m_terminalInputOptionParser->parse(tokens);
-
-            m_bCanApplicationCommandExecute = m_applicationCommand->processOptions(
-                m_terminalInputOptionParser->getOptions(),
-                m_terminalInputOptionParser->getNonOptionArguments(),
-                m_terminalInputOptionParser->getUnknownOptions()
-            );
+            m_bCanApplicationCommandExecute = m_applicationCommand->processInputOptions(tokens);
 
             // If we are in this conditional branch then for now we don't have
             // situations where this can be false.
@@ -66,13 +57,11 @@ namespace rpi_gc {
         print_app_header();
 
         // Now we begin the user input loop.
-        constexpr StringView EXIT_COMMAND{"exit"};
-        constexpr StringView TYPE_HELP_FEEDBACK{"Type \'help\' for a list of the available commands."};
         std::string inputLine{};
 
-        m_outputStream.get() << TYPE_HELP_FEEDBACK << std::endl;
+        m_outputStream.get() << strings::commands::feedbacks::TYPE_HELP << std::endl;
 
-        while(inputLine != EXIT_COMMAND && m_inputStream.get().good()) {
+        while(inputLine != strings::commands::EXIT && m_inputStream.get().good()) {
             m_outputStream.get() << "user@controller/home$ ";
             std::getline(m_inputStream.get(), inputLine);
 
@@ -91,22 +80,17 @@ namespace rpi_gc {
 
             // If the user requested to exit the program we can exit the
             // execution.
-            if(commandName == EXIT_COMMAND)
+            if(commandName == strings::commands::EXIT)
                 continue;
 
-            if(!m_commandsOptionParsers.contains(commandName)) {
-                constexpr StringView UNKNOWN_COMMAND_FEEDBACK{"command not recognized."};
-
+            if(!m_commands.contains(commandName)) {
                 // The user typed an unknown command.
-                m_outputStream.get() << commandName << ": " << UNKNOWN_COMMAND_FEEDBACK << " " << TYPE_HELP_FEEDBACK << std::endl << std::endl;
+                m_outputStream.get() << commandName << ": " << strings::commands::feedbacks::UNRECOGNIZED_COMMAND << " "
+                    << strings::commands::feedbacks::TYPE_HELP << std::endl << std::endl;
                 continue;
             }
 
-            assert(m_commandsOptionParsers[commandName] != nullptr);
-            const auto& optionParser = m_commandsOptionParsers.at(commandName);
-
-            assert(m_commands.contains(commandName));
-            const bool bCanExec = m_commands[commandName]->processOptions(optionParser->getOptions(), optionParser->getNonOptionArguments(), optionParser->getUnknownOptions());
+            const bool bCanExec = m_commands.at(commandName)->processInputOptions(lineTokens);
             if(bCanExec) {
                 m_commands[commandName]->execute();
             }
@@ -116,32 +100,26 @@ namespace rpi_gc {
             m_outputStream.get() << std::endl;
         }
 
-        m_outputStream.get() << "Tearing down...";
+        m_outputStream.get() << strings::commands::feedbacks::TEARING_DOWN;
         teardown();
         m_outputStream.get() << "Done." << std::endl;
-        m_outputStream.get() << "Goodbye." << std::endl;
+        m_outputStream.get() << strings::commands::feedbacks::GOODBYE << std::endl;
     }
 
-    void GreenhouseControllerApplication::addSupportedCommand(std::unique_ptr<TerminalCommandType> command, std::unique_ptr<option_parser> commandOptionParser) noexcept {
+    void GreenhouseControllerApplication::addSupportedCommand(std::unique_ptr<TerminalCommandType> command) noexcept {
         const StringType commandName{command->getName()};
-        assert(!m_commandsOptionParsers.contains(commandName));
         assert(!m_commands.contains(commandName));
 
-        m_commands[commandName] = std::move(command);
-        m_commandsOptionParsers.emplace(std::move(commandName), std::move(commandOptionParser));
+        m_commands.emplace(commandName, std::move(command));
     }
 
     void GreenhouseControllerApplication::print_app_header() noexcept {
         using StringView = std::basic_string_view<CharType>;
 
-        constexpr StringView APPLICATION_NAME{"Greenhouse Controller"};
-        constexpr StringView COPYRIGHT_DISCLAIMER{"Copyright (c) 2022 Andrea Ballestrazzi"};
-        constexpr StringView TEAM_CREDIT{"-- Fish&Plants Team --"};
-
-        m_outputStream.get() << APPLICATION_NAME << " " << GreenhouseControllerApplication::create_version_string() << std::endl;
-        m_outputStream.get() << COPYRIGHT_DISCLAIMER << std::endl;
+        m_outputStream.get() << strings::application::NAME << " " << GreenhouseControllerApplication::create_version_string() << std::endl;
+        m_outputStream.get() << strings::application::COPYRIGHT_DISCLAIMER << std::endl;
         m_outputStream.get() << std::endl;
-        m_outputStream.get() << TEAM_CREDIT << std::endl;
+        m_outputStream.get() << "-- " << strings::application::TEAM_NAME << " --" << std::endl;
         m_outputStream.get() << std::endl;
     }
 
@@ -157,8 +135,6 @@ namespace rpi_gc {
     void GreenhouseControllerApplication::teardown() noexcept {
         m_inputStream.get().clear(std::ios::goodbit);
         m_outputStream.get().clear(std::ios::goodbit);
-
-        m_commandsOptionParsers.clear();
     }
 
     void GreenhouseControllerApplication::setApplicationCommand(std::unique_ptr<TerminalCommandType> appCommand) noexcept {

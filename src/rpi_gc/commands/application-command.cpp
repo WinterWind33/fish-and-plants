@@ -5,117 +5,71 @@
 
 // C++ STL
 #include <cassert>
-#include <string_view>
-#include <algorithm>
+#include <algorithm> // for std::find_if
 
 namespace rpi_gc {
 
     ApplicationCommand::ApplicationCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept :
         m_outputStream{std::move(outputStream)},
-        m_optionParser{std::move(optionParser)} {
+        m_optionParser{std::move(optionParser)} {}
 
-#ifndef NDEBUG
-        // Note: this is a temporary implementation in order to reach the end of the MVP UX.0. In the future
-        // this behaviour needs to be injectable.
-        const auto supportedOptions{m_optionParser.get().getOptions()};
-
-        auto checkSupportedOption = [&supportedOptions](const option_type::short_name_type shortName) -> bool {
-            const auto resIt = std::find_if(supportedOptions.cbegin(), supportedOptions.cend(),
-            [shortName](const std::shared_ptr<const option_type>& option) -> bool {
-                return option->getShortName() == shortName;
-            });
-
-            return resIt != supportedOptions.cend();
-        };
-#endif // !NDEBUG
-        assert(checkSupportedOption('h')); // Supports help option
-        assert(checkSupportedOption('v')); // Supports version option
-
-        // We initialize the supported options callbacks for this application here.
-        // NOTE: possible DIP breaking?
-        m_optionsCallbacks['h'] = [this](){ print_help(); };
-        m_optionsCallbacks['v'] = [this](){ print_version(); };
-    }
-
-    bool ApplicationCommand::processOptions(const options_vector& options, const non_options_vector& nonOptions,
-            const unknown_options_vector& unknowns) noexcept {
-        // Here we don't need to do anything because we already have the reference to the option parser that
-        // contains all the supported options.
-        // Here we simply check that the given parameters are the same as the ones inside the option
-        // parser.
-        assert(m_optionParser.get().getOptions().size() == options.size());
-        assert(m_optionParser.get().getNonOptionArguments().size() == nonOptions.size());
-        assert(m_optionParser.get().getUnknownOptions().size() == unknowns.size());
+    bool ApplicationCommand::processInputOptions(const std::vector<string_type>& options) noexcept {
+        m_optionParser.get().parse(options);
 
         return true;
     }
 
     bool ApplicationCommand::execute() noexcept {
-        bool bCanContinueExecution{true};
-        std::vector<std::function<void()>> callbacksToExecute{};
+        using OptionPointer = std::shared_ptr<const option_type>;
 
-        const auto supportedOptions{m_optionParser.get().getOptions()};
+        // For each option we check if a bivalent command is set as an option.
+        // For now we only have bivalent commands
+        bool bCanContinue{true};
+        const auto commandOptions{m_optionParser.get().getOptions()};
 
-        auto isOptionSet = [&supportedOptions](const option_type::short_name_type shortName) -> bool {
-            const auto resIt = std::find_if(supportedOptions.cbegin(), supportedOptions.cend(),
-            [shortName](const std::shared_ptr<const option_type>& option) -> bool {
-                return option->getShortName() == shortName && option->isSet();
-            });
+        // The help option has the highest priority throughout the supported
+        // commands. If the help option is set we need to execute it and return
+        // so other options are not executed.
+        auto endIterator = commandOptions.cend();
+        auto helpIt = std::find_if(commandOptions.cbegin(), endIterator, [](const OptionPointer& option){
+            assert(option != nullptr);
 
-            return resIt != supportedOptions.cend();
-        };
+            return option->getLongName() == strings::commands::HELP;
+        });
 
-        if(isOptionSet('h')) {
-            assert(m_optionsCallbacks.contains('h'));
-            m_optionsCallbacks['h']();
-
-            // Tipically we don't want to execute the application if the
-            // user typed --help
+        if(helpIt != endIterator && (*helpIt)->isSet()) {
+            // Help option is set, we can execute it.
+            m_bivalentCommands.at((*helpIt)->getLongName()).get().executeAsOption();
             return false;
         }
 
-        for(const auto& option : supportedOptions) {
+
+        for(const auto& option : commandOptions) {
             assert(option != nullptr);
 
+            const auto longName = option->getLongName();
+            assert(m_bivalentCommands.contains(longName));
+
             if(option->isSet()) {
-                assert(m_optionsCallbacks[option->getShortName()]);
+                // If the option is set we execute th ebivalent command as option.
+                bCanContinue = m_bivalentCommands.at(longName).get().executeAsOption();
 
-                callbacksToExecute.push_back(m_optionsCallbacks[option->getShortName()]);
-
-                // Tipically we don't want to execute the application if the
-                // user typed --version
-                if(option->getShortName() == 'v')
-                    bCanContinueExecution = false;
+                if(!bCanContinue)
+                    break;
             }
         }
 
-        for(std::function<void()> callback : callbacksToExecute)
-            callback();
-
-        return bCanContinueExecution;
+        return bCanContinue;
     }
 
-    void ApplicationCommand::print_help() noexcept {
-        constexpr std::string_view COPYRIGHT_DISCLAIMER{"Copyright (c) 2022 Andrea Ballestrazzi"};
-        constexpr std::string_view TEAM_NAME{"Fish&Plants Team"};
+    void ApplicationCommand::addBivalentCommand(bivalent_command_ref bivalentCommand) noexcept {
+        bivalent_command_ref::type::option_pointer asOption{bivalentCommand.get().getAsOption()};
 
-        // We initially print the help page header.
-        print_version();
-        m_outputStream.get() << COPYRIGHT_DISCLAIMER << std::endl;
-        m_outputStream.get() << std::endl;
-        m_outputStream.get() << "Developed by " << TEAM_NAME << std::endl;
-        m_outputStream.get() << std::endl;
+        assert(asOption != nullptr);
+        assert(!m_bivalentCommands.contains(asOption->getLongName()));
 
-        m_optionParser.get().printHelp(m_outputStream.get());
-        m_outputStream.get() << std::endl;
-    }
-
-    void ApplicationCommand::print_version() noexcept {
-        constexpr std::string_view APPLICATION_NAME{"Greenhouse Controller"};
-        m_outputStream.get() << APPLICATION_NAME << " - Version " <<
-            rpi_gc_VERSION_MAJOR << "." <<
-            rpi_gc_VERSION_MINOR << "." <<
-            rpi_gc_VERSION_PATCH << std::endl;
+        m_optionParser.get().addOption(asOption);
+        m_bivalentCommands.emplace(asOption->getLongName(), std::move(bivalentCommand));
     }
 
 } // namespace rpi_gc

@@ -17,32 +17,31 @@
 int main(int argc, char* argv[]) {
     using namespace rpi_gc;
 
-    // We pass the standard output as the output stream and the standard input as the input stream for now.
-    // This may change in the future.
-    using TerminalOptionParser = gh_cmd::DefaultOptionParser<CharType>;
-    std::unique_ptr<TerminalOptionParser> terminalOptionParser{std::make_unique<TerminalOptionParser>("rpi_gc options")};
-    terminalOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('h', "help", "Prints the help page (does not run the app)."));
-    terminalOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('v', "version", "Displays the version of the application (does not run the app)."));
+    using ApplicationOptionParser = gh_cmd::DefaultOptionParser<CharType>;
 
-    std::unique_ptr<ApplicationCommand> applicationCommand{std::make_unique<ApplicationCommand>(std::cout, *terminalOptionParser)};
+    OutputStringStream applicationHelpStream{};
 
-    GreenhouseControllerApplication mainApplication{std::cout, std::cin, std::move(terminalOptionParser)};
+    std::unique_ptr<VersionCommand> versionCommand{std::make_unique<VersionCommand>(std::cout)};
+    std::unique_ptr<HelpCommand> helpCommand{std::make_unique<HelpCommand>(
+        std::cout,
+        std::vector<TerminalCommandType*>{versionCommand.get()}
+    )};
+
+    std::unique_ptr<ApplicationOptionParser> applicationOptionParser{std::make_unique<ApplicationOptionParser>("rpi_gc command options")};
+    std::unique_ptr<ApplicationCommand> applicationCommand{std::make_unique<ApplicationCommand>(std::cout, *applicationOptionParser)};
+    applicationCommand->addBivalentCommand(*versionCommand);
+    applicationCommand->addBivalentCommand(*helpCommand);
+
+    applicationOptionParser->printHelp(applicationHelpStream);
+    helpCommand->setApplicationHelp(applicationHelpStream.str());
+
+    GreenhouseControllerApplication mainApplication{std::cout, std::cin};
+    mainApplication.addSupportedCommand(std::move(versionCommand));
+    mainApplication.addSupportedCommand(std::move(helpCommand));
     mainApplication.setApplicationCommand(std::move(applicationCommand));
 
-    std::unique_ptr<TerminalOptionParser> versionParser{std::make_unique<TerminalOptionParser>("version command - displays the software version")};
-
-    HelpCommand::option_parsers_map optionParsers{};
-    optionParsers.emplace("version", *versionParser);
-
-    mainApplication.addSupportedCommand(std::make_unique<VersionCommand>(std::cout), std::move(versionParser));
-
-    std::unique_ptr<TerminalOptionParser> helpParser{std::make_unique<TerminalOptionParser>("help command - displays this help page")};
-    optionParsers.emplace("help", *helpParser);
-
-    mainApplication.addSupportedCommand(std::make_unique<HelpCommand>(std::cout, std::move(optionParsers)), std::move(helpParser));
-
     if(!mainApplication.processInputOptions(argc, argv))
-        return 0;
+        return 1;
 
     mainApplication.run();
 

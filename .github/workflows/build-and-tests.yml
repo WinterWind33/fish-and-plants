@@ -39,5 +39,8 @@ jobs:
     - name: Unit Tests Run
       run: ${{github.workspace}}/bin/test_app --order rand [unit]
 
+    - name: Integration Tests Run
+      run: ${{github.workspace}}/bin/test_app --order rand [integration]
+
     - name: Functional Tests Run
       run: ${{github.workspace}}/bin/test_app --order rand [functional]

@@ -12,7 +12,9 @@ set(TEST_APP_HEADER_FILES
     "gh_hal/test-doubles/hal-context.mock.hpp"
     "gh_cmd/test-doubles/option-visitor.mock.hpp"
     "gh_cmd/test-doubles/option-parser.mock.hpp"
+    "gh_cmd/test-doubles/command-option.mock.hpp"
     "rpi_gc/test-doubles/commands/terminal-command.mock.hpp"
+    "rpi_gc/test-doubles/commands/bivalent-command.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
@@ -23,7 +25,12 @@ set(TEST_APP_SOURCE_FILES
     "gh_cmd/switch.tests.cpp"
     "gh_cmd/default-option-parser.tests.cpp"
 
+    # rpi_gc
     "rpi_gc/greenhouse-controller-application.tests.cpp"
+    "rpi_gc/commands/application-command.tests.cpp"
+
+    # integration tests
+    "integration/rpi_gc/application-command-integration.tests.cpp"
 )
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK AND USE_GMOCK)
