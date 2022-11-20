@@ -146,6 +146,44 @@ TEST_CASE("ApplicationCommand execution unit tests", "[unit][solitary][rpi_gc][A
     }
 
     GIVEN("An input line with two options and one is the help one.") {
+        using OptionPointer = std::shared_ptr<const gh_cmd::CommandOption<CharType>>;
 
+        std::vector<ApplicationCommand::string_type> inputLine{
+            StringType{strings::application::EXECUTABLE_NAME},
+            "--help"
+            "--version"
+        };
+
+        std::shared_ptr<NiceMock<CommandOptionMock>> versionCommandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
+        ON_CALL(*versionCommandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::VERSION}));
+        ON_CALL(*versionCommandOptionMock, isSet).WillByDefault(testing::Return(true));
+
+        std::shared_ptr<NiceMock<CommandOptionMock>> helpCommandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
+        ON_CALL(*helpCommandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::HELP}));
+        ON_CALL(*helpCommandOptionMock, isSet).WillByDefault(testing::Return(true));
+
+        ON_CALL(optionParser, getOptions).WillByDefault(testing::Return(std::vector<OptionPointer>{versionCommandOptionMock, helpCommandOptionMock}));
+
+        StrictMock<BivalentCommandMock> versionCommandMock{};
+        EXPECT_CALL(versionCommandMock, getAsOption).WillRepeatedly(testing::Return(versionCommandOptionMock));
+
+        StrictMock<BivalentCommandMock> helpCommandMock{};
+        EXPECT_CALL(helpCommandMock, getAsOption).WillRepeatedly(testing::Return(helpCommandOptionMock));
+
+        commandUnderTest.addBivalentCommand(versionCommandMock);
+        commandUnderTest.addBivalentCommand(helpCommandMock);
+
+        commandUnderTest.processInputOptions(inputLine);
+
+        WHEN("The command is executed") {
+            THEN("It should be executed only the help command as option") {
+                EXPECT_CALL(versionCommandMock, executeAsOption).Times(0);
+                EXPECT_CALL(helpCommandMock, executeAsOption)
+                    .Times(1)
+                    .WillOnce(testing::Return(false));
+
+                commandUnderTest.execute();
+            }
+        }
     }
 }
