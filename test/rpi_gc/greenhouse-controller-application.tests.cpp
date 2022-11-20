@@ -100,7 +100,7 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
 
             THEN("The application command should correctly parse the input line") {
                 auto commandMockPtr = std::make_unique<testing::StrictMock<mocks::TerminalCommandMock<CharType>>>();
-                testing::Expectation exp1 = EXPECT_CALL(*commandMockPtr, processInputOptions(std::vector<StringType>{"rpi_gc", "--help"}))
+                testing::Expectation exp1 = EXPECT_CALL(*commandMockPtr, processInputOptions(std::vector<StringType>{strings::application::EXECUTABLE_NAME.data(), "--help"}))
                    .Times(1)
                    .WillOnce(testing::Return(true));
 

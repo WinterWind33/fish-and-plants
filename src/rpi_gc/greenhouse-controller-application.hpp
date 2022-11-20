@@ -30,8 +30,8 @@ namespace rpi_gc {
 
         bool processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept override;
 
-        //! \brief Adds a command with its option parser to the internal command parsers map.
-        //!  The command MUST not exist inside the internal pool. The option parser must be valid.
+        //! \brief Adds a command that can be executed during the application loop.
+        //!  The command MUST not exist inside the internal pool.
         void addSupportedCommand(std::unique_ptr<TerminalCommandType> command) noexcept;
 
         //!!
