@@ -21,6 +21,15 @@ namespace rpi_gc {
     void AutomaticWateringCommand::printHelp(help_ostream_type outputStream) const noexcept {
         assert(m_optionParser != nullptr);
 
+        outputStream.get() << "[NAME]" << std::endl;
+        outputStream.get() << "\t" << strings::commands::AUTOMATIC_WATERING << " - manages the automatic irrigation of the greenhouse" << std::endl;
+        outputStream.get() << "[SYNOPSIS]" << std::endl;
+        outputStream.get() << "\t" << strings::commands::AUTOMATIC_WATERING << " [OPTION]..." << std::endl;
+        outputStream.get() << "[DESCRIPTION]" << std::endl;
+        outputStream.get() << "\t" << "Manages the automatic irrigation of the greenhouse activating or" << std::endl;
+        outputStream.get() << "\tdisactivating the pump and the valve in order to make the water flow." << std::endl;
+        outputStream.get() << std::endl;
+
         m_optionParser->printHelp(outputStream.get());
     }
 
