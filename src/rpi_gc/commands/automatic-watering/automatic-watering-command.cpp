@@ -1,6 +1,9 @@
 // Copyright (C) 2022 Andrea Ballestrazzi
 #include <commands/automatic-watering/automatic-watering-command.hpp>
 
+// C++ STL
+#include <algorithm>
+
 namespace rpi_gc {
 
     AutomaticWateringCommand::AutomaticWateringCommand(ostream_ref outputStream, option_parser_pointer optionParser) noexcept :
@@ -15,6 +18,24 @@ namespace rpi_gc {
     }
 
     bool AutomaticWateringCommand::execute() noexcept {
+        const auto& options{m_optionParser->getOptions()};
+
+        // First of all we need to check if the help
+        // option is set. If this is the case we need to
+        // execute it first and return.
+        auto optionIt = std::find_if(options.cbegin(), options.cend(), [](const option_parser::const_option_pointer& option){
+            assert(option != nullptr);
+
+            return option->getLongName() == strings::commands::HELP;
+        });
+
+        if(optionIt != options.cend() && (*optionIt)->isSet()) {
+            // We have found the command help and it's set. We can execute it.
+            printHelp(m_outputStream.get());
+
+            return true;
+        }
+
         return true;
     }
 
