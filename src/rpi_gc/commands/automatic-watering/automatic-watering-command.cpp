@@ -36,6 +36,23 @@ namespace rpi_gc {
             return true;
         }
 
+        for(const auto& option : options) {
+            assert(option != nullptr);
+
+            if(option->isSet() && m_optionsEvents.contains(option->getLongName())) {
+                // We retrieve all the events in the map.
+                auto iteratorPair = m_optionsEvents.equal_range(option->getLongName());
+
+                for(auto it = std::get<0>(iteratorPair); it != std::get<1>(iteratorPair); ++it) {
+                    const option_event& event{std::get<1>(*it)};
+                    assert((bool)event);
+
+                    // We trigger the event.
+                    event(option);
+                }
+            }
+        }
+
         return true;
     }
 
@@ -52,6 +69,19 @@ namespace rpi_gc {
         outputStream.get() << std::endl;
 
         m_optionParser->printHelp(outputStream.get());
+    }
+
+    void AutomaticWateringCommand::registerOptionEvent(option_type::long_name_type optionName, option_event event) noexcept {
+        assert(!optionName.empty());
+
+        if(optionName == strings::commands::HELP) {
+            // The user can't register an event for the "--help" command.
+            assert(false);
+
+            return;
+        }
+
+        m_optionsEvents.emplace(std::move(optionName), std::move(event));
     }
 
 } // namespace rpi_gc

@@ -8,6 +8,7 @@
 
 // C++ STL
 #include <functional>
+#include <map>
 
 namespace rpi_gc {
 
@@ -19,6 +20,8 @@ namespace rpi_gc {
         using option_parser = gh_cmd::OptionParser<char_type>;
         using option_parser_pointer = std::unique_ptr<option_parser>;
         using ostream_ref = std::reference_wrapper<std::basic_ostream<char_type>>;
+        using option_event = std::function<void(option_parser::const_option_pointer)>;
+        using option_type = gh_cmd::CommandOption<char_type>;
 
         AutomaticWateringCommand(ostream_ref outputStream, option_parser_pointer optionParser) noexcept;
 
@@ -32,9 +35,15 @@ namespace rpi_gc {
             return strings::commands::AUTOMATIC_WATERING;
         }
 
+        void registerOptionEvent(option_type::long_name_type optionName, option_event event) noexcept;
+
     private:
         ostream_ref m_outputStream;
         option_parser_pointer m_optionParser{};
+
+        // Map of events that need to be triggered when an option
+        // is activated.
+        std::multimap<option_type::long_name_type, option_event> m_optionsEvents{};
     };
 
 } // namespace rpi_gc
