@@ -19,7 +19,7 @@ jobs:
           submodules: recursive
 
       - name: Compiler Setup
-        run: sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
+        run: sudo apt-get install gcc-10-aarch64-linux-gnu g++-10-aarch64-linux-gnu binutils-aarch64-linux-gnu
 
       - name: CMake configure
         run: |
@@ -28,3 +28,8 @@ jobs:
 
       - name: AARCH64 Build
         run: cmake --build ./build --config Release
+
+      - name: TEST Files
+        run: |
+          file ./bin/rpi_gc
+          file ./bin/test_app
