@@ -28,8 +28,3 @@ jobs:
 
       - name: AARCH64 Build
         run: cmake --build ./build --config Release
-
-      - name: TEST Files
-        run: |
-          file ./bin/rpi_gc
-          file ./bin/test_app
