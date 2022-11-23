@@ -21,7 +21,10 @@ jobs:
       - name: Compiler Setup
         run: sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
 
-      - name: Build All
+      - name: CMake configure
         run: |
-          sudo chmod +x ./scripts/aarch64-perform-release.sh
-          ./scripts/aarch64-perform-release.sh
+          mkdir build
+          cmake -B ./build -DCOMPILE_AARCH64_ON_LINUX=True -DCOMPILE_FOR_CORTEX_A53=True --toolchain "toolchains/aarch64-toolchain.cmake"
+
+      - name: AARCH64 Build
+        run: cmake --build ./build --config Release
