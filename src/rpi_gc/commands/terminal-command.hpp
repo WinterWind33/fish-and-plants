@@ -31,10 +31,10 @@ namespace rpi_gc {
         //! \brief Processes the given line tokens. The tokens should contain the command name
         //!  as the first token.
         //!
-        //! \param inputTokes The options tokes to parse.
+        //! \param inputTokens The options tokes to parse.
         //! \return bool Returns true if the state of the command permits a correct execution,
         //!  false otherwise.
-        virtual bool processInputOptions(const std::vector<string_type>& inputTokes) noexcept = 0;
+        virtual bool processInputOptions(const std::vector<string_type>& inputTokens) noexcept = 0;
 
         //!!
         //! \brief Prints the help page of thic command to the given output stream.

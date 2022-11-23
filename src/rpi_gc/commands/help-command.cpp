@@ -4,6 +4,7 @@
 
 // C++ STL
 #include <cassert>
+#include <iomanip>
 
 namespace rpi_gc {
 
@@ -32,17 +33,22 @@ namespace rpi_gc {
         // as the help is the most important command.
         printHelp(m_outputStream.get());
         m_outputStream.get() << std::endl;
-        m_outputStream.get() << std::endl;
+        m_outputStream.get() << std::setfill('-') << std::setw(80);
+        m_outputStream.get() << '-' << std::setfill(' ') << std::endl;
 
         // Next we print the "exit" command help page so it doesn't get buried
         // under the others
-        m_outputStream.get() << ">>> exit" << std::endl;
-        m_outputStream.get() << "\tDescription: stops the application execution releasing the resources and waiting for them (soft exit);" << std::endl;
-        m_outputStream.get() << std::endl;
+        m_outputStream.get() << "[NAME]" << std::endl;
+        m_outputStream.get() << "\t" << strings::commands::EXIT << " - Stops the application execution and exits" << std::endl;
+        m_outputStream.get() << "[DESCRIPTION]" << std::endl;
+        m_outputStream.get() << "\tStops the application execution releasing the resources and waiting for them (soft exit)." << std::endl;
+        m_outputStream.get() << std::setfill('-') << std::setw(80);
+        m_outputStream.get() << '-' << std::setfill(' ') << std::endl;
 
         for(const auto& helpPage : m_commandsHelpPages) {
             m_outputStream.get() << helpPage << std::endl;
-            m_outputStream.get() << std::endl;
+            m_outputStream.get() << std::setfill('-') << std::setw(80);
+            m_outputStream.get() << '-' << std::setfill(' ') << std::endl;
         }
 
         return true;
@@ -65,8 +71,8 @@ namespace rpi_gc {
     }
 
     void HelpCommand::printHelp(help_ostream_type outputStream) const noexcept {
-        outputStream.get() << ">>> help" << std::endl;
-        outputStream.get() << "\tDescription: prints this help page;";
+        outputStream.get() << "[NAME]" << std::endl;
+        outputStream.get() << "\t" << strings::commands::HELP << " - Prints the help page for the application.";
     }
 
     void HelpCommand::print_description() noexcept {

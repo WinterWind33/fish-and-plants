@@ -11,6 +11,7 @@ namespace rpi_gc::strings::commands {
     constexpr StringViewType VERSION{"version"};
     constexpr StringViewType APPLICATION{strings::application::EXECUTABLE_NAME};
     constexpr StringViewType EXIT{"exit"};
+    constexpr StringViewType AUTOMATIC_WATERING{"auto-watering"};
 
     namespace feedbacks {
         constexpr StringViewType TYPE_HELP{"Type \'help\' for a list of the available commands."};

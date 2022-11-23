@@ -109,16 +109,18 @@ namespace gh_cmd {
     //! \brief Represents the basic interface of an option parser, i.e. an object that,
     //!  given an input line, it extracts all of the command's options.
     //!
-    //! \tparam CharType The char type to be used.
-    template<typename CharType>
+    //! \tparam CharT The char type to be used.
+    template<typename CharT>
     struct OptionParser {
-        using char_type = std::decay_t<CharType>;
+        using char_type = std::decay_t<CharT>;
         using string_type = std::basic_string<char_type>;
+        using option_pointer = std::shared_ptr<CommandOption<char_type>>;
+        using const_option_pointer = std::shared_ptr<const CommandOption<char_type>>;
 
         virtual ~OptionParser() noexcept = default;
 
         //! \brief Adds an option to the option parser.
-        virtual void addOption(std::shared_ptr<CommandOption<char_type>> option) noexcept = 0;
+        virtual void addOption(option_pointer option) noexcept = 0;
 
         //! \brief Adds a switch to the command representation.
         virtual void addSwitch(std::shared_ptr<Switch<char_type>> option) noexcept = 0;
@@ -136,7 +138,7 @@ namespace gh_cmd {
         virtual void printHelp(std::basic_ostream<char_type>& outputStream) const noexcept = 0;
 
         //! \brief Retrieves all of the options saved inside this parser configuration.
-        virtual std::vector<std::shared_ptr<const CommandOption<char_type>>> getOptions() const noexcept = 0;
+        virtual std::vector<const_option_pointer> getOptions() const noexcept = 0;
 
         //! \brief Retrieves all of the non-option arguments parsed by this object.
         virtual std::vector<string_type> getNonOptionArguments() const noexcept = 0;
