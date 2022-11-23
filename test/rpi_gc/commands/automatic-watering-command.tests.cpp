@@ -57,6 +57,38 @@ TEST_CASE("AutomaticWateringCommand Events unit tests", "[unit][solitary][rpi_gc
                 CHECK(bEventCalled);
             }
         }
+
+        AND_WHEN("The command is parsed and executed with the option and the \'help\' option") {
+            using CommandOptionMock = testing::NiceMock<gh_cmd::mocks::CommandOptionMock<CharType>>;
+
+            std::shared_ptr<CommandOptionMock> optionMock{std::make_shared<CommandOptionMock>()};
+            ON_CALL(*optionMock, getLongName).WillByDefault(testing::Return(OPTION_NAME));
+            ON_CALL(*optionMock, isSet).WillByDefault(testing::Return(true));
+
+            std::shared_ptr<CommandOptionMock> helpOptionMock{std::make_shared<CommandOptionMock>()};
+            ON_CALL(*helpOptionMock, getLongName).WillByDefault(testing::Return("help"));
+            ON_CALL(*helpOptionMock, isSet).WillByDefault(testing::Return(true));
+
+            EXPECT_CALL(*optionParserRef, parse).Times(1);
+            EXPECT_CALL(*optionParserRef, getOptions)
+                .Times(1)
+                .WillOnce(testing::Return(std::vector<AutomaticWateringCommand::option_parser::const_option_pointer>{
+                    optionMock,
+                    helpOptionMock
+                }));
+            EXPECT_CALL(*optionParserRef, printHelp).Times(1);
+
+            commandUnderTest.processInputOptions({
+                StringType{strings::commands::AUTOMATIC_WATERING},
+                OPTION_NAME
+            });
+
+            commandUnderTest.execute();
+
+            THEN("The command should NOT trigger the event as help is executed first") {
+                CHECK_FALSE(bEventCalled);
+            }
+        }
     }
 
 }
