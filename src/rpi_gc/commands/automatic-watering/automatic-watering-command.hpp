@@ -23,6 +23,10 @@ namespace rpi_gc {
         using option_event = std::function<void(option_parser::const_option_pointer)>;
         using option_type = gh_cmd::CommandOption<char_type>;
 
+        //!!
+        //! \brief Construct a new Automatic Watering Command using the given output stream, where
+        //!  the command execution will print out the results and the option parser used to parse
+        //!  command options.
         AutomaticWateringCommand(ostream_ref outputStream, option_parser_pointer optionParser) noexcept;
 
         bool processInputOptions(const std::vector<string_type>& inputTokens) noexcept override;
@@ -35,6 +39,10 @@ namespace rpi_gc {
             return strings::commands::AUTOMATIC_WATERING;
         }
 
+        //!!
+        //! \brief Registers a callback that will be executed when an option with the same name
+        //!  as "optionName" is set during the command execution.
+        //! \note The callback must be valid.
         void registerOptionEvent(option_type::long_name_type optionName, option_event event) noexcept;
 
     private:
