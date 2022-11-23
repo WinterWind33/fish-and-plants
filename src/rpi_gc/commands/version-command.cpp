@@ -17,8 +17,8 @@ namespace rpi_gc {
     }
 
     void VersionCommand::printHelp(help_ostream_type outputStream) const noexcept {
-        outputStream.get() << ">>> version" << std::endl;
-        outputStream.get() << "\tDescription: prints the name of the application and its version;";
+        outputStream.get() << "[NAME]" << std::endl;
+        outputStream.get() << "\t" << strings::commands::VERSION << " - Prints the name and the version of this application.";
     }
 
 } // namespace rpi_gc
