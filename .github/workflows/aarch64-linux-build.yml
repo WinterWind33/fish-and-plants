@@ -22,4 +22,6 @@ jobs:
         run: sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
 
       - name: Build All
-        run: ./scripts/aarch64-perform-release.sh
+        run: |
+          sudo chown +x ./scripts/aarch64-perform-release.sh
+          ./scripts/aarch64-perform-release.sh
