@@ -23,5 +23,5 @@ jobs:
 
       - name: Build All
         run: |
-          sudo chown +x ./scripts/aarch64-perform-release.sh
+          sudo chmod +x ./scripts/aarch64-perform-release.sh
           ./scripts/aarch64-perform-release.sh
