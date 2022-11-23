@@ -28,6 +28,7 @@ set(TEST_APP_SOURCE_FILES
     # rpi_gc
     "rpi_gc/greenhouse-controller-application.tests.cpp"
     "rpi_gc/commands/application-command.tests.cpp"
+    "rpi_gc/commands/automatic-watering-command.tests.cpp"
 
     # integration tests
     "integration/rpi_gc/application-command-integration.tests.cpp"
