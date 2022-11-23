@@ -1,0 +1,30 @@
+# Copyright (C) 2022 Andrea Ballestrazzi
+
+name: aarch64 Linux Build
+
+on:
+  push:
+    branches-ignore:
+      - "main"
+      # We don't need to run this workflow for branches that
+      # updates only CI/CD scripts. We ignore those branches.
+      - 'CI-UPDATE/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Compiler Setup
+        run: sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu binutils-aarch64-linux-gnu
+
+      - name: CMake configure
+        run: |
+          mkdir build
+          cmake -B ./build -DCOMPILE_AARCH64_ON_LINUX=True -DCOMPILE_FOR_CORTEX_A53=True --toolchain "toolchains/aarch64-toolchain.cmake"
+
+      - name: AARCH64 Build
+        run: cmake --build ./build --config Release

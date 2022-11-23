@@ -46,4 +46,5 @@ jobs:
               chmod +x install-cmake.sh
               ./install-cmake.sh --prefix=/usr/local --skip-license
               cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-              cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target rpi_gc
+              cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+              ./bin/test_app
