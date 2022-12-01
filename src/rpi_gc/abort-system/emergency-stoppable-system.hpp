@@ -9,6 +9,7 @@ namespace rpi_gc::abort_system {
     //!  stoppable under an emergency.
     class EmergencyStoppableSystem {
     public:
+        virtual ~EmergencyStoppableSystem() noexcept = default;
 
         //!!
         //! \brief Notifies the system that an emergency is under way and
