@@ -6,6 +6,10 @@
 #include <application/application.hpp>
 #include <commands/terminal-command.hpp>
 
+// Abort system
+#include <abort-system/terminable-system.hpp>
+#include <abort-system/emergency-stoppable-system.hpp>
+
 // Wrappers
 #include <gh_cmd/gh_cmd.hpp>
 
@@ -13,6 +17,7 @@
 #include <functional>
 #include <memory>
 #include <map>
+#include <vector>
 
 namespace rpi_gc {
 
@@ -39,12 +44,18 @@ namespace rpi_gc {
         //!  types when he launches the application along with its options.
         void setApplicationCommand(std::unique_ptr<TerminalCommandType> applicationCommand) noexcept;
 
+        void addEmergencyStoppableSystem(std::shared_ptr<abort_system::EmergencyStoppableSystem> system) noexcept;
+        void addTerminableSystem(std::shared_ptr<abort_system::TerminableSystem> system) noexcept;
+
     private:
         ostream_ref m_outputStream;
         istream_ref m_inputStream;
 
         std::map<StringType, std::unique_ptr<TerminalCommandType>> m_commands{};
         std::unique_ptr<TerminalCommandType> m_applicationCommand{};
+
+        std::vector<std::shared_ptr<abort_system::EmergencyStoppableSystem>> m_emergencyStoppableSystems{};
+        std::vector<std::shared_ptr<abort_system::TerminableSystem>> m_terminableSystems{};
 
         bool m_bCanApplicationCommandExecute{};
 
