@@ -141,4 +141,12 @@ namespace rpi_gc {
         m_applicationCommand = std::move(appCommand);
     }
 
+    void GreenhouseControllerApplication::addEmergencyStoppableSystem(std::shared_ptr<abort_system::EmergencyStoppableSystem> system) noexcept {
+        m_emergencyStoppableSystems.push_back(std::move(system));
+    }
+
+    void GreenhouseControllerApplication::addTerminableSystem(std::shared_ptr<abort_system::TerminableSystem> system) noexcept {
+        m_terminableSystems.push_back(std::move(system));
+    }
+
 } // namespace rpi_gc
