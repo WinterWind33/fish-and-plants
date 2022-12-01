@@ -1,6 +1,6 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
-#ifndef EMERGENCY_STOPPABLE_SYSTEM
-#define EMERGENCY_STOPPABLE_SYSTEM
+#ifndef EMERGENCY_STOPPABLE_SYSTEM_HPP
+#define EMERGENCY_STOPPABLE_SYSTEM_HPP
 
 namespace rpi_gc::abort_system {
 
@@ -18,4 +18,4 @@ namespace rpi_gc::abort_system {
 
 } // namespace rpi_gc
 
-#endif //! EMERGENCY_STOPPABLE_SYSTEM
+#endif // !EMERGENCY_STOPPABLE_SYSTEM_HPP
