@@ -135,6 +135,11 @@ namespace rpi_gc {
     void GreenhouseControllerApplication::teardown() noexcept {
         m_inputStream.get().clear(std::ios::goodbit);
         m_outputStream.get().clear(std::ios::goodbit);
+
+        // The teardown should terminate all the registered systems
+        // so we can release the resources safely.
+        for(auto& terminableSystem : m_terminableSystems)
+            terminableSystem->requestShutdown();
     }
 
     void GreenhouseControllerApplication::setApplicationCommand(std::unique_ptr<TerminalCommandType> appCommand) noexcept {
