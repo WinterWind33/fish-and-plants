@@ -4,6 +4,7 @@
 set(RPI_GC_HEADER_FILES
     "rpi_gc-config-file.hpp"
     "greenhouse-controller-application.hpp"
+    "abort-system/emergency-stoppable-system.hpp"
     "application/application.hpp"
     "common/types.hpp"
     "commands/command.hpp"
