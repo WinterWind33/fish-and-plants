@@ -9,6 +9,7 @@
 
 // Test doubles
 #include <rpi_gc/test-doubles/commands/terminal-command.mock.hpp>
+#include <rpi_gc/test-doubles/abort-system/terminable-system.mock.hpp>
 
 // C++ STL
 #include <cstdint>
@@ -106,6 +107,32 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
 
                 applicationUnderTest.setApplicationCommand(std::move(commandMockPtr));
                 applicationUnderTest.processInputOptions(2, strings.data());
+            }
+        }
+    }
+}
+
+TEST_CASE("GreenhouseControllerApplication termination unit tests", "[unit][solitary][rpi_gc][GreenhouseControllerApplication][termination]") {
+    using namespace rpi_gc;
+
+    GIVEN("An application controller") {
+        InputStringStream inputStream{};
+        OutputStringStream outputStream{};
+        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
+
+        AND_GIVEN("A registered terminable system") {
+            using testing::StrictMock;
+            using TerminableSystemMock = StrictMock<abort_system::mocks::TerminableSystemMock>;
+
+            std::shared_ptr<TerminableSystemMock> terminableSystemMock{std::make_shared<TerminableSystemMock>()};
+            applicationUnderTest.addTerminableSystem(terminableSystemMock);
+
+            WHEN("The application is run") {
+                THEN("The terminable system should be correctly called only one time") {
+                    EXPECT_CALL(*terminableSystemMock, requestShutdown).Times(1);
+
+                    applicationUnderTest.run();
+                }
             }
         }
     }

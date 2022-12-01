@@ -4,6 +4,19 @@
 
 #include <abort-system/terminable-system.hpp>
 
-namespace rpi_gc::abort_system::mocks {} // namespace rpi_gc::abort_system::mocks
+#ifdef USE_GMOCK
+#include <gmock/gmock.h>
+#endif // USE_GMOCK
+
+namespace rpi_gc::abort_system::mocks {
+
+    class TerminableSystemMock : public TerminableSystem {
+    public:
+        ~TerminableSystemMock() noexcept override = default;
+
+        MOCK_METHOD(void, requestShutdown, (), (noexcept, override));
+    };
+
+} // namespace rpi_gc::abort_system::mocks
 
 #endif // !TERMINABLE_SYSTEM_MOCK_HPP
