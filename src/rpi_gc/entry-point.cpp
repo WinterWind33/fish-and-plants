@@ -1,6 +1,10 @@
 // Copyright (C) 2022 Andrea Ballestrazzi
 #include <greenhouse-controller-application.hpp>
 
+#include <automatic-watering/automatic-watering-system.hpp>
+#include <gh_log/logger.hpp>
+#include <gh_log/spl-logger.hpp>
+
 // Commands
 #include <gh_cmd/gh_cmd.hpp>
 #include <commands/application-command.hpp>
@@ -21,8 +25,17 @@ int main(int argc, char* argv[]) {
     using DefaultOptionParser = gh_cmd::DefaultOptionParser<CharType>;
     using ApplicationOptionParser = DefaultOptionParser;
 
-    OutputStringStream applicationHelpStream{};
+    std::shared_ptr<gh_log::Logger> mainLogger{gh_log::SPLLogger::createFileLogger("GreenhouseController", "fish_and_plants.log")};
+    mainLogger->logInfo("Initiating system: starting log now.");
 
+    OutputStringStream applicationHelpStream{};
+    std::shared_ptr<automatic_watering::AutomaticWateringSystem> automaticWateringSystem{
+        std::make_shared<automatic_watering::AutomaticWateringSystem>(
+            mainLogger
+        )
+    };
+
+    mainLogger->logInfo("Initiating application commands and user interface...");
     AutomaticWateringCommand::option_parser_pointer optionParser{std::make_unique<DefaultOptionParser>("[OPTIONS] => auto-watering")};
     optionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('h', "help", "Displays this help page."));
 
@@ -44,16 +57,21 @@ int main(int argc, char* argv[]) {
     applicationOptionParser->printHelp(applicationHelpStream);
     helpCommand->setApplicationHelp(applicationHelpStream.str());
 
+    mainLogger->logInfo("Initiating main application controller...");
     GreenhouseControllerApplication mainApplication{std::cout, std::cin};
     mainApplication.addSupportedCommand(std::move(autoWateringCommand));
     mainApplication.addSupportedCommand(std::move(versionCommand));
     mainApplication.addSupportedCommand(std::move(helpCommand));
     mainApplication.setApplicationCommand(std::move(applicationCommand));
 
+    mainApplication.addTerminableSystem(std::move(automaticWateringSystem));
+
     if(!mainApplication.processInputOptions(argc, argv))
         return 1;
 
+    mainLogger->logInfo("Starting application loop.");
     mainApplication.run();
 
+    mainLogger->logInfo("Exiting now [Result: 0].");
     return 0;
 }
