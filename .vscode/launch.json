@@ -11,7 +11,7 @@
             "program": "${workspaceFolder}/bin/Debug/rpi_gc.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}/bin/Debug",
             "environment": [],
             "console": "externalTerminal",
             "preLaunchTask": "[BUILD] (Windows Debug) Build RPI_GC"
