@@ -8,6 +8,7 @@
 
 // C++ STL
 #include <memory>
+#include <filesystem>
 
 namespace gh_log {
 
@@ -22,6 +23,9 @@ namespace gh_log {
 
         SPLLogger(logger_pointer logger);
         ~SPLLogger() noexcept override = default;
+
+        [[nodiscard]]
+        static std::shared_ptr<SPLLogger> createFileLogger(std::string name, std::filesystem::path filepath) noexcept;
 
         void logTrace(const LogStringType& msg) override;
         void logDebug(const LogStringType& msg) override;

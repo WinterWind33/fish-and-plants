@@ -1,6 +1,7 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
 #ifdef USE_SPDLOG
 #include <gh_log/spl-logger.hpp>
+#include <spdlog/sinks/basic_file_sink.h>
 
 // C++ STL
 #include <cassert>
@@ -44,6 +45,10 @@ void SPLLogger::logCritical(const LogStringType& msg) {
     assert(m_logger);
 
     m_logger->critical(msg);
+}
+
+std::shared_ptr<SPLLogger> SPLLogger::createFileLogger(std::string name, std::filesystem::path filepath) noexcept {
+    return std::make_shared<SPLLogger>(spdlog::basic_logger_mt(std::move(name), filepath.string()));
 }
 
 } // namespace gh_log
