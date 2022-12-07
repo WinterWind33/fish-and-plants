@@ -25,7 +25,11 @@ int main(int argc, char* argv[]) {
     using DefaultOptionParser = gh_cmd::DefaultOptionParser<CharType>;
     using ApplicationOptionParser = DefaultOptionParser;
 
-    std::shared_ptr<gh_log::Logger> mainLogger{gh_log::SPLLogger::createFileLogger("GreenhouseController", "fish_and_plants.log")};
+    std::shared_ptr<gh_log::Logger> mainLogger{gh_log::SPLLogger::createFileLogger(
+        StringType{strings::application::NAME},
+        strings::application::MAIN_LOG_FILENAME
+    )};
+
     mainLogger->logInfo("Initiating system: starting log now.");
 
     OutputStringStream applicationHelpStream{};
