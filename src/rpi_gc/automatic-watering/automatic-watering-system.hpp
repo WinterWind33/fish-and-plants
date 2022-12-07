@@ -23,8 +23,12 @@ public:
     void requestShutdown() noexcept override;
     void emergencyAbort() noexcept override;
 
+    void startAutomaticWatering() noexcept;
+
 private:
     logger_pointer m_logger{};
+
+    void run_automatic_watering(logger_pointer logger) noexcept;
 };
 
 } // namespace rpi_gc::automatic_watering
