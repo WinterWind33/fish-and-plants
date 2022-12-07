@@ -14,7 +14,10 @@
 
 namespace rpi_gc::automatic_watering {
 
-    class DailyCycleAutomaticWateringSystem : public abort_system::TerminableSystem, public abort_system::EmergencyStoppableSystem {
+    class DailyCycleAutomaticWateringSystem :
+        public AutomaticWateringSystem,
+        public abort_system::TerminableSystem,
+        public abort_system::EmergencyStoppableSystem {
     public:
         using logger_pointer = std::shared_ptr<gh_log::Logger>;
 
@@ -25,7 +28,7 @@ namespace rpi_gc::automatic_watering {
         void requestShutdown() noexcept override;
         void emergencyAbort() noexcept override;
 
-        void startAutomaticWatering() noexcept;
+        void startAutomaticWatering() noexcept override;
 
     private:
         logger_pointer m_logger{};
