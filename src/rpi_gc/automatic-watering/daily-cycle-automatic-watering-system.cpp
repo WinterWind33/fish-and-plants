@@ -1,5 +1,5 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
-#include <automatic-watering/automatic-watering-system.hpp>
+#include <automatic-watering/daily-cycle-automatic-watering-system.hpp>
 
 // C++ STL
 #include <cassert>
@@ -7,20 +7,20 @@
 
 namespace rpi_gc::automatic_watering {
 
-    AutomaticWateringSystem::AutomaticWateringSystem(logger_pointer logger) noexcept :
+    DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(logger_pointer logger) noexcept :
         m_logger{std::move(logger)} {
         assert(m_logger != nullptr);
     }
 
-    void AutomaticWateringSystem::requestShutdown() noexcept {
+    void DailyCycleAutomaticWateringSystem::requestShutdown() noexcept {
         m_logger->logInfo("Shutdown requested for the automatic watering system.");
     }
 
-    void AutomaticWateringSystem::emergencyAbort() noexcept {
+    void DailyCycleAutomaticWateringSystem::emergencyAbort() noexcept {
         m_logger->logWarning("[AUTOMATIC WATERING SYSTEM]: Emergency abort requested.");
     }
 
-    void AutomaticWateringSystem::startAutomaticWatering() noexcept {
+    void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
         m_logger->logInfo("Starting automatic watering system...");
 
         std::thread automaticWateringThread{[this](logger_pointer logger){
@@ -28,7 +28,7 @@ namespace rpi_gc::automatic_watering {
         }, m_logger};
     }
 
-    void AutomaticWateringSystem::run_automatic_watering(logger_pointer logger) noexcept {
+    void DailyCycleAutomaticWateringSystem::run_automatic_watering(logger_pointer logger) noexcept {
         logger->logInfo("[Automatic Watering Thread] => Starting job.");
 
         logger->logInfo("[Automatic Watering Thread] => Ending job.");

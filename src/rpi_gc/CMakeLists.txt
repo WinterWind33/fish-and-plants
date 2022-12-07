@@ -7,7 +7,7 @@ set(RPI_GC_HEADER_FILES
     "abort-system/emergency-stoppable-system.hpp"
     "abort-system/terminable-system.hpp"
     "application/application.hpp"
-    "automatic-watering/automatic-watering-system.hpp"
+    "automatic-watering/daily-cycle-automatic-watering-system.hpp"
     "common/types.hpp"
     "commands/command.hpp"
     "commands/terminal-command.hpp"
@@ -27,7 +27,7 @@ set(RPI_GC_SOURCE_FILES
     "commands/version-command.cpp"
     "commands/help-command.cpp"
     "commands/automatic-watering/automatic-watering-command.cpp"
-    "automatic-watering/automatic-watering-system.cpp"
+    "automatic-watering/daily-cycle-automatic-watering-system.cpp"
 )
 
 # Here we add a library target so we can use it to link it against

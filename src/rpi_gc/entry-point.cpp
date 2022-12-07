@@ -1,7 +1,7 @@
 // Copyright (C) 2022 Andrea Ballestrazzi
 #include <greenhouse-controller-application.hpp>
 
-#include <automatic-watering/automatic-watering-system.hpp>
+#include <automatic-watering/daily-cycle-automatic-watering-system.hpp>
 #include <gh_log/logger.hpp>
 #include <gh_log/spl-logger.hpp>
 
@@ -33,8 +33,8 @@ int main(int argc, char* argv[]) {
     mainLogger->logInfo("Initiating system: starting log now.");
 
     OutputStringStream applicationHelpStream{};
-    std::shared_ptr<automatic_watering::AutomaticWateringSystem> automaticWateringSystem{
-        std::make_shared<automatic_watering::AutomaticWateringSystem>(
+    std::shared_ptr<automatic_watering::DailyCycleAutomaticWateringSystem> automaticWateringSystem{
+        std::make_shared<automatic_watering::DailyCycleAutomaticWateringSystem>(
             mainLogger
         )
     };
