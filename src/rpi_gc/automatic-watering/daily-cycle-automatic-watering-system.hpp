@@ -1,6 +1,8 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
-#ifndef AUTOMATIC_WATERING_SYSTEM_HPP
-#define AUTOMATIC_WATERING_SYSTEM_HPP
+#ifndef DAILY_CYCLE_AUTOMATIC_WATERING_SYSTEM_HPP
+#define DAILY_CYCLE_AUTOMATIC_WATERING_SYSTEM_HPP
+
+#include <automatic-watering/automatic-watering-system.hpp>
 
 #include <abort-system/terminable-system.hpp>
 #include <abort-system/emergency-stoppable-system.hpp>
@@ -33,4 +35,4 @@ private:
 
 } // namespace rpi_gc::automatic_watering
 
-#endif // !AUTOMATIC_WATERING_SYSTEM_HPP
+#endif // !DAILY_CYCLE_AUTOMATIC_WATERING_SYSTEM_HPP

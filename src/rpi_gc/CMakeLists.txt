@@ -7,6 +7,7 @@ set(RPI_GC_HEADER_FILES
     "abort-system/emergency-stoppable-system.hpp"
     "abort-system/terminable-system.hpp"
     "application/application.hpp"
+    "automatic-watering/automatic-watering-system.hpp"
     "automatic-watering/daily-cycle-automatic-watering-system.hpp"
     "common/types.hpp"
     "commands/command.hpp"
