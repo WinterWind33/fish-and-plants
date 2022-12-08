@@ -40,7 +40,7 @@ jobs:
               wget -q http://archive.raspberrypi.org/debian/pool/main/r/raspberrypi-firmware/raspberrypi-kernel-headers_${kernel_version}_${arch}.deb
               dpkg --install raspberrypi-kernel-headers_${kernel_version}_${arch}.deb
               apt-get update -y --allow-releaseinfo-change
-              apt-get install --no-install-recommends -y libasound2-dev gcc libc6-dev git
+              apt-get install --no-install-recommends -y libasound2-dev gcc-12 g++-12 libc6-dev git
               CMAKE_VERSION="3.24.3"
               curl -sSL https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-aarch64.sh -o install-cmake.sh
               chmod +x install-cmake.sh
