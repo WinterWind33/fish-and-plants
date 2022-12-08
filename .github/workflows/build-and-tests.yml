@@ -21,14 +21,12 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/setup-node@v3
-
     - uses: actions/checkout@v3
       with:
         submodules: recursive
 
     - name: Compiler configuration
-      if: ${{ matrix.os }} == 'macos-latest'
+      if: ${{ matrix.os == 'macos-latest' }}
       run: |
         brew update
         brew upgrade
