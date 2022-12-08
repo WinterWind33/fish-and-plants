@@ -9,6 +9,8 @@
 
 #include <gh_log/logger.hpp>
 
+#include <common/types.hpp>
+
 // C++ STL
 #include <memory>
 #include <thread>
@@ -37,6 +39,8 @@ namespace rpi_gc::automatic_watering {
         thread_type m_workerThread{};
 
         void run_automatic_watering(std::stop_token stopToken, logger_pointer logger) noexcept;
+
+        static StringType format_log_string(StringViewType message) noexcept;
     };
 
 } // namespace rpi_gc::automatic_watering
