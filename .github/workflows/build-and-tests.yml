@@ -27,6 +27,13 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Compiler configuration
+      if: ${{ matrix.os }} == macos-latest
+      run: |
+        brew update
+        brew upgrade
+        brew install gcc-11
+
     - name: CMake Configure
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
