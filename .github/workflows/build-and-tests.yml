@@ -30,13 +30,7 @@ jobs:
       run: |
         brew update
         brew upgrade
-        brew install gcc-13
-
-    - name: Linux Compiler configuration
-      if: ${{ matrix.os == 'ubuntu-latest' }}
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gcc-13 g++-13
+        brew install gcc-11
 
     - name: CMake Configure
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}

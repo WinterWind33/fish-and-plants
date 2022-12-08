@@ -5,7 +5,13 @@
 
 // C++ STL
 #include <cassert>
+#include <version>
+
+#ifdef __cpp_lib_format
 #include <format>
+#else
+#include <sstream>
+#endif // __cpp_lib_format
 
 namespace rpi_gc::automatic_watering {
 
@@ -77,7 +83,15 @@ namespace rpi_gc::automatic_watering {
         // We print the log name for the system as the first argument and then the message.
         // The final string will be:
         // [Automatic Watering System] My custom message.
+#ifdef __cpp_lib_format
         return std::format("[{}] {}", strings::AUTOMATIC_WATERING_SYSTEM_LOG_NAME, message);
+#else
+        std::ostringstream outputStream{};
+        outputStream << "[" << StringType{strings::AUTOMATIC_WATERING_SYSTEM_LOG_NAME} << "] ";
+        outputStream << StringType{message};
+
+        return outputStream.str();
+#endif // __cpp_lib_format
     }
 
 } // namespace rpi_gc::automatic_watering
