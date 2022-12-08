@@ -11,6 +11,7 @@
 
 // C++ STL
 #include <memory>
+#include <thread>
 
 namespace rpi_gc::automatic_watering {
 
@@ -20,6 +21,7 @@ namespace rpi_gc::automatic_watering {
         public abort_system::EmergencyStoppableSystem {
     public:
         using logger_pointer = std::shared_ptr<gh_log::Logger>;
+        using thread_type = std::jthread;
 
         ~DailyCycleAutomaticWateringSystem() noexcept override = default;
 
@@ -32,8 +34,9 @@ namespace rpi_gc::automatic_watering {
 
     private:
         logger_pointer m_logger{};
+        thread_type m_workerThread{};
 
-        void run_automatic_watering(logger_pointer logger) noexcept;
+        void run_automatic_watering(std::stop_token stopToken, logger_pointer logger) noexcept;
     };
 
 } // namespace rpi_gc::automatic_watering

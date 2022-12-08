@@ -3,7 +3,6 @@
 
 // C++ STL
 #include <cassert>
-#include <thread>
 
 namespace rpi_gc::automatic_watering {
 
@@ -14,6 +13,9 @@ namespace rpi_gc::automatic_watering {
 
     void DailyCycleAutomaticWateringSystem::requestShutdown() noexcept {
         m_logger->logInfo("Shutdown requested for the automatic watering system.");
+
+        [[maybe_unused]] const bool bRequestStopSucceded{m_workerThread.request_stop()};
+        assert(bRequestStopSucceded);
     }
 
     void DailyCycleAutomaticWateringSystem::emergencyAbort() noexcept {
@@ -23,13 +25,16 @@ namespace rpi_gc::automatic_watering {
     void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
         m_logger->logInfo("Starting automatic watering system...");
 
-        std::thread automaticWateringThread{[this](logger_pointer logger){
-            run_automatic_watering(logger);
+        m_workerThread = thread_type{[this](std::stop_token stopToken, logger_pointer logger){
+            run_automatic_watering(std::move(stopToken), std::move(logger));
         }, m_logger};
     }
 
-    void DailyCycleAutomaticWateringSystem::run_automatic_watering(logger_pointer logger) noexcept {
+    void DailyCycleAutomaticWateringSystem::run_automatic_watering(std::stop_token stopToken, logger_pointer logger) noexcept {
         logger->logInfo("[Automatic Watering Thread] => Starting job.");
+        if(stopToken.stop_requested()) {
+            logger->logInfo("[Automatic Watering Thread] => Stop requested.");
+        }
 
         logger->logInfo("[Automatic Watering Thread] => Ending job.");
     }

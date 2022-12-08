@@ -40,11 +40,19 @@ int main(int argc, char* argv[]) {
     };
 
     mainLogger->logInfo("Initiating application commands and user interface...");
-    AutomaticWateringCommand::option_parser_pointer optionParser{std::make_unique<DefaultOptionParser>("[OPTIONS] => auto-watering")};
-    optionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('h', "help", "Displays this help page."));
+    AutomaticWateringCommand::option_parser_pointer autoWateringOptionParser{std::make_unique<DefaultOptionParser>("[OPTIONS] => auto-watering")};
+    autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('h', "help", "Displays this help page."));
+    autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('S', "start", "Starts the automatic watering system in Daily-Cycle mode."));
 
     std::unique_ptr<VersionCommand> versionCommand{std::make_unique<VersionCommand>(std::cout)};
-    std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(optionParser))};
+    std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(autoWateringOptionParser))};
+    autoWateringCommand->registerOptionEvent(
+        "start",
+        [automaticWateringSystem]([[maybe_unused]] AutomaticWateringCommand::option_parser::const_option_pointer) {
+            automaticWateringSystem->startAutomaticWatering();
+        }
+    );
+
     std::unique_ptr<HelpCommand> helpCommand{std::make_unique<HelpCommand>(
         std::cout,
         std::vector<TerminalCommandType*>{
