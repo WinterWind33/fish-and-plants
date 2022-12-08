@@ -27,7 +27,7 @@ namespace rpi_gc::automatic_watering {
 
         ~DailyCycleAutomaticWateringSystem() noexcept override = default;
 
-        DailyCycleAutomaticWateringSystem(logger_pointer logger) noexcept;
+        DailyCycleAutomaticWateringSystem(logger_pointer mainLogger, logger_pointer userLog) noexcept;
 
         void requestShutdown() noexcept override;
         void emergencyAbort() noexcept override;
@@ -35,12 +35,13 @@ namespace rpi_gc::automatic_watering {
         void startAutomaticWatering() noexcept override;
 
     private:
-        logger_pointer m_logger{};
+        logger_pointer m_mainLogger{};
+        logger_pointer m_userLogger{};
         thread_type m_workerThread{};
 
         void run_automatic_watering(std::stop_token stopToken, logger_pointer logger) noexcept;
 
-        static StringType format_log_string(StringViewType message) noexcept;
+        [[nodiscard]] static StringType format_log_string(StringViewType message) noexcept;
     };
 
 } // namespace rpi_gc::automatic_watering

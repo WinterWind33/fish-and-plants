@@ -22,28 +22,46 @@ namespace rpi_gc::automatic_watering {
         constexpr StringViewType AUTOMATIC_WATERING_SYSTEM_LOG_NAME{"Automatic Watering System"};
     } // namespace strings
 
-    DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(logger_pointer logger) noexcept :
-        m_logger{std::move(logger)} {
-        assert(m_logger != nullptr);
+    DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(logger_pointer mainLogger, logger_pointer userLogger) noexcept :
+        m_mainLogger{std::move(mainLogger)},
+        m_userLogger{std::move(userLogger)} {
+        assert(m_mainLogger != nullptr);
+        assert(m_userLogger != nullptr);
     }
 
     void DailyCycleAutomaticWateringSystem::requestShutdown() noexcept {
-        m_logger->logInfo(format_log_string(strings::feedbacks::SHUTDOWN_REQUEST_FEEDBACK));
+        const StringType formattedLogString{format_log_string(strings::feedbacks::SHUTDOWN_REQUEST_FEEDBACK)};
+        m_mainLogger->logInfo(formattedLogString);
+
+        // We also notify the user for this action.
+        m_userLogger->logInfo(formattedLogString);
 
         [[maybe_unused]] const bool bRequestStopSucceded{m_workerThread.request_stop()};
         assert(bRequestStopSucceded);
     }
 
     void DailyCycleAutomaticWateringSystem::emergencyAbort() noexcept {
-        m_logger->logWarning(format_log_string(strings::feedbacks::EMERGENCY_ABORT_FEEDBACK));
+        const StringType formattedLogString{format_log_string(strings::feedbacks::EMERGENCY_ABORT_FEEDBACK)};
+        m_mainLogger->logInfo(formattedLogString);
+
+        // We also notify the user for this action.
+        m_userLogger->logInfo(formattedLogString);
+
+        // For now we simply request the thread shutdown.
+        [[maybe_unused]] const bool bRequestStopSucceded{m_workerThread.request_stop()};
+        assert(bRequestStopSucceded);
     }
 
     void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
-        m_logger->logInfo(format_log_string(strings::feedbacks::START_WATERING_JOB));
+        const StringType formattedLogString{format_log_string(strings::feedbacks::START_WATERING_JOB)};
+        m_mainLogger->logInfo(formattedLogString);
+
+        // We also notify the user for this action.
+        m_userLogger->logInfo(formattedLogString);
 
         m_workerThread = thread_type{[this](std::stop_token stopToken, logger_pointer logger){
             run_automatic_watering(std::move(stopToken), std::move(logger));
-        }, m_logger};
+        }, m_mainLogger};
     }
 
     void DailyCycleAutomaticWateringSystem::run_automatic_watering(std::stop_token stopToken, logger_pointer logger) noexcept {
