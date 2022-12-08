@@ -1,6 +1,14 @@
 # Copyright (C) 2022 Andrea Ballestrazzi
 cmake_minimum_required(VERSION 3.19)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    # We currently don't support AppleClang comiler as it doesn't support
+    # C++ 20 STL too much.
+    message("[INFO] => Switching compiler to GCC")
+    set(CMAKE_C_COMPILER "gcc")
+    set(CMAKE_CXX_COMPILER "g++")
+endif()
+
 if(COMPILE_AARCH64_ON_LINUX)
     # Note: if aarch64 compilation is triggered then a valid aarch64 toolchain
     # should be passed. See the "toolchains" folder for options.
