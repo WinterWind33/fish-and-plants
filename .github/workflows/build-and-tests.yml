@@ -33,7 +33,10 @@ jobs:
 
     - name: MacOS CMake Configure
       if: ${{ matrix.os == 'macos-latest' }}
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      env:
+        CC:   gcc-12
+        CXX:  g++-12
 
     - name: CMake Configure
       if: ${{ matrix.os != 'macos-latest' }}
