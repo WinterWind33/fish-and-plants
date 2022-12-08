@@ -44,6 +44,8 @@ namespace rpi_gc::automatic_watering {
 
         [[maybe_unused]] const bool bRequestStopSucceded{m_workerThread.request_stop()};
         assert(bRequestStopSucceded);
+
+        m_workerThread.join();
     }
 
     void DailyCycleAutomaticWateringSystem::emergencyAbort() noexcept {
@@ -56,6 +58,8 @@ namespace rpi_gc::automatic_watering {
         // For now we simply request the thread shutdown.
         [[maybe_unused]] const bool bRequestStopSucceded{m_workerThread.request_stop()};
         assert(bRequestStopSucceded);
+
+        m_workerThread.join();
     }
 
     void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
