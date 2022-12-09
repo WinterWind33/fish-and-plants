@@ -21,13 +21,25 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/setup-node@v3
-
     - uses: actions/checkout@v3
       with:
         submodules: recursive
 
+    - name: MacOS Compiler configuration
+      if: ${{ matrix.os == 'macos-latest' }}
+      run: |
+        brew update
+        brew install gcc@12
+
+    - name: MacOS CMake Configure
+      if: ${{ matrix.os == 'macos-latest' }}
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      env:
+        CC:   gcc-12
+        CXX:  g++-12
+
     - name: CMake Configure
+      if: ${{ matrix.os != 'macos-latest' }}
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: CMake Build

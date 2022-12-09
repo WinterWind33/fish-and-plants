@@ -100,7 +100,7 @@ namespace rpi_gc {
             m_outputStream.get() << std::endl;
         }
 
-        m_outputStream.get() << strings::commands::feedbacks::TEARING_DOWN;
+        m_outputStream.get() << strings::commands::feedbacks::TEARING_DOWN << std::endl;
         teardown();
         m_outputStream.get() << "Done." << std::endl;
         m_outputStream.get() << strings::commands::feedbacks::GOODBYE << std::endl;

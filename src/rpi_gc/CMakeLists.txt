@@ -7,6 +7,8 @@ set(RPI_GC_HEADER_FILES
     "abort-system/emergency-stoppable-system.hpp"
     "abort-system/terminable-system.hpp"
     "application/application.hpp"
+    "automatic-watering/automatic-watering-system.hpp"
+    "automatic-watering/daily-cycle-automatic-watering-system.hpp"
     "common/types.hpp"
     "commands/command.hpp"
     "commands/terminal-command.hpp"
@@ -26,6 +28,7 @@ set(RPI_GC_SOURCE_FILES
     "commands/version-command.cpp"
     "commands/help-command.cpp"
     "commands/automatic-watering/automatic-watering-command.cpp"
+    "automatic-watering/daily-cycle-automatic-watering-system.cpp"
 )
 
 # Here we add a library target so we can use it to link it against
@@ -60,4 +63,5 @@ set_target_properties(rpi_gc
 target_include_directories(rpi_gc PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(rpi_gc PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 
+target_link_libraries(rpi_gc PRIVATE gh_log)
 target_link_libraries(rpi_gc PRIVATE rpi_gc_lib)
