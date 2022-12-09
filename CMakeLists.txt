@@ -71,4 +71,4 @@ add_subdirectory("src/rpi_gc")
 # Tests project
 add_subdirectory("test")
 
-add_custom_target(check DEPENDS clang-tidy-check-rpi_gc)
+add_custom_target(check DEPENDS clang-tidy-check)

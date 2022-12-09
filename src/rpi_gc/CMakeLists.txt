@@ -34,7 +34,7 @@ set(RPI_GC_SOURCE_FILES
 )
 
 add_custom_target(
-    clang-tidy-check-rpi_gc clang-tidy -p ${CMAKE_BINARY_DIR}/compile_commands.json -checks=cppcoreguidelines-* ${RPI_GC_SOURCE_FILES}
+    clang-tidy-check clang-tidy -p ${CMAKE_BINARY_DIR}/compile_commands.json -checks=cppcoreguidelines-* ${RPI_GC_SOURCE_FILES}
     DEPENDS ${RPI_GC_SOURCE_FILES})
 
 # Here we add a library target so we can use it to link it against
