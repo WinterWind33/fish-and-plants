@@ -20,20 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Setup CMake
-        uses: jwlawson/actions-setup-cmake@v1.13
-        with:
-          cmake-version: '3.24.3'
-
-      - name: Run clang-tidy
-        uses: HorstBaerbel/action-clang-tidy@1.2
-        with:
-          scandir: '.'
-          builddir: 'build'
-          excludedirs: 'src/third-party,test/third-party'
-          extensions: 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx'
+      - name: Setup clang-tidy
+        run: apt-get install -y clang-tidy
 
   build_matrix:
+    needs: clang-tidy
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
