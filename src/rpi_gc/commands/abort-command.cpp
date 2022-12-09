@@ -20,6 +20,7 @@ namespace rpi_gc::commands {
     }
 
     bool AbortCommand::execute() noexcept {
+        m_mainLogger->logWarning(format_log_message(strings::commands::feedbacks::abort::ABORT_ISSUED));
         m_mainLogger->logWarning(format_log_message(strings::commands::feedbacks::abort::STARTING_EMERGENCY_ABORT));
 
         for(auto& stoppableSystem : m_stoppableSystems) {

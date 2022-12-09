@@ -22,6 +22,7 @@ namespace rpi_gc::strings::commands {
 
         namespace abort {
             constexpr StringViewType EMERGENCY_ABORT_SYSTEM_LOGGER_NAME{"Emergency Abort"};
+            constexpr StringViewType ABORT_ISSUED{"ABORT COMMAND ISSUED."};
             constexpr StringViewType STARTING_EMERGENCY_ABORT{"Starting emergency abort."};
             constexpr StringViewType EMERGENCY_ABORT_FINISHED{"Emergency abort finished."};
         } // namespace abort
