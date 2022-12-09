@@ -2,16 +2,29 @@
 #ifndef ABORT_COMMAND_HPP
 #define ABORT_COMMAND_HPP
 
+#include <abort-system/emergency-stoppable-system.hpp>
+
 #include <commands/terminal-command.hpp>
 
 #include <user-interface/commands-strings.hpp>
 #include <common/types.hpp>
 
+#include <gh_log/logger.hpp>
+
+// C++ STL
+#include <memory>
+#include <vector>
+
 namespace rpi_gc::commands {
 
     class AbortCommand : public TerminalCommand<CharType> {
     public:
+        using logger_pointer = std::shared_ptr<gh_log::Logger>;
+        using emergency_stoppable_system = rpi_gc::abort_system::EmergencyStoppableSystem;
+        using emergency_stoppable_system_pointer = std::shared_ptr<emergency_stoppable_system>;
+
         ~AbortCommand() noexcept override = default;
+        explicit AbortCommand(logger_pointer mainLogger, std::vector<emergency_stoppable_system_pointer> systems) noexcept;
 
         constexpr name_type getName() const noexcept override {
             return strings::commands::ABORT;
@@ -24,6 +37,13 @@ namespace rpi_gc::commands {
         };
 
         void printHelp(help_ostream_type outputStream) const noexcept override;
+
+    private:
+        logger_pointer m_mainLogger{};
+        std::vector<emergency_stoppable_system_pointer> m_stoppableSystems{};
+
+        [[nodiscard]]
+        StringType static format_log_message(StringViewType message) noexcept;
     };
 
 } // namespace rpi_gc::commands

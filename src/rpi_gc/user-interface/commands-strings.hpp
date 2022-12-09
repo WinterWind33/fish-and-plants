@@ -19,6 +19,12 @@ namespace rpi_gc::strings::commands {
         constexpr StringViewType UNRECOGNIZED_COMMAND{"Command not recognized."};
         constexpr StringViewType TEARING_DOWN{"Tearing down..."};
         constexpr StringViewType GOODBYE{"Goodbye."};
+
+        namespace abort {
+            constexpr StringViewType EMERGENCY_ABORT_SYSTEM_LOGGER_NAME{"Emergency Abort"};
+            constexpr StringViewType STARTING_EMERGENCY_ABORT{"Starting emergency abort."};
+            constexpr StringViewType EMERGENCY_ABORT_FINISHED{"Emergency abort finished."};
+        } // namespace abort
     } // namespace feedbacks
 
 } // namespace rpi_gc
