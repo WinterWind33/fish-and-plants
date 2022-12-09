@@ -15,8 +15,8 @@ namespace rpi_gc {
     GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, logger_pointer mainLogger) noexcept :
         m_outputStream{std::move(outputStream)},
         m_inputStream{std::move(inputStream)},
-        m_loggerPointer{std::move(mainLogger)} {
-        assert(static_cast<bool>(m_loggerPointer));
+        m_mainLogger{std::move(mainLogger)} {
+        assert(static_cast<bool>(m_mainLogger));
     }
 
 
@@ -82,8 +82,10 @@ namespace rpi_gc {
 
             // If the user requested to exit the program we can exit the
             // execution.
-            if(commandName == strings::commands::EXIT)
+            if(commandName == strings::commands::EXIT) {
+                m_mainLogger->logInfo("EXIT COMMAND ISSUED.");
                 continue;
+            }
 
             if(!m_commands.contains(commandName)) {
                 // The user typed an unknown command.
@@ -103,8 +105,8 @@ namespace rpi_gc {
         }
 
         m_outputStream.get() << strings::commands::feedbacks::TEARING_DOWN << std::endl;
+        m_mainLogger->logInfo(StringType{strings::commands::feedbacks::TEARING_DOWN});
         teardown();
-        m_outputStream.get() << "Done." << std::endl;
         m_outputStream.get() << strings::commands::feedbacks::GOODBYE << std::endl;
     }
 

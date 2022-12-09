@@ -52,7 +52,7 @@ namespace rpi_gc {
     private:
         ostream_ref m_outputStream;
         istream_ref m_inputStream;
-        logger_pointer m_loggerPointer{};
+        logger_pointer m_mainLogger{};
 
         std::map<StringType, std::unique_ptr<TerminalCommandType>> m_commands{};
         std::unique_ptr<TerminalCommandType> m_applicationCommand{};
