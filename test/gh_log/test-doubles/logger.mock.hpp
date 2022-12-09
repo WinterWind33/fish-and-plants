@@ -18,6 +18,7 @@ namespace gh_log::mocks {
         MOCK_METHOD(void, logDebug, (const LogStringType&), (override));
         MOCK_METHOD(void, logInfo, (const LogStringType&), (override));
         MOCK_METHOD(void, logWarning, (const LogStringType&), (override));
+        MOCK_METHOD(void, logError, (const LogStringType&), (override));
         MOCK_METHOD(void, logCritical, (const LogStringType&), (override));
     };
 
