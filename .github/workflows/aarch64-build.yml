@@ -23,7 +23,6 @@ jobs:
             base_image: raspios_lite_arm64:latest
             cpu_info: cpuinfo/raspberrypi_zero2_w_arm64
     steps:
-      - uses: actions/setup-node@v3
       - uses: actions/checkout@v3
         with:
           submodules: recursive
@@ -45,6 +44,6 @@ jobs:
               curl -sSL https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-linux-aarch64.sh -o install-cmake.sh
               chmod +x install-cmake.sh
               ./install-cmake.sh --prefix=/usr/local --skip-license
-              cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+              cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -Wno-dev
               cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
               ./bin/test_app

@@ -26,7 +26,7 @@ jobs:
       - name: CMake configure
         run: |
           mkdir build
-          cmake -B ./build -DCOMPILE_AARCH64_ON_LINUX=True -DCOMPILE_FOR_CORTEX_A53=True --toolchain "toolchains/aarch64-toolchain.cmake"
+          cmake -B ./build -DCOMPILE_AARCH64_ON_LINUX=True -DCOMPILE_FOR_CORTEX_A53=True --toolchain "toolchains/aarch64-toolchain.cmake" -Wno-dev
 
       - name: AARCH64 Build
         run: cmake --build ./build --config Release
