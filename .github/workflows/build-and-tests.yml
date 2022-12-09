@@ -14,6 +14,19 @@ env:
   BUILD_TYPE: Release
 
 jobs:
+  clang-tidy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run clang-tidy
+        uses: HorstBaerbel/action-clang-tidy@1.2
+        with:
+          scandir: '.'
+          builddir: 'build'
+          excludedirs: 'src/third-party,test/third-party'
+          extensions: 'c,h,C,H,cpp,hpp,cc,hh,c++,h++,cxx,hxx'
+
   build_matrix:
     strategy:
       matrix:
