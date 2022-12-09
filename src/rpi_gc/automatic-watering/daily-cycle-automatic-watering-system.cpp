@@ -23,6 +23,7 @@ namespace rpi_gc::automatic_watering {
             constexpr StringViewType AUTOMATIC_WATERING_JOB_START{"Automatic watering system job started."};
             constexpr StringViewType AUTOMATIC_WATERING_JOB_STOP_REQUESTED{"Handling stop request."};
             constexpr StringViewType AUTOMATIC_WATERING_JOB_END{"Automatic watering system job ended."};
+            constexpr StringViewType SYSTEM_NOT_RUNNING{"The system is not running."};
         } // namespace feedbacks
 
         constexpr StringViewType AUTOMATIC_WATERING_SYSTEM_LOG_NAME{"Automatic Watering System"};
@@ -41,11 +42,21 @@ namespace rpi_gc::automatic_watering {
 
         // We also notify the user for this action.
         m_userLogger->logInfo(formattedLogString);
+        if(!m_bIsRunning) {
+            const StringType systemNotRunning{format_log_string(strings::feedbacks::SYSTEM_NOT_RUNNING)};
+            m_mainLogger->logWarning(systemNotRunning);
+
+            // We also notify the user for this action.
+            m_userLogger->logWarning(systemNotRunning);
+            return;
+        }
 
         [[maybe_unused]] const bool bRequestStopSucceded{m_workerThread.request_stop()};
         assert(bRequestStopSucceded);
 
         m_workerThread.join();
+
+        m_bIsRunning = false;
     }
 
     void DailyCycleAutomaticWateringSystem::emergencyAbort() noexcept {
@@ -55,11 +66,20 @@ namespace rpi_gc::automatic_watering {
         // We also notify the user for this action.
         m_userLogger->logInfo(formattedLogString);
 
-        // For now we simply request the thread shutdown.
-        [[maybe_unused]] const bool bRequestStopSucceded{m_workerThread.request_stop()};
-        assert(bRequestStopSucceded);
+        if(!m_bIsRunning) {
+            const StringType systemNotRunning{format_log_string(strings::feedbacks::SYSTEM_NOT_RUNNING)};
+            m_mainLogger->logWarning(systemNotRunning);
 
+            // We also notify the user for this action.
+            m_userLogger->logWarning(systemNotRunning);
+            return;
+        }
+
+        // For now we simply request the thread shutdown.
+        m_workerThread.request_stop();
         m_workerThread.join();
+
+        m_bIsRunning = false;
     }
 
     void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
@@ -72,6 +92,8 @@ namespace rpi_gc::automatic_watering {
         m_workerThread = thread_type{[this](std::stop_token stopToken, logger_pointer logger){
             run_automatic_watering(std::move(stopToken), std::move(logger));
         }, m_mainLogger};
+
+        m_bIsRunning = true;
     }
 
     void DailyCycleAutomaticWateringSystem::run_automatic_watering(std::stop_token stopToken, logger_pointer logger) noexcept {

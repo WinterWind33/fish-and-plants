@@ -58,6 +58,8 @@ namespace rpi_gc::automatic_watering {
         user_logger_pointer m_userLogger{};
         thread_type m_workerThread{};
 
+        bool m_bIsRunning{};
+
         void run_automatic_watering(std::stop_token stopToken, main_logger_pointer logger) noexcept;
 
         [[nodiscard]] static StringType format_log_string(StringViewType message) noexcept;
