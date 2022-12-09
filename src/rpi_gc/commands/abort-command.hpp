@@ -17,6 +17,9 @@
 
 namespace rpi_gc::commands {
 
+    //!!
+    //! \brief Represents the "abort" command, i.e. the command that performs an
+    //!  emergency stop on the automatic systems that are running in the controller.
     class AbortCommand : public TerminalCommand<CharType> {
     public:
         using logger_pointer = std::shared_ptr<gh_log::Logger>;
@@ -24,12 +27,19 @@ namespace rpi_gc::commands {
         using emergency_stoppable_system_pointer = std::shared_ptr<emergency_stoppable_system>;
 
         ~AbortCommand() noexcept override = default;
+
+        //!!
+        //! \brief Construct a new Abort Command object taking the specified main logger and the abortable
+        //!  systems that will be aborted during the "execute()" command.
         explicit AbortCommand(logger_pointer mainLogger, std::vector<emergency_stoppable_system_pointer> systems) noexcept;
 
         constexpr name_type getName() const noexcept override {
             return strings::commands::ABORT;
         }
 
+        //!!
+        //! \brief For each abortable system registered in the command, it calls emergencyAbort() and wait
+        //!  for each abort to end.
         bool execute() noexcept override;
 
         inline bool processInputOptions(const std::vector<string_type>& inputTokens) noexcept override {
