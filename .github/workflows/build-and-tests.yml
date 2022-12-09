@@ -19,9 +19,31 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang-tidy
+
+      - name: Retrieve changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v34
+        with:
+          files: |
+            src/**
+            test/**
+          files_ignore: |
+            src/third-party/**
+            test/third-party/**
+            *.txt
+
+      - name: Execute clang-tidy
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "Parsing file: $file"
+            clang-tidy file -checks=-*,cppcoreguidelines-*,clang-analyzer-*
+          done
 
   build_matrix:
     needs: clang-tidy
