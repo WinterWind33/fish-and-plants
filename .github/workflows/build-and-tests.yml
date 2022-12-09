@@ -47,7 +47,7 @@ jobs:
       #     done
       - name: clang-tidy
         run: |
-          cmake . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cmake -B ${{github.workspace}}/build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Wno-dev
           make clang-tidy-check
 
   build_matrix:
