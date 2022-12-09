@@ -71,4 +71,8 @@ add_subdirectory("src/rpi_gc")
 # Tests project
 add_subdirectory("test")
 
+add_custom_target(
+    clang-tidy-check clang-tidy -p ${CMAKE_BINARY_DIR}/compile_commands.json -checks=cppcoreguidelines-* ${RPI_GC_SOURCE_FILES}
+    DEPENDS ${RPI_GC_SOURCE_FILES})
+
 add_custom_target(check DEPENDS clang-tidy-check)
