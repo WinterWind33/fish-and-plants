@@ -17,6 +17,7 @@ set(TEST_APP_HEADER_FILES
     "rpi_gc/test-doubles/commands/terminal-command.mock.hpp"
     "rpi_gc/test-doubles/commands/bivalent-command.mock.hpp"
     "rpi_gc/test-doubles/abort-system/terminable-system.mock.hpp"
+    "rpi_gc/test-doubles/abort-system/emergency-stoppable-system.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
