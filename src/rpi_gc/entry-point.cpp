@@ -101,7 +101,7 @@ int main(int argc, char* argv[]) {
     helpCommand->setApplicationHelp(applicationHelpStream.str());
 
     mainLogger->logInfo("Initiating main application controller...");
-    GreenhouseControllerApplication mainApplication{std::cout, std::cin};
+    GreenhouseControllerApplication mainApplication{std::cout, std::cin, std::move(mainLogger)};
     mainApplication.addSupportedCommand(std::move(autoWateringCommand));
     mainApplication.addSupportedCommand(std::move(abortCommand));
     mainApplication.addSupportedCommand(std::move(versionCommand));

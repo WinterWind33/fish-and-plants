@@ -1,5 +1,5 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
-#include "commands/abort-command.hpp"
+#include <commands/abort-command.hpp>
 
 // C++ STL
 #include <cassert>

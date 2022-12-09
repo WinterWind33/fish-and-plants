@@ -8,12 +8,16 @@
 // C++ STL
 #include <utility>
 #include <vector>
+#include <cassert>
 
 namespace rpi_gc {
 
-    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept :
+    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, logger_pointer mainLogger) noexcept :
         m_outputStream{std::move(outputStream)},
-        m_inputStream{std::move(inputStream)} {}
+        m_inputStream{std::move(inputStream)},
+        m_loggerPointer{std::move(mainLogger)} {
+        assert(static_cast<bool>(m_loggerPointer));
+    }
 
 
     bool GreenhouseControllerApplication::processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept {
@@ -36,8 +40,6 @@ namespace rpi_gc {
     }
 
     void GreenhouseControllerApplication::run() noexcept {
-        using StringView = std::basic_string_view<CharType>;
-
         // Firstly we run the the application command if the user
         // typed some options during the application launching.
         if(m_bCanApplicationCommandExecute) {
@@ -114,8 +116,6 @@ namespace rpi_gc {
     }
 
     void GreenhouseControllerApplication::print_app_header() noexcept {
-        using StringView = std::basic_string_view<CharType>;
-
         m_outputStream.get() << strings::application::NAME << " " << GreenhouseControllerApplication::create_version_string() << std::endl;
         m_outputStream.get() << strings::application::COPYRIGHT_DISCLAIMER << std::endl;
         m_outputStream.get() << std::endl;
