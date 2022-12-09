@@ -13,9 +13,11 @@ set(TEST_APP_HEADER_FILES
     "gh_cmd/test-doubles/option-visitor.mock.hpp"
     "gh_cmd/test-doubles/option-parser.mock.hpp"
     "gh_cmd/test-doubles/command-option.mock.hpp"
+    "gh_log/test-doubles/logger.mock.hpp"
     "rpi_gc/test-doubles/commands/terminal-command.mock.hpp"
     "rpi_gc/test-doubles/commands/bivalent-command.mock.hpp"
     "rpi_gc/test-doubles/abort-system/terminable-system.mock.hpp"
+    "rpi_gc/test-doubles/abort-system/emergency-stoppable-system.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
@@ -30,6 +32,7 @@ set(TEST_APP_SOURCE_FILES
     "rpi_gc/greenhouse-controller-application.tests.cpp"
     "rpi_gc/commands/application-command.tests.cpp"
     "rpi_gc/commands/automatic-watering-command.tests.cpp"
+    "rpi_gc/commands/abort-command.tests.cpp"
 
     # integration tests
     "integration/rpi_gc/application-command-integration.tests.cpp"

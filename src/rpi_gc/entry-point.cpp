@@ -8,6 +8,7 @@
 // Commands
 #include <gh_cmd/gh_cmd.hpp>
 #include <commands/application-command.hpp>
+#include <commands/abort-command.hpp>
 #include <commands/version-command.hpp>
 #include <commands/help-command.hpp>
 #include <commands/automatic-watering/automatic-watering-command.hpp>
@@ -72,23 +73,27 @@ int main(int argc, char* argv[]) {
     };
 
     mainLogger->logInfo("Initiating application commands and user interface...");
-    std::unique_ptr<VersionCommand> versionCommand{std::make_unique<VersionCommand>(std::cout)};
+    auto versionCommand = std::make_unique<VersionCommand>(std::cout);
 
-    std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{
-        commands_factory::CreateAutomaticWateringCommand<AutomaticWateringSystemPointer, DefaultOptionParser>(
+    auto autoWateringCommand = commands_factory::CreateAutomaticWateringCommand<AutomaticWateringSystemPointer, DefaultOptionParser>(
             automaticWateringSystem
-    )};
+    );
 
-    std::unique_ptr<HelpCommand> helpCommand{std::make_unique<HelpCommand>(
+    auto abortCommand = std::make_unique<commands::AbortCommand>(mainLogger,
+        std::vector<commands::AbortCommand::emergency_stoppable_system_pointer>{automaticWateringSystem}
+    );
+
+    auto helpCommand = std::make_unique<HelpCommand>(
         std::cout,
         std::vector<TerminalCommandType*>{
             versionCommand.get(),
-            autoWateringCommand.get()
+            autoWateringCommand.get(),
+            abortCommand.get()
         }
-    )};
+    );
 
-    std::unique_ptr<ApplicationOptionParser> applicationOptionParser{std::make_unique<ApplicationOptionParser>("rpi_gc command options")};
-    std::unique_ptr<ApplicationCommand> applicationCommand{std::make_unique<ApplicationCommand>(std::cout, *applicationOptionParser)};
+    auto applicationOptionParser = std::make_unique<ApplicationOptionParser>("rpi_gc command options");
+    auto applicationCommand = std::make_unique<ApplicationCommand>(std::cout, *applicationOptionParser);
     applicationCommand->addBivalentCommand(*versionCommand);
     applicationCommand->addBivalentCommand(*helpCommand);
 
@@ -96,8 +101,9 @@ int main(int argc, char* argv[]) {
     helpCommand->setApplicationHelp(applicationHelpStream.str());
 
     mainLogger->logInfo("Initiating main application controller...");
-    GreenhouseControllerApplication mainApplication{std::cout, std::cin};
+    GreenhouseControllerApplication mainApplication{std::cout, std::cin, mainLogger};
     mainApplication.addSupportedCommand(std::move(autoWateringCommand));
+    mainApplication.addSupportedCommand(std::move(abortCommand));
     mainApplication.addSupportedCommand(std::move(versionCommand));
     mainApplication.addSupportedCommand(std::move(helpCommand));
     mainApplication.setApplicationCommand(std::move(applicationCommand));

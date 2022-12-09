@@ -11,6 +11,7 @@ set(RPI_GC_HEADER_FILES
     "automatic-watering/daily-cycle-automatic-watering-system.hpp"
     "common/types.hpp"
     "commands/command.hpp"
+    "commands/abort-command.hpp"
     "commands/terminal-command.hpp"
     "commands/application-command.hpp"
     "commands/version-command.hpp"
@@ -27,6 +28,7 @@ set(RPI_GC_SOURCE_FILES
     "commands/application-command.cpp"
     "commands/version-command.cpp"
     "commands/help-command.cpp"
+    "commands/abort-command.cpp"
     "commands/automatic-watering/automatic-watering-command.cpp"
     "automatic-watering/daily-cycle-automatic-watering-system.cpp"
 )

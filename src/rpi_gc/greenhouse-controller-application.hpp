@@ -12,6 +12,7 @@
 
 // Wrappers
 #include <gh_cmd/gh_cmd.hpp>
+#include <gh_log/logger.hpp>
 
 // C++ STL
 #include <functional>
@@ -26,8 +27,9 @@ namespace rpi_gc {
     public:
         using ostream_ref = std::reference_wrapper<OutputStream>;
         using istream_ref = std::reference_wrapper<InputStream>;
+        using logger_pointer = std::shared_ptr<gh_log::Logger>;
 
-        GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept;
+        GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, logger_pointer mainLogger) noexcept;
         ~GreenhouseControllerApplication() noexcept override = default;
 
         //! \brief Does nothing for now.
@@ -50,6 +52,7 @@ namespace rpi_gc {
     private:
         ostream_ref m_outputStream;
         istream_ref m_inputStream;
+        logger_pointer m_mainLogger{};
 
         std::map<StringType, std::unique_ptr<TerminalCommandType>> m_commands{};
         std::unique_ptr<TerminalCommandType> m_applicationCommand{};

@@ -8,12 +8,16 @@
 // C++ STL
 #include <utility>
 #include <vector>
+#include <cassert>
 
 namespace rpi_gc {
 
-    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream) noexcept :
+    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, logger_pointer mainLogger) noexcept :
         m_outputStream{std::move(outputStream)},
-        m_inputStream{std::move(inputStream)} {}
+        m_inputStream{std::move(inputStream)},
+        m_mainLogger{std::move(mainLogger)} {
+        assert(static_cast<bool>(m_mainLogger));
+    }
 
 
     bool GreenhouseControllerApplication::processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept {
@@ -36,8 +40,6 @@ namespace rpi_gc {
     }
 
     void GreenhouseControllerApplication::run() noexcept {
-        using StringView = std::basic_string_view<CharType>;
-
         // Firstly we run the the application command if the user
         // typed some options during the application launching.
         if(m_bCanApplicationCommandExecute) {
@@ -80,8 +82,10 @@ namespace rpi_gc {
 
             // If the user requested to exit the program we can exit the
             // execution.
-            if(commandName == strings::commands::EXIT)
+            if(commandName == strings::commands::EXIT) {
+                m_mainLogger->logInfo("EXIT COMMAND ISSUED.");
                 continue;
+            }
 
             if(!m_commands.contains(commandName)) {
                 // The user typed an unknown command.
@@ -101,8 +105,8 @@ namespace rpi_gc {
         }
 
         m_outputStream.get() << strings::commands::feedbacks::TEARING_DOWN << std::endl;
+        m_mainLogger->logInfo(StringType{strings::commands::feedbacks::TEARING_DOWN});
         teardown();
-        m_outputStream.get() << "Done." << std::endl;
         m_outputStream.get() << strings::commands::feedbacks::GOODBYE << std::endl;
     }
 
@@ -114,8 +118,6 @@ namespace rpi_gc {
     }
 
     void GreenhouseControllerApplication::print_app_header() noexcept {
-        using StringView = std::basic_string_view<CharType>;
-
         m_outputStream.get() << strings::application::NAME << " " << GreenhouseControllerApplication::create_version_string() << std::endl;
         m_outputStream.get() << strings::application::COPYRIGHT_DISCLAIMER << std::endl;
         m_outputStream.get() << std::endl;

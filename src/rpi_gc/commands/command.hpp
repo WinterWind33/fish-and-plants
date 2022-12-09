@@ -15,6 +15,7 @@ namespace rpi_gc {
 
         //!!
         //! \brief Get the name of this command
+        [[nodiscard]]
         virtual name_type getName() const noexcept = 0;
 
         //! \brief Executes the command.

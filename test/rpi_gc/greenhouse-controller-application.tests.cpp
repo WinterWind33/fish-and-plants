@@ -10,6 +10,7 @@
 // Test doubles
 #include <rpi_gc/test-doubles/commands/terminal-command.mock.hpp>
 #include <rpi_gc/test-doubles/abort-system/terminable-system.mock.hpp>
+#include <gh_log/test-doubles/logger.mock.hpp>
 
 // C++ STL
 #include <cstdint>
@@ -49,11 +50,12 @@ namespace tests {
 
 TEST_CASE("GreenhouseControllerApplication Header Lines", "[functional][rpi_gc][GreenhouseControllerApplication][application-header]") {
     using namespace rpi_gc;
+    using testing::NiceMock;
 
     OutputStringStream outputStream{};
     InputStringStream inputStream{"exit"};
 
-    GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
+    GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
 
     SECTION("When running the application") {
         SECTION("It should correctly print the application name and version (first line)") {
@@ -92,9 +94,11 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
     using namespace rpi_gc;
 
     GIVEN("An application controller") {
+        using testing::NiceMock;
+
         InputStringStream inputStream{};
         OutputStringStream outputStream{};
-        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
+        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
 
         WHEN("A supported option (help) is given into the terminal buffer") {
             std::vector<const CharType*> strings{strings::application::EXECUTABLE_NAME.data(), "--help"};
@@ -116,9 +120,11 @@ TEST_CASE("GreenhouseControllerApplication termination unit tests", "[unit][soli
     using namespace rpi_gc;
 
     GIVEN("An application controller") {
+        using testing::NiceMock;
+
         InputStringStream inputStream{};
         OutputStringStream outputStream{};
-        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream};
+        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
 
         AND_GIVEN("A registered terminable system") {
             using testing::StrictMock;
