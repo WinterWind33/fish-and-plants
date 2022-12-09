@@ -10,6 +10,7 @@ namespace rpi_gc::strings::commands {
     constexpr StringViewType HELP{"help"};
     constexpr StringViewType VERSION{"version"};
     constexpr StringViewType APPLICATION{strings::application::EXECUTABLE_NAME};
+    constexpr StringViewType ABORT{"abort"};
     constexpr StringViewType EXIT{"exit"};
     constexpr StringViewType AUTOMATIC_WATERING{"auto-watering"};
 
