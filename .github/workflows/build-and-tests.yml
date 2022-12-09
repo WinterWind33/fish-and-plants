@@ -42,7 +42,7 @@ jobs:
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "Parsing file: $file"
-            clang-tidy file -checks=-*,cppcoreguidelines-*,clang-analyzer-*
+            clang-tidy $file -checks=-*,cppcoreguidelines-*,clang-analyzer-*
           done
 
   build_matrix:
