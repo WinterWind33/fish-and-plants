@@ -13,6 +13,7 @@ set(TEST_APP_HEADER_FILES
     "gh_cmd/test-doubles/option-visitor.mock.hpp"
     "gh_cmd/test-doubles/option-parser.mock.hpp"
     "gh_cmd/test-doubles/command-option.mock.hpp"
+    "gh_log/test-doubles/logger.mock.hpp"
     "rpi_gc/test-doubles/commands/terminal-command.mock.hpp"
     "rpi_gc/test-doubles/commands/bivalent-command.mock.hpp"
     "rpi_gc/test-doubles/abort-system/terminable-system.mock.hpp"
