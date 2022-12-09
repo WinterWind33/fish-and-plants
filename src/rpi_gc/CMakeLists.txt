@@ -33,6 +33,12 @@ set(RPI_GC_SOURCE_FILES
     "automatic-watering/daily-cycle-automatic-watering-system.cpp"
 )
 
+add_custom_target(
+    clang-tidy-check clang-tidy -p ${CMAKE_BINARY_DIR}/compile_commands.json -checks=cppcoreguidelines-* ${RPI_GC_SOURCE_FILES}
+    DEPENDS ${RPI_GC_SOURCE_FILES})
+
+add_custom_target(check DEPENDS clang-tidy-check)
+
 # Here we add a library target so we can use it to link it against
 # the test app.
 add_library(rpi_gc_lib STATIC ${RPI_GC_HEADER_FILES} ${RPI_GC_SOURCE_FILES})
