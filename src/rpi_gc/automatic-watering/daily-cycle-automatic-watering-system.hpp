@@ -62,6 +62,9 @@ namespace rpi_gc::automatic_watering {
 
         void run_automatic_watering(std::stop_token stopToken, main_logger_pointer logger) noexcept;
 
+        void activate_watering_hardware() noexcept;
+        void disable_watering_hardware() noexcept;
+
         [[nodiscard]] static StringType format_log_string(StringViewType message) noexcept;
     };
 
