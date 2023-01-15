@@ -13,8 +13,8 @@ namespace rpi_gc::automatic_watering {
 
         using digital_output_type = gh_hal::HALDigitalOutput;
 
-        [[nodiscard]] virtual digital_output_type* const getWaterValveDigitalOut() noexcept = 0;
-        [[nodiscard]] virtual digital_output_type* const getWaterPumpDigitalOut() noexcept = 0;
+        [[nodiscard]] virtual digital_output_type* getWaterValveDigitalOut() noexcept = 0;
+        [[nodiscard]] virtual digital_output_type* getWaterPumpDigitalOut() noexcept = 0;
     };
 
 } // namespace std::automatic_watering

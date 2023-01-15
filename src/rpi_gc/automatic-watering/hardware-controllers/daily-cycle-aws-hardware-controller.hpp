@@ -19,6 +19,14 @@ namespace rpi_gc::automatic_watering {
         explicit DailyCycleAWSHardwareController(
             const digital_output_id waterValvePinId, const digital_output_id waterPumpValvePinId) noexcept;
 
+        inline digital_output_type* getWaterValveDigitalOut() noexcept override {
+            return m_waterValveDigitalOut.get();
+        }
+
+        inline digital_output_type* getWaterPumpDigitalOut() noexcept override {
+            return m_waterPumpDigitalOut.get();
+        }
+
     private:
         std::unique_ptr<digital_output_type> m_waterValveDigitalOut{};
         std::unique_ptr<digital_output_type> m_waterPumpDigitalOut{};
