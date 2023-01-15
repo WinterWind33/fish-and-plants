@@ -156,8 +156,6 @@ namespace rpi_gc::automatic_watering {
         m_mainLogger->logInfo("[INFO] => Turning on the water valve.");
         waterValveDigitalOut->turnOn();
 
-        std::this_thread::sleep_for(std::chrono::milliseconds{200});
-
         m_userLogger->logInfo("[INFO] => Turning on the water pump.");
         m_mainLogger->logInfo("[INFO] => Turning on the water pump.");
         waterPumpDigitalOut->turnOn();
