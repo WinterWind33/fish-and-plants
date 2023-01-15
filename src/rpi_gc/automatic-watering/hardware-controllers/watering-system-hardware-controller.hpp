@@ -2,6 +2,21 @@
 #ifndef WATERING_SYSTEM_HARDWARE_CONTROLLER
 #define WATERING_SYSTEM_HARDWARE_CONTROLLER
 
-namespace rpi_gc::automatic_watering {} // namespace std::automatic_watering
+// HAL
+#include <gh_hal/hal-digital-output.hpp>
+
+namespace rpi_gc::automatic_watering {
+
+    class WateringSystemHardwareController {
+    public:
+        virtual ~WateringSystemHardwareController() noexcept = default;
+
+        using digital_output_type = gh_hal::HALDigitalOutput;
+
+        [[nodiscard]] virtual digital_output_type* const getWaterValveDigitalOut() noexcept = 0;
+        [[nodiscard]] virtual digital_output_type* const getWaterPumpDigitalOut() noexcept = 0;
+    };
+
+} // namespace std::automatic_watering
 
 #endif // !WATERING_SYSTEM_HARDWARE_CONTROLLER
