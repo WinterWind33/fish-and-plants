@@ -30,9 +30,11 @@ namespace rpi_gc::automatic_watering {
         constexpr StringViewType AUTOMATIC_WATERING_SYSTEM_LOG_NAME{"Automatic Watering System"};
     } // namespace strings
 
-    DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(logger_pointer mainLogger, logger_pointer userLogger) noexcept :
+    DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(logger_pointer mainLogger, logger_pointer userLogger,
+        hardware_controller_pointer hardwareController) noexcept :
         m_mainLogger{std::move(mainLogger)},
-        m_userLogger{std::move(userLogger)} {
+        m_userLogger{std::move(userLogger)},
+        m_hardwareController{std::move(hardwareController)} {
         assert(m_mainLogger != nullptr);
         assert(m_userLogger != nullptr);
     }
@@ -136,11 +138,11 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAutomaticWateringSystem::activate_watering_hardware() noexcept {
-
+        assert(m_hardwareController != nullptr);
     }
 
     void DailyCycleAutomaticWateringSystem::disable_watering_hardware() noexcept {
-
+        assert(m_hardwareController != nullptr);
     }
 
 } // namespace rpi_gc::automatic_watering
