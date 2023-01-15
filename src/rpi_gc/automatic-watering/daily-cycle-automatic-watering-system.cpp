@@ -139,10 +139,54 @@ namespace rpi_gc::automatic_watering {
 
     void DailyCycleAutomaticWateringSystem::activate_watering_hardware() noexcept {
         assert(m_hardwareController != nullptr);
+
+        WateringSystemHardwareController::digital_output_type* const waterValveDigitalOut {
+            m_hardwareController->getWaterValveDigitalOut()
+        };
+        assert(waterValveDigitalOut != nullptr);
+
+        WateringSystemHardwareController::digital_output_type* const waterPumpDigitalOut {
+            m_hardwareController->getWaterPumpDigitalOut()
+        };
+        assert(waterPumpDigitalOut != nullptr);
+
+        // As per requirements for the activation of the watering system we need to activate
+        // the water valve before the water pump without waiting.
+        m_userLogger->logInfo("[INFO] => Turning on the water valve.");
+        m_mainLogger->logInfo("[INFO] => Turning on the water valve.");
+        waterValveDigitalOut->turnOn();
+
+        std::this_thread::sleep_for(std::chrono::milliseconds{200});
+
+        m_userLogger->logInfo("[INFO] => Turning on the water pump.");
+        m_mainLogger->logInfo("[INFO] => Turning on the water pump.");
+        waterPumpDigitalOut->turnOn();
     }
 
     void DailyCycleAutomaticWateringSystem::disable_watering_hardware() noexcept {
         assert(m_hardwareController != nullptr);
+
+        WateringSystemHardwareController::digital_output_type* const waterValveDigitalOut {
+            m_hardwareController->getWaterValveDigitalOut()
+        };
+        assert(waterValveDigitalOut != nullptr);
+
+        WateringSystemHardwareController::digital_output_type* const waterPumpDigitalOut {
+            m_hardwareController->getWaterPumpDigitalOut()
+        };
+        assert(waterPumpDigitalOut != nullptr);
+
+        // As per requirements for the activation of the watering system we need to activate
+        // the water valve before the water pump without waiting.
+        m_userLogger->logInfo("[INFO] => Turning off the water valve.");
+        m_mainLogger->logInfo("[INFO] => Turning off the water valve.");
+        waterValveDigitalOut->turnOff();
+
+        std::this_thread::sleep_for(std::chrono::milliseconds{600});
+
+        m_userLogger->logInfo("[INFO] => Turning off the water pump.");
+        m_mainLogger->logInfo("[INFO] => Turning off the water pump.");
+        waterPumpDigitalOut->turnOff();
     }
 
 } // namespace rpi_gc::automatic_watering
