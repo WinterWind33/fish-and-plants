@@ -9,6 +9,7 @@ set(RPI_GC_HEADER_FILES
     "application/application.hpp"
     "automatic-watering/automatic-watering-system.hpp"
     "automatic-watering/daily-cycle-automatic-watering-system.hpp"
+    "automatic-watering/hardware-controllers/watering-system-hardware-controller.hpp"
     "common/types.hpp"
     "commands/command.hpp"
     "commands/abort-command.hpp"
