@@ -10,7 +10,6 @@ set(GH_HAL_HEADER_FILES
     "hal-definitions.hpp"
     "hal-digital-output.hpp"
     "hal-board-pin.hpp"
-    "hardware-controllers/hardware-controller.hpp"
 )
 
 # We create a static library
