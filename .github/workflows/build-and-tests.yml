@@ -25,12 +25,6 @@ jobs:
       with:
         submodules: recursive
 
-    - name: MacOS Compiler configuration
-      if: ${{ matrix.os == 'macos-latest' }}
-      run: |
-        brew update
-        brew install gcc@12
-
     - name: MacOS CMake Configure
       if: ${{ matrix.os == 'macos-latest' }}
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -Wno-dev
