@@ -4,6 +4,7 @@
 
 #include <automatic-watering/automatic-watering-system.hpp>
 #include <automatic-watering/hardware-controllers/watering-system-hardware-controller.hpp>
+#include <automatic-watering/time-providers/watering-system-time-provider.hpp>
 
 #include <abort-system/terminable-system.hpp>
 #include <abort-system/emergency-stoppable-system.hpp>
@@ -31,6 +32,7 @@ namespace rpi_gc::automatic_watering {
         using user_logger_pointer = logger_pointer;
         using thread_type = std::jthread;
         using hardware_controller_pointer = std::unique_ptr<WateringSystemHardwareController>;
+        using time_provider_pointer = std::shared_ptr<WateringSystemTimeProvider>;
 
         ~DailyCycleAutomaticWateringSystem() noexcept override = default;
 
@@ -61,6 +63,7 @@ namespace rpi_gc::automatic_watering {
         user_logger_pointer m_userLogger{};
         thread_type m_workerThread{};
         hardware_controller_pointer m_hardwareController{};
+        time_provider_pointer m_timeProvider{};
 
         bool m_bIsRunning{};
 

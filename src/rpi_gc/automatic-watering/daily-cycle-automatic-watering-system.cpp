@@ -100,8 +100,10 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAutomaticWateringSystem::run_automatic_watering(std::stop_token stopToken, logger_pointer logger) noexcept {
-        constexpr std::chrono::milliseconds HARDWARE_ACTIVE_TIME{6000}; // Expressed in ms
-        constexpr std::chrono::milliseconds HARWARDE_INACTIVE_TIME{60'000}; // Expressed in ms
+        assert(m_timeProvider != nullptr);
+
+        const WateringSystemTimeProvider::time_unit hardwareActivationTime{m_timeProvider->getWateringSystemActivationDuration()};
+        const WateringSystemTimeProvider::time_unit hardwareDeactivationTime{m_timeProvider->getWateringSystemDeactivationDuration()};
 
         logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_START));
         if(stopToken.stop_requested()) {
@@ -112,11 +114,11 @@ namespace rpi_gc::automatic_watering {
             // We start the automatic watering system cycle with the watering on.
             // The watering system lasts for 6 seconds as per requirements.
             activate_watering_hardware();
-            std::this_thread::sleep_for(HARDWARE_ACTIVE_TIME);
+            std::this_thread::sleep_for(hardwareActivationTime);
 
             // Now we can shut off the hardware.
             disable_watering_hardware();
-            std::this_thread::sleep_for(HARWARDE_INACTIVE_TIME);
+            std::this_thread::sleep_for(hardwareActivationTime);
         }
 
         logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_END));
@@ -163,6 +165,11 @@ namespace rpi_gc::automatic_watering {
 
     void DailyCycleAutomaticWateringSystem::disable_watering_hardware() noexcept {
         assert(m_hardwareController != nullptr);
+        assert(m_timeProvider != nullptr);
+
+        const WateringSystemTimeProvider::time_unit valvePumpSeparationTime{
+            m_timeProvider->getPumpValveDeactivationTimeSeparation()
+        };
 
         WateringSystemHardwareController::digital_output_type* const waterValveDigitalOut {
             m_hardwareController->getWaterValveDigitalOut()
@@ -180,7 +187,7 @@ namespace rpi_gc::automatic_watering {
         m_mainLogger->logInfo("[INFO] => Turning off the water valve.");
         waterValveDigitalOut->turnOff();
 
-        std::this_thread::sleep_for(std::chrono::milliseconds{600});
+        std::this_thread::sleep_for(valvePumpSeparationTime);
 
         m_userLogger->logInfo("[INFO] => Turning off the water pump.");
         m_mainLogger->logInfo("[INFO] => Turning off the water pump.");
