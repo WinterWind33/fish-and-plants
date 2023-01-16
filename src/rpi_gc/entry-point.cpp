@@ -74,8 +74,10 @@ int main(int argc, char* argv[]) {
     LoggerPointer userLogger{gh_log::SPLLogger::createColoredStdOutLogger("Reporter")};
     OutputStringStream applicationHelpStream{};
 
+    auto awsTimeProviderSmartPtr{std::make_shared<rpi_gc::automatic_watering::DailyCycleAWSTimeProvider>()};
+
     rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem::time_provider_pointer awsTimeProvider{
-        std::make_shared<rpi_gc::automatic_watering::DailyCycleAWSTimeProvider>()
+        awsTimeProviderSmartPtr.get()
     };
 
     using AutomaticWateringSystemPointer = std::shared_ptr<automatic_watering::DailyCycleAutomaticWateringSystem>;

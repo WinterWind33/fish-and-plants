@@ -34,7 +34,7 @@ namespace rpi_gc::automatic_watering {
         using user_logger_pointer = logger_pointer;
         using thread_type = std::jthread;
         using hardware_controller_pointer = std::unique_ptr<WateringSystemHardwareController>;
-        using time_provider_pointer = std::atomic<std::shared_ptr<WateringSystemTimeProvider>>;
+        using time_provider_pointer = std::atomic<WateringSystemTimeProvider*>;
         using time_provider_atomic_ref = std::reference_wrapper<time_provider_pointer>;
 
         ~DailyCycleAutomaticWateringSystem() noexcept override = default;
