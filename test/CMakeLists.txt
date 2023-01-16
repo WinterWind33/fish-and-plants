@@ -35,6 +35,7 @@ set(TEST_APP_SOURCE_FILES
     "rpi_gc/commands/application-command.tests.cpp"
     "rpi_gc/commands/automatic-watering-command.tests.cpp"
     "rpi_gc/commands/abort-command.tests.cpp"
+    "rpi_gc/automatic-watering/daily-cycle-automatic-watering-system.tests.cpp"
 
     # integration tests
     "integration/rpi_gc/application-command-integration.tests.cpp"
