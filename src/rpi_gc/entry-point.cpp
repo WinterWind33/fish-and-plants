@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Andrea Ballestrazzi
+// Copyright (C) 2023 Andrea Ballestrazzi
 #include <greenhouse-controller-application.hpp>
 
 #include <automatic-watering/daily-cycle-automatic-watering-system.hpp>
@@ -19,6 +19,7 @@
 #include <iostream>
 #include <memory>
 #include <algorithm>
+#include <atomic>
 
 namespace commands_factory {
 
@@ -73,13 +74,17 @@ int main(int argc, char* argv[]) {
     LoggerPointer userLogger{gh_log::SPLLogger::createColoredStdOutLogger("Reporter")};
     OutputStringStream applicationHelpStream{};
 
+    rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem::time_provider_pointer awsTimeProvider{
+        std::make_shared<rpi_gc::automatic_watering::DailyCycleAWSTimeProvider>()
+    };
+
     using AutomaticWateringSystemPointer = std::shared_ptr<automatic_watering::DailyCycleAutomaticWateringSystem>;
     AutomaticWateringSystemPointer automaticWateringSystem{
         std::make_shared<automatic_watering::DailyCycleAutomaticWateringSystem>(
             mainLogger,
             userLogger,
             std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID),
-            std::make_shared<rpi_gc::automatic_watering::DailyCycleAWSTimeProvider>()
+            std::ref(awsTimeProvider)
         )
     };
 

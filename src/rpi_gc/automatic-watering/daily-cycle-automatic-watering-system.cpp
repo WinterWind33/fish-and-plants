@@ -31,7 +31,7 @@ namespace rpi_gc::automatic_watering {
     } // namespace strings
 
     DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(logger_pointer mainLogger, logger_pointer userLogger,
-        hardware_controller_pointer hardwareController, time_provider_pointer::value_type timeProvider) noexcept :
+        hardware_controller_pointer hardwareController, time_provider_atomic_ref timeProvider) noexcept :
         m_mainLogger{std::move(mainLogger)},
         m_userLogger{std::move(userLogger)},
         m_hardwareController{std::move(hardwareController)},
@@ -102,7 +102,7 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAutomaticWateringSystem::run_automatic_watering(std::stop_token stopToken, logger_pointer logger) noexcept {
-        const time_provider_pointer::value_type timeProvider{m_timeProvider.load()};
+        const time_provider_pointer::value_type timeProvider{m_timeProvider.get().load()};
         assert(timeProvider != nullptr);
 
         const WateringSystemTimeProvider::time_unit hardwareActivationTime{timeProvider->getWateringSystemActivationDuration()};
@@ -167,7 +167,7 @@ namespace rpi_gc::automatic_watering {
     void DailyCycleAutomaticWateringSystem::disable_watering_hardware() noexcept {
         assert(m_hardwareController != nullptr);
 
-        const time_provider_pointer::value_type timeProvide{m_timeProvider.load()};
+        const time_provider_pointer::value_type timeProvide{m_timeProvider.get().load()};
         assert(timeProvide != nullptr);
 
         const WateringSystemTimeProvider::time_unit valvePumpSeparationTime{
