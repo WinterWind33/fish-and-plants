@@ -38,7 +38,7 @@ namespace rpi_gc::automatic_watering {
         m_timeProvider{std::move(timeProvider)} {
         assert(m_mainLogger != nullptr);
         assert(m_userLogger != nullptr);
-        assert(m_hardwareControler != nullptr);
+        assert(m_hardwareController != nullptr);
         assert(m_timeProvider != nullptr);
     }
 

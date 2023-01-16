@@ -12,6 +12,7 @@ set(RPI_GC_HEADER_FILES
     "automatic-watering/hardware-controllers/watering-system-hardware-controller.hpp"
     "automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.hpp"
     "automatic-watering/time-providers/watering-system-time-provider.hpp"
+    "automatic-watering/time-providers/daily-cycle-aws-time-provider.hpp"
     "common/types.hpp"
     "commands/command.hpp"
     "commands/abort-command.hpp"
