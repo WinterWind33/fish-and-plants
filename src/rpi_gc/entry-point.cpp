@@ -3,6 +3,7 @@
 
 #include <automatic-watering/daily-cycle-automatic-watering-system.hpp>
 #include <automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.hpp>
+#include <automatic-watering/time-providers/daily-cycle-aws-time-provider.hpp>
 #include <gh_log/logger.hpp>
 #include <gh_log/spl-logger.hpp>
 
@@ -78,7 +79,7 @@ int main(int argc, char* argv[]) {
             mainLogger,
             userLogger,
             std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID),
-            nullptr
+            std::make_shared<rpi_gc::automatic_watering::DailyCycleAWSTimeProvider>()
         )
     };
 
