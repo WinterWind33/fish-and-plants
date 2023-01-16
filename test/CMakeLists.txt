@@ -19,6 +19,7 @@ set(TEST_APP_HEADER_FILES
     "rpi_gc/test-doubles/abort-system/terminable-system.mock.hpp"
     "rpi_gc/test-doubles/abort-system/emergency-stoppable-system.mock.hpp"
     "rpi_gc/test-doubles/automatic-watering/hardware-controllers/watering-system-hardware-controller.mock.hpp"
+    "rpi_gc/test-doubles/automatic-watering/time-providers/watering-system-time-provider.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
