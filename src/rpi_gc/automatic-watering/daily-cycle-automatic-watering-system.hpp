@@ -16,6 +16,7 @@
 // C++ STL
 #include <memory>
 #include <thread>
+#include <atomic>
 
 namespace rpi_gc::automatic_watering {
 
@@ -32,7 +33,7 @@ namespace rpi_gc::automatic_watering {
         using user_logger_pointer = logger_pointer;
         using thread_type = std::jthread;
         using hardware_controller_pointer = std::unique_ptr<WateringSystemHardwareController>;
-        using time_provider_pointer = std::shared_ptr<WateringSystemTimeProvider>;
+        using time_provider_pointer = std::atomic<std::shared_ptr<WateringSystemTimeProvider>>;
 
         ~DailyCycleAutomaticWateringSystem() noexcept override = default;
 
@@ -43,7 +44,7 @@ namespace rpi_gc::automatic_watering {
         //! \param[in] mainLogger The logger that writes to the application main log file
         //! \param[in] userLog The logger that prints the messages to the preferred user display device (std::cout mainly)
         DailyCycleAutomaticWateringSystem(main_logger_pointer mainLogger, user_logger_pointer userLog,
-            hardware_controller_pointer hardwareController, time_provider_pointer timeProvider) noexcept;
+            hardware_controller_pointer hardwareController, time_provider_pointer::value_type timeProvider) noexcept;
 
         //!!
         //! \brief Requests the automatic watering system to shutdown if the worker thread is running.
