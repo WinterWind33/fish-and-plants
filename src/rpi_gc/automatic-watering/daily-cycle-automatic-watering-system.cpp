@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #include <automatic-watering/daily-cycle-automatic-watering-system.hpp>
 
 #include <common/types.hpp>
