@@ -43,7 +43,7 @@ namespace rpi_gc::automatic_watering {
         //! \param[in] mainLogger The logger that writes to the application main log file
         //! \param[in] userLog The logger that prints the messages to the preferred user display device (std::cout mainly)
         DailyCycleAutomaticWateringSystem(main_logger_pointer mainLogger, user_logger_pointer userLog,
-            hardware_controller_pointer hardwareController) noexcept;
+            hardware_controller_pointer hardwareController, time_provider_pointer timeProvider) noexcept;
 
         //!!
         //! \brief Requests the automatic watering system to shutdown if the worker thread is running.

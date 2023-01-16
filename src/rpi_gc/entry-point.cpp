@@ -77,7 +77,8 @@ int main(int argc, char* argv[]) {
         std::make_shared<automatic_watering::DailyCycleAutomaticWateringSystem>(
             mainLogger,
             userLogger,
-            std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID)
+            std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID),
+            nullptr
         )
     };
 
