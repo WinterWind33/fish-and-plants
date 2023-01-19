@@ -14,12 +14,6 @@ if(COMPILE_AARCH64_ON_LINUX)
     set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
     set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
     set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-
-    if(COMPILE_FOR_CORTEX_A53)
-        message("[INFO] => Compiling for Cortex A53 processors.")
-
-        add_compile_options("-mcpu=cortex-a53")
-    endif()
 endif()
 
 project(FishAndPlants CXX)

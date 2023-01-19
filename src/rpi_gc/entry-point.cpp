@@ -1,7 +1,9 @@
-// Copyright (C) 2022 Andrea Ballestrazzi
+// Copyright (C) 2023 Andrea Ballestrazzi
 #include <greenhouse-controller-application.hpp>
 
 #include <automatic-watering/daily-cycle-automatic-watering-system.hpp>
+#include <automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.hpp>
+#include <automatic-watering/time-providers/daily-cycle-aws-time-provider.hpp>
 #include <gh_log/logger.hpp>
 #include <gh_log/spl-logger.hpp>
 
@@ -17,6 +19,7 @@
 #include <iostream>
 #include <memory>
 #include <algorithm>
+#include <atomic>
 
 namespace commands_factory {
 
@@ -45,6 +48,13 @@ namespace commands_factory {
 
 } // namespace commands_factory
 
+namespace constants {
+
+    constexpr rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id WATER_VALVE_PIN_ID{26};
+    constexpr rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id WATER_PUMP_PIN_ID{23};
+
+} // namespace constants
+
 // This is the entry point of the application. Here, it starts
 // the main execution of the greenhouse controller.
 int main(int argc, char* argv[]) {
@@ -64,11 +74,19 @@ int main(int argc, char* argv[]) {
     LoggerPointer userLogger{gh_log::SPLLogger::createColoredStdOutLogger("Reporter")};
     OutputStringStream applicationHelpStream{};
 
+    auto awsTimeProviderSmartPtr{std::make_shared<rpi_gc::automatic_watering::DailyCycleAWSTimeProvider>()};
+
+    rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem::time_provider_pointer awsTimeProvider{
+        awsTimeProviderSmartPtr.get()
+    };
+
     using AutomaticWateringSystemPointer = std::shared_ptr<automatic_watering::DailyCycleAutomaticWateringSystem>;
     AutomaticWateringSystemPointer automaticWateringSystem{
         std::make_shared<automatic_watering::DailyCycleAutomaticWateringSystem>(
             mainLogger,
-            userLogger
+            userLogger,
+            std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID),
+            std::ref(awsTimeProvider)
         )
     };
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #include <automatic-watering/daily-cycle-automatic-watering-system.hpp>
 
 #include <common/types.hpp>
@@ -6,6 +6,7 @@
 // C++ STL
 #include <cassert>
 #include <version>
+#include <chrono>
 
 #ifdef __cpp_lib_format
 #include <format>
@@ -29,11 +30,15 @@ namespace rpi_gc::automatic_watering {
         constexpr StringViewType AUTOMATIC_WATERING_SYSTEM_LOG_NAME{"Automatic Watering System"};
     } // namespace strings
 
-    DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(logger_pointer mainLogger, logger_pointer userLogger) noexcept :
+    DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(logger_pointer mainLogger, logger_pointer userLogger,
+        hardware_controller_pointer hardwareController, time_provider_atomic_ref timeProvider) noexcept :
         m_mainLogger{std::move(mainLogger)},
-        m_userLogger{std::move(userLogger)} {
+        m_userLogger{std::move(userLogger)},
+        m_hardwareController{std::move(hardwareController)},
+        m_timeProvider{std::move(timeProvider)} {
         assert(m_mainLogger != nullptr);
         assert(m_userLogger != nullptr);
+        assert(m_hardwareController != nullptr);
     }
 
     void DailyCycleAutomaticWateringSystem::requestShutdown() noexcept {
@@ -97,9 +102,26 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAutomaticWateringSystem::run_automatic_watering(std::stop_token stopToken, logger_pointer logger) noexcept {
+        const time_provider_pointer::value_type timeProvider{m_timeProvider.get().load()};
+        assert(timeProvider != nullptr);
+
+        const WateringSystemTimeProvider::time_unit hardwareActivationTime{timeProvider->getWateringSystemActivationDuration()};
+        const WateringSystemTimeProvider::time_unit hardwareDeactivationTime{timeProvider->getWateringSystemDeactivationDuration()};
+
         logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_START));
         if(stopToken.stop_requested()) {
             logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_STOP_REQUESTED));
+        }
+
+        while(!stopToken.stop_requested()) {
+            // We start the automatic watering system cycle with the watering on.
+            // The watering system lasts for 6 seconds as per requirements.
+            activate_watering_hardware();
+            std::this_thread::sleep_for(hardwareActivationTime);
+
+            // Now we can shut off the hardware.
+            disable_watering_hardware();
+            std::this_thread::sleep_for(hardwareDeactivationTime);
         }
 
         logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_END));
@@ -118,6 +140,59 @@ namespace rpi_gc::automatic_watering {
 
         return outputStream.str();
 #endif // __cpp_lib_format
+    }
+
+    void DailyCycleAutomaticWateringSystem::activate_watering_hardware() noexcept {
+        assert(m_hardwareController != nullptr);
+
+        WateringSystemHardwareController::digital_output_type* const waterValveDigitalOut {
+            m_hardwareController->getWaterValveDigitalOut()
+        };
+        assert(waterValveDigitalOut != nullptr);
+
+        WateringSystemHardwareController::digital_output_type* const waterPumpDigitalOut {
+            m_hardwareController->getWaterPumpDigitalOut()
+        };
+        assert(waterPumpDigitalOut != nullptr);
+
+        // As per requirements for the activation of the watering system we need to activate
+        // the water valve before the water pump without waiting.
+        m_mainLogger->logInfo("[INFO] => Turning on the water valve.");
+        waterValveDigitalOut->turnOn();
+
+        m_mainLogger->logInfo("[INFO] => Turning on the water pump.");
+        waterPumpDigitalOut->turnOn();
+    }
+
+    void DailyCycleAutomaticWateringSystem::disable_watering_hardware() noexcept {
+        assert(m_hardwareController != nullptr);
+
+        const time_provider_pointer::value_type timeProvide{m_timeProvider.get().load()};
+        assert(timeProvide != nullptr);
+
+        const WateringSystemTimeProvider::time_unit valvePumpSeparationTime{
+            timeProvide->getPumpValveDeactivationTimeSeparation()
+        };
+
+        WateringSystemHardwareController::digital_output_type* const waterValveDigitalOut {
+            m_hardwareController->getWaterValveDigitalOut()
+        };
+        assert(waterValveDigitalOut != nullptr);
+
+        WateringSystemHardwareController::digital_output_type* const waterPumpDigitalOut {
+            m_hardwareController->getWaterPumpDigitalOut()
+        };
+        assert(waterPumpDigitalOut != nullptr);
+
+        // As per requirements for the activation of the watering system we need to activate
+        // the water valve before the water pump without waiting.
+        m_mainLogger->logInfo("[INFO] => Turning off the water valve.");
+        waterValveDigitalOut->turnOff();
+
+        std::this_thread::sleep_for(valvePumpSeparationTime);
+
+        m_mainLogger->logInfo("[INFO] => Turning off the water pump.");
+        waterPumpDigitalOut->turnOff();
     }
 
 } // namespace rpi_gc::automatic_watering
