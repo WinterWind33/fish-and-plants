@@ -231,7 +231,9 @@ namespace gh_cmd {
 
     template<typename C>
     inline bool Switch<C>::value() const noexcept {
-        return m_switchImpl->value_or(false);
+        // The index of the value to check for inside the popl internal state.
+        const std::size_t historyEntryIndex{m_switchImpl->count() - 1};
+        return m_switchImpl->value_or(false, historyEntryIndex);
     }
 
     template<typename C>
