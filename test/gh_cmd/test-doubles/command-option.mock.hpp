@@ -26,6 +26,8 @@ namespace gh_cmd::mocks {
         MOCK_METHOD(void, acceptVisitor, (const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>&), (const, noexcept, override));
         MOCK_METHOD(void, acceptVisitor, (OptionVisitor<std::shared_ptr<base_impl_type>>&), (noexcept, override));
         MOCK_METHOD(bool, isSet, (), (const, noexcept, override));
+        MOCK_METHOD(bool, value, (), (const, noexcept, override));
+        MOCK_METHOD(void, clear, (), (noexcept, override));
     };
 
 } // namespace gh_cmd

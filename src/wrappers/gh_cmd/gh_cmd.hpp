@@ -69,8 +69,15 @@ namespace gh_cmd {
         //! \brief Accepts an external visitor that can modify the internal implementation's state.
         virtual void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept = 0;
 
-        //! \brief Checks whether or not this option is set in the given input lines.
+        //! \brief Checks whether or not this option was set at least once in the given input lines.
         virtual bool isSet() const noexcept = 0;
+
+        //! \brief Retrieves the current value for this option.
+        virtual bool value() const noexcept = 0;
+
+        //! \brief Clears the internal option state, resetting it.
+        //!  After this call, isSet() == false.
+        virtual void clear() noexcept = 0;
     };
 
     //! \brief Represents an option with boolean value.
@@ -99,6 +106,8 @@ namespace gh_cmd {
         void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
 
         bool isSet() const noexcept override;
+        bool value() const noexcept override;
+        void clear() noexcept override;
 
     private:
         // We use shared_ptr for now as the popl implementation
@@ -140,6 +149,9 @@ namespace gh_cmd {
         //! \brief Retrieves all of the options saved inside this parser configuration.
         virtual std::vector<const_option_pointer> getOptions() const noexcept = 0;
 
+        //! \brief Retrieves all of the options saved inside this parser configuration.
+        virtual std::vector<option_pointer> getOptions() noexcept = 0;
+
         //! \brief Retrieves all of the non-option arguments parsed by this object.
         virtual std::vector<string_type> getNonOptionArguments() const noexcept = 0;
 
@@ -152,6 +164,8 @@ namespace gh_cmd {
     public:
         using typename OptionParser<CharType>::char_type;
         using typename OptionParser<CharType>::string_type;
+        using typename OptionParser<CharType>::const_option_pointer;
+        using typename OptionParser<CharType>::option_pointer;
 
         using impl_type = popl::OptionParser;
         static_assert(std::is_same_v<CharType, char>, "Only char is accepted as a valid char type");
@@ -165,7 +179,8 @@ namespace gh_cmd {
         void reset() noexcept override;
         void printHelp(std::basic_ostream<char_type>& outputStream) const noexcept override;
 
-        std::vector<std::shared_ptr<const CommandOption<char_type>>> getOptions() const noexcept override;
+        std::vector<const_option_pointer> getOptions() const noexcept override;
+        std::vector<option_pointer> getOptions() noexcept override;
         std::vector<string_type> getUnknownOptions() const noexcept override;
         std::vector<string_type> getNonOptionArguments() const noexcept override;
 
@@ -214,6 +229,16 @@ namespace gh_cmd {
         return m_switchImpl->is_set();
     }
 
+    template<typename C>
+    inline bool Switch<C>::value() const noexcept {
+        return m_switchImpl->value_or(false);
+    }
+
+    template<typename C>
+    inline void Switch<C>::clear() noexcept {
+        m_switchImpl->set_value(false);
+    }
+
     // DefaultOptionParser implementation
     template<typename C>
     inline DefaultOptionParser<C>::DefaultOptionParser() noexcept :
@@ -234,10 +259,20 @@ namespace gh_cmd {
     }
 
     template<typename C>
-    inline auto DefaultOptionParser<C>::getOptions() const noexcept -> std::vector<std::shared_ptr<const CommandOption<char_type>>> {
-        std::vector<std::shared_ptr<const CommandOption<char_type>>> result{};
+    inline auto DefaultOptionParser<C>::getOptions() const noexcept -> std::vector<const_option_pointer> {
+        std::vector<const_option_pointer> result{};
 
         for(const auto& option : m_options)
+            result.emplace_back(option);
+
+        return result;
+    }
+
+    template<typename C>
+    inline auto DefaultOptionParser<C>::getOptions() noexcept -> std::vector<option_pointer> {
+        std::vector<option_pointer> result{};
+
+        for(auto& option : m_options)
             result.emplace_back(option);
 
         return result;

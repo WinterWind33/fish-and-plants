@@ -18,28 +18,29 @@ namespace rpi_gc {
     }
 
     bool AutomaticWateringCommand::execute() noexcept {
-        const auto& options{m_optionParser->getOptions()};
+        auto options{m_optionParser->getOptions()};
 
         // First of all we need to check if the help
         // option is set. If this is the case we need to
         // execute it first and return.
-        auto optionIt = std::find_if(options.cbegin(), options.cend(), [](const option_parser::const_option_pointer& option){
+        auto optionIt = std::find_if(options.begin(), options.end(), [](const option_parser::const_option_pointer& option){
             assert(option != nullptr);
 
             return option->getLongName() == strings::commands::HELP;
         });
 
-        if(optionIt != options.cend() && (*optionIt)->isSet()) {
+        if(optionIt != options.end() && (*optionIt)->value()) {
             // We have found the command help and it's set. We can execute it.
             printHelp(m_outputStream.get());
 
+            (*optionIt)->clear();
             return true;
         }
 
-        for(const auto& option : options) {
+        for(auto& option : options) {
             assert(option != nullptr);
 
-            if(option->isSet() && m_optionsEvents.contains(option->getLongName())) {
+            if(option->value() && m_optionsEvents.contains(option->getLongName())) {
                 // We retrieve all the events in the map.
                 auto iteratorPair = m_optionsEvents.equal_range(option->getLongName());
 
@@ -49,6 +50,10 @@ namespace rpi_gc {
 
                     // We trigger the event.
                     event(option);
+
+                    // We need to reset the state of the option otherwise the next time the
+                    // user types it, it will execute all of the previous options.
+                    option->clear();
                 }
             }
         }
