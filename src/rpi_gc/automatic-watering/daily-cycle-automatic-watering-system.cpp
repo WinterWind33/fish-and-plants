@@ -88,6 +88,16 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
+        if(m_bIsRunning) {
+            const StringType formattedErrorString{
+                format_log_string("Automatic watering system already running. Stop the previous instance before starting it again.")};
+
+            m_mainLogger->logError(formattedErrorString);
+            m_userLogger->logError(formattedErrorString);
+
+            return;
+        }
+
         const StringType formattedLogString{format_log_string(strings::feedbacks::START_WATERING_JOB)};
         m_mainLogger->logInfo(formattedLogString);
 

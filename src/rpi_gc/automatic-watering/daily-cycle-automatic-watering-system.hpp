@@ -18,6 +18,8 @@
 #include <thread>
 #include <atomic>
 #include <functional>
+#include <condition_variable>
+#include <mutex>
 
 namespace rpi_gc::automatic_watering {
 
@@ -36,6 +38,8 @@ namespace rpi_gc::automatic_watering {
         using hardware_controller_pointer = std::unique_ptr<WateringSystemHardwareController>;
         using time_provider_pointer = std::atomic<WateringSystemTimeProvider*>;
         using time_provider_atomic_ref = std::reference_wrapper<time_provider_pointer>;
+        using stop_event_listener = std::condition_variable;
+        using stop_event_lock = std::unique_lock<std::mutex>;
 
         ~DailyCycleAutomaticWateringSystem() noexcept override = default;
 
@@ -67,6 +71,8 @@ namespace rpi_gc::automatic_watering {
         thread_type m_workerThread{};
         hardware_controller_pointer m_hardwareController{};
         time_provider_atomic_ref m_timeProvider;
+        stop_event_listener m_stopListener{};
+        stop_event_lock m_stopLock{};
 
         bool m_bIsRunning{};
 
