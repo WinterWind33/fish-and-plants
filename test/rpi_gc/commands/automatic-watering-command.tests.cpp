@@ -39,7 +39,7 @@ TEST_CASE("AutomaticWateringCommand Events unit tests", "[unit][solitary][rpi_gc
             ON_CALL(*optionMock, getLongName).WillByDefault(testing::Return(OPTION_NAME));
             ON_CALL(*optionMock, isSet).WillByDefault(testing::Return(true));
 
-            EXPECT_CALL(*optionParserRef, getOptions)
+            EXPECT_CALL(testing::Const(*optionParserRef), testing::Const(getOptions))
                 .Times(1)
                 .WillOnce(testing::Return(std::vector<AutomaticWateringCommand::option_parser::const_option_pointer>{
                     optionMock
@@ -63,7 +63,7 @@ TEST_CASE("AutomaticWateringCommand Events unit tests", "[unit][solitary][rpi_gc
             ON_CALL(*helpOptionMock, getLongName).WillByDefault(testing::Return("help"));
             ON_CALL(*helpOptionMock, isSet).WillByDefault(testing::Return(true));
 
-            EXPECT_CALL(*optionParserRef, getOptions)
+            EXPECT_CALL(testing::Const(*optionParserRef), getOptions)
                 .Times(1)
                 .WillOnce(testing::Return(std::vector<AutomaticWateringCommand::option_parser::const_option_pointer>{
                     optionMock,

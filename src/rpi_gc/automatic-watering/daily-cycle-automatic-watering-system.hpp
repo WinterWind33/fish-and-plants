@@ -39,7 +39,7 @@ namespace rpi_gc::automatic_watering {
         using time_provider_pointer = std::atomic<WateringSystemTimeProvider*>;
         using time_provider_atomic_ref = std::reference_wrapper<time_provider_pointer>;
         using stop_event_listener = std::condition_variable;
-        using stop_event_lock = std::unique_lock<std::mutex>;
+        using stop_event_mutex = std::mutex;
 
         ~DailyCycleAutomaticWateringSystem() noexcept override = default;
 
@@ -72,7 +72,7 @@ namespace rpi_gc::automatic_watering {
         hardware_controller_pointer m_hardwareController{};
         time_provider_atomic_ref m_timeProvider;
         stop_event_listener m_stopListener{};
-        stop_event_lock m_stopLock{};
+        stop_event_mutex m_stopMutex{};
 
         bool m_bIsRunning{};
 
