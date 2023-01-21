@@ -65,6 +65,8 @@ namespace rpi_gc::automatic_watering {
 
         void startAutomaticWatering() noexcept override;
 
+        inline bool isRunning() const noexcept { return m_bIsRunning; }
+
     private:
         main_logger_pointer m_mainLogger{};
         user_logger_pointer m_userLogger{};
