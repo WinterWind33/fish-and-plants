@@ -34,12 +34,19 @@ namespace commands_factory {
         AutomaticWateringCommand::option_parser_pointer autoWateringOptionParser{std::make_unique<OptionParserType>("[OPTIONS] => auto-watering")};
         autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('h', "help", "Displays this help page."));
         autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('S', "start", "Starts the automatic watering system in Daily-Cycle mode."));
+        autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('s', "stop", "Stopts the automatic watering system waiting for resources to be released."));
 
         std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(autoWateringOptionParser))};
         autoWateringCommand->registerOptionEvent(
             "start",
             [wateringSystem]([[maybe_unused]] AutomaticWateringCommand::option_parser::const_option_pointer) {
                 wateringSystem->startAutomaticWatering();
+            }
+        );
+        autoWateringCommand->registerOptionEvent(
+            "stop",
+            [wateringSystem]([[maybe_unused]] AutomaticWateringCommand::option_parser::const_option_pointer) {
+                wateringSystem->requestShutdown();
             }
         );
 
