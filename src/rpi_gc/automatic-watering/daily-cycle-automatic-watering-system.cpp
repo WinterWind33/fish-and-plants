@@ -56,9 +56,14 @@ namespace rpi_gc::automatic_watering {
             return;
         }
 
-        [[maybe_unused]] const bool bRequestStopSucceded{m_workerThread.request_stop()};
-        assert(bRequestStopSucceded);
+        {
+            std::lock_guard<stop_event_mutex> stopLock{m_stopMutex};
 
+            [[maybe_unused]] const bool bRequestStopSucceded{m_workerThread.request_stop()};
+            assert(bRequestStopSucceded);
+        }
+
+        m_stopListener.notify_one();
         m_workerThread.join();
 
         m_bIsRunning = false;
@@ -80,14 +85,30 @@ namespace rpi_gc::automatic_watering {
             return;
         }
 
-        // For now we simply request the thread shutdown.
-        m_workerThread.request_stop();
+        {
+            std::lock_guard<stop_event_mutex> stopLock{m_stopMutex};
+
+            // For now we simply request the thread shutdown.
+            [[maybe_unused]] const bool bRequestStopSucceded{m_workerThread.request_stop()};
+            assert(bRequestStopSucceded);
+        }
+        m_stopListener.notify_one();
         m_workerThread.join();
 
         m_bIsRunning = false;
     }
 
     void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
+        if(m_bIsRunning) {
+            const StringType formattedErrorString{
+                format_log_string("Automatic watering system already running. Stop the previous instance before starting it again.")};
+
+            m_mainLogger->logError(formattedErrorString);
+            m_userLogger->logError(formattedErrorString);
+
+            return;
+        }
+
         const StringType formattedLogString{format_log_string(strings::feedbacks::START_WATERING_JOB)};
         m_mainLogger->logInfo(formattedLogString);
 
@@ -113,15 +134,28 @@ namespace rpi_gc::automatic_watering {
             logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_STOP_REQUESTED));
         }
 
+        std::unique_lock<stop_event_mutex> stopLock{m_stopMutex};
         while(!stopToken.stop_requested()) {
             // We start the automatic watering system cycle with the watering on.
             // The watering system lasts for 6 seconds as per requirements.
             activate_watering_hardware();
-            std::this_thread::sleep_for(hardwareActivationTime);
+            m_stopListener.wait_for(stopLock, hardwareActivationTime, [&stopToken](){
+                return stopToken.stop_requested();
+            });
+
+            if(stopToken.stop_requested()) {
+                // If the user requested an abort during th hardware activation
+                // we need to deactivate it and exit asap. The watering cycle
+                // is interrupted.
+                disable_watering_hardware();
+                break;
+            }
 
             // Now we can shut off the hardware.
             disable_watering_hardware();
-            std::this_thread::sleep_for(hardwareDeactivationTime);
+            m_stopListener.wait_for(stopLock, hardwareDeactivationTime, [&stopToken](){
+                return stopToken.stop_requested();
+            });
         }
 
         logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_END));

@@ -37,7 +37,7 @@ namespace rpi_gc {
             return option->getLongName() == strings::commands::HELP;
         });
 
-        if(helpIt != endIterator && (*helpIt)->isSet()) {
+        if(helpIt != endIterator && (*helpIt)->value()) {
             // Help option is set, we can execute it.
             m_bivalentCommands.at((*helpIt)->getLongName()).get().executeAsOption();
             return false;
@@ -50,7 +50,7 @@ namespace rpi_gc {
             const auto longName = option->getLongName();
             assert(m_bivalentCommands.contains(longName));
 
-            if(option->isSet()) {
+            if(option->value()) {
                 // If the option is set we execute th ebivalent command as option.
                 bCanContinue = m_bivalentCommands.at(longName).get().executeAsOption();
 

@@ -34,6 +34,10 @@ TEST_CASE("DefaultOptionParser parse() method unit tests", "[unit][sociable][gh_
                 THEN("The switch option should be set") {
                     CHECK(switchOption->isSet());
                 }
+
+                THEN("The switch option value should be set") {
+                    CHECK(switchOption->value());
+                }
             }
 
             AND_WHEN("parse() is invoked with a command with the switch - long name") {
@@ -49,6 +53,9 @@ TEST_CASE("DefaultOptionParser parse() method unit tests", "[unit][sociable][gh_
 
                 THEN("The switch option should be set") {
                     CHECK(switchOption->isSet());
+                }
+                THEN("The switch option value should be set") {
+                    CHECK(switchOption->value());
                 }
             }
 
@@ -74,6 +81,9 @@ TEST_CASE("DefaultOptionParser parse() method unit tests", "[unit][sociable][gh_
                 THEN("The switch option should not be set") {
                     CHECK_FALSE(switchOption->isSet());
                 }
+                THEN("The switch option value should not be set") {
+                    CHECK_FALSE(switchOption->value());
+                }
             }
 
             AND_WHEN("parse() is invoked with the switch (long name) and non-option arguments") {
@@ -97,6 +107,10 @@ TEST_CASE("DefaultOptionParser parse() method unit tests", "[unit][sociable][gh_
 
                 THEN("The switch option should be set") {
                     CHECK(switchOption->isSet());
+                }
+
+                THEN("The switch option value should be set") {
+                    CHECK(switchOption->value());
                 }
             }
         }

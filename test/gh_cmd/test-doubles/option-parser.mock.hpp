@@ -26,6 +26,7 @@ namespace gh_cmd::mocks {
         MOCK_METHOD(void, reset, (), (noexcept, override));
         MOCK_METHOD(void, printHelp, (std::basic_ostream<char_type>&), (const, noexcept, override));
         MOCK_METHOD((std::vector<const_option_pointer>), getOptions, (), (const, noexcept, override));
+        MOCK_METHOD((std::vector<option_pointer>), getOptions, (), (noexcept, override));
         MOCK_METHOD(std::vector<string_type>, getNonOptionArguments, (), (const, noexcept, override));
         MOCK_METHOD(std::vector<string_type>, getUnknownOptions, (), (const, noexcept, override));
     };
