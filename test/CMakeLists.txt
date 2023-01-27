@@ -29,6 +29,7 @@ set(TEST_APP_SOURCE_FILES
     # Modules
     "gh_hal/hal-board-pin.tests.cpp"
     "gh_cmd/switch.tests.cpp"
+    "gh_cmd/value.tests.cpp"
     "gh_cmd/default-option-parser.tests.cpp"
 
     # rpi_gc
