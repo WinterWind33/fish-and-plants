@@ -115,6 +115,36 @@ namespace gh_cmd {
         std::shared_ptr<impl_type> m_switchImpl{};
     };
 
+    template<typename CharType, typename ValueType>
+    class Value : public CommandOption<CharType> {
+    public:
+        using typename CommandOption<CharType>::char_type;
+        using typename CommandOption<CharType>::string_type;
+        using typename CommandOption<CharType>::short_name_type;
+        using typename CommandOption<CharType>::long_name_type;
+        using typename CommandOption<CharType>::base_impl_type;
+
+        using value_type = std::decay_t<ValueType>;
+        using impl_type = popl::Value<ValueType>;
+        static_assert(std::is_same_v<char_type, char>, "Only char is accepted as a valid char type.");
+
+        Value(short_name_type shortName, long_name_type longName, string_type description, value_type defaultValue = value_type{}) noexcept;
+
+        short_name_type getShortName() const noexcept override;
+        long_name_type getLongName() const noexcept override;
+        string_type getDescription() const noexcept override;
+
+        void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept override;
+        void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
+
+        bool isSet() const noexcept override;
+        value_type value() const noexcept override;
+        void clear() noexcept override;
+
+    private:
+        std::shared_ptr<impl_type> m_valueImpl{};
+    };
+
     //! \brief Represents the basic interface of an option parser, i.e. an object that,
     //!  given an input line, it extracts all of the command's options.
     //!
@@ -239,6 +269,54 @@ namespace gh_cmd {
     template<typename C>
     inline void Switch<C>::clear() noexcept {
         m_switchImpl->set_value(false);
+    }
+
+    // Value implementation
+    template<typename C, typename V>
+    inline Value<C,V>::Value(short_name_type shortName, long_name_type longName, string_type description, value_type defaultValue) noexcept {
+        const short_name_type shortNameRawString[2] = {shortName, 0};
+
+        m_valueImpl = std::make_shared<impl_type>(shortNameRawString, std::move(longName), std::move(description), std::move(defaultValue));
+    }
+
+    template<typename C, typename V>
+    inline auto Value<C,V>::getShortName() const noexcept -> short_name_type {
+        return m_valueImpl->short_name();
+    }
+
+    template<typename C, typename V>
+    inline auto Value<C,V>::getLongName() const noexcept -> long_name_type {
+        return m_valueImpl->long_name();
+    }
+
+    template<typename C, typename V>
+    inline auto Value<C,V>::getDescription() const noexcept -> string_type {
+        return m_valueImpl->description();
+    }
+
+    template<typename C, typename V>
+    inline void Value<C, V>::acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept {
+        visitor.visit(m_valueImpl);
+    }
+
+    template<typename C, typename V>
+    inline void Value<C, V>::acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept {
+        visitor.visit(m_valueImpl);
+    }
+
+    template<typename C, typename V>
+    inline bool Value<C, V>::isSet() const noexcept {
+        return m_valueImpl->is_set();
+    }
+
+    template<typename C, typename V>
+    inline auto Value<C, V>::value() const noexcept -> value_type {
+        return m_valueImpl->value();
+    }
+
+    template<typename C, typename V>
+    inline void Value<C, V>::clear() noexcept {
+        m_valueImpl->clear();
     }
 
     // DefaultOptionParser implementation
