@@ -126,9 +126,6 @@ namespace rpi_gc::automatic_watering {
         const time_provider_pointer::value_type timeProvider{m_timeProvider.get().load()};
         assert(timeProvider != nullptr);
 
-        const WateringSystemTimeProvider::time_unit hardwareActivationTime{timeProvider->getWateringSystemActivationDuration()};
-        const WateringSystemTimeProvider::time_unit hardwareDeactivationTime{timeProvider->getWateringSystemDeactivationDuration()};
-
         logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_START));
         if(stopToken.stop_requested()) {
             logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_STOP_REQUESTED));
@@ -136,6 +133,9 @@ namespace rpi_gc::automatic_watering {
 
         std::unique_lock<stop_event_mutex> stopLock{m_stopMutex};
         while(!stopToken.stop_requested()) {
+            // It may be possible that the user updated the times, so we need to read them every loop.
+            const WateringSystemTimeProvider::time_unit hardwareActivationTime{timeProvider->getWateringSystemActivationDuration()};
+
             // We start the automatic watering system cycle with the watering on.
             // The watering system lasts for 6 seconds as per requirements.
             activate_watering_hardware();
@@ -150,6 +150,8 @@ namespace rpi_gc::automatic_watering {
                 disable_watering_hardware();
                 break;
             }
+
+            const WateringSystemTimeProvider::time_unit hardwareDeactivationTime{timeProvider->getWateringSystemDeactivationDuration()};
 
             // Now we can shut off the hardware.
             disable_watering_hardware();
