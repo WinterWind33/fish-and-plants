@@ -55,10 +55,19 @@ namespace commands_factory {
         autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('s', "stop", "Stops the automatic watering system waiting for resources to be released."));
         autoWateringOptionParser->addOption(
             std::make_shared<gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(
-                'A', "activation-time", "Sets the automatic watering system activation time (expressed in ms).", defaultTimeProvider.getWateringSystemActivationDuration().count()));
+                'A', "activation-time", "Sets the automatic watering system activation time (expressed in ms).", defaultTimeProvider.getWateringSystemActivationDuration().count()
+            ));
         autoWateringOptionParser->addOption(
             std::make_shared<gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(
-                'D', "deactivation-time", "Sets the automatic watering system deactivation time (expressed in ms).", defaultTimeProvider.getWateringSystemDeactivationDuration().count()));
+                'D', "deactivation-time", "Sets the automatic watering system deactivation time (expressed in ms).", defaultTimeProvider.getWateringSystemDeactivationDuration().count()
+            ));
+
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(
+                'P', "pumpvalve-deactsep-time", "(CAREFUL) Sets the separation time (espressed in ms) between the pump deactivation and the valve one. " \
+                "WARNING: PLAYING WITH THIS CONFIGURATION MAY LEAD TO HARDWARE FAILURE. USE WITH CAUTION.",
+                defaultTimeProvider.getPumpValveDeactivationTimeSeparation().count()
+            ));
 
         std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(autoWateringOptionParser))};
         autoWateringCommand->registerOptionEvent(
@@ -163,6 +172,25 @@ int main(int argc, char* argv[]) {
 
             userLogger->logInfo(formatString.str());
             mainLogger->logInfo(formatString.str());
+        }
+    );
+
+    autoWateringCommand->registerOptionEvent(
+        "pumpvalve-deactsep-time",
+        [&awsTimeProviderSmartPtr, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+            auto valueOption = std::static_pointer_cast<
+                const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
+
+            assert(static_cast<bool>(valueOption));
+            awsTimeProviderSmartPtr->setPumpValveWaitTimeTicks(valueOption->value());
+
+            std::ostringstream formatString{};
+            formatString << "Received new pump-valve deactivation separation time: ";
+            formatString << valueOption->value();
+            formatString << "ms.";
+
+            userLogger->logWarning(formatString.str());
+            mainLogger->logWarning(formatString.str());
         }
     );
 
