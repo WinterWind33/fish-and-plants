@@ -130,23 +130,39 @@ int main(int argc, char* argv[]) {
 
     autoWateringCommand->registerOptionEvent(
         "activation-time",
-        [&awsTimeProviderSmartPtr](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+        [&awsTimeProviderSmartPtr, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
             auto valueOption = std::static_pointer_cast<
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
             awsTimeProviderSmartPtr->setActivationTimeTicks(valueOption->value());
+
+            std::ostringstream formatString{};
+            formatString << "Received new automatic watering system activation time: ";
+            formatString << valueOption->value();
+            formatString << "ms.";
+
+            userLogger->logInfo(formatString.str());
+            mainLogger->logInfo(formatString.str());
         }
     );
 
     autoWateringCommand->registerOptionEvent(
         "deactivation-time",
-        [&awsTimeProviderSmartPtr](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+        [&awsTimeProviderSmartPtr, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
             auto valueOption = std::static_pointer_cast<
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
             awsTimeProviderSmartPtr->setDeactivationTimeTicks(valueOption->value());
+
+            std::ostringstream formatString{};
+            formatString << "Received new automatic watering system deactivation time: ";
+            formatString << valueOption->value();
+            formatString << "ms.";
+
+            userLogger->logInfo(formatString.str());
+            mainLogger->logInfo(formatString.str());
         }
     );
 
