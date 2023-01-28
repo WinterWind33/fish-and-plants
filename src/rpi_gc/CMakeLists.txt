@@ -37,6 +37,7 @@ set(RPI_GC_SOURCE_FILES
     "commands/automatic-watering/automatic-watering-command.cpp"
     "automatic-watering/daily-cycle-automatic-watering-system.cpp"
     "automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.cpp"
+    "automatic-watering/time-providers/configurable-daily-cycle-aws-time-provider.cpp"
 )
 
 # Here we add a library target so we can use it to link it against
