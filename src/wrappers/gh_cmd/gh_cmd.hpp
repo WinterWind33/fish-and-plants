@@ -283,6 +283,8 @@ namespace gh_cmd {
         const short_name_type shortNameRawString[2] = {shortName, 0};
 
         m_valueImpl = std::make_shared<impl_type>(shortNameRawString, std::move(longName), std::move(description), std::move(defaultValue));
+        // We add the default value so that isSet() can properly return a valid value.
+        clear();
     }
 
     template<typename C, typename V>

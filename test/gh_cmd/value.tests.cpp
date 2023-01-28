@@ -36,6 +36,10 @@ TEMPLATE_TEST_CASE("Value unit tests", "[unit][sociable][gh_cmd][Value]",
         SECTION("It should retrieve the correct description") {
             CHECK(valueUnderTest.getDescription() == EXPECTED_DESCRIPTION);
         }
+
+        SECTION("It should not be set") {
+            CHECK_FALSE(valueUnderTest.isSet());
+        }
     }
 
     SECTION("Visiting the implementation") {
