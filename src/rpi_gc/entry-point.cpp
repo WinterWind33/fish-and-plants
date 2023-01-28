@@ -175,6 +175,25 @@ int main(int argc, char* argv[]) {
         }
     );
 
+    autoWateringCommand->registerOptionEvent(
+        "pumpvalve-deactsep-time",
+        [&awsTimeProviderSmartPtr, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+            auto valueOption = std::static_pointer_cast<
+                const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
+
+            assert(static_cast<bool>(valueOption));
+            awsTimeProviderSmartPtr->setPumpValveWaitTimeTicks(valueOption->value());
+
+            std::ostringstream formatString{};
+            formatString << "Received new pump-valve deactivation separation time: ";
+            formatString << valueOption->value();
+            formatString << "ms.";
+
+            userLogger->logWarning(formatString.str());
+            mainLogger->logWarning(formatString.str());
+        }
+    );
+
     auto abortCommand = std::make_unique<commands::AbortCommand>(mainLogger,
         std::vector<commands::AbortCommand::emergency_stoppable_system_pointer>{automaticWateringSystem}
     );
