@@ -112,7 +112,7 @@ TEST_CASE("ApplicationCommand execution unit tests", "[unit][solitary][rpi_gc][A
 
         std::shared_ptr<NiceMock<CommandOptionMock>> commandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
         ON_CALL(*commandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::VERSION}));
-        ON_CALL(*commandOptionMock, value).WillByDefault(testing::Return(true));
+        ON_CALL(*commandOptionMock, isSet).WillByDefault(testing::Return(true));
 
         ON_CALL(optionParser, getOptions()).WillByDefault(testing::Return(std::vector<OptionPointer>{commandOptionMock}));
 
@@ -156,11 +156,11 @@ TEST_CASE("ApplicationCommand execution unit tests", "[unit][solitary][rpi_gc][A
 
         std::shared_ptr<NiceMock<CommandOptionMock>> versionCommandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
         ON_CALL(*versionCommandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::VERSION}));
-        ON_CALL(*versionCommandOptionMock, value).WillByDefault(testing::Return(true));
+        ON_CALL(*versionCommandOptionMock, isSet).WillByDefault(testing::Return(true));
 
         std::shared_ptr<NiceMock<CommandOptionMock>> helpCommandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
         ON_CALL(*helpCommandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::HELP}));
-        ON_CALL(*helpCommandOptionMock, value).WillByDefault(testing::Return(true));
+        ON_CALL(*helpCommandOptionMock, isSet).WillByDefault(testing::Return(true));
 
         ON_CALL(optionParser, getOptions()).WillByDefault(testing::Return(std::vector<OptionPointer>{versionCommandOptionMock, helpCommandOptionMock}));
 

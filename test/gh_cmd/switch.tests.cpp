@@ -93,7 +93,7 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
             switchUnderTest.clear();
 
             THEN("The switch value should not be set") {
-                CHECK_FALSE(switchUnderTest.value());
+                CHECK_FALSE(switchUnderTest.isSet());
             }
         }
     }

@@ -29,7 +29,7 @@ namespace rpi_gc {
             return option->getLongName() == strings::commands::HELP;
         });
 
-        if(optionIt != options.end() && (*optionIt)->value()) {
+        if(optionIt != options.end() && (*optionIt)->isSet()) {
             // We have found the command help and it's set. We can execute it.
             printHelp(m_outputStream.get());
 
@@ -40,7 +40,7 @@ namespace rpi_gc {
         for(auto& option : options) {
             assert(option != nullptr);
 
-            if(option->value() && m_optionsEvents.contains(option->getLongName())) {
+            if(option->isSet() && m_optionsEvents.contains(option->getLongName())) {
                 // We retrieve all the events in the map.
                 auto iteratorPair = m_optionsEvents.equal_range(option->getLongName());
 
