@@ -24,7 +24,7 @@
 
 namespace automatic_watering {
 
-    std::shared_ptr<rpi_gc::automatic_watering::WateringSystemTimeProvider>
+    std::shared_ptr<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider>
         CreateConfigurableAWSTimeProvider() noexcept {
         rpi_gc::automatic_watering::DailyCycleAWSTimeProvider defaultTimeProvider{};
 
@@ -54,10 +54,10 @@ namespace commands_factory {
         autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('S', "start", "Starts the automatic watering system in Daily-Cycle mode."));
         autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('s', "stop", "Stops the automatic watering system waiting for resources to be released."));
         autoWateringOptionParser->addOption(
-            std::make_shared<gh_cmd::Value<CharType, std::int64_t>>(
+            std::make_shared<gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(
                 'A', "activation-time", "Sets the automatic watering system activation time (expressed in ms).", defaultTimeProvider.getWateringSystemActivationDuration().count()));
         autoWateringOptionParser->addOption(
-            std::make_shared<gh_cmd::Value<CharType, std::int64_t>>(
+            std::make_shared<gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(
                 'D', "deactivation-time", "Sets the automatic watering system deactivation time (expressed in ms).", defaultTimeProvider.getWateringSystemDeactivationDuration().count()));
 
         std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(autoWateringOptionParser))};
@@ -126,6 +126,28 @@ int main(int argc, char* argv[]) {
 
     auto autoWateringCommand = commands_factory::CreateAutomaticWateringCommand<AutomaticWateringSystemPointer, DefaultOptionParser>(
             automaticWateringSystem
+    );
+
+    autoWateringCommand->registerOptionEvent(
+        "activation-time",
+        [&awsTimeProviderSmartPtr](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+            auto valueOption = std::static_pointer_cast<
+                const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
+
+            assert(static_cast<bool>(valueOption));
+            awsTimeProviderSmartPtr->setActivationTimeTicks(valueOption->value());
+        }
+    );
+
+    autoWateringCommand->registerOptionEvent(
+        "deactivation-time",
+        [&awsTimeProviderSmartPtr](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+            auto valueOption = std::static_pointer_cast<
+                const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
+
+            assert(static_cast<bool>(valueOption));
+            awsTimeProviderSmartPtr->setDeactivationTimeTicks(valueOption->value());
+        }
     );
 
     auto abortCommand = std::make_unique<commands::AbortCommand>(mainLogger,
