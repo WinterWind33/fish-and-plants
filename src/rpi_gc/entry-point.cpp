@@ -4,6 +4,7 @@
 #include <automatic-watering/daily-cycle-automatic-watering-system.hpp>
 #include <automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.hpp>
 #include <automatic-watering/time-providers/daily-cycle-aws-time-provider.hpp>
+#include <automatic-watering/time-providers/configurable-daily-cycle-aws-time-provider.hpp>
 #include <gh_log/logger.hpp>
 #include <gh_log/spl-logger.hpp>
 
@@ -20,6 +21,21 @@
 #include <memory>
 #include <algorithm>
 #include <atomic>
+
+namespace automatic_watering {
+
+    std::shared_ptr<rpi_gc::automatic_watering::WateringSystemTimeProvider>
+        CreateConfigurableAWSTimeProvider() noexcept {
+        rpi_gc::automatic_watering::DailyCycleAWSTimeProvider defaultTimeProvider{};
+
+        return std::make_shared<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider>(
+            defaultTimeProvider.getWateringSystemActivationDuration(),
+            defaultTimeProvider.getWateringSystemDeactivationDuration(),
+            defaultTimeProvider.getPumpValveDeactivationTimeSeparation()
+        );
+    }
+
+} // namespace automatic_watering
 
 namespace commands_factory {
 
@@ -89,15 +105,15 @@ int main(int argc, char* argv[]) {
     LoggerPointer userLogger{gh_log::SPLLogger::createColoredStdOutLogger("Reporter")};
     OutputStringStream applicationHelpStream{};
 
-    auto awsTimeProviderSmartPtr{std::make_shared<rpi_gc::automatic_watering::DailyCycleAWSTimeProvider>()};
+    auto awsTimeProviderSmartPtr{::automatic_watering::CreateConfigurableAWSTimeProvider()};
 
     rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem::time_provider_pointer awsTimeProvider{
         awsTimeProviderSmartPtr.get()
     };
 
-    using AutomaticWateringSystemPointer = std::shared_ptr<automatic_watering::DailyCycleAutomaticWateringSystem>;
+    using AutomaticWateringSystemPointer = std::shared_ptr<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>;
     AutomaticWateringSystemPointer automaticWateringSystem{
-        std::make_shared<automatic_watering::DailyCycleAutomaticWateringSystem>(
+        std::make_shared<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>(
             mainLogger,
             userLogger,
             std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID),
