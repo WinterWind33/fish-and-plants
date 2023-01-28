@@ -72,31 +72,33 @@ namespace gh_cmd {
         //! \brief Checks whether or not this option was set at least once in the given input lines.
         virtual bool isSet() const noexcept = 0;
 
-        //! \brief Retrieves the current value for this option.
-        virtual bool value() const noexcept = 0;
-
         //! \brief Clears the internal option state, resetting it.
         //!  After this call, isSet() == false.
         virtual void clear() noexcept = 0;
     };
 
-    //! \brief Represents an option with boolean value.
-    //!
-    //! \tparam CharType The char type to be used.
-    template<typename CharType>
-    class Switch : public CommandOption<CharType> {
+    template<typename CharType, typename ValueType>
+    class ValuedOption : public CommandOption<CharType> {
+    public:
+        using value_type = std::decay_t<ValueType>;
+
+        virtual value_type value() const noexcept = 0;
+    };
+
+    template<typename CharType, typename ValueType>
+    class Value : public ValuedOption<CharType, ValueType> {
     public:
         using typename CommandOption<CharType>::char_type;
         using typename CommandOption<CharType>::string_type;
         using typename CommandOption<CharType>::short_name_type;
         using typename CommandOption<CharType>::long_name_type;
         using typename CommandOption<CharType>::base_impl_type;
+        using typename ValuedOption<CharType, ValueType>::value_type;
+
+        using impl_type = popl::Value<ValueType>;
         static_assert(std::is_same_v<char_type, char>, "Only char is accepted as a valid char type.");
 
-        using impl_type = popl::Switch;
-
-        Switch(short_name_type shortName, long_name_type longName, string_type description) noexcept;
-        ~Switch() noexcept override = default;
+        Value(short_name_type shortName, long_name_type longName, string_type description, value_type defaultValue = value_type{}) noexcept;
 
         short_name_type getShortName() const noexcept override;
         long_name_type getLongName() const noexcept override;
@@ -106,7 +108,41 @@ namespace gh_cmd {
         void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
 
         bool isSet() const noexcept override;
-        bool value() const noexcept override;
+        value_type value() const noexcept override;
+        void clear() noexcept override;
+
+    private:
+        std::shared_ptr<impl_type> m_valueImpl{};
+    };
+
+    //! \brief Represents an option with boolean value.
+    //!
+    //! \tparam CharType The char type to be used.
+    template<typename CharType>
+    class Switch : public ValuedOption<CharType, bool> {
+    public:
+        using typename ValuedOption<CharType, bool>::value_type;
+        using typename ValuedOption<CharType, bool>::char_type;
+        using typename ValuedOption<CharType, bool>::string_type;
+        using typename ValuedOption<CharType, bool>::short_name_type;
+        using typename ValuedOption<CharType, bool>::long_name_type;
+        using typename ValuedOption<CharType, bool>::base_impl_type;
+
+        static_assert(std::is_same_v<char_type, char>, "Only char is accepted as a valid char type.");
+
+        using impl_type = popl::Switch;
+
+        Switch(short_name_type shortName, long_name_type longName, string_type description) noexcept;
+
+        short_name_type getShortName() const noexcept override;
+        long_name_type getLongName() const noexcept override;
+        string_type getDescription() const noexcept override;
+
+        void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept override;
+        void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
+
+        bool isSet() const noexcept override;
+        value_type value() const noexcept override;
         void clear() noexcept override;
 
     private:
@@ -226,11 +262,11 @@ namespace gh_cmd {
 
     template<typename C>
     inline bool Switch<C>::isSet() const noexcept {
-        return m_switchImpl->is_set();
+        return m_switchImpl->count() > 0 && value();
     }
 
     template<typename C>
-    inline bool Switch<C>::value() const noexcept {
+    inline auto Switch<C>::value() const noexcept -> value_type {
         // The index of the value to check for inside the popl internal state.
         const std::size_t historyEntryIndex{m_switchImpl->count() - 1};
         return m_switchImpl->value_or(false, historyEntryIndex);
@@ -239,6 +275,61 @@ namespace gh_cmd {
     template<typename C>
     inline void Switch<C>::clear() noexcept {
         m_switchImpl->set_value(false);
+    }
+
+    // Value implementation
+    template<typename C, typename V>
+    inline Value<C, V>::Value(short_name_type shortName, long_name_type longName, string_type description, value_type defaultValue) noexcept {
+        const short_name_type shortNameRawString[2] = {shortName, 0};
+
+        m_valueImpl = std::make_shared<impl_type>(shortNameRawString, std::move(longName), std::move(description), std::move(defaultValue));
+        // We add the default value so that isSet() can properly return a valid value.
+        clear();
+    }
+
+    template<typename C, typename V>
+    inline auto Value<C, V>::getShortName() const noexcept -> short_name_type {
+        return m_valueImpl->short_name();
+    }
+
+    template<typename C, typename V>
+    inline auto Value<C, V>::getLongName() const noexcept -> long_name_type {
+        return m_valueImpl->long_name();
+    }
+
+    template<typename C, typename V>
+    inline auto Value<C,V>::getDescription() const noexcept -> string_type {
+        return m_valueImpl->description();
+    }
+
+    template<typename C, typename V>
+    inline void Value<C, V>::acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept {
+        visitor.visit(m_valueImpl);
+    }
+
+    template<typename C, typename V>
+    inline void Value<C, V>::acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept {
+        visitor.visit(m_valueImpl);
+    }
+
+    template<typename C, typename V>
+    inline bool Value<C, V>::isSet() const noexcept {
+        // This is just a temporary check. The value has always a value, i.e. the default one
+        // in the internal state. So when the user types a value he adds another value to this
+        // internal array.
+        return m_valueImpl->count() > 1;
+    }
+
+    template<typename C, typename V>
+    inline auto Value<C, V>::value() const noexcept -> value_type {
+        // The index of the value to check for inside the popl internal state.
+        const std::size_t historyEntryIndex{m_valueImpl->count() - 1};
+        return m_valueImpl->value_or(value_type{}, historyEntryIndex);
+    }
+
+    template<typename C, typename V>
+    inline void Value<C, V>::clear() noexcept {
+        m_valueImpl->set_value(value_type{});
     }
 
     // DefaultOptionParser implementation

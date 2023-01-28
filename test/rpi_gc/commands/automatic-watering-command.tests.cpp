@@ -37,7 +37,7 @@ TEST_CASE("AutomaticWateringCommand Events unit tests", "[unit][solitary][rpi_gc
             using CommandOptionMock = testing::NiceMock<gh_cmd::mocks::CommandOptionMock<CharType>>;
             std::shared_ptr<CommandOptionMock> optionMock{std::make_shared<CommandOptionMock>()};
             ON_CALL(*optionMock, getLongName).WillByDefault(testing::Return(OPTION_NAME));
-            ON_CALL(*optionMock, value).WillByDefault(testing::Return(true));
+            ON_CALL(*optionMock, isSet).WillByDefault(testing::Return(true));
 
             EXPECT_CALL(*optionParserRef, getOptions())
                 .Times(1)
@@ -57,11 +57,11 @@ TEST_CASE("AutomaticWateringCommand Events unit tests", "[unit][solitary][rpi_gc
 
             std::shared_ptr<CommandOptionMock> optionMock{std::make_shared<CommandOptionMock>()};
             ON_CALL(*optionMock, getLongName).WillByDefault(testing::Return(OPTION_NAME));
-            ON_CALL(*optionMock, value).WillByDefault(testing::Return(true));
+            ON_CALL(*optionMock, isSet).WillByDefault(testing::Return(true));
 
             std::shared_ptr<CommandOptionMock> helpOptionMock{std::make_shared<CommandOptionMock>()};
             ON_CALL(*helpOptionMock, getLongName).WillByDefault(testing::Return("help"));
-            ON_CALL(*helpOptionMock, value).WillByDefault(testing::Return(true));
+            ON_CALL(*helpOptionMock, isSet).WillByDefault(testing::Return(true));
 
             EXPECT_CALL(*optionParserRef, getOptions())
                 .Times(1)

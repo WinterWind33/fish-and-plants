@@ -1,14 +1,21 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
-#include <testing-core.hpp>
 #include <gh_cmd/gh_cmd.hpp>
 
 // Test doubles
 #include <gh_cmd/test-doubles/option-visitor.mock.hpp>
 
+// Testing core
+#include <testing-core.hpp>
+
 // C++ STL
+#include <cstdint>
+#include <chrono>
+#include <string>
 #include <string_view>
 
-TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
+TEMPLATE_TEST_CASE("Value unit tests", "[unit][sociable][gh_cmd][Value]",
+    std::int32_t, float, double, std::string) {
+
     using namespace gh_cmd;
 
     SECTION("Getters") {
@@ -16,18 +23,22 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
         constexpr std::string_view EXPECTED_LONG_NAME{"help"};
         constexpr std::string_view EXPECTED_DESCRIPTION{"Produces help message"};
 
-        Switch<char> switchUnderTest{EXPECTED_SHORT_NAME, std::string{EXPECTED_LONG_NAME}, std::string{EXPECTED_DESCRIPTION}};
+        Value<char, TestType> valueUnderTest{EXPECTED_SHORT_NAME, std::string{EXPECTED_LONG_NAME}, std::string{EXPECTED_DESCRIPTION}};
 
         SECTION("It should retrieve the correct short name") {
-            CHECK(switchUnderTest.getShortName() == EXPECTED_SHORT_NAME);
+            CHECK(valueUnderTest.getShortName() == EXPECTED_SHORT_NAME);
         }
 
         SECTION("It should retrieve the correct long name") {
-            CHECK(switchUnderTest.getLongName() == EXPECTED_LONG_NAME);
+            CHECK(valueUnderTest.getLongName() == EXPECTED_LONG_NAME);
         }
 
         SECTION("It should retrieve the correct description") {
-            CHECK(switchUnderTest.getDescription() == EXPECTED_DESCRIPTION);
+            CHECK(valueUnderTest.getDescription() == EXPECTED_DESCRIPTION);
+        }
+
+        SECTION("It should not be set") {
+            CHECK_FALSE(valueUnderTest.isSet());
         }
     }
 
@@ -36,7 +47,7 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
         constexpr std::string_view DUMMY_LONG_NAME{"help"};
         constexpr std::string_view DUMMY_DESCRIPTION{"Produces help message"};
 
-        Switch<char> switchUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME}, std::string{DUMMY_DESCRIPTION}};
+        Value<char, TestType> valueUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME}, std::string{DUMMY_DESCRIPTION}};
 
         SECTION("Method: acceptVisitor() non-const") {
             using BaseOptionImplType = CommandOption<char>::base_impl_type;
@@ -47,7 +58,7 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
                 OptionVisitorMockType optionVisitorMock{};
                 EXPECT_CALL(optionVisitorMock, visit).Times(1);
 
-                switchUnderTest.acceptVisitor(optionVisitorMock);
+                valueUnderTest.acceptVisitor(optionVisitorMock);
             }
 
             SECTION("Should pass to the visit() method a valid pointer") {
@@ -56,7 +67,7 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
                     CHECK(option != nullptr);
                 });
 
-                switchUnderTest.acceptVisitor(optionVisitorMock);
+                valueUnderTest.acceptVisitor(optionVisitorMock);
             }
         }
 
@@ -69,7 +80,7 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
                 OptionVisitorMockType optionVisitorMock{};
                 EXPECT_CALL(optionVisitorMock, visit).Times(1);
 
-                switchUnderTest.acceptVisitor(optionVisitorMock);
+                valueUnderTest.acceptVisitor(optionVisitorMock);
             }
 
             SECTION("Should pass to the visit() method a valid pointer") {
@@ -78,22 +89,22 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
                     CHECK(option != nullptr);
                 });
 
-                switchUnderTest.acceptVisitor(optionVisitorMock);
+                valueUnderTest.acceptVisitor(optionVisitorMock);
             }
         }
-    }
 
-    GIVEN("A Switch object") {
-        constexpr char DUMMY_SHORT_NAME{'h'};
-        constexpr std::string_view DUMMY_LONG_NAME{"help"};
-        constexpr std::string_view DUMMY_DESCRIPTION{"Produces help message"};
+        GIVEN("A Value object") {
+            constexpr char DUMMY_SHORT_NAME{'h'};
+            constexpr std::string_view DUMMY_LONG_NAME{"help"};
+            constexpr std::string_view DUMMY_DESCRIPTION{"Produces help message"};
 
-        Switch<char> switchUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME}, std::string{DUMMY_DESCRIPTION}};
-        WHEN("Switch::clear() is called") {
-            switchUnderTest.clear();
+            Value<char, TestType> valueUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME}, std::string{DUMMY_DESCRIPTION}};
+            WHEN("Value::clear() is called") {
+                valueUnderTest.clear();
 
-            THEN("The switch value should not be set") {
-                CHECK_FALSE(switchUnderTest.isSet());
+                THEN("The value should not be set") {
+                    CHECK_FALSE(valueUnderTest.isSet());
+                }
             }
         }
     }

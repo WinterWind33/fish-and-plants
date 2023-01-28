@@ -4,6 +4,7 @@
 #include <automatic-watering/daily-cycle-automatic-watering-system.hpp>
 #include <automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.hpp>
 #include <automatic-watering/time-providers/daily-cycle-aws-time-provider.hpp>
+#include <automatic-watering/time-providers/configurable-daily-cycle-aws-time-provider.hpp>
 #include <gh_log/logger.hpp>
 #include <gh_log/spl-logger.hpp>
 
@@ -21,6 +22,21 @@
 #include <algorithm>
 #include <atomic>
 
+namespace automatic_watering {
+
+    std::shared_ptr<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider>
+        CreateConfigurableAWSTimeProvider() noexcept {
+        rpi_gc::automatic_watering::DailyCycleAWSTimeProvider defaultTimeProvider{};
+
+        return std::make_shared<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider>(
+            defaultTimeProvider.getWateringSystemActivationDuration(),
+            defaultTimeProvider.getWateringSystemDeactivationDuration(),
+            defaultTimeProvider.getPumpValveDeactivationTimeSeparation()
+        );
+    }
+
+} // namespace automatic_watering
+
 namespace commands_factory {
 
     template<typename WateringSystemPointer, typename OptionParserType>
@@ -31,10 +47,18 @@ namespace commands_factory {
 
         assert((bool)wateringSystem);
 
+        rpi_gc::automatic_watering::DailyCycleAWSTimeProvider defaultTimeProvider{};
+
         AutomaticWateringCommand::option_parser_pointer autoWateringOptionParser{std::make_unique<OptionParserType>("[OPTIONS] => auto-watering")};
         autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('h', "help", "Displays this help page."));
         autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('S', "start", "Starts the automatic watering system in Daily-Cycle mode."));
-        autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('s', "stop", "Stopts the automatic watering system waiting for resources to be released."));
+        autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('s', "stop", "Stops the automatic watering system waiting for resources to be released."));
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(
+                'A', "activation-time", "Sets the automatic watering system activation time (expressed in ms).", defaultTimeProvider.getWateringSystemActivationDuration().count()));
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(
+                'D', "deactivation-time", "Sets the automatic watering system deactivation time (expressed in ms).", defaultTimeProvider.getWateringSystemDeactivationDuration().count()));
 
         std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(autoWateringOptionParser))};
         autoWateringCommand->registerOptionEvent(
@@ -81,15 +105,15 @@ int main(int argc, char* argv[]) {
     LoggerPointer userLogger{gh_log::SPLLogger::createColoredStdOutLogger("Reporter")};
     OutputStringStream applicationHelpStream{};
 
-    auto awsTimeProviderSmartPtr{std::make_shared<rpi_gc::automatic_watering::DailyCycleAWSTimeProvider>()};
+    auto awsTimeProviderSmartPtr{::automatic_watering::CreateConfigurableAWSTimeProvider()};
 
     rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem::time_provider_pointer awsTimeProvider{
         awsTimeProviderSmartPtr.get()
     };
 
-    using AutomaticWateringSystemPointer = std::shared_ptr<automatic_watering::DailyCycleAutomaticWateringSystem>;
+    using AutomaticWateringSystemPointer = std::shared_ptr<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>;
     AutomaticWateringSystemPointer automaticWateringSystem{
-        std::make_shared<automatic_watering::DailyCycleAutomaticWateringSystem>(
+        std::make_shared<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>(
             mainLogger,
             userLogger,
             std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID),
@@ -102,6 +126,44 @@ int main(int argc, char* argv[]) {
 
     auto autoWateringCommand = commands_factory::CreateAutomaticWateringCommand<AutomaticWateringSystemPointer, DefaultOptionParser>(
             automaticWateringSystem
+    );
+
+    autoWateringCommand->registerOptionEvent(
+        "activation-time",
+        [&awsTimeProviderSmartPtr, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+            auto valueOption = std::static_pointer_cast<
+                const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
+
+            assert(static_cast<bool>(valueOption));
+            awsTimeProviderSmartPtr->setActivationTimeTicks(valueOption->value());
+
+            std::ostringstream formatString{};
+            formatString << "Received new automatic watering system activation time: ";
+            formatString << valueOption->value();
+            formatString << "ms.";
+
+            userLogger->logInfo(formatString.str());
+            mainLogger->logInfo(formatString.str());
+        }
+    );
+
+    autoWateringCommand->registerOptionEvent(
+        "deactivation-time",
+        [&awsTimeProviderSmartPtr, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+            auto valueOption = std::static_pointer_cast<
+                const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
+
+            assert(static_cast<bool>(valueOption));
+            awsTimeProviderSmartPtr->setDeactivationTimeTicks(valueOption->value());
+
+            std::ostringstream formatString{};
+            formatString << "Received new automatic watering system deactivation time: ";
+            formatString << valueOption->value();
+            formatString << "ms.";
+
+            userLogger->logInfo(formatString.str());
+            mainLogger->logInfo(formatString.str());
+        }
     );
 
     auto abortCommand = std::make_unique<commands::AbortCommand>(mainLogger,
