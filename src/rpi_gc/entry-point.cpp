@@ -31,12 +31,18 @@ namespace commands_factory {
 
         assert((bool)wateringSystem);
 
+        rpi_gc::automatic_watering::DailyCycleAWSTimeProvider defaultTimeProvider{};
+
         AutomaticWateringCommand::option_parser_pointer autoWateringOptionParser{std::make_unique<OptionParserType>("[OPTIONS] => auto-watering")};
         autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('h', "help", "Displays this help page."));
         autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('S', "start", "Starts the automatic watering system in Daily-Cycle mode."));
-        autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('s', "stop", "Stopts the automatic watering system waiting for resources to be released."));
-        autoWateringOptionParser->addOption(std::make_shared<gh_cmd::Value<CharType, std::int64_t>>('A', "activation-time", "Sets the automatic watering system activation time (expressed in ms)."));
-        autoWateringOptionParser->addOption(std::make_shared<gh_cmd::Value<CharType, std::int64_t>>('D', "deactivation-time", "Sets the automatic watering system deactivation time (expressed in ms)."));
+        autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('s', "stop", "Stops the automatic watering system waiting for resources to be released."));
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Value<CharType, std::int64_t>>(
+                'A', "activation-time", "Sets the automatic watering system activation time (expressed in ms).", defaultTimeProvider.getWateringSystemActivationDuration().count()));
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Value<CharType, std::int64_t>>(
+                'D', "deactivation-time", "Sets the automatic watering system deactivation time (expressed in ms).", defaultTimeProvider.getWateringSystemDeactivationDuration().count()));
 
         std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(autoWateringOptionParser))};
         autoWateringCommand->registerOptionEvent(
