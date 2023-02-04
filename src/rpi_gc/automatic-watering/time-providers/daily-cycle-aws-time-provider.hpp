@@ -14,7 +14,7 @@ namespace rpi_gc::automatic_watering {
         }
 
         constexpr time_unit getWateringSystemDeactivationDuration() const noexcept final {
-            return time_unit{60'000};
+            return time_unit{600'000};
         }
 
         constexpr time_unit getPumpValveDeactivationTimeSeparation() const noexcept final {
