@@ -155,12 +155,13 @@ int main(int argc, char* argv[]) {
 
     autoWateringCommand->registerOptionEvent(
         "activation-time",
-        [&awsTimeProviderSmartPtr, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+        [&awsTimeProvider, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
             auto valueOption = std::static_pointer_cast<
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
-            awsTimeProviderSmartPtr->setActivationTimeTicks(valueOption->value());
+            auto* const timeProvider = static_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
+            timeProvider->setActivationTimeTicks(valueOption->value());
 
             std::ostringstream formatString{};
             formatString << "Received new automatic watering system activation time: ";
@@ -174,12 +175,13 @@ int main(int argc, char* argv[]) {
 
     autoWateringCommand->registerOptionEvent(
         "deactivation-time",
-        [&awsTimeProviderSmartPtr, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+        [&awsTimeProvider, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
             auto valueOption = std::static_pointer_cast<
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
-            awsTimeProviderSmartPtr->setDeactivationTimeTicks(valueOption->value());
+            auto* const timeProvider = static_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
+            timeProvider->setDeactivationTimeTicks(valueOption->value());
 
             std::ostringstream formatString{};
             formatString << "Received new automatic watering system deactivation time: ";
@@ -193,17 +195,58 @@ int main(int argc, char* argv[]) {
 
     autoWateringCommand->registerOptionEvent(
         "pumpvalve-deactsep-time",
-        [&awsTimeProviderSmartPtr, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+        [&awsTimeProvider, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
             auto valueOption = std::static_pointer_cast<
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
-            awsTimeProviderSmartPtr->setPumpValveWaitTimeTicks(valueOption->value());
+            auto* const timeProvider = static_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
+            timeProvider->setPumpValveWaitTimeTicks(valueOption->value());
 
             std::ostringstream formatString{};
             formatString << "Received new pump-valve deactivation separation time: ";
             formatString << valueOption->value();
             formatString << "ms.";
+
+            userLogger->logWarning(formatString.str());
+            mainLogger->logWarning(formatString.str());
+        }
+    );
+
+    autoWateringCommand->registerOptionEvent(
+        "valve-pin-id",
+        [&hardwareControllerAtomic, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+            auto valueOption = std::static_pointer_cast<
+                const gh_cmd::Value<CharType, rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id>>(option);
+
+            assert(static_cast<bool>(valueOption));
+            auto* const hardwareController = static_cast<rpi_gc::automatic_watering::DailyCycleAWSHardwareController*>(hardwareControllerAtomic.load());
+
+            hardwareController->setWaterValveDigitalOutputID(valueOption->value());
+
+            std::ostringstream formatString{};
+            formatString << "Received new valve pin ID: ";
+            formatString << valueOption->value();
+
+            userLogger->logWarning(formatString.str());
+            mainLogger->logWarning(formatString.str());
+        }
+    );
+
+    autoWateringCommand->registerOptionEvent(
+        "pump-pin-id",
+        [&hardwareControllerAtomic, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+            auto valueOption = std::static_pointer_cast<
+                const gh_cmd::Value<CharType, rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id>>(option);
+
+            assert(static_cast<bool>(valueOption));
+            auto* const hardwareController = static_cast<rpi_gc::automatic_watering::DailyCycleAWSHardwareController*>(hardwareControllerAtomic.load());
+
+            hardwareController->setWaterPumpDigitalOutputID(valueOption->value());
+
+            std::ostringstream formatString{};
+            formatString << "Received new pump pin ID: ";
+            formatString << valueOption->value();
 
             userLogger->logWarning(formatString.str());
             mainLogger->logWarning(formatString.str());
