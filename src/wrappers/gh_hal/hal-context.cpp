@@ -29,7 +29,12 @@ namespace gh_hal {
         m_logger->logInfo(logStream.str());
 
 #ifdef USE_CPPGPIO
-        GPIO::GPIOBase::force_full_mapping();
+        const bool bIsInFullMapMode{GPIO::GPIOBase::force_full_mapping()};
+
+        if(bIsInFullMapMode)
+            m_logger->logWarning("[Hardware Abstraction Layer] => Full map mode enabled.");
+        else
+            m_logger->logError("[Hardware Abstraction Layer] => Full map mode is not enabled.");
 #endif // USE_CPPGPIO
     }
 
