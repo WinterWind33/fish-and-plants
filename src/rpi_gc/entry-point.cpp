@@ -37,6 +37,14 @@ namespace automatic_watering {
 
 } // namespace automatic_watering
 
+
+namespace constants {
+
+    constexpr rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id WATER_VALVE_PIN_ID{26};
+    constexpr rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id WATER_PUMP_PIN_ID{23};
+
+} // namespace constants
+
 namespace commands_factory {
 
     template<typename WateringSystemPointer, typename OptionParserType>
@@ -69,6 +77,18 @@ namespace commands_factory {
                 defaultTimeProvider.getPumpValveDeactivationTimeSeparation().count()
             ));
 
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Value<CharType, rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id>>(
+                'V', "valve-pin-id", "Sets the ID of the pin which will receive the output jumpers that will power up the water valve.",
+                constants::WATER_VALVE_PIN_ID
+            ));
+
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Value<CharType, rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id>>(
+                'U', "pump-pin-id", "Sets the ID of the pin which will receive the output jumpers that will power up the water pump.",
+                constants::WATER_PUMP_PIN_ID
+            ));
+
         std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(autoWateringOptionParser))};
         autoWateringCommand->registerOptionEvent(
             "start",
@@ -87,13 +107,6 @@ namespace commands_factory {
     }
 
 } // namespace commands_factory
-
-namespace constants {
-
-    constexpr rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id WATER_VALVE_PIN_ID{26};
-    constexpr rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id WATER_PUMP_PIN_ID{23};
-
-} // namespace constants
 
 // This is the entry point of the application. Here, it starts
 // the main execution of the greenhouse controller.
