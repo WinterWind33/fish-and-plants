@@ -16,6 +16,8 @@
 #include <commands/help-command.hpp>
 #include <commands/automatic-watering/automatic-watering-command.hpp>
 
+#include <gh_hal/hal-context.hpp>
+
 // C++ STL
 #include <iostream>
 #include <memory>
@@ -126,6 +128,9 @@ int main(int argc, char* argv[]) {
 
     LoggerPointer userLogger{gh_log::SPLLogger::createColoredStdOutLogger("Reporter")};
     OutputStringStream applicationHelpStream{};
+
+    mainLogger->logWarning("Initiating hardware abstraction layer.");
+    gh_hal::HALContext halContext{mainLogger, false};
 
     auto awsTimeProviderSmartPtr{::automatic_watering::CreateConfigurableAWSTimeProvider()};
 
