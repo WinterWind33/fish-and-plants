@@ -14,6 +14,7 @@
 // C++ STL
 #include <thread>
 #include <chrono>
+#include <atomic>
 
 namespace tests {
     constexpr std::chrono::milliseconds WAIT_FOR_THREAD_TO_START{100};
@@ -31,6 +32,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests", "[unit][solitary][rpi_
         std::make_unique<StrictMock<mocks::WateringSystemHardwareControllerMock>>()
     };
     mocks::WateringSystemHardwareControllerMock& hardwareControllerMockRef{*hardwareControllerMock};
+    std::atomic<WateringSystemHardwareController*> atomicHardwareController{hardwareControllerMock.get()};
 
     std::shared_ptr<StrictMock<mocks::WateringSystemTimeProviderMock>> timeProviderMock{
         std::make_shared<StrictMock<mocks::WateringSystemTimeProviderMock>>()
@@ -41,7 +43,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests", "[unit][solitary][rpi_
     DailyCycleAutomaticWateringSystem awsUnderTest{
         mainLoggerMock,
         userLoggerMock,
-        std::move(hardwareControllerMock),
+        std::ref(atomicHardwareController),
         std::ref(timeProviderAtomic)
     };
 
@@ -116,6 +118,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem integration tests", "[integration][
         std::make_unique<StrictMock<mocks::WateringSystemHardwareControllerMock>>()
     };
     mocks::WateringSystemHardwareControllerMock& hardwareControllerMockRef{*hardwareControllerMock};
+    std::atomic<WateringSystemHardwareController*> atomicHardwareController{hardwareControllerMock.get()};
 
     NiceMock<gh_hal::mocks::HALDigitalOutputMock> waterValveOutput{}, waterPumpOutput{};
     EXPECT_CALL(hardwareControllerMockRef, getWaterValveDigitalOut).WillRepeatedly(testing::Return(&waterValveOutput));
@@ -127,7 +130,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem integration tests", "[integration][
     DailyCycleAutomaticWateringSystem awsUnderTest{
         mainLoggerMock,
         userLoggerMock,
-        std::move(hardwareControllerMock),
+        std::ref(atomicHardwareController),
         std::ref(timeProviderAtomic)
     };
 

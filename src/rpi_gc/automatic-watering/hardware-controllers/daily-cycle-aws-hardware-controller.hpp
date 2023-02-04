@@ -27,9 +27,14 @@ namespace rpi_gc::automatic_watering {
             return m_waterPumpDigitalOut.get();
         }
 
+        void setWaterValveDigitalOutputID(const digital_output_id id) noexcept;
+        void setWaterPumpDigitalOutputID(const digital_output_id id) noexcept;
+
     private:
         std::unique_ptr<digital_output_type> m_waterValveDigitalOut{};
         std::unique_ptr<digital_output_type> m_waterPumpDigitalOut{};
+
+        void change_digital_out(std::unique_ptr<digital_output_type>& pin, const digital_output_id newPinID) noexcept;
     };
 
 } // namespace rpi_gc::automatic_watering
