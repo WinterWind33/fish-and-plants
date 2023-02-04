@@ -121,11 +121,14 @@ int main(int argc, char* argv[]) {
     };
 
     using AutomaticWateringSystemPointer = std::shared_ptr<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>;
+    auto awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
+    std::atomic<rpi_gc::automatic_watering::WateringSystemHardwareController*> hardwareControllerAtomic{awsHardwareController.get()};
+
     AutomaticWateringSystemPointer automaticWateringSystem{
         std::make_shared<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>(
             mainLogger,
             userLogger,
-            std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID),
+            std::ref(hardwareControllerAtomic),
             std::ref(awsTimeProvider)
         )
     };

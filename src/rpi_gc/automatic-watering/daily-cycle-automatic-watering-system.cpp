@@ -31,14 +31,13 @@ namespace rpi_gc::automatic_watering {
     } // namespace strings
 
     DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(logger_pointer mainLogger, logger_pointer userLogger,
-        hardware_controller_pointer hardwareController, time_provider_atomic_ref timeProvider) noexcept :
+        hardware_controller_atomic_ref hardwareController, time_provider_atomic_ref timeProvider) noexcept :
         m_mainLogger{std::move(mainLogger)},
         m_userLogger{std::move(userLogger)},
         m_hardwareController{std::move(hardwareController)},
         m_timeProvider{std::move(timeProvider)} {
         assert(m_mainLogger != nullptr);
         assert(m_userLogger != nullptr);
-        assert(m_hardwareController != nullptr);
     }
 
     void DailyCycleAutomaticWateringSystem::requestShutdown() noexcept {
@@ -179,15 +178,13 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAutomaticWateringSystem::activate_watering_hardware() noexcept {
-        assert(m_hardwareController != nullptr);
-
         WateringSystemHardwareController::digital_output_type* const waterValveDigitalOut {
-            m_hardwareController->getWaterValveDigitalOut()
+            m_hardwareController.get().load()->getWaterValveDigitalOut()
         };
         assert(waterValveDigitalOut != nullptr);
 
         WateringSystemHardwareController::digital_output_type* const waterPumpDigitalOut {
-            m_hardwareController->getWaterPumpDigitalOut()
+            m_hardwareController.get().load()->getWaterPumpDigitalOut()
         };
         assert(waterPumpDigitalOut != nullptr);
 
@@ -201,8 +198,6 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAutomaticWateringSystem::disable_watering_hardware() noexcept {
-        assert(m_hardwareController != nullptr);
-
         const time_provider_pointer::value_type timeProvide{m_timeProvider.get().load()};
         assert(timeProvide != nullptr);
 
@@ -211,12 +206,12 @@ namespace rpi_gc::automatic_watering {
         };
 
         WateringSystemHardwareController::digital_output_type* const waterValveDigitalOut {
-            m_hardwareController->getWaterValveDigitalOut()
+            m_hardwareController.get().load()->getWaterValveDigitalOut()
         };
         assert(waterValveDigitalOut != nullptr);
 
         WateringSystemHardwareController::digital_output_type* const waterPumpDigitalOut {
-            m_hardwareController->getWaterPumpDigitalOut()
+            m_hardwareController.get().load()->getWaterPumpDigitalOut()
         };
         assert(waterPumpDigitalOut != nullptr);
 
