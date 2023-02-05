@@ -44,7 +44,7 @@ jobs:
 
       - name: (RPI_GC) Check changed files
         id: RPI_GC-changed-files
-        uses: tj-actions/changed-files@v33
+        uses: tj-actions/changed-files@v35
         with:
           files: |
             src/rpi_gc/**
