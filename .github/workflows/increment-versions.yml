@@ -25,7 +25,7 @@ env:
 jobs:
   increment-version:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true || contains(github.ref, 'refs/heads/CI-UPDATE/IV-')
 
     outputs:
       has_increased: ${{ steps.RPI_GC-increment-version.outputs.increased }}
@@ -79,6 +79,5 @@ jobs:
 
       - name: Create Git Tag
         run: |
-          echo ${{needs.increment-version.outputs.version}} ${{needs.increment-version.outputs.has_increased}}
-          git tag -a "v${{needs.increment-version.outputs.version}}" -m "Release v${{needs.increment-version.outputs.version}}"
-          git push origin "v${{needs.increment-version.outputs.version}}"
+          git tag -a "v${{needs.increment-version.outputs.new_version}}" -m "Release v${{needs.increment-version.outputs.new_version}}"
+          git push origin "v${{needs.increment-version.outputs.new_version}}"
