@@ -10,7 +10,7 @@
 
 namespace gh_hal {
 
-    HALContext::HALContext(logger_pointer logger, const bool bIsSim) noexcept :
+    HALContext::HALContext(logger_pointer logger, const bool bIsSim, const bool bForceFullMap) noexcept :
         m_logger{std::move(logger)},
         m_bIsSimulation{bIsSim} {
         assert(m_logger != nullptr);
@@ -29,12 +29,14 @@ namespace gh_hal {
         m_logger->logInfo(logStream.str());
 
 #ifdef USE_CPPGPIO
-        const bool bIsInFullMapMode{GPIO::GPIOBase::force_full_mapping()};
+        if(bForceFullMap) {
+            const bool bIsInFullMapMode{GPIO::GPIOBase::force_full_mapping()};
 
-        if(bIsInFullMapMode)
-            m_logger->logWarning("[Hardware Abstraction Layer] => Full map mode enabled.");
-        else
-            m_logger->logError("[Hardware Abstraction Layer] => Full map mode is not enabled.");
+            if(bIsInFullMapMode)
+                m_logger->logWarning("[Hardware Abstraction Layer] => Full map mode enabled.");
+            else
+                m_logger->logError("[Hardware Abstraction Layer] => Full map mode is not enabled.");
+        }
 #endif // USE_CPPGPIO
     }
 

@@ -17,6 +17,7 @@
 #include <commands/automatic-watering/automatic-watering-command.hpp>
 
 #include <gh_hal/hal-context.hpp>
+#include <gh_hal/hal-error.hpp>
 
 // C++ STL
 #include <iostream>
@@ -130,7 +131,7 @@ int main(int argc, char* argv[]) {
     OutputStringStream applicationHelpStream{};
 
     mainLogger->logWarning("Initiating hardware abstraction layer.");
-    gh_hal::HALContext halContext{mainLogger, false};
+    gh_hal::HALContext halContext{mainLogger, false, true};
 
     auto awsTimeProviderSmartPtr{::automatic_watering::CreateConfigurableAWSTimeProvider()};
 
@@ -139,7 +140,15 @@ int main(int argc, char* argv[]) {
     };
 
     using AutomaticWateringSystemPointer = std::shared_ptr<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>;
-    auto awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
+    std::unique_ptr<rpi_gc::automatic_watering::DailyCycleAWSHardwareController> awsHardwareController{};
+
+    try {
+        awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
+    } catch(const gh_hal::HALError& error) {
+        mainLogger->logError(error.what());
+
+        awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
+    }
     std::atomic<rpi_gc::automatic_watering::WateringSystemHardwareController*> hardwareControllerAtomic{awsHardwareController.get()};
 
     AutomaticWateringSystemPointer automaticWateringSystem{
