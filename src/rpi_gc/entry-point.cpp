@@ -167,7 +167,7 @@ int main(int argc, char* argv[]) {
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
-            auto* const timeProvider = static_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
+            auto* const timeProvider = dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
             timeProvider->setActivationTimeTicks(valueOption->value());
 
             std::ostringstream formatString{};
@@ -187,7 +187,7 @@ int main(int argc, char* argv[]) {
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
-            auto* const timeProvider = static_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
+            auto* const timeProvider = dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
             timeProvider->setDeactivationTimeTicks(valueOption->value());
 
             std::ostringstream formatString{};
@@ -207,7 +207,7 @@ int main(int argc, char* argv[]) {
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
-            auto* const timeProvider = static_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
+            auto* const timeProvider = dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
             timeProvider->setPumpValveWaitTimeTicks(valueOption->value());
 
             std::ostringstream formatString{};
@@ -227,7 +227,7 @@ int main(int argc, char* argv[]) {
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id>>(option);
 
             assert(static_cast<bool>(valueOption));
-            auto* const hardwareController = static_cast<rpi_gc::automatic_watering::DailyCycleAWSHardwareController*>(hardwareControllerAtomic.load());
+            auto* const hardwareController = dynamic_cast<rpi_gc::automatic_watering::DailyCycleAWSHardwareController*>(hardwareControllerAtomic.load());
 
             hardwareController->setWaterValveDigitalOutputID(valueOption->value());
 
@@ -247,7 +247,7 @@ int main(int argc, char* argv[]) {
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id>>(option);
 
             assert(static_cast<bool>(valueOption));
-            auto* const hardwareController = static_cast<rpi_gc::automatic_watering::DailyCycleAWSHardwareController*>(hardwareControllerAtomic.load());
+            auto* const hardwareController = dynamic_cast<rpi_gc::automatic_watering::DailyCycleAWSHardwareController*>(hardwareControllerAtomic.load());
 
             hardwareController->setWaterPumpDigitalOutputID(valueOption->value());
 
