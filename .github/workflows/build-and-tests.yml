@@ -51,7 +51,8 @@ jobs:
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "Parsing file: $file"
-            clang-tidy -p ./build/compile_commands.json -checks=-*,cppcoreguidelines-*,clang-analyzer-* $file
+            clang-tidy -p ./build/compile_commands.json -checks=-*,cppcoreguidelines-*,clang-analyzer-* $file \
+              -- -DUSE_POPL20 -DUSE_CPPGPIO -DUSE_SPDLOG -Isrc/rpi_gc -Isrc/wrappers -Isrc/third-party/popl20 -Isrc/third-party/CppGPIO/include
           done
 
   build_matrix:
