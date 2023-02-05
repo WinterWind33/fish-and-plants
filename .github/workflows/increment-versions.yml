@@ -79,5 +79,6 @@ jobs:
 
       - name: Create Git Tag
         run: |
-          git tag -a "v${{ needs.increment-version.outputs.version }}" -m "Release v${{ needs.increment-version.outputs.version }}"
-          git push origin "v${{ needs.increment-version.outputs.version }}"
+          echo ${{needs.increment-version.outputs.version}} ${{needs.increment-version.outputs.has_increased}}
+          git tag -a "v${{needs.increment-version.outputs.version}}" -m "Release v${{needs.increment-version.outputs.version}}"
+          git push origin "v${{needs.increment-version.outputs.version}}"
