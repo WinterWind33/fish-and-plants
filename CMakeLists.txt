@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Andrea Ballestrazzi
+# Copyright (C) 2023 Andrea Ballestrazzi
 cmake_minimum_required(VERSION 3.19)
 
 if(COMPILE_AARCH64_ON_LINUX)
