@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #include <gh_hal/hal-board-pin.hpp>
 
 namespace gh_hal {

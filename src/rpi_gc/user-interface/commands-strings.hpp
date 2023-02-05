@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #ifndef COMMANDS_STRINGS_HPP
 #define COMMANDS_STRINGS_HPP
 

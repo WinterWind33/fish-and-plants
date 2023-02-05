@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Andrea Ballestrazzi
+# Copyright (C) 2023 Andrea Ballestrazzi
 
 # RPI_GC's header files
 set(RPI_GC_HEADER_FILES

@@ -1,4 +1,4 @@
-# Copyright (c) 2022 Andrea Ballestrazzi
+# Copyright (c) 2023 Andrea Ballestrazzi
 
 set(GH_LOG_SOURCE_FILES
     "spl-logger.cpp"

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Andrea Ballestrazzi
+// Copyright (C) 2023 Andrea Ballestrazzi
 #ifndef RPI_GC_APPLICATION_HPP
 #define RPI_GC_APPLICATION_HPP
 
