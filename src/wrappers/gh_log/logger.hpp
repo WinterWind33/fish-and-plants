@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #ifndef GH_LOG_LOGGER_HPP
 #define GH_LOG_LOGGER_HPP
 

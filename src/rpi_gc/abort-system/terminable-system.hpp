@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #ifndef TERMINABLE_SYSTEM_HPP
 #define TERMINABLE_SYSTEM_HPP
 

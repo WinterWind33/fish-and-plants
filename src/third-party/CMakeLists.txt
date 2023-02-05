@@ -1,13 +1,15 @@
-# Copyright (c) 2022 Andrea Ballestrazzi
+# Copyright (c) 2023 Andrea Ballestrazzi
 
 include(FetchContent)
 
 if(USE_SPDLOG)
-    message("[INFO] => Using spdlog v1.10.0 as logger framework.")
+    set(SPDLOG_VERSION "1.11.0")
+
+    message("[INFO] => Using spdlog v${SPDLOG_VERSION} as logger framework.")
 
     FetchContent_Declare(spdlog
-        URL "https://github.com/gabime/spdlog/archive/refs/tags/v1.10.0.zip"
-        SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/spdlog-1.10.0"
+        URL "https://github.com/gabime/spdlog/archive/refs/tags/v${SPDLOG_VERSION}.zip"
+        SOURCE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/spdlog-${SPDLOG_VERSION}"
     )
 
     FetchContent_MakeAvailable(spdlog)

@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #ifndef TERMINAL_COMMAND_MOCK_HPP
 #define TERMINAL_COMMAND_MOCK_HPP
 
