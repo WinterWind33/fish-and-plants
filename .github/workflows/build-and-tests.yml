@@ -19,37 +19,40 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      #   with:
-      #     ref: ${{ github.head_ref }}
-      #     fetch-depth: 0
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
 
-      # - name: Setup clang-tidy
-      #   run: sudo apt-get install -y clang-tidy
+      - name: Setup clang-tidy
+        run: sudo apt-get install -y clang-tidy
 
-      # - name: Retrieve changed files
-      #   id: changed-files
-      #   uses: tj-actions/changed-files@v34
-      #   with:
-      #     files: |
-      #       src/**
-      #       test/**
-      #     files_ignore: |
-      #       src/third-party/**
-      #       test/third-party/**
-      #       *.txt
+      - name: Retrieve changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v34
+        with:
+          files: |
+            src/**
+            test/**
+          files_ignore: |
+            src/third-party/**
+            test/third-party/**
+            *.txt
 
-      # - name: Execute clang-tidy
-      #   if: steps.changed-files.outputs.any_changed == 'true'
-      #   run: |
-      #     for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-      #       echo "Parsing file: $file"
-      #       clang-tidy $file -checks=-*,cppcoreguidelines-*,clang-analyzer-*
-      #     done
-      - name: clang-tidy
+      - name: Compile commands export
+        env:
+          CC:   gcc-12
+          CXX:  g++-12
         run: |
-          cmake -B ${{github.workspace}}/build -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Wno-dev
-          cmake -B ${{github.workspace}}/build -Wno-devs
-          make ./build/clang-tidy-check
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Wno-dev
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -Wno-dev
+
+      - name: Execute clang-tidy
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "Parsing file: $file"
+            clang-tidy $file -checks=-*,cppcoreguidelines-*,clang-analyzer-*
+          done
 
   build_matrix:
     needs: clang-tidy
