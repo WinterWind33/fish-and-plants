@@ -125,4 +125,5 @@ releases
 # We exclude the GTest package as it's automatically downloaded when running
 # cmake build
 test/third-party/GoogleTest-*
+test/third-party/Catch2-*
 src/third-party/spdlog-*
