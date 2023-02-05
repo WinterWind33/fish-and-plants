@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Andrea Ballestrazzi
+# Copyright (C) 2023 Andrea Ballestrazzi
 
 # RPI_GC's header files
 set(RPI_GC_HEADER_FILES
@@ -9,6 +9,11 @@ set(RPI_GC_HEADER_FILES
     "application/application.hpp"
     "automatic-watering/automatic-watering-system.hpp"
     "automatic-watering/daily-cycle-automatic-watering-system.hpp"
+    "automatic-watering/hardware-controllers/watering-system-hardware-controller.hpp"
+    "automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.hpp"
+    "automatic-watering/time-providers/watering-system-time-provider.hpp"
+    "automatic-watering/time-providers/daily-cycle-aws-time-provider.hpp"
+    "automatic-watering/time-providers/configurable-daily-cycle-aws-time-provider.hpp"
     "common/types.hpp"
     "commands/command.hpp"
     "commands/abort-command.hpp"
@@ -31,6 +36,8 @@ set(RPI_GC_SOURCE_FILES
     "commands/abort-command.cpp"
     "commands/automatic-watering/automatic-watering-command.cpp"
     "automatic-watering/daily-cycle-automatic-watering-system.cpp"
+    "automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.cpp"
+    "automatic-watering/time-providers/configurable-daily-cycle-aws-time-provider.cpp"
 )
 
 # Here we add a library target so we can use it to link it against

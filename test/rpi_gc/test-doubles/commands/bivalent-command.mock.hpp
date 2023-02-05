@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #ifndef BIVALENT_COMMAND_MOCK_HPP
 #define BIVALENT_COMMAND_MOCK_HPP
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #ifndef CATCH2_GMOCK_LISTENER_HPP
 #define CATCH2_GMOCK_LISTENER_HPP
 

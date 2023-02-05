@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Andrea Ballestrazzi
+# Copyright (C) 2023 Andrea Ballestrazzi
 
 # We use FetchContent to clone the submodules.
 include(FetchContent)
@@ -10,6 +10,7 @@ set(TEST_APP_HEADER_FILES
 
     # Test doubles
     "gh_hal/test-doubles/hal-context.mock.hpp"
+    "gh_hal/test-doubles/hal-digital-output.mock.hpp"
     "gh_cmd/test-doubles/option-visitor.mock.hpp"
     "gh_cmd/test-doubles/option-parser.mock.hpp"
     "gh_cmd/test-doubles/command-option.mock.hpp"
@@ -18,6 +19,8 @@ set(TEST_APP_HEADER_FILES
     "rpi_gc/test-doubles/commands/bivalent-command.mock.hpp"
     "rpi_gc/test-doubles/abort-system/terminable-system.mock.hpp"
     "rpi_gc/test-doubles/abort-system/emergency-stoppable-system.mock.hpp"
+    "rpi_gc/test-doubles/automatic-watering/hardware-controllers/watering-system-hardware-controller.mock.hpp"
+    "rpi_gc/test-doubles/automatic-watering/time-providers/watering-system-time-provider.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
@@ -26,6 +29,7 @@ set(TEST_APP_SOURCE_FILES
     # Modules
     "gh_hal/hal-board-pin.tests.cpp"
     "gh_cmd/switch.tests.cpp"
+    "gh_cmd/value.tests.cpp"
     "gh_cmd/default-option-parser.tests.cpp"
 
     # rpi_gc
@@ -33,6 +37,7 @@ set(TEST_APP_SOURCE_FILES
     "rpi_gc/commands/application-command.tests.cpp"
     "rpi_gc/commands/automatic-watering-command.tests.cpp"
     "rpi_gc/commands/abort-command.tests.cpp"
+    "rpi_gc/automatic-watering/daily-cycle-automatic-watering-system.tests.cpp"
 
     # integration tests
     "integration/rpi_gc/application-command-integration.tests.cpp"
@@ -87,13 +92,27 @@ endif()
 # === Third party submodules configuration ===
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK)
-    message("[INFO] => Using amalgamated Catch2 v3.1.1 as testing framework.")
+    set(CATCH2_VERSION "3.3.1")
 
-    set(CATCH2_3_1_1_DIR "third-party/Catch2-3.1.1")
+    message("[INFO] => Using amalgamated Catch2 v${CATCH2_VERSION} as testing framework.")
+
+    set(CATCH2_DIR "${PROJECT_SOURCE_DIR}/test/third-party/Catch2-${CATCH2_VERSION}")
+    set(AMALGAMATED_HPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.hpp")
+    set(AMALGAMATED_CPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.cpp")
+
+    message("[INFO] => Downloading Catch2 amalgamated HPP file.")
+    file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.hpp"
+        ${AMALGAMATED_HPP_FILE}
+    )
+
+    message("[INFO] => Downloading Catch2 amalgamated CPP file.")
+    file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.cpp"
+        ${AMALGAMATED_CPP_FILE}
+    )
 
     set(CATCH2_COMPILATION_FILES
-        "${CATCH2_3_1_1_DIR}/include/catch2/catch_amalgamated.cpp"
-        "${CATCH2_3_1_1_DIR}/include/catch2/catch_amalgamated.hpp"
+        ${AMALGAMATED_HPP_FILE}
+        ${AMALGAMATED_CPP_FILE}
     )
 
     add_library(Catch2 STATIC ${CATCH2_COMPILATION_FILES})
@@ -109,7 +128,7 @@ if(USE_CATCH2_AS_TESTING_FRAMEWORK)
     )
 
     target_link_libraries(test_app PRIVATE Catch2)
-    target_include_directories(test_app PRIVATE "${CATCH2_3_1_1_DIR}/include")
+    target_include_directories(test_app PRIVATE "${CATCH2_DIR}/include")
     target_compile_definitions(test_app PRIVATE "USE_CATCH2_AS_TESTING_FRAMEWORK")
 endif()
 

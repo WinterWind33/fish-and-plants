@@ -82,4 +82,19 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
             }
         }
     }
+
+    GIVEN("A Switch object") {
+        constexpr char DUMMY_SHORT_NAME{'h'};
+        constexpr std::string_view DUMMY_LONG_NAME{"help"};
+        constexpr std::string_view DUMMY_DESCRIPTION{"Produces help message"};
+
+        Switch<char> switchUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME}, std::string{DUMMY_DESCRIPTION}};
+        WHEN("Switch::clear() is called") {
+            switchUnderTest.clear();
+
+            THEN("The switch value should not be set") {
+                CHECK_FALSE(switchUnderTest.isSet());
+            }
+        }
+    }
 }
