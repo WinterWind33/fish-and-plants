@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #include <testing-core.hpp>
 
 #include <commands/automatic-watering/automatic-watering-command.hpp>

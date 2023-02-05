@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Andrea Ballestrazzi
+// Copyright (c) 2023 Andrea Ballestrazzi
 #ifndef EMERGENCY_STOPPABLE_SYSTEM_MOCK_HPP
 #define EMERGENCY_STOPPABLE_SYSTEM_MOCK_HPP
 

@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Andrea Ballestrazzi
+# Copyright (C) 2023 Andrea Ballestrazzi
 
 # We use FetchContent to clone the submodules.
 include(FetchContent)
