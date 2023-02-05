@@ -5,6 +5,6 @@
 
 #define rpi_gc_VERSION_MAJOR 0
 #define rpi_gc_VERSION_MINOR 0
-#define rpi_gc_VERSION_PATCH 21
+#define rpi_gc_VERSION_PATCH 22
 
 #endif // RPI_GC_CONFIG_FILE
