@@ -25,7 +25,7 @@ env:
 jobs:
   increment-version:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true || github.ref == 'refs/heads/CI-UPDATE/IV-**'
+    if: github.event.pull_request.merged == true || contains(github.ref, 'refs/heads/CI-UPDATE/IV-')
 
     outputs:
       has_increased: ${{ steps.RPI_GC-increment-version.outputs.increased }}
