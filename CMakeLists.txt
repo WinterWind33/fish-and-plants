@@ -26,7 +26,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # If we are compiling with gcc or clang we need to pass the -fconcpets
 # option in order to compile with concepts.
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT CMAKE_EXPORT_COMPILE_COMMANDS)
     message("[INFO] => Compiling with: -fconcepts.")
     add_compile_options(-fconcepts)
 endif()
