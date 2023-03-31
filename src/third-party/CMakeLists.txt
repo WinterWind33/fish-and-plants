@@ -47,3 +47,7 @@ if(USE_POPL20)
 
     add_subdirectory("popl20")
 endif()
+
+if(USE_LIBGPIOD AND UNIX)
+    message("[INFO] => Using libgpiod as as the main I/O communication module.")
+endif()
