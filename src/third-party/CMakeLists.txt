@@ -54,8 +54,8 @@ if(USE_LIBGPIOD AND UNIX)
     set(LIBGPIOD_NAME "libgpiod-2.0")
 
     set(LIBGPIOD_FILENAME "${LIBGPIOD_NAME}.tar.gz")
-    set(LIBGPIOD_FOLDER_PATH "${PROJECT_SOURCE_DIR}/src/third-party")
-    set(LIBGPIOD_FILEPATH "${LIBGPIOD_FOLDER_PATH}/${LIBGPIOD_FILENAME}")
+    set(LIBGPIOD_PARENT_FOLDER_PATH "${PROJECT_SOURCE_DIR}/src/third-party/_temp")
+    set(LIBGPIOD_FILEPATH "${LIBGPIOD_PARENT_FOLDER_PATH}/${LIBGPIOD_FILENAME}")
 
     # We need to download the libgpiod v2.0 tar.gz file and extract it inside the
     # third-party folder
@@ -66,9 +66,41 @@ if(USE_LIBGPIOD AND UNIX)
     # Now we need to extract the file.
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E tar xzf ${LIBGPIOD_FILENAME}
-        WORKING_DIRECTORY ${LIBGPIOD_FOLDER_PATH}
+        WORKING_DIRECTORY ${LIBGPIOD_PARENT_FOLDER_PATH}
     )
 
     # Cleanup: we don't need the tar.gz file anymore
-    file(REMOVE ${LIBGPIOD_FILEPATH})
+    #file(REMOVE ${LIBGPIOD_FILEPATH})
+
+    set(LIBGPIOD_ABS_FOLDER ${LIBGPIOD_PARENT_FOLDER_PATH}/${LIBGPIOD_NAME})
+
+    # in order to make it properly work the user must run the following command:
+    # apt install pkg-config m4 libtool automake autoconf
+    # Here we need to add a custom target that can build the library.
+    set(LIBGPIOD_INSTALL_DIR ${PROJECT_SOURCE_DIR}/src/third-party/${LIBGPIOD_NAME})
+    file(MAKE_DIRECTORY ${LIBGPIOD_INSTALL_DIR})
+
+    # Configure the library's build system
+    message("[INFO] => Configuring libgpiod build system.")
+    execute_process(
+        COMMAND ./autogen.sh --enable-tools=no --prefix=${LIBGPIOD_INSTALL_DIR}
+        WORKING_DIRECTORY ${LIBGPIOD_ABS_FOLDER}
+    )
+
+    # Make the library
+    message("[INFO] => Compiling libgpiod.")
+    execute_process(
+        COMMAND make
+        WORKING_DIRECTORY ${LIBGPIOD_ABS_FOLDER}
+    )
+
+    # Install the target.
+    message("[INFO] => Installing libgpdio to ${LIBGPIOD_INSTALL_DIR}.")
+    execute_process(
+        COMMAND make install
+        WORKING_DIRECTORY ${LIBGPIOD_ABS_FOLDER}
+    )
+
+    # Now we can entirely remove the _temp folder.
+    file(REMOVE_RECURSE ${LIBGPIOD_PARENT_FOLDER_PATH})
 endif()
