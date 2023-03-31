@@ -25,6 +25,10 @@ jobs:
       with:
         submodules: recursive
 
+    - name: Package configuration
+      if: ${{ matrix.os }} == ubuntu-latest
+      run: sudo apt-get install autoconf-archive pkg-config m4 libtool automake autoconf
+
     - name: CMake Configure
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -Wno-dev
       env:
