@@ -50,4 +50,12 @@ endif()
 
 if(USE_LIBGPIOD AND UNIX)
     message("[INFO] => Using libgpiod as as the main I/O communication module.")
+
+    set(LIBGPIOD_FILENAME "libgpiod-2.0.tar.gz")
+
+    # We need to download the libgpiod v2.0 tar.gz file and extract it inside the
+    # third-party folder
+    file(DOWNLOAD
+        "https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/snapshot/${LIBGPIOD_FILENAME}"
+        "${PROJECT_SOURCE_DIR}/src/third-party/libgpiod/${LIBGPIOD_FILENAME}")
 endif()
