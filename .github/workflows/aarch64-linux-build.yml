@@ -21,7 +21,7 @@ jobs:
       - name: Compiler Setup
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf
 
       - name: CMake configure
         run: |
