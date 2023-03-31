@@ -51,11 +51,24 @@ endif()
 if(USE_LIBGPIOD AND UNIX)
     message("[INFO] => Using libgpiod as as the main I/O communication module.")
 
-    set(LIBGPIOD_FILENAME "libgpiod-2.0.tar.gz")
+    set(LIBGPIOD_NAME "libgpiod-2.0")
+
+    set(LIBGPIOD_FILENAME "${LIBGPIOD_NAME}.tar.gz")
+    set(LIBGPIOD_FOLDER_PATH "${PROJECT_SOURCE_DIR}/src/third-party")
+    set(LIBGPIOD_FILEPATH "${LIBGPIOD_FOLDER_PATH}/${LIBGPIOD_FILENAME}")
 
     # We need to download the libgpiod v2.0 tar.gz file and extract it inside the
     # third-party folder
     file(DOWNLOAD
         "https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/snapshot/${LIBGPIOD_FILENAME}"
-        "${PROJECT_SOURCE_DIR}/src/third-party/libgpiod/${LIBGPIOD_FILENAME}")
+        ${LIBGPIOD_FILEPATH})
+
+    # Now we need to extract the file.
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E tar xzf ${LIBGPIOD_FILENAME}
+        WORKING_DIRECTORY ${LIBGPIOD_FOLDER_PATH}
+    )
+
+    # Cleanup: we don't need the tar.gz file anymore
+    file(REMOVE ${LIBGPIOD_FILEPATH})
 endif()
