@@ -22,7 +22,7 @@ if(USE_SPDLOG)
     )
 endif()
 
-if(USE_CPPGPIO AND UNIX)
+if(USE_CPPGPIO AND UNIX AND NOT APPLE)
     message("[INFO] => Using CppGPIO as the main I/O communication module.")
 
     FetchContent_Declare(cppgpio
@@ -48,7 +48,7 @@ if(USE_POPL20)
     add_subdirectory("popl20")
 endif()
 
-if(USE_LIBGPIOD AND UNIX)
+if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
     message("[INFO] => Using libgpiod as as the main I/O communication module.")
 
     set(LIBGPIOD_NAME "libgpiod-2.0")
