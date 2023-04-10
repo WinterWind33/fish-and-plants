@@ -27,4 +27,5 @@ jobs:
         run: |
           mkdir buildLinux
           cd scripts
+          chmod +x aarch64-perform-release.sh
           ./aarch64-perform-release.sh
