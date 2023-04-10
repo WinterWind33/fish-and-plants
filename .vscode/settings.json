@@ -4,5 +4,6 @@
     "files.insertFinalNewline": true,
     "files.eol": "\n",
     "files.encoding": "utf8",
-    "editor.formatOnSave": true
+    "cmake.configureOnOpen": false,
+    "cmake.configureOnEdit": false
 }

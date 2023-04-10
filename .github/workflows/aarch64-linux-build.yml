@@ -21,12 +21,11 @@ jobs:
       - name: Compiler Setup
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf
 
-      - name: CMake configure
+      - name: Aarch64 Build
         run: |
-          mkdir build
-          cmake -B ./build -DCOMPILE_AARCH64_ON_LINUX=True -DCOMPILE_FOR_CORTEX_A53=True --toolchain "toolchains/aarch64-toolchain.cmake" -Wno-dev
-
-      - name: AARCH64 Build
-        run: cmake --build ./build --config Release
+          mkdir buildLinux
+          cd scripts
+          chmod +x aarch64-perform-release.sh
+          ./aarch64-perform-release.sh

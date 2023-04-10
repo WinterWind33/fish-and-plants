@@ -26,12 +26,21 @@ set_target_properties(gh_hal
 target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 
 # Dependencies
-if(USE_CPPGPIO AND UNIX)
+if(USE_CPPGPIO AND UNIX AND NOT APPLE)
     set(CPPGPIO_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/CppGPIO/include")
     target_include_directories(gh_hal PUBLIC ${CPPGPIO_INCLUDE_DIR})
 
-    target_link_libraries(gh_hal PUBLIC cppgpio)
-    target_compile_definitions(gh_hal PUBLIC "USE_CPPGPIO")
+    target_link_libraries(gh_hal PRIVATE cppgpio)
+    target_compile_definitions(gh_hal PRIVATE "USE_CPPGPIO")
+endif()
+
+if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
+    set(LIBGPIOD_LIB_DIR ${PROJECT_SOURCE_DIR}/src/third-party/libgpiod-2.0/lib)
+    set(LIBGPIOD_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/third-party/libgpiod-2.0/include)
+    target_include_directories(gh_hal PRIVATE ${LIBGPIOD_INCLUDE_DIR})
+
+    target_link_libraries(gh_hal PRIVATE ${LIBGPIOD_LIB_DIR}/libgpiod.a)
+    target_compile_definitions(gh_hal PRIVATE "USE_LIBGPIOD")
 endif()
 
 target_link_libraries(gh_hal PUBLIC gh_log)
