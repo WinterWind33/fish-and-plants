@@ -5,7 +5,7 @@ include(FetchContent)
 if(USE_SPDLOG)
     set(SPDLOG_VERSION "1.11.0")
 
-    message("[INFO] => Using spdlog v${SPDLOG_VERSION} as logger framework.")
+    message(STATUS "Using spdlog v${SPDLOG_VERSION} as logger framework.")
 
     FetchContent_Declare(spdlog
         URL "https://github.com/gabime/spdlog/archive/refs/tags/v${SPDLOG_VERSION}.zip"
@@ -23,7 +23,7 @@ if(USE_SPDLOG)
 endif()
 
 if(USE_CPPGPIO AND UNIX AND NOT APPLE)
-    message("[INFO] => Using CppGPIO as the main I/O communication module.")
+    message(STATUS "Using CppGPIO as the main I/O communication module.")
 
     FetchContent_Declare(cppgpio
         GIT_REPOSITORY "https://github.com/JoachimSchurig/CppGPIO.git"
@@ -43,13 +43,13 @@ if(USE_CPPGPIO AND UNIX AND NOT APPLE)
 endif()
 
 if(USE_POPL20)
-    message("[INFO] => Using popl20 header only library as command-line interpreter.")
+    message(STATUS "Using popl20 header only library as command-line interpreter.")
 
     add_subdirectory("popl20")
 endif()
 
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
-    message("[INFO] => Using libgpiod as as the main I/O communication module.")
+    message(STATUS "Using libgpiod as as the main I/O communication module.")
 
     set(LIBGPIOD_NAME "libgpiod-2.0")
 
@@ -81,21 +81,33 @@ if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
     file(MAKE_DIRECTORY ${LIBGPIOD_INSTALL_DIR})
 
     # Configure the library's build system
-    message("[INFO] => Configuring libgpiod build system.")
-    execute_process(
-        COMMAND ./autogen.sh --enable-tools=no --prefix=${LIBGPIOD_INSTALL_DIR}
-        WORKING_DIRECTORY ${LIBGPIOD_ABS_FOLDER}
-    )
+    message(STATUS "Configuring libgpiod build system.")
+    if(COMPILE_AARCH64_ON_LINUX)
+        message(STATUS "Using aarch64-linux-gnu host for libgpiod.")
+
+        # In order to generate the correct makefile (with CC=aarch64-linux-gnu-gcc and family) we
+        # need to pass the --host=aarch64-linux-gnu (compiler triplet) to the "./configure script" run
+        # by autotools.
+        execute_process(
+            COMMAND ./autogen.sh --enable-tools=no --prefix=${LIBGPIOD_INSTALL_DIR} --host=aarch64-linux-gnu
+            WORKING_DIRECTORY ${LIBGPIOD_ABS_FOLDER}
+        )
+    else()
+        execute_process(
+            COMMAND ./autogen.sh --enable-tools=no --prefix=${LIBGPIOD_INSTALL_DIR}
+            WORKING_DIRECTORY ${LIBGPIOD_ABS_FOLDER}
+        )
+    endif()
 
     # Make the library
-    message("[INFO] => Compiling libgpiod.")
+    message(STATUS "Compiling libgpiod.")
     execute_process(
         COMMAND make
         WORKING_DIRECTORY ${LIBGPIOD_ABS_FOLDER}
     )
 
     # Install the target.
-    message("[INFO] => Installing libgpdio to ${LIBGPIOD_INSTALL_DIR}.")
+    message(STATUS "Installing libgpdio to ${LIBGPIOD_INSTALL_DIR}.")
     execute_process(
         COMMAND make install
         WORKING_DIRECTORY ${LIBGPIOD_ABS_FOLDER}
