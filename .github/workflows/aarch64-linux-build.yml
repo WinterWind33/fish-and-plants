@@ -29,6 +29,3 @@ jobs:
           cd scripts
           chmod +x aarch64-perform-release.sh
           ./aarch64-perform-release.sh
-        env:
-          CC:   gcc-12
-          CXX:  g++-12
