@@ -2,6 +2,7 @@
 
 set(GH_LOG_SOURCE_FILES
     "backends/spdlog/spdlog-automatic-flusher.cpp"
+    "backends/spdlog/spdlog-logger.cpp"
     "spl-logger.cpp"
 )
 set(GH_LOG_HEADER_FILES
