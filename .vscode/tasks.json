@@ -104,8 +104,7 @@
 				"--target",
 				"test_app",
 				"--config",
-				"Debug",
-				"-Wno-dev"
+				"Debug"
 			],
 			"problemMatcher": [],
 			"group": "build"
