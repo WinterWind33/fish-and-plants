@@ -14,7 +14,7 @@ namespace gh_log {
 
     //! \brief Represents a logger that delegates the implementation to
     //!  an spdlog logger object.
-    class SPLLogger : public Logger {
+    class SPLLogger final : public Logger {
     public:
         using logger_type = spdlog::logger;
         using logger_pointer = std::shared_ptr<logger_type>;
@@ -30,12 +30,17 @@ namespace gh_log {
         [[nodiscard]]
         static std::shared_ptr<SPLLogger> createColoredStdOutLogger(std::string name) noexcept;
 
+        void logMessage(const ELoggingLevel logLevel, LogStringType message) override;
+
         void logTrace(const LogStringType& msg) override;
         void logDebug(const LogStringType& msg) override;
         void logInfo(const LogStringType& msg) override;
         void logWarning(const LogStringType& msg) override;
         void logError(const LogStringType& msg) override;
         void logCritical(const LogStringType& msg) override;
+
+        void flush() override;
+        void setAutomaticFlushLevel(const ELoggingLevel loggingLevel) override;
 
     private:
         logger_pointer m_logger{};

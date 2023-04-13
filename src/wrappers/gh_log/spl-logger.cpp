@@ -10,7 +10,9 @@
 namespace gh_log {
 
     SPLLogger::SPLLogger(logger_pointer logger) :
-        m_logger{std::move(logger)} {}
+        m_logger{std::move(logger)} {
+        assert(m_logger);
+    }
 
     void SPLLogger::logTrace(const LogStringType& msg) {
         assert(m_logger);
@@ -46,6 +48,18 @@ namespace gh_log {
         assert(m_logger);
 
         m_logger->critical(msg);
+    }
+
+    void SPLLogger::logMessage(const ELoggingLevel level, LogStringType message) {
+
+    }
+
+    void SPLLogger::flush() {
+        m_logger->flush();
+    }
+
+    void SPLLogger::setAutomaticFlushLevel(const ELoggingLevel level) {
+
     }
 
     std::shared_ptr<SPLLogger> SPLLogger::createFileLogger(std::string name, std::filesystem::path filepath) noexcept {
