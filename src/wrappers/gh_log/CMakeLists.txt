@@ -4,6 +4,7 @@ set(GH_LOG_SOURCE_FILES
     "spl-logger.cpp"
 )
 set(GH_LOG_HEADER_FILES
+    "backends/spdlog/spdlog-automatic-flusher.hpp"
     "implementation/automatic-flusher.hpp"
 
     "gh-log-lib-base.hpp"
