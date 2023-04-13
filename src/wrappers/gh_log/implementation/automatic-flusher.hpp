@@ -25,13 +25,6 @@ namespace gh_log::implementation {
         //! \param logLevel The minimum logging level that will trigger the automatic flush
         //!  after a message log operation.
         virtual void setFlushStartingLevel(const logging_level level) noexcept = 0;
-
-        //!!
-        //! \brief Triggers the flush if the sepcified level is greater than or equal to
-        //!  the starting level set to be the treshold for this object.
-        //!
-        //! \param level The level to check if can trigger the flush.
-        virtual void flushIfLevelCanTrigger(const logging_level level) = 0;
     };
 
 } // namespace gh_log::implementation

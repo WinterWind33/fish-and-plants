@@ -1,6 +1,7 @@
 # Copyright (c) 2023 Andrea Ballestrazzi
 
 set(GH_LOG_SOURCE_FILES
+    "backends/spdlog/spdlog-automatic-flusher.cpp"
     "spl-logger.cpp"
 )
 set(GH_LOG_HEADER_FILES
