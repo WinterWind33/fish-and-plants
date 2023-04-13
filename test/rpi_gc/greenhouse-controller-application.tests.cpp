@@ -41,7 +41,7 @@ namespace tests {
 
     rpi_gc::StringType GenerateVersionString() noexcept {
         rpi_gc::OutputStringStream stream{};
-        stream << rpi_gc_VERSION_MAJOR << "." << rpi_gc_VERSION_MINOR << "." << rpi_gc_VERSION_PATCH;
+        stream << rpi_gc_VERSION_MAJOR << "." << rpi_gc_VERSION_MINOR << "." << rpi_gc_VERSION_PATCH << "-rc0";
 
         return stream.str();
     }
