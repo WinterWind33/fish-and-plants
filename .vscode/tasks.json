@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "[BUILD] (Windows Debug) Build All",
+			"label": "[Windows] (Debug) Build All",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -38,7 +38,7 @@
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Windows Release) Build All",
+			"label": "[Windows] (Release) Build All",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -56,7 +56,7 @@
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Windows Debug) Build RPI_GC",
+			"label": "[Windows] (Debug) Build RPI_GC",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -74,7 +74,25 @@
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Windows Debug) Build test_app",
+			"label": "[Windows] (Debug) Build gh_log",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--target",
+				"gh_log",
+				"--config",
+				"Debug"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Windows] (Debug) Build test_app",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -86,7 +104,8 @@
 				"--target",
 				"test_app",
 				"--config",
-				"Debug"
+				"Debug",
+				"-Wno-dev"
 			],
 			"problemMatcher": [],
 			"group": "build"
