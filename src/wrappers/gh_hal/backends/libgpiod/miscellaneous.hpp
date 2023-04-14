@@ -1,4 +1,20 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #pragma once
 
-namespace gh_hal::backends::libgpiod_impl {} // namespace gh_hal::backends::libgpiod_impl
+// C++ STL
+#include <string>
+
+namespace gh_hal::backends::libgpiod_impl {
+
+    //!!
+    //! \brief The type of the string that will contain the version
+    //!  of the libgpiod library.
+    using VersionString = std::string;
+
+    //!!
+    //! \brief Retrieves the version of the libgpiod library.
+    //!
+    //! \return The version of the libgpiod library.
+    VersionString GetLibraryVersion() noexcept;
+
+} // namespace gh_hal::backends::libgpiod_impl

@@ -1,14 +1,12 @@
 # Copyright (c) 2023 Andrea Ballestrazzi
 
 set(GH_HAL_SOURCE_FILES
-    "backends/libgpiod/miscellaneous.cpp"
-
     "hardware-abstraction-layer.cpp"
     "hal-context.cpp"
     "hal-board-pin.cpp"
 )
+
 set(GH_HAL_HEADER_FILES
-    "backends/libgpiod/miscellaneous.hpp"
     "hardware-abstraction-layer.hpp"
     "hal-context.hpp"
     "hal-error.hpp"
@@ -16,6 +14,18 @@ set(GH_HAL_HEADER_FILES
     "hal-digital-output.hpp"
     "hal-board-pin.hpp"
 )
+
+if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
+
+    list(APPEND GH_HAL_SOURCE_FILES
+        "backends/libgpiod/miscellaneous.cpp"
+    )
+
+    list(APPEND GH_HAL_HEADER_FILES
+        "backends/libgpiod/miscellaneous.hpp"
+    )
+
+endif()
 
 # We create a static library
 add_library(gh_hal STATIC ${GH_HAL_HEADER_FILES} ${GH_HAL_SOURCE_FILES})
