@@ -1,11 +1,14 @@
 # Copyright (c) 2023 Andrea Ballestrazzi
 
 set(GH_HAL_SOURCE_FILES
+    "backends/libgpiod/miscellaneous.cpp"
+
     "hardware-abstraction-layer.cpp"
     "hal-context.cpp"
     "hal-board-pin.cpp"
 )
 set(GH_HAL_HEADER_FILES
+    "backends/libgpiod/miscellaneous.hpp"
     "hardware-abstraction-layer.hpp"
     "hal-context.hpp"
     "hal-error.hpp"
