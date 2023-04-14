@@ -10,9 +10,9 @@
 #include <cerrno> // For errors with libgpiod
 
 // C++ STL
+#include <filesystem>
 #endif // USE_LIBGPIOD
 
-#include <filesystem>
 // C++ STL
 #include <sstream>
 #include <string_view>
