@@ -51,7 +51,7 @@ endif()
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
     message(STATUS "Using libgpiod as as the main I/O communication module.")
 
-    set(LIBGPIOD_NAME "libgpiod-2.0")
+    set(LIBGPIOD_NAME "libgpiod-2.0.1")
 
     set(LIBGPIOD_FILENAME "${LIBGPIOD_NAME}.tar.gz")
     set(LIBGPIOD_PARENT_FOLDER_PATH "${PROJECT_SOURCE_DIR}/src/third-party/_temp")

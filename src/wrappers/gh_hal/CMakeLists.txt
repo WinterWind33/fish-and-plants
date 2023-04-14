@@ -35,8 +35,9 @@ if(USE_CPPGPIO AND UNIX AND NOT APPLE)
 endif()
 
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
-    set(LIBGPIOD_LIB_DIR ${PROJECT_SOURCE_DIR}/src/third-party/libgpiod-2.0/lib)
-    set(LIBGPIOD_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/third-party/libgpiod-2.0/include)
+    set(LIBGPIOG_NAME "libgpiod-2.0.1")
+    set(LIBGPIOD_LIB_DIR ${PROJECT_SOURCE_DIR}/src/third-party/${LIBGPIOG_NAME}/lib)
+    set(LIBGPIOD_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/third-party/${LIBGPIOG_NAME}/include)
     target_include_directories(gh_hal PRIVATE ${LIBGPIOD_INCLUDE_DIR})
 
     target_link_libraries(gh_hal PRIVATE ${LIBGPIOD_LIB_DIR}/libgpiod.a)
