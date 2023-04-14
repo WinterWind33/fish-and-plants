@@ -40,6 +40,11 @@ if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
     set(LIBGPIOD_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/third-party/${LIBGPIOG_NAME}/include)
     target_include_directories(gh_hal PRIVATE ${LIBGPIOD_INCLUDE_DIR})
 
+    # We link the C++ bindings.
+    target_link_libraries(gh_hal PRIVATE ${LIBGPIOD_LIB_DIR}/libgpiodcxx.a)
+
+    # If we lin the C++ binding we also need to link the origina library because
+    # libgpiod low-level symbols are defined there.
     target_link_libraries(gh_hal PRIVATE ${LIBGPIOD_LIB_DIR}/libgpiod.a)
     target_compile_definitions(gh_hal PRIVATE "USE_LIBGPIOD")
 endif()

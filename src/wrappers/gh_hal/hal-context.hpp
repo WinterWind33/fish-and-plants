@@ -5,7 +5,7 @@
 #include <gh_log/logger.hpp>
 
 #ifdef USE_LIBGPIOD
-#include <gpiod.h>
+#include <gpiod.hpp>
 #endif // USE_LIBGPIOD
 
 // C++ STL
@@ -20,7 +20,7 @@ namespace gh_hal
         using logger_pointer = std::shared_ptr<gh_log::Logger>;
 
         HALContext(logger_pointer logger, const bool bIsSim = true, const bool bForceFullMap = false) noexcept;
-        virtual ~HALContext() noexcept;
+        virtual ~HALContext() noexcept = default;
 
         virtual const logger_pointer &getLogger() const noexcept
         {
@@ -34,9 +34,9 @@ namespace gh_hal
         bool m_bIsSimulation{};
 
 #ifdef USE_LIBGPIOD
-        using chip_type = struct gpiod_chip;
+        using chip_type = gpiod::chip;
 
-        chip_type *m_boardChip{};
+        std::unique_ptr<chip_type> m_boardChip{};
 #endif // USE_LIBGPIOD
     };
 
