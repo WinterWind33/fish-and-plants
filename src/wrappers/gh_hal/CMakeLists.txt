@@ -1,10 +1,12 @@
 # Copyright (c) 2023 Andrea Ballestrazzi
 
 set(GH_HAL_SOURCE_FILES
+    "hardware-abstraction-layer.cpp"
     "hal-context.cpp"
     "hal-board-pin.cpp"
 )
 set(GH_HAL_HEADER_FILES
+    "hardware-abstraction-layer.hpp"
     "hal-context.hpp"
     "hal-error.hpp"
     "hal-definitions.hpp"
