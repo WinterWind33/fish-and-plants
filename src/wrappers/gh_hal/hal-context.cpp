@@ -20,7 +20,7 @@
 namespace gh_hal
 {
 
-    HALContext::HALContext(logger_pointer logger, const bool bIsSim, const bool bForceFullMap) noexcept :
+    HALContext::HALContext(logger_pointer logger, const bool bIsSim, [[maybe_unused]] const bool bForceFullMap) noexcept :
         m_logger{std::move(logger)},
         m_bIsSimulation{bIsSim} {
 
@@ -55,7 +55,7 @@ namespace gh_hal
         logStream << "[Hardware Abstraction Layer] => Opening chip: " << GPIO_CHIP_PATH;
         const std::filesystem::path chipPath{GPIO_CHIP_PATH};
 
-        m_boardChip = gpiod_chip_open(chipPath.c_str());
+        m_boardChip = std::make_unique<chip_type>(chipPath);
         if(!m_boardChip) {
             logStream.str("");
             logStream << "[Hardware Abstraction Layer] => Failed to open the chip.";
@@ -65,18 +65,8 @@ namespace gh_hal
         }
 
         logStream.str("");
-        logStream << "[Hardware Abstraction Layer] => Chip opened succesfully.";
+        logStream << "[Hardware Abstraction Layer] => Chip opened successfully.";
         m_logger->logInfo(logStream.str());
 #endif // USE_LIBGPIOD
     }
-
-    HALContext::~HALContext() noexcept {
-#ifdef USE_LIBGPIOD
-        if (m_boardChip != nullptr) {
-            gpiod_chip_close(m_boardChip);
-            m_boardChip = nullptr;
-        }
-#endif // USE_LIBGPIOD
-    }
-
 } // namespace gh_hal

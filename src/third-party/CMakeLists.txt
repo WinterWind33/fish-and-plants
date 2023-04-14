@@ -51,7 +51,7 @@ endif()
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
     message(STATUS "Using libgpiod as as the main I/O communication module.")
 
-    set(LIBGPIOD_NAME "libgpiod-2.0")
+    set(LIBGPIOD_NAME "libgpiod-2.0.1")
 
     set(LIBGPIOD_FILENAME "${LIBGPIOD_NAME}.tar.gz")
     set(LIBGPIOD_PARENT_FOLDER_PATH "${PROJECT_SOURCE_DIR}/src/third-party/_temp")
@@ -88,13 +88,17 @@ if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
         # In order to generate the correct makefile (with CC=aarch64-linux-gnu-gcc and family) we
         # need to pass the --host=aarch64-linux-gnu (compiler triplet) to the "./configure script" run
         # by autotools.
+        # We also want to enable C++ bindings as we are developing in C++ and they support smart pointers
+        # for the resources.
         execute_process(
-            COMMAND ./autogen.sh --enable-tools=no --prefix=${LIBGPIOD_INSTALL_DIR} --host=aarch64-linux-gnu
+            COMMAND ./autogen.sh --enable-tools=no --enable-bindings-cxx=yes --prefix=${LIBGPIOD_INSTALL_DIR} --host=aarch64-linux-gnu
             WORKING_DIRECTORY ${LIBGPIOD_ABS_FOLDER}
         )
     else()
+        # We also want to enable C++ bindings as we are developing in C++ and they support smart pointers
+        # for the resources.
         execute_process(
-            COMMAND ./autogen.sh --enable-tools=no --prefix=${LIBGPIOD_INSTALL_DIR}
+            COMMAND ./autogen.sh --enable-tools=no --enable-bindings-cxx=yes --prefix=${LIBGPIOD_INSTALL_DIR}
             WORKING_DIRECTORY ${LIBGPIOD_ABS_FOLDER}
         )
     endif()
