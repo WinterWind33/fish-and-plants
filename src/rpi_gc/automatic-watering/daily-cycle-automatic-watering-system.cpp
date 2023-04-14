@@ -190,10 +190,10 @@ namespace rpi_gc::automatic_watering {
 
         // As per requirements for the activation of the watering system we need to activate
         // the water valve before the water pump without waiting.
-        m_mainLogger->logInfo("[INFO] => Turning on the water valve.");
+        m_mainLogger->logInfo(format_log_string("Turning on the water valve."));
         waterValveDigitalOut->turnOn();
 
-        m_mainLogger->logInfo("[INFO] => Turning on the water pump.");
+        m_mainLogger->logInfo(format_log_string("Turning on the water pump."));
         waterPumpDigitalOut->turnOn();
     }
 
@@ -217,12 +217,12 @@ namespace rpi_gc::automatic_watering {
 
         // As per requirements for the activation of the watering system we need to activate
         // the water valve before the water pump without waiting.
-        m_mainLogger->logInfo("[INFO] => Turning off the water valve.");
+        m_mainLogger->logInfo(format_log_string("Turning off the water valve."));
         waterValveDigitalOut->turnOff();
 
         std::this_thread::sleep_for(valvePumpSeparationTime);
 
-        m_mainLogger->logInfo("[INFO] => Turning off the water pump.");
+        m_mainLogger->logInfo(format_log_string("Turning off the water pump."));
         waterPumpDigitalOut->turnOff();
     }
 
