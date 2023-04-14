@@ -17,8 +17,7 @@
 #include <sstream>
 #include <string_view>
 
-namespace gh_hal
-{
+namespace gh_hal {
 
     HALContext::HALContext(logger_pointer logger, const bool bIsSim, [[maybe_unused]] const bool bForceFullMap) noexcept :
         m_logger{std::move(logger)},
