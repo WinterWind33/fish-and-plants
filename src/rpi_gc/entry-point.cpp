@@ -56,7 +56,7 @@ namespace commands_factory {
         using rpi_gc::AutomaticWateringCommand;
         using rpi_gc::CharType;
 
-        assert((bool)wateringSystem);
+        assert(static_cast<bool>(wateringSystem));
 
         rpi_gc::automatic_watering::DailyCycleAWSTimeProvider defaultTimeProvider{};
 
@@ -124,10 +124,13 @@ int main(int argc, char* argv[]) {
         StringType{strings::application::NAME},
         strings::application::MAIN_LOG_FILENAME
     )};
+    mainLogger->setAutomaticFlushLevel(gh_log::ELoggingLevel::Info);
 
     mainLogger->logInfo("Initiating system: starting log now.");
 
     LoggerPointer userLogger{gh_log::SPLLogger::createColoredStdOutLogger("Reporter")};
+    userLogger->setAutomaticFlushLevel(gh_log::ELoggingLevel::Info);
+
     OutputStringStream applicationHelpStream{};
 
     mainLogger->logWarning("Initiating hardware abstraction layer.");
