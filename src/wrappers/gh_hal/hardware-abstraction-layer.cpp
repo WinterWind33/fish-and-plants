@@ -1,6 +1,10 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <gh_hal/hardware-abstraction-layer.hpp>
 
+#ifdef USE_LIBGPIOD
+#include <gh_hal/backends/libgpiod/miscellaneous.hpp>
+#endif // USE_LIBGPIOD
+
 // C++ STL
 #include <string_view>
 
@@ -10,10 +14,17 @@ namespace gh_hal {
 
 #ifdef USE_LIBGPIOD
         constexpr std::string_view BACKEND_MODULE_NAME{"libgpiod"};
-        constexpr std::string_view BACKEND_MODULE_VERSION_STRING{"2.0.1"};
+
+        backends::libgpiod_impl::VersionString GetBackendModuleVersionString() noexcept {
+            return backends::libgpiod_impl::GetLibraryVersion();
+        }
 #else
         constexpr std::string_view BACKEND_MODULE_NAME{"[None - Simulated]"};
         constexpr std::string_view BACKEND_MODULE_VERSION_STRING{"[None - Simulated]"};
+
+        constexpr std::string_view GetBackendModuleVersionString() noexcept {
+            return BACKEND_MODULE_VERSION_STRING;
+        }
 #endif // USE_LIBGPIOD
 
     } // namespace details
@@ -23,7 +34,7 @@ namespace gh_hal {
     }
 
     auto BackendModule::GetBackendModuleVersion() noexcept -> version_type {
-        return version_type{details::BACKEND_MODULE_VERSION_STRING};
+        return version_type{details::GetBackendModuleVersionString()};
     }
 
 } // namespace gh_hal
