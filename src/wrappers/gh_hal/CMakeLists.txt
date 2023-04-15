@@ -12,6 +12,8 @@ set(GH_HAL_SOURCE_FILES
 
 set(GH_HAL_HEADER_FILES
     "backends/simulated/simulated-chip.hpp"
+    "hardware-access/board-chip.hpp"
+    "hardware-access/hardware-access-errors.hpp"
     "hardware-abstraction-layer.hpp"
     "hal-context.hpp"
     "hal-error.hpp"
@@ -19,7 +21,6 @@ set(GH_HAL_HEADER_FILES
     "hal-digital-output.hpp"
     "hal-board-pin.hpp"
 
-    "hardware-access/board-chip.hpp"
     "internal/board-chip-impl.hpp"
 )
 
