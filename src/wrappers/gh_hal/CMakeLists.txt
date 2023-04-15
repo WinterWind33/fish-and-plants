@@ -23,6 +23,7 @@ if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
 
     list(APPEND GH_HAL_HEADER_FILES
         "backends/libgpiod/miscellaneous.hpp"
+        "backends/libgpiod/chip-api.hpp"
     )
 
 endif()
