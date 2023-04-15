@@ -5,15 +5,21 @@
 
 #ifdef USE_LIBGPIOD
 #include <gh_hal/backends/libgpiod/chip-api.hpp>
-#else
-#error "No other backend library apart from libgpiod"
 #endif // USE_LIBGPIOD
 
 namespace gh_hal::internal {
 
+    namespace details {
+#ifdef USE_LIBGPIOD
+        using BackendChipType = gpiod::chip;
+#else
+        using BackendChipType = void;
+#endif // USE_LIBGPIOD
+    } // namespace details
+
     class BoardChipImpl final : public gh_hal::hardware_access::BoardChip{
     public:
-        using chip_unique_ptr = std::unique_ptr<gpiod::chip>;
+        using chip_unique_ptr = std::unique_ptr<details::BackendChipType>;
 
         explicit BoardChipImpl(std::filesystem::path chipPath);
 
