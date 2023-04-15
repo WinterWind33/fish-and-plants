@@ -13,7 +13,9 @@ namespace gh_hal::internal {
 #ifdef USE_LIBGPIOD
         using BackendChipType = gpiod::chip;
 #else
-        using BackendChipType = void;
+        struct _TempFakeBackendType { int _test; };
+
+        using BackendChipType = _TempFakeBackendType;
 #endif // USE_LIBGPIOD
     } // namespace details
 
