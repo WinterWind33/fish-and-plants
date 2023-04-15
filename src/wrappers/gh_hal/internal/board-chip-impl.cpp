@@ -10,14 +10,18 @@ namespace gh_hal::internal {
     namespace details {
         std::unique_ptr<BackendChipType> openChip(std::filesystem::path chipPath) {
 #ifdef USE_LIBGPIOD
-            return gh_hal::backends::libgpiod_impl::openChip(std::move(chipPath));
+            return backends::libgpiod_impl::openChip(std::move(chipPath));
 #else
-            return nullptr;
+            return std::make_unique<backends::simulated::SimulatedChip>(std::move(chipPath));
 #endif // USE_LIBGPIOD
         }
     } // namespace details
 
     BoardChipImpl::BoardChipImpl(std::filesystem::path chipPath) :
         m_chipPtr{details::openChip(std::move(chipPath))} {}
+
+    BoardChipImpl::operator bool() const noexcept {
+        return static_cast<bool>(*m_chipPtr);
+    }
 
 } // namespace gh_hal::internal

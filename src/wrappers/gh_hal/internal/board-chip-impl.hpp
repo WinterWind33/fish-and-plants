@@ -5,6 +5,8 @@
 
 #ifdef USE_LIBGPIOD
 #include <gh_hal/backends/libgpiod/chip-api.hpp>
+#else
+#include <gh_hal/backends/simulated/simulated-chip.hpp>
 #endif // USE_LIBGPIOD
 
 namespace gh_hal::internal {
@@ -13,9 +15,7 @@ namespace gh_hal::internal {
 #ifdef USE_LIBGPIOD
         using BackendChipType = gpiod::chip;
 #else
-        struct _TempFakeBackendType { int _test; };
-
-        using BackendChipType = _TempFakeBackendType;
+        using BackendChipType = backends::simulated::SimulatedChip;
 #endif // USE_LIBGPIOD
     } // namespace details
 
@@ -24,6 +24,8 @@ namespace gh_hal::internal {
         using chip_unique_ptr = std::unique_ptr<details::BackendChipType>;
 
         explicit BoardChipImpl(std::filesystem::path chipPath);
+
+        explicit operator bool() const noexcept;
 
     private:
         chip_unique_ptr m_chipPtr{};

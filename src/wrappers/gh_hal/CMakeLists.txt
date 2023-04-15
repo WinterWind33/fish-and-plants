@@ -2,6 +2,7 @@
 
 set(GH_HAL_SOURCE_FILES
     "backends/simulated/simulated-chip.cpp"
+    "hardware-access/board-chip.cpp"
     "hardware-abstraction-layer.cpp"
     "hal-context.cpp"
     "hal-board-pin.cpp"
