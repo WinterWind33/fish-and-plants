@@ -20,7 +20,21 @@
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Linux Debug) Build All",
+			"label": "[Linux] Configure all",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/buildLinux"
+			},
+			"command": "cmake",
+			"args": [
+				"..",
+				"-Wno-dev"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Linux] (Debug) Build All",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/buildLinux"
@@ -29,8 +43,6 @@
 			"args": [
 				"--build",
 				".",
-				"--target",
-				"ALL_BUILD",
 				"--config",
 				"Debug"
 			],
@@ -110,7 +122,7 @@
 			"group": "build"
 		},
 		{
-			"label": "(Linux) Clean build folder",
+			"label": "[Linux] Clean build folder",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/buildLinux"
@@ -124,37 +136,31 @@
 			"group": "build"
 		},
 		{
-			"label": "[CMake] (Aarch64 Debug) Configure",
+			"label": "[Linux-ARM64] Configure",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/buildLinux"
 			},
-			"dependsOn": "(Linux) Clean build folder",
+			"dependsOn": "[Linux] Clean build folder",
 			"command": "cmake",
 			"args": [
 				"..",
 				"-DCOMPILE_AARCH64_ON_LINUX=True",
 				"--toolchain",
-				"toolchains/aarch64-toolchain.cmake"
+				"toolchains/aarch64-toolchain.cmake",
+				"-Wno-dev"
 			],
 			"problemMatcher": [],
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Aarch64 Release) Perform release",
+			"label": "[Linux-ARM64] (Release) Perform release",
 			"type": "shell",
 			"options": {
-				"cwd": "${workspaceFolder}/buildLinux"
+				"cwd": "${workspaceFolder}/scripts"
 			},
-			"command": "cmake",
-			"args": [
-				"--build",
-				".",
-				"--config",
-				"Release",
-				"--target",
-				"ALL_BUILD"
-			],
+			"command": "./aarch64-perform-release.sh",
+			"args": [],
 			"problemMatcher": [],
 			"group": "build"
 		}
