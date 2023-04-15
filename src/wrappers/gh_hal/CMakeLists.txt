@@ -4,6 +4,8 @@ set(GH_HAL_SOURCE_FILES
     "hardware-abstraction-layer.cpp"
     "hal-context.cpp"
     "hal-board-pin.cpp"
+
+    "internal/board-chip-impl.cpp"
 )
 
 set(GH_HAL_HEADER_FILES
@@ -13,6 +15,9 @@ set(GH_HAL_HEADER_FILES
     "hal-definitions.hpp"
     "hal-digital-output.hpp"
     "hal-board-pin.hpp"
+
+    "hardware-access/board-chip.hpp"
+    "internal/board-chip-impl.hpp"
 )
 
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)

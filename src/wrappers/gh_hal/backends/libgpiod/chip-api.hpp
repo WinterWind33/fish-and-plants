@@ -5,6 +5,7 @@
 
 // C++ STL
 #include <filesystem>
+#include <memory>
 
 namespace gh_hal::backends::libgpiod_impl {
 
