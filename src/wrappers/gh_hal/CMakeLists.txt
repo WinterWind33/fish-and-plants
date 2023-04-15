@@ -19,6 +19,7 @@ if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
 
     list(APPEND GH_HAL_SOURCE_FILES
         "backends/libgpiod/miscellaneous.cpp"
+        "backends/libgpiod/chip-api.cpp"
     )
 
     list(APPEND GH_HAL_HEADER_FILES
