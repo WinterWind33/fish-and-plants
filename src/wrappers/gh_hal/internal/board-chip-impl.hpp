@@ -19,7 +19,7 @@ namespace gh_hal::internal {
 #endif // USE_LIBGPIOD
     } // namespace details
 
-    class BoardChipImpl final : public gh_hal::hardware_access::BoardChip{
+    class BoardChipImpl final : public gh_hal::hardware_access::BoardChip {
     public:
         using chip_unique_ptr = std::unique_ptr<details::BackendChipType>;
 

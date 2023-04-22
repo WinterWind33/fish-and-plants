@@ -1,4 +1,20 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #pragma once
 
-namespace gh_hal::hardware_access {} // namespace gh_hal::hardware_access
+namespace gh_hal::hardware_access {
+
+    enum class DigitalPinRequestDirection {
+        Input,
+        Output
+    };
+
+    struct BoardDigitalPin {
+        virtual ~BoardDigitalPin() noexcept = default;
+
+        virtual DigitalPinRequestDirection getDirection() const noexcept = 0;
+
+        virtual void activate() noexcept = 0;
+        virtual void deactivate() noexcept = 0;
+    };
+
+} // namespace gh_hal::hardware_access
