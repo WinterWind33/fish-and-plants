@@ -25,7 +25,7 @@ namespace rpi_gc::hardware_management {
 
         explicit HardwareInitializer(logger_pointer logger) noexcept;
 
-        std::unique_ptr<typename chip_factory::BoardChip> initializeBoardChip(std::filesystem::path chipPath) const;
+        std::unique_ptr<typename chip_factory::board_chip_type> initializeBoardChip(std::filesystem::path chipPath) const;
 
     private:
         logger_pointer m_logger{};
@@ -43,8 +43,8 @@ namespace rpi_gc::hardware_management {
 
     template<gh_hal::hardware_access::BoardChipFactoryType ChipFactory>
     auto HardwareInitializer<ChipFactory>::initializeBoardChip(std::filesystem::path chipPath) const ->
-        std::unique_ptr<typename chip_factory::BoardChip> {
-        using result_type = std::unique_ptr<typename chip_factory::BoardChip>;
+        std::unique_ptr<typename chip_factory::board_chip_type> {
+        using result_type = std::unique_ptr<typename chip_factory::board_chip_type>;
 
         assert(!chipPath.empty());
 
@@ -55,7 +55,7 @@ namespace rpi_gc::hardware_management {
             result = ChipFactory::openChipByPath(chipPath);
         } catch(const std::system_error& systemError) {
             std::ostringstream errorStream{};
-            errorStream << "Failed to open the chip \'" << chipPath "\' - Error code: ";
+            errorStream << "Failed to open the chip \'" << chipPath << "\' - Error code: ";
             errorStream << systemError.code() << ". Message: ";
             errorStream << systemError.what();
 
