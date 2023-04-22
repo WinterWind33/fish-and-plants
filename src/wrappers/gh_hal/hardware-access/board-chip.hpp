@@ -4,6 +4,7 @@
 // C++ STL
 #include <filesystem>
 #include <memory>
+#include <type_traits>
 
 namespace gh_hal::hardware_access {
 
@@ -19,6 +20,7 @@ namespace gh_hal::hardware_access {
     //!
     class BoardChipFactory final {
     public:
+        using board_chip_type = BoardChip;
 
         //!!
         //! \brief Opens a chip that is represented by the given path, usually something
@@ -27,7 +29,18 @@ namespace gh_hal::hardware_access {
         //!
         //! \param chipPath The path of the chip to be opened.
         //! \return A pointer to the opened chip or nullptr in case of an error.
-        static std::unique_ptr<BoardChip> openChipByPath(std::filesystem::path chipPath);
+        static std::unique_ptr<board_chip_type> openChipByPath(std::filesystem::path chipPath);
+    };
+
+    //!!
+    //! \brief Represents the concept of a BoardChipFactory, i.e. a class that has a static method
+    //!  called openChipByPath that accepts a std::filesystem::path and returns a unique_ptr to a board
+    //!  chip interface.
+    //!
+    template<typename T>
+    concept BoardChipFactoryType = std::is_same_v<T, BoardChipFactory> || requires (std::filesystem::path P){
+        typename T::board_chip_type;
+        { T::openChipByPath(P) } -> std::same_as<std::unique_ptr<typename T::board_chip_type>>;
     };
 
 } // namespace hardware_access
