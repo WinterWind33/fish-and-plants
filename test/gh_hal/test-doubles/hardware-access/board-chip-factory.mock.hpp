@@ -38,7 +38,7 @@ namespace gh_hal::hardware_access::mocks {
         static chip_pointer openChipByPath(std::filesystem::path chipPath) {
             assert(BoardChipFactoryMock::MockImplPointer != nullptr);
 
-            return BoardChipFactoryMock::MockImplPointer.openChipByPathMock(std::move(chipPath));
+            return BoardChipFactoryMock::MockImplPointer->openChipByPathMock(std::move(chipPath));
         }
     };
 
