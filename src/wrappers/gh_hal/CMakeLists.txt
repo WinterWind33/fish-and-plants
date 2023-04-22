@@ -8,6 +8,7 @@ set(GH_HAL_SOURCE_FILES
     "hal-board-pin.cpp"
 
     "internal/board-chip-impl.cpp"
+    "internal/board-digital-pin-impl.cpp"
 )
 
 set(GH_HAL_HEADER_FILES
@@ -23,6 +24,7 @@ set(GH_HAL_HEADER_FILES
     "hal-board-pin.hpp"
 
     "internal/board-chip-impl.hpp"
+    "internal/board-digital-pin-impl.hpp"
 )
 
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
