@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace backends::simulated {
+namespace gh_hal::backends::simulated {
 
     //!!
     //! \brief Represents a simulated digital board pin with simulated (empty)
