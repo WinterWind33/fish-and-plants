@@ -31,13 +31,14 @@ namespace gh_hal::hardware_access::mocks {
 
     template<BoardChipFactoryMockImplType MockImplType>
     struct BoardChipFactoryMock final {
-        using chip_pointer = typename MockImplType::chip_pointer;
-        static std::unique_ptr<MockImplType> MockImplPointer{};
+        using board_chip_type = BoardChip;
+        using chip_pointer = std::unique_ptr<board_chip_type>;
+        inline static std::unique_ptr<MockImplType> MockImplPointer = nullptr;
 
         static chip_pointer openChipByPath(std::filesystem::path chipPath) {
-            assert(BoardChipFactoryMock::BoardChipFactoryMock != nullptr);
+            assert(BoardChipFactoryMock::MockImplPointer != nullptr);
 
-            return BoardChipFactoryMock::BoardChipFactoryMock.openChipByPathMock(std::move(chipPath));
+            return BoardChipFactoryMock::MockImplPointer.openChipByPathMock(std::move(chipPath));
         }
     };
 
