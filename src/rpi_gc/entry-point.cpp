@@ -8,6 +8,8 @@
 #include <gh_log/logger.hpp>
 #include <gh_log/spl-logger.hpp>
 
+#include <hardware-management/hardware-chip-initializer.hpp>
+
 // Commands
 #include <gh_cmd/gh_cmd.hpp>
 #include <commands/application-command.hpp>
@@ -111,6 +113,12 @@ namespace commands_factory {
 
 } // namespace commands_factory
 
+namespace hardware_chip_paths {
+
+    constexpr std::string_view RASPBERRY_PI_3B_PLUS_CHIP_PATH_GPIO0{"/dev/gpiochip0"};
+
+} // namespace hardware_chip_paths
+
 // This is the entry point of the application. Here, it starts
 // the main execution of the greenhouse controller.
 int main(int argc, char* argv[]) {
@@ -133,8 +141,28 @@ int main(int argc, char* argv[]) {
 
     OutputStringStream applicationHelpStream{};
 
-    mainLogger->logWarning("Initiating hardware abstraction layer.");
-    gh_hal::HALContext halContext{mainLogger, false, true};
+    mainLogger->logInfo("Initiating hardware abstraction layer.");
+    rpi_gc::hardware_management::HardwareInitializer<gh_hal::hardware_access::BoardChipFactory> hardwareInitializer{mainLogger};
+
+    std::unique_ptr<gh_hal::hardware_access::BoardChip> boardChip{};
+    try {
+        // We try to initialize the board chip. If this doesn't go well we can't
+        // proceed with the application process.
+        boardChip = hardwareInitializer.initializeBoardChip(std::filesystem::path{hardware_chip_paths::RASPBERRY_PI_3B_PLUS_CHIP_PATH_GPIO0});
+    } catch(const std::exception& hardwareInitializationError) {
+        constexpr std::string_view ABORTING_MESSAGE{"Aborting the process. Return code: -1."};
+
+        std::ostringstream userFeedbackStream{};
+        userFeedbackStream << "Failed to initialize the hardware abstraction layer. ";
+        userFeedbackStream << "Message: " << hardwareInitializationError.what() << ' ';
+
+        userLogger->logError(userFeedbackStream.str());
+        userLogger->logWarning("See the log file for more details.");
+        userLogger->logInfo(std::string{ABORTING_MESSAGE});
+        mainLogger->logInfo(std::string{ABORTING_MESSAGE});
+
+        return -1;
+    }
 
     auto awsTimeProviderSmartPtr{::automatic_watering::CreateConfigurableAWSTimeProvider()};
 
