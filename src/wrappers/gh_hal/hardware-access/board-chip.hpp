@@ -1,7 +1,10 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #pragma once
 
+#include <gh_hal/hardware-access/board-digital-pin.hpp>
+
 // C++ STL
+#include <vector>
 #include <filesystem>
 #include <memory>
 #include <type_traits>
@@ -13,6 +16,12 @@ namespace gh_hal::hardware_access {
     //!  access the hardware and it can provide access to the board's PINs.
     struct BoardChip {
         virtual ~BoardChip() noexcept = default;
+
+        virtual std::unique_ptr<BoardDigitalPin> requestDigitalPin(std::string consumer,
+            BoardDigitalPin::offset_type offset, const DigitalPinRequestDirection direction) noexcept = 0;
+
+        virtual std::vector<std::unique_ptr<BoardDigitalPin>> requestDigitalPinPool(std::string consumer,
+            std::vector<BoardDigitalPin::offset_type> offset, const DigitalPinRequestDirection direction) noexcept = 0;
     };
 
     //!!
