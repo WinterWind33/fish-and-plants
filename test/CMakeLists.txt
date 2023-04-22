@@ -11,6 +11,7 @@ set(TEST_APP_HEADER_FILES
     # Test doubles
     "gh_hal/test-doubles/hal-context.mock.hpp"
     "gh_hal/test-doubles/hal-digital-output.mock.hpp"
+    "gh_hal/test-doubles/hardware-access/board-chip.mock.hpp"
     "gh_hal/test-doubles/hardware-access/board-chip-factory.mock.hpp"
     "gh_cmd/test-doubles/option-visitor.mock.hpp"
     "gh_cmd/test-doubles/option-parser.mock.hpp"
