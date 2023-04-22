@@ -30,7 +30,7 @@ namespace gh_hal::hardware_access::mocks {
     static_assert(BoardChipFactoryMockImplType<BoardChipFactoryMockImpl>);
 
     template<BoardChipFactoryMockImplType MockImplType>
-    class BoardChipFactoryMock final {
+    struct BoardChipFactoryMock final {
         using chip_pointer = typename MockImplType::chip_pointer;
         static std::unique_ptr<MockImplType> MockImplPointer{};
 
