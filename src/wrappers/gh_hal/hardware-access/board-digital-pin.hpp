@@ -1,6 +1,9 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #pragma once
 
+// C++ STL
+#include <cstdint>
+
 namespace gh_hal::hardware_access {
 
     enum class DigitalPinRequestDirection {
@@ -9,6 +12,8 @@ namespace gh_hal::hardware_access {
     };
 
     struct BoardDigitalPin {
+        using offset_type = std::uint32_t;
+
         virtual ~BoardDigitalPin() noexcept = default;
 
         virtual DigitalPinRequestDirection getDirection() const noexcept = 0;
