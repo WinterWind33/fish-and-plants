@@ -9,6 +9,13 @@
 // Testing core
 #include <testing-core.hpp>
 
+// C++ STL
+#include <string_view>
+
+namespace tests::constants {
+    constexpr std::string_view RASPBERRY_PI_3B_PLUS_GPIO0CHIP_PATH{"/dev/gpiochip0"};
+} // namespace tests
+
 TEST_CASE("HardwareInitializer unit tests", "[unit][solitary][rpi_gc][hardware-management][HardwareInitializer]") {
     using rpi_gc::hardware_management::HardwareInitializer;
     using BoardChipFactoryMockImpl = testing::StrictMock<gh_hal::hardware_access::mocks::BoardChipFactoryMockImpl>;
@@ -19,11 +26,11 @@ TEST_CASE("HardwareInitializer unit tests", "[unit][solitary][rpi_gc][hardware-m
 
     const HardwareInitializer<BoardChipFactoryMock> hardwareInitializerUT{std::move(loggerMock)};
 
-    SECTION("initializeBoardChip() method should make the call to open the chip") {
-        hardwareInitializerUT
-    }
-
     SECTION("initializeBoardChip() method should make the call to open the chip only once") {
+        const std::filesystem::path chipPath{tests::constants::RASPBERRY_PI_3B_PLUS_GPIO0CHIP_PATH};
 
+        EXPECT_CALL(*BoardChipFactoryMock::MockImplPointer, openChipByPathMock(chipPath)).Times(1);
+
+        hardwareInitializerUT.initializeBoardChip(chipPath);
     }
 }
