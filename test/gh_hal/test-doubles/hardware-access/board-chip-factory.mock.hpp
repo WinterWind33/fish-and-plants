@@ -18,13 +18,13 @@ namespace gh_hal::hardware_access::mocks {
 
         virtual ~BoardChipFactoryMockImpl() noexcept = default;
 
-        MOCK_METHOD(chip_pointer, openChipByPathMock, (std::filesystem::path), override);
+        MOCK_METHOD(chip_pointer, openChipByPathMock, (std::filesystem::path), ());
     };
 
     template<typename MockImpl>
-    concept BoardChipFactoryMockImplType = std::is_base_of_v<BoardChipFactoryMockImpl> || requires (MockImpl M, std::filesystem::path P) {
+    concept BoardChipFactoryMockImplType = std::is_base_of_v<BoardChipFactoryMockImpl, MockImpl> || requires (MockImpl M, std::filesystem::path P) {
         typename MockImpl::chip_pointer;
-        { m.openChipByPathMock(P) } -> BoardChipFactoryMockImpl::chip_pointer;
+        { M.openChipByPathMock(P) } -> std::same_as<BoardChipFactoryMockImpl::chip_pointer>;
     };
 
     static_assert(BoardChipFactoryMockImplType<BoardChipFactoryMockImpl>);
