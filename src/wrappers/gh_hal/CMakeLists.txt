@@ -12,6 +12,7 @@ set(GH_HAL_SOURCE_FILES
 
 set(GH_HAL_HEADER_FILES
     "backends/simulated/simulated-chip.hpp"
+    "backends/simulated/simulated-digital-board-pin.hpp"
     "hardware-access/board-chip.hpp"
     "hardware-access/board-digital-pin.hpp"
     "hardware-abstraction-layer.hpp"
