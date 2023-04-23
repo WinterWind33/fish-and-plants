@@ -1,6 +1,7 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <gh_hal/internal/board-chip-impl.hpp>
 #include <gh_hal/internal/board-digital-pin-impl.hpp>
+#include <gh_hal/internal/line-request.hpp>
 
 #ifdef USE_LIBGPIOD
 #include <gh_hal/backends/libgpiod/chip-api.hpp>
@@ -22,39 +23,13 @@ namespace gh_hal::internal {
 
 #ifdef USE_LIBGPIOD
 
-        class DirectionEnumConverter final {
-        public:
-            using gpiod_direction_type = ::gpiod::line::direction;
-            using direction_pair = std::pair<hardware_access::DigitalPinRequestDirection, gpiod_direction_type>;
-
-            static constexpr std::array<direction_pair, 2> toBackendMap{
-                direction_pair{hardware_access::DigitalPinRequestDirection::Input, gpiod_direction_type::INPUT},
-                direction_pair{hardware_access::DigitalPinRequestDirection::Output, gpiod_direction_type::OUTPUT}
-            };
-
-            [[nodiscard]] static constexpr gpiod_direction_type convert(const hardware_access::DigitalPinRequestDirection direction) {
-                auto dirIt = std::find_if(toBackendMap.cbegin(), toBackendMap.cend(), [direction](const direction_pair& pair){
-
-                    return std::get<0>(pair) == direction;
-                });
-
-                if (dirIt != std::cend(toBackendMap))
-                    return std::get<1>(*dirIt);
-                else
-                    throw std::range_error{"Direction not recognized"};
-            }
-        };
-
-        static_assert(DirectionEnumConverter::convert(hardware_access::DigitalPinRequestDirection::Output) == ::gpiod::line::direction::OUTPUT);
-        static_assert(DirectionEnumConverter::convert(hardware_access::DigitalPinRequestDirection::Input) == ::gpiod::line::direction::INPUT);
-
         [[nodiscard]]
         libgpiod_impl::NativeLineRequestType requestLines(libgpiod_impl::NativeChipType& chip,
             std::string consumer,
             std::vector<libgpiod_impl::NativeLineOffsetType> offsets,
             const hardware_access::DigitalPinRequestDirection direction) {
 
-            return libgpiod_impl::requestLines(chip, std::move(consumer), std::move(offsets), DirectionEnumConverter::convert(direction));
+            return libgpiod_impl::requestLines(chip, std::move(consumer), std::move(offsets), LibgpiodConverter.convert(direction));
         }
 
         [[nodiscard]]
