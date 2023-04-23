@@ -25,6 +25,7 @@ set(GH_HAL_HEADER_FILES
 
     "internal/board-chip-impl.hpp"
     "internal/board-digital-pin-impl.hpp"
+    "internal/line-request.hpp"
 )
 
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
