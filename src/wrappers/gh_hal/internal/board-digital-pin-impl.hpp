@@ -20,10 +20,10 @@ namespace gh_hal::internal {
 #ifdef USE_LIBGPIOD
         using backend_type = backends::libgpiod_impl::NativeLineRequestType;
 #else
-        using backend_type = backends::simulated::DigitalBoardPin;
+        using backend_type = const backends::simulated::DigitalBoardPin;
 #endif // USE_LIBGPIOD
 
-        using backend_type_reference = std::reference_wrapper<const backend_type>;
+        using backend_type_reference = std::reference_wrapper<backend_type>;
 
         explicit BoardDigitalPinImpl(const hardware_access::BoardDigitalPin::offset_type offsetValue,
             const hardware_access::DigitalPinRequestDirection direction, backend_type_reference backImpl) noexcept;

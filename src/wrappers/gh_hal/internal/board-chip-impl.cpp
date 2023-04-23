@@ -63,8 +63,8 @@ namespace gh_hal::internal {
         }
 
         [[nodiscard]]
-        std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> createDigitalPinsFromLineRequest(FakeLineRequest& lineRequest) noexcept {
-
+        std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> createDigitalPinsFromLineRequest(::gpiod::line_request& lineRequest) noexcept {
+            return {};
         }
 
 #else

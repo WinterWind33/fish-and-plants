@@ -1,6 +1,8 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <gh_hal/internal/board-digital-pin-impl.hpp>
 
+#include <gh_hal/internal/line-request.hpp>
+
 namespace gh_hal::internal {
 
     namespace details {
@@ -12,7 +14,7 @@ namespace gh_hal::internal {
 
         void deactivateImpl(BoardDigitalPinImpl::backend_type_reference lineRequest,
             const hardware_access::BoardDigitalPin::offset_type offsetValue) noexcept {
-            lineRequest.get().set_value(::gpiod::line::offset{offsetValue}, ::gpiod::line::value::DEACTIVE);
+            lineRequest.get().set_value(::gpiod::line::offset{offsetValue}, ::gpiod::line::value::INACTIVE);
         }
 #else
         constexpr void activateImpl(BoardDigitalPinImpl::backend_type_reference /*lineRequest*/,
