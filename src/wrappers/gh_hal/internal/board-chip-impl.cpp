@@ -48,6 +48,7 @@ namespace gh_hal::internal {
         static_assert(DirectionEnumConverter::convert(hardware_access::DigitalPinRequestDirection::Output) == ::gpiod::line::direction::OUTPUT);
         static_assert(DirectionEnumConverter::convert(hardware_access::DigitalPinRequestDirection::Input) == ::gpiod::line::direction::INPUT);
 
+        [[nodiscard]]
         libgpiod_impl::NativeLineRequestType requestLines(libgpiod_impl::NativeChipType& chip,
             std::string consumer,
             std::vector<libgpiod_impl::NativeLineOffsetType> offsets,
@@ -56,12 +57,19 @@ namespace gh_hal::internal {
             return libgpiod_impl::requestLines(chip, std::move(consumer), std::move(offsets), DirectionEnumConverter::convert(direction));
         }
 
+        [[nodiscard]]
         std::unique_ptr<BackendChipType> openChip(std::filesystem::path chipPath) {
             return backends::libgpiod_impl::openChip(std::move(chipPath));
         }
 
+        [[nodiscard]]
+        std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> createDigitalPinsFromLineRequest(FakeLineRequest& lineRequest) noexcept {
+
+        }
+
 #else
-        [[nodiscard]] std::unique_ptr<BackendChipType> openChip(std::filesystem::path chipPath) {
+        [[nodiscard]]
+        std::unique_ptr<BackendChipType> openChip(std::filesystem::path chipPath) {
             return std::make_unique<backends::simulated::SimulatedChip>(std::move(chipPath));
         }
 

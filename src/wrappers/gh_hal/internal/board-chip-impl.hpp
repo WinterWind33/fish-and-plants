@@ -10,6 +10,9 @@
 #include <gh_hal/backends/simulated/simulated-chip.hpp>
 #endif // USE_LIBGPIOD
 
+// C++ STL
+#include <vector>
+
 namespace gh_hal::internal {
 
     namespace details {
