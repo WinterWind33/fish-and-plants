@@ -76,7 +76,7 @@ namespace gh_hal::internal {
     class LineRequest final {
     public:
 #ifdef USE_LIBGPIOD
-        using backend_type = backends::libgpiod_impl::NativeLineRequestType;
+        using backend_type = std::pair<hardware_access::DigitalPinRequestDirection, backends::libgpiod_impl::NativeLineRequestType>;
         using chip_type = backends::libgpiod_impl::NativeChipType;
 #else
         using backend_type = details::FakeLineRequest;
@@ -89,6 +89,9 @@ namespace gh_hal::internal {
 
         explicit LineRequest(
             consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept;
+
+        [[nodiscard]]
+        std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> getBoardPins() const noexcept;
 
     private:
         std::unique_ptr<backend_type> m_lineRequest{};
