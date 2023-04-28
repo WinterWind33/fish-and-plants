@@ -9,6 +9,7 @@ set(GH_HAL_SOURCE_FILES
 
     "internal/board-chip-impl.cpp"
     "internal/board-digital-pin-impl.cpp"
+    "internal/line-request.cpp"
 )
 
 set(GH_HAL_HEADER_FILES
