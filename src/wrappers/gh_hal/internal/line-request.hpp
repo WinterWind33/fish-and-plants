@@ -86,7 +86,7 @@ namespace gh_hal::internal {
         using consumer_type = std::string;
         using chip_reference = std::reference_wrapper<chip_type>;
 
-        explicit LineRequest(consumer_type consumer, chip_reference reference) noexcept;
+        explicit LineRequest(consumer_type consumer, chip_reference chip) noexcept;
 
     private:
         chip_reference m_chipRef;
