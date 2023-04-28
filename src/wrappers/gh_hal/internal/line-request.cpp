@@ -3,8 +3,27 @@
 
 namespace gh_hal::internal {
 
-    LineRequest::LineRequest(consumer_type consumer, chip_reference chip) noexcept :
-        m_chipRef{std::move(chip)},
-        m_consumer{std::move(consumer)} {}
+    LineRequest::LineRequest(
+        consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept {
+        request_lines(std::move(consumer), std::move(chip), std::move(offsets), direction);
+    }
 
+#ifdef USE_LIBGPIOD
+    void LineRequest::request_lines(
+        consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept {
+
+    }
+
+#else
+
+    void LineRequest::request_lines(
+        consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept {
+        m_lineRequest = std::make_unique<details::FakeLineRequest>(direction, std::vector<backends::simulated::DigitalBoardPin>{});
+
+        std::transform(offsets.cbegin(), offsets.cend(), std::back_inserter(std::get<1>(*m_lineRequest)),
+            [](const hardware_access::BoardDigitalPin::offset_type offset){
+            return backends::simulated::DigitalBoardPin{offset};
+        });
+    }
+#endif // USE_LIBGPIOD
 } // namespace gh_hal::internal

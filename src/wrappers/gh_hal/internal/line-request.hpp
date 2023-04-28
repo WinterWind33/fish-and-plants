@@ -85,13 +85,15 @@ namespace gh_hal::internal {
 
         using consumer_type = std::string;
         using chip_reference = std::reference_wrapper<chip_type>;
+        using offset_type = hardware_access::BoardDigitalPin::offset_type;
 
-        explicit LineRequest(consumer_type consumer, chip_reference chip) noexcept;
+        explicit LineRequest(
+            consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept;
 
     private:
-        chip_reference m_chipRef;
-        consumer_type m_consumer{};
         std::unique_ptr<backend_type> m_lineRequest{};
+
+        void request_lines(consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept;
     };
 
 } // namespace gh_hal::internal
