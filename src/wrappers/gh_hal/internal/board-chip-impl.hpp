@@ -4,6 +4,8 @@
 #include <gh_hal/hardware-access/board-chip.hpp>
 #include <gh_hal/hardware-access/board-digital-pin.hpp>
 
+#include <gh_hal/internal/line-request.hpp>
+
 #ifdef USE_LIBGPIOD
 #include <gh_hal/backends/libgpiod/chip-api.hpp>
 #else
@@ -41,6 +43,7 @@ namespace gh_hal::internal {
 
     private:
         chip_unique_ptr m_chipPtr{};
+        std::vector<LineRequest> m_lineRequests{};
     };
 
 } // namespace gh_hal::internal
