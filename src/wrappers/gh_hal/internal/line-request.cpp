@@ -24,8 +24,13 @@ namespace gh_hal::internal {
 
         resulting_vector_type result{};
 
-        for(const auto offsetValue : std::get<1>(*m_lineRequest).offsets())
-            result.push_back(std::make_unique<internal::BoardDigitalPinImpl>(offsetValue, std::get<0>(*m_lineRequest), std::ref(std::get<1>(*m_lineRequest))));
+        const ::gpiod::line::offsets offsets{std::get<1>(*m_lineRequest).offsets()};
+        const hardware_access::DigitalPinRequestDirection requestedDirection{std::get<0>(*m_lineRequest)};
+
+        std::transform(offsets.cbegin(), offsets.cend(), std::back_inserter(result), [this, requestedDirection](const ::gpiod::line::offset& offset){
+            return std::make_unique<internal::BoardDigitalPinImpl>(
+                static_cast<internal::BoardDigitalPinImpl::offset_type>(offset), requestedDirection, std::ref(std::get<1>(*m_lineRequest)));
+        });
 
         return result;
     }
