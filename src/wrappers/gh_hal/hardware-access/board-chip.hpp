@@ -15,15 +15,35 @@ namespace gh_hal::hardware_access {
     //! \brief Basic interface of a board chip that can be used to
     //!  access the hardware and it can provide access to the board's PINs.
     struct BoardChip {
+        using board_digital_out = BoardDigitalPin;
+
         virtual ~BoardChip() noexcept = default;
 
+        //!!
+        //! \brief Performs a line request to retrieve the resource to communicate with
+        //!  the GPIO line identified by "offset".
+        //!
+        //! \param consumer A string that represents the service that will use the pin.
+        //! \param offset The value that identifies the PIN to be requested.
+        //! \param direction The direction (input/output) of the request.
+        //! \return A pointer to the resource used to communicate with the requested PIN.
         [[nodiscard]]
-        virtual std::unique_ptr<BoardDigitalPin> requestDigitalPin(std::string consumer,
-            BoardDigitalPin::offset_type offset, const DigitalPinRequestDirection direction) noexcept = 0;
+        virtual std::unique_ptr<board_digital_out> requestDigitalPin(std::string consumer,
+            board_digital_out::offset_type offset, const DigitalPinRequestDirection direction) noexcept = 0;
 
+        //!!
+        //! \brief Performs a line request to retrieve the resources to communicate with
+        //!  the GPIO lines identified by "offsets". It will return a vector of resources
+        //!  that represents the requeste lines, each of them represented by the relative offset value
+        //!  specified inside "offsets", i.e.: offsets[i] => results[i]
+        //!
+        //! \param consumer A string that represents the service that will use the pins.
+        //! \param offset The value that identifies the PINs to be requested, one for every line.
+        //! \param direction The direction (input/output) of the request. This applies to all the lines.
+        //! \return A vector of pointers to the resources used to communicate with the requested PINs.
         [[nodiscard]]
-        virtual std::vector<std::unique_ptr<BoardDigitalPin>> requestDigitalPinPool(std::string consumer,
-            std::vector<BoardDigitalPin::offset_type> offset, const DigitalPinRequestDirection direction) noexcept = 0;
+        virtual std::vector<std::unique_ptr<board_digital_out>> requestDigitalPinPool(std::string consumer,
+            std::vector<board_digital_out::offset_type> offset, const DigitalPinRequestDirection direction) noexcept = 0;
 
         //!!
         //! \brief Releases the request identified by the given offset.
@@ -32,7 +52,7 @@ namespace gh_hal::hardware_access {
         //!
         //! \param offsets The offsets pool that identifies the line request to be released.
         //! \return Trus if a request has beed freed, false otherwise.
-        virtual bool releaseRequest(std::vector<BoardDigitalPin::offset_type> offsets) noexcept = 0;
+        virtual bool releaseRequest(std::vector<board_digital_out::offset_type> offsets) noexcept = 0;
     };
 
     //!!
