@@ -14,7 +14,6 @@
 
 // C++ STL
 #include <vector>
-#include <map>
 
 namespace gh_hal::internal {
 
@@ -29,6 +28,7 @@ namespace gh_hal::internal {
     class BoardChipImpl final : public gh_hal::hardware_access::BoardChip {
     public:
         using chip_unique_ptr = std::unique_ptr<details::BackendChipType>;
+        using offsets_vector = std::vector<hardware_access::BoardDigitalPin::offset_type>;
 
         explicit BoardChipImpl(std::filesystem::path chipPath);
 
@@ -46,7 +46,7 @@ namespace gh_hal::internal {
 
     private:
         chip_unique_ptr m_chipPtr{};
-        std::map<LineRequestKeyComparator::offsets_vector, LineRequest, LineRequestKeyComparator> m_lineRequests{};
+        std::vector<std::pair<offsets_vector, LineRequest>> m_lineRequests{};
     };
 
 } // namespace gh_hal::internal

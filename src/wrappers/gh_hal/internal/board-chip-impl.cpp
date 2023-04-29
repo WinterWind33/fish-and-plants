@@ -61,15 +61,14 @@ namespace gh_hal::internal {
             }
         }
 
-        LineRequestKeyComparator::offsets_vector offsets{offset};
+        offsets_vector offsets{offset};
 
-        auto newLineRequest{m_lineRequests.emplace(
+        auto newLineRequest{std::make_pair(
             offsets,
-            LineRequest{std::move(consumer), std::ref(*m_chipPtr), std::move(offsets), direction})};
-        // We should have a new insertion, otherwise something went wrong.
-        assert(std::get<1>(newLineRequest));
+            LineRequest{std::move(consumer), std::ref(*m_chipPtr), offsets, direction})};
 
-        auto boardPins{std::get<1>(*std::get<0>(newLineRequest)).getBoardPins()};
+        auto boardPins{std::get<1>(newLineRequest).getBoardPins()};
+        m_lineRequests.push_back(std::move(newLineRequest));
         // We should have only one board pin.
         assert(boardPins.size() == 1);
 
@@ -96,19 +95,37 @@ namespace gh_hal::internal {
             }
         }
 
-        auto newLineRequest{m_lineRequests.emplace(
+        auto newLineRequest{std::make_pair(
             offsets,
-            LineRequest{std::move(consumer), std::ref(*m_chipPtr), std::move(offsets), direction})};
-        // We should have a new insertion, otherwise something went wrong.
-        assert(std::get<1>(newLineRequest));
+            LineRequest{std::move(consumer), std::ref(*m_chipPtr), offsets, direction})};
 
-        return std::get<1>(*std::get<0>(newLineRequest)).getBoardPins();
+        auto boardPins{std::get<1>(newLineRequest).getBoardPins()};
+        m_lineRequests.push_back(std::move(newLineRequest));
+
+        return boardPins;
     }
 
     bool BoardChipImpl::releaseRequest(std::vector<hardware_access::BoardDigitalPin::offset_type> offsets) noexcept {
-        const std::size_t removedElementsCount{m_lineRequests.erase(offsets)};
+        auto delIt = std::find_if(m_lineRequests.cbegin(), m_lineRequests.cend(),
+            [&offsets](const std::pair<offsets_vector, LineRequest>& pair){
+                const offsets_vector& pairOffsets{std::get<0>(pair)};
 
-        return removedElementsCount > 0;
+                if(pairOffsets.size() != offsets.size())
+                    return false;
+
+                bool bRes{true};
+                for(std::size_t i{}; i < pairOffsets.size() && bRes; ++i)
+                    bRes = (pairOffsets[i] == offsets[i]);
+
+                return bRes;
+            });
+
+        if(delIt == std::cend(m_lineRequests)) {
+            return false;
+        }
+
+        m_lineRequests.erase(delIt);
+        return true;
     }
 
 } // namespace gh_hal::internal

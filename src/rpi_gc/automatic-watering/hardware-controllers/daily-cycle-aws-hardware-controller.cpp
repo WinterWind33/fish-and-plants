@@ -44,7 +44,8 @@ namespace rpi_gc::automatic_watering {
         std::get<1>(oldPin)->deactivate();
 
         // We firstly need to release the previous request.
-        m_chipRef.get().releaseRequest({std::get<0>(oldPin)});
+        const bool bRes{m_chipRef.get().releaseRequest({std::get<0>(oldPin)})};
+        assert(bRes);
 
         // Then we can create a new one.
         oldPin = std::make_pair(
