@@ -48,10 +48,15 @@ namespace gh_hal::internal {
             const hardware_access::DigitalPinRequestDirection direction) noexcept {
         assert(static_cast<bool>(*m_chipPtr));
 
-        m_lineRequests.emplace_back(
-            std::move(consumer), std::ref(*m_chipPtr), std::vector<hardware_access::BoardDigitalPin::offset_type>{offset}, direction);
+        LineRequestKeyComparator::offsets_vector offsets{offset};
 
-        auto boardPins{m_lineRequests.back().getBoardPins()};
+        auto newLineRequest{m_lineRequests.emplace(
+            offsets,
+            LineRequest{std::move(consumer), std::ref(*m_chipPtr), std::move(offsets), direction})};
+        // We should have a new insertion, otherwise something went wrong.
+        assert(std::get<1>(newLineRequest));
+
+        auto boardPins{std::get<1>(*std::get<0>(newLineRequest)).getBoardPins()};
         // We should have only one board pin.
         assert(boardPins.size() == 1);
 
@@ -63,10 +68,13 @@ namespace gh_hal::internal {
             std::vector<hardware_access::BoardDigitalPin::offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept {
         assert(static_cast<bool>(*m_chipPtr));
 
-        m_lineRequests.emplace_back(
-            std::move(consumer), std::ref(*m_chipPtr), std::move(offsets), direction);
+         auto newLineRequest{m_lineRequests.emplace(
+            offsets,
+            LineRequest{std::move(consumer), std::ref(*m_chipPtr), std::move(offsets), direction})};
+        // We should have a new insertion, otherwise something went wrong.
+        assert(std::get<1>(newLineRequest));
 
-        return m_lineRequests.back().getBoardPins();
+        return std::get<1>(*std::get<0>(newLineRequest)).getBoardPins();
     }
 
 } // namespace gh_hal::internal

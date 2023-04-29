@@ -14,6 +14,7 @@
 
 // C++ STL
 #include <vector>
+#include <map>
 
 namespace gh_hal::internal {
 
@@ -43,7 +44,7 @@ namespace gh_hal::internal {
 
     private:
         chip_unique_ptr m_chipPtr{};
-        std::vector<LineRequest> m_lineRequests{};
+        std::map<LineRequestKeyComparator::offsets_vector, LineRequest, LineRequestKeyComparator> m_lineRequests{};
     };
 
 } // namespace gh_hal::internal
