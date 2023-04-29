@@ -37,7 +37,8 @@ namespace gh_hal {
     //! \brief This class represents a pin on the electronic board.
     //! It can be instatiated with the pin ID and it can turn on or off
     //! the board pin.
-    class HALBoardPin : public HALDigitalOutput {
+    class [[deprecated("Please use hardware_access::BoardDigitalPin instead.")]]
+    HALBoardPin : public HALDigitalOutput {
     public:
         using native_type = details::BoardPinNativeType;
 
