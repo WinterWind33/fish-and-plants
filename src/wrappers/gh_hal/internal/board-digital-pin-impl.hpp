@@ -35,6 +35,8 @@ namespace gh_hal::internal {
         void activate() noexcept override;
         void deactivate() noexcept override;
 
+        void printStatus(std::ostream& ostream) const noexcept override;
+
     private:
         const hardware_access::BoardDigitalPin::offset_type m_offset{};
         const hardware_access::DigitalPinRequestDirection m_direction{};

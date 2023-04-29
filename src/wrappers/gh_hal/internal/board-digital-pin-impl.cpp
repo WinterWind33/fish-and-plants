@@ -38,4 +38,11 @@ namespace gh_hal::internal {
         details::deactivateImpl(m_backendReference, m_offset);
     }
 
+    void BoardDigitalPinImpl::printStatus(std::ostream& ostream) const noexcept {
+        std::string directionStr{"output"};
+        if(m_direction == hardware_access::DigitalPinRequestDirection::Input)
+            directionStr = "input";
+        ostream << "line " << m_offset << ":\t" << directionStr;
+    }
+
 } // namespace gh_hal::internal
