@@ -191,10 +191,10 @@ namespace rpi_gc::automatic_watering {
         // As per requirements for the activation of the watering system we need to activate
         // the water valve before the water pump without waiting.
         m_mainLogger->logInfo(format_log_string("Turning on the water valve."));
-        waterValveDigitalOut->turnOn();
+        waterValveDigitalOut->activate();
 
         m_mainLogger->logInfo(format_log_string("Turning on the water pump."));
-        waterPumpDigitalOut->turnOn();
+        waterPumpDigitalOut->activate();
     }
 
     void DailyCycleAutomaticWateringSystem::disable_watering_hardware() noexcept {
@@ -218,12 +218,12 @@ namespace rpi_gc::automatic_watering {
         // As per requirements for the activation of the watering system we need to activate
         // the water valve before the water pump without waiting.
         m_mainLogger->logInfo(format_log_string("Turning off the water valve."));
-        waterValveDigitalOut->turnOff();
+        waterValveDigitalOut->deactivate();
 
         std::this_thread::sleep_for(valvePumpSeparationTime);
 
         m_mainLogger->logInfo(format_log_string("Turning off the water pump."));
-        waterPumpDigitalOut->turnOff();
+        waterPumpDigitalOut->deactivate();
     }
 
 } // namespace rpi_gc::automatic_watering

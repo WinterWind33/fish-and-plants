@@ -174,11 +174,13 @@ int main(int argc, char* argv[]) {
     std::unique_ptr<rpi_gc::automatic_watering::DailyCycleAWSHardwareController> awsHardwareController{};
 
     try {
-        awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
+        awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(
+            std::ref(*boardChip), constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
     } catch(const gh_hal::HALError& error) {
         mainLogger->logError(error.what());
 
-        awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
+        awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(
+            std::ref(*boardChip), constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
     }
     std::atomic<rpi_gc::automatic_watering::WateringSystemHardwareController*> hardwareControllerAtomic{awsHardwareController.get()};
 
