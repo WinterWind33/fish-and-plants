@@ -44,6 +44,7 @@ set(TEST_APP_SOURCE_FILES
     "rpi_gc/automatic-watering/daily-cycle-automatic-watering-system.tests.cpp"
     "rpi_gc/automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.tests.cpp"
     "rpi_gc/hardware-management/hardware-initializer.tests.cpp"
+    "rpi_gc/functional/aws-hardware-controller-interactions.tests.cpp"
 
     # integration tests
     "integration/rpi_gc/application-command-integration.tests.cpp"
