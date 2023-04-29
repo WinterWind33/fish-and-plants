@@ -99,4 +99,10 @@ namespace gh_hal::internal {
         void request_lines(consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept;
     };
 
+    struct LineRequestKeyComparator final {
+        using offsets_vector = std::vector<hardware_access::BoardDigitalPin::offset_type>;
+
+        bool operator()(const offsets_vector& lhs, const offsets_vector& rhs) const noexcept;
+    };
+
 } // namespace gh_hal::internal

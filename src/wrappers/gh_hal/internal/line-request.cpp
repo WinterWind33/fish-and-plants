@@ -63,6 +63,16 @@ namespace gh_hal::internal {
     }
 #endif // USE_LIBGPIOD
 
+    bool LineRequestKeyComparator::operator()(const offsets_vector& lhs, const offsets_vector& rhs) const noexcept {
+        if(lhs.size() != rhs.size()) {
+            return false;
+        }
 
+        bool bResult{};
+        for(std::size_t i{}; i < lhs.size() && bResult; ++i)
+            bResult = (lhs[i] == rhs[i]);
+
+        return bResult;
+    }
 
 } // namespace gh_hal::internal
