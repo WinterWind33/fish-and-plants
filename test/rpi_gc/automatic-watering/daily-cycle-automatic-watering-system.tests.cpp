@@ -7,7 +7,7 @@
 #include <rpi_gc/test-doubles/automatic-watering/time-providers/watering-system-time-provider.mock.hpp>
 #include <rpi_gc/test-doubles/automatic-watering/hardware-controllers/watering-system-hardware-controller.mock.hpp>
 #include <gh_log/test-doubles/logger.mock.hpp>
-#include <gh_hal/test-doubles/hal-digital-output.mock.hpp>
+#include <gh_hal/test-doubles/hardware-access/board-digital-pin.mock.hpp>
 
 #include <testing-core.hpp>
 
@@ -59,7 +59,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests", "[unit][solitary][rpi_
         EXPECT_CALL(*timeProviderMock, getPumpValveDeactivationTimeSeparation)
             .WillRepeatedly(testing::Return(VALVE_PUMP_SEPARATION_TIME));
 
-        NiceMock<gh_hal::mocks::HALDigitalOutputMock> waterValveOutput{}, waterPumpOutput{};
+        StrictMock<gh_hal::hardware_access::mocks::BoardDigitalPinMock> waterValveOutput{}, waterPumpOutput{};
         EXPECT_CALL(hardwareControllerMockRef, getWaterValveDigitalOut).WillRepeatedly(testing::Return(&waterValveOutput));
         EXPECT_CALL(hardwareControllerMockRef, getWaterPumpDigitalOut).WillRepeatedly(testing::Return(&waterPumpOutput));
 
@@ -67,14 +67,14 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests", "[unit][solitary][rpi_
             using testing::Expectation;
 
             THEN("It should correctly activate the water valve before the water pump") {
-                Expectation waterValveOnExp = EXPECT_CALL(waterValveOutput, turnOn)
+                Expectation waterValveOnExp = EXPECT_CALL(waterValveOutput, activate)
                     .Times(1);
-                Expectation waterPumpOnExp = EXPECT_CALL(waterPumpOutput, turnOn)
+                Expectation waterPumpOnExp = EXPECT_CALL(waterPumpOutput, activate)
                     .Times(1)
                     .After(waterValveOnExp);
 
-                EXPECT_CALL(waterValveOutput, turnOff);
-                EXPECT_CALL(waterPumpOutput, turnOff);
+                EXPECT_CALL(waterValveOutput, deactivate);
+                EXPECT_CALL(waterPumpOutput, deactivate);
 
                 awsUnderTest.startAutomaticWatering();
 
@@ -85,13 +85,13 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests", "[unit][solitary][rpi_
             }
 
             THEN("It should correctly deactivate the water valve before the water pump") {
-                EXPECT_CALL(waterValveOutput, turnOn);
-                EXPECT_CALL(waterPumpOutput, turnOn);
+                EXPECT_CALL(waterValveOutput, activate);
+                EXPECT_CALL(waterPumpOutput, activate);
 
-                Expectation exp1 = EXPECT_CALL(waterValveOutput, turnOff)
+                Expectation exp1 = EXPECT_CALL(waterValveOutput, deactivate)
                     .Times(1);
 
-                EXPECT_CALL(waterPumpOutput, turnOff)
+                EXPECT_CALL(waterPumpOutput, deactivate)
                     .Times(1)
                     .After(exp1);
 
@@ -120,7 +120,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem integration tests", "[integration][
     mocks::WateringSystemHardwareControllerMock& hardwareControllerMockRef{*hardwareControllerMock};
     std::atomic<WateringSystemHardwareController*> atomicHardwareController{hardwareControllerMock.get()};
 
-    NiceMock<gh_hal::mocks::HALDigitalOutputMock> waterValveOutput{}, waterPumpOutput{};
+    NiceMock<gh_hal::hardware_access::mocks::BoardDigitalPinMock> waterValveOutput{}, waterPumpOutput{};
     EXPECT_CALL(hardwareControllerMockRef, getWaterValveDigitalOut).WillRepeatedly(testing::Return(&waterValveOutput));
     EXPECT_CALL(hardwareControllerMockRef, getWaterPumpDigitalOut).WillRepeatedly(testing::Return(&waterPumpOutput));
 
