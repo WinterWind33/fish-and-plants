@@ -39,8 +39,10 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests", "[unit][solitary][rpi_
     };
 
     std::atomic<WateringSystemTimeProvider*> timeProviderAtomic{timeProviderMock.get()};
+    std::mutex hardwareAccessMutex{};
 
     DailyCycleAutomaticWateringSystem awsUnderTest{
+        std::ref(hardwareAccessMutex),
         mainLoggerMock,
         userLoggerMock,
         std::ref(atomicHardwareController),
@@ -60,6 +62,8 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests", "[unit][solitary][rpi_
             .WillRepeatedly(testing::Return(VALVE_PUMP_SEPARATION_TIME));
 
         StrictMock<gh_hal::hardware_access::mocks::BoardDigitalPinMock> waterValveOutput{}, waterPumpOutput{};
+        EXPECT_CALL(waterValveOutput, printStatus).Times(testing::AtLeast(1));
+        EXPECT_CALL(waterPumpOutput, printStatus).Times(testing::AtLeast(1));
         EXPECT_CALL(hardwareControllerMockRef, getWaterValveDigitalOut).WillRepeatedly(testing::Return(&waterValveOutput));
         EXPECT_CALL(hardwareControllerMockRef, getWaterPumpDigitalOut).WillRepeatedly(testing::Return(&waterPumpOutput));
 
@@ -126,8 +130,10 @@ TEST_CASE("DailyCycleAutomaticWateringSystem integration tests", "[integration][
 
     std::shared_ptr<DailyCycleAWSTimeProvider> awsTimeProvider{std::make_shared<DailyCycleAWSTimeProvider>()};
     std::atomic<WateringSystemTimeProvider*> timeProviderAtomic{awsTimeProvider.get()};
+    std::mutex hardwareAccessMutex{};
 
     DailyCycleAutomaticWateringSystem awsUnderTest{
+        std::ref(hardwareAccessMutex),
         mainLoggerMock,
         userLoggerMock,
         std::ref(atomicHardwareController),

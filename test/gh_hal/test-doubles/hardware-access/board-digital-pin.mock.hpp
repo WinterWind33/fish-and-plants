@@ -15,6 +15,7 @@ namespace gh_hal::hardware_access::mocks {
         MOCK_METHOD(DigitalPinRequestDirection, getDirection, (), (const, noexcept, final));
         MOCK_METHOD(void, activate, (), (noexcept, final));
         MOCK_METHOD(void, deactivate, (), (noexcept, final));
+        MOCK_METHOD(void, printStatus, (std::ostream&), (const, noexcept, final));
     };
 
 } // namespace gh_hal::hardware_access::mocks
