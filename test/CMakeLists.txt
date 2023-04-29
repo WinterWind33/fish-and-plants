@@ -13,6 +13,7 @@ set(TEST_APP_HEADER_FILES
     "gh_hal/test-doubles/hal-digital-output.mock.hpp"
     "gh_hal/test-doubles/hardware-access/board-chip.mock.hpp"
     "gh_hal/test-doubles/hardware-access/board-chip-factory.mock.hpp"
+    "gh_hal/test-doubles/hardware-access/board-digital-pin.mock.hpp"
     "gh_cmd/test-doubles/option-visitor.mock.hpp"
     "gh_cmd/test-doubles/option-parser.mock.hpp"
     "gh_cmd/test-doubles/command-option.mock.hpp"
