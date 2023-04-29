@@ -32,5 +32,10 @@ TEST_CASE("HardwareInitializer unit tests", "[unit][solitary][rpi_gc][hardware-m
         EXPECT_CALL(*BoardChipFactoryMock::MockImplPointer, openChipByPathMock(chipPath)).Times(1);
 
         hardwareInitializerUT.initializeBoardChip(chipPath);
+
+        // We need to clear the MockImplPointer because GMock must complete the
+        // expectations during the mock destruction. Being this a static variable,
+        // we need to do this manually.
+        BoardChipFactoryMock::MockImplPointer.reset();
     }
 }
