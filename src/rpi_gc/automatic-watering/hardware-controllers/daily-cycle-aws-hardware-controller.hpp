@@ -1,6 +1,5 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
-#ifndef DAILY_CYCLE_AWS_HARDWARE_CONTROLLER_HPP
-#define DAILY_CYCLE_AWS_HARDWARE_CONTROLLER_HPP
+#pragma once
 
 #include <automatic-watering/hardware-controllers/watering-system-hardware-controller.hpp>
 
@@ -40,9 +39,6 @@ namespace rpi_gc::automatic_watering {
         std::pair<digital_output_id, std::unique_ptr<digital_output_type>> m_waterPumpDigitalOut{};
 
         void change_digital_out(std::pair<digital_output_id, std::unique_ptr<digital_output_type>>& oldPin, const digital_output_id newPinID) noexcept;
-        void request_line_pool() noexcept;
     };
 
 } // namespace rpi_gc::automatic_watering
-
-#endif // !DAILY_CYCLE_AWS_HARDWARE_CONTROLLER_HPP

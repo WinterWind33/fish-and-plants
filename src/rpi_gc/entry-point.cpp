@@ -133,7 +133,6 @@ int main(int argc, char* argv[]) {
         strings::application::MAIN_LOG_FILENAME
     )};
     mainLogger->setAutomaticFlushLevel(gh_log::ELoggingLevel::Info);
-
     mainLogger->logInfo("Initiating system: starting log now.");
 
     LoggerPointer userLogger{gh_log::SPLLogger::createColoredStdOutLogger("Reporter")};
@@ -173,17 +172,13 @@ int main(int argc, char* argv[]) {
     using AutomaticWateringSystemPointer = std::shared_ptr<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>;
     std::unique_ptr<rpi_gc::automatic_watering::DailyCycleAWSHardwareController> awsHardwareController{};
 
-    try {
-        awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(
-            std::ref(*boardChip), constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
-    } catch(const gh_hal::HALError& error) {
-        mainLogger->logError(error.what());
+    mainLogger->logInfo("Initiating the automatic watering hardware controller.");
+    awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(
+        std::ref(*boardChip), constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
 
-        awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(
-            std::ref(*boardChip), constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
-    }
     std::atomic<rpi_gc::automatic_watering::WateringSystemHardwareController*> hardwareControllerAtomic{awsHardwareController.get()};
 
+    mainLogger->logInfo("Initiating the automatic watering system.");
     AutomaticWateringSystemPointer automaticWateringSystem{
         std::make_shared<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>(
             mainLogger,
