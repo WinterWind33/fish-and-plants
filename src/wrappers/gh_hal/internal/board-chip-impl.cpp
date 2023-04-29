@@ -48,6 +48,19 @@ namespace gh_hal::internal {
             const hardware_access::DigitalPinRequestDirection direction) noexcept {
         assert(static_cast<bool>(*m_chipPtr));
 
+        // Before going on, there shouldn't be any offset inside the requests map.
+        for(const auto& lineRequest : m_lineRequests) {
+            const auto& offsets{std::get<0>(lineRequest)};
+
+            auto offsetIt = std::find(offsets.cbegin(), offsets.cend(), offset);
+            if(offsetIt != offsets.cend()) {
+                // This means that an offset has already been requested, we
+                // cannot proceed.
+                assert(false);
+                return nullptr;
+            }
+        }
+
         LineRequestKeyComparator::offsets_vector offsets{offset};
 
         auto newLineRequest{m_lineRequests.emplace(
@@ -68,7 +81,22 @@ namespace gh_hal::internal {
             std::vector<hardware_access::BoardDigitalPin::offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept {
         assert(static_cast<bool>(*m_chipPtr));
 
-         auto newLineRequest{m_lineRequests.emplace(
+        // Before going on, there shouldn't be any offset inside the requests map.
+        for(const auto offset : offsets) {
+            for(const auto& lineRequest : m_lineRequests) {
+                const auto& offsets{std::get<0>(lineRequest)};
+
+                auto offsetIt = std::find(offsets.cbegin(), offsets.cend(), offset);
+                if(offsetIt != offsets.cend()) {
+                    // This means that an offset has already been requested, we
+                    // cannot proceed.
+                    assert(false);
+                    return {};
+                }
+            }
+        }
+
+        auto newLineRequest{m_lineRequests.emplace(
             offsets,
             LineRequest{std::move(consumer), std::ref(*m_chipPtr), std::move(offsets), direction})};
         // We should have a new insertion, otherwise something went wrong.
