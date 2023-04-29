@@ -105,4 +105,10 @@ namespace gh_hal::internal {
         return std::get<1>(*std::get<0>(newLineRequest)).getBoardPins();
     }
 
+    bool BoardChipImpl::releaseRequest(std::vector<hardware_access::BoardDigitalPin::offset_type> offsets) noexcept {
+        const std::size_t removedElementsCount{m_lineRequests.erase(offsets)};
+
+        return removedElementsCount > 0;
+    }
+
 } // namespace gh_hal::internal

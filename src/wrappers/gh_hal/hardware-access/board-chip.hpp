@@ -22,6 +22,15 @@ namespace gh_hal::hardware_access {
 
         virtual std::vector<std::unique_ptr<BoardDigitalPin>> requestDigitalPinPool(std::string consumer,
             std::vector<BoardDigitalPin::offset_type> offset, const DigitalPinRequestDirection direction) noexcept = 0;
+
+        //!!
+        //! \brief Releases the request identified by the given offset.
+        //! \note The line request must have all the offset specified in the given vector otherwise
+        //!  nothing will be released.
+        //!
+        //! \param offsets The offsets pool that identifies the line request to be released.
+        //! \return Trus if a request has beed freed, false otherwise.
+        virtual bool releaseRequest(std::vector<BoardDigitalPin::offset_type> offsets) noexcept = 0;
     };
 
     //!!

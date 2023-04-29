@@ -40,6 +40,8 @@ namespace gh_hal::internal {
         std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> requestDigitalPinPool(std::string consumer,
             std::vector<hardware_access::BoardDigitalPin::offset_type> offset, const hardware_access::DigitalPinRequestDirection direction) noexcept override;
 
+        bool releaseRequest(std::vector<hardware_access::BoardDigitalPin::offset_type> offsets) noexcept override;
+
         explicit operator bool() const noexcept;
 
     private:
