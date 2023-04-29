@@ -194,10 +194,16 @@ namespace rpi_gc::automatic_watering {
 
         // As per requirements for the activation of the watering system we need to activate
         // the water valve before the water pump without waiting.
-        m_mainLogger->logInfo(format_log_string("Turning on the water valve."));
+        std::ostringstream logStream{};
+        logStream << format_log_string("Turning on the water valve.") << " ";
+        logStream << "[VALVE DIG-OUT] => " << *waterValveDigitalOut;
+        m_mainLogger->logInfo(logStream.str());
         waterValveDigitalOut->activate();
 
-        m_mainLogger->logInfo(format_log_string("Turning on the water pump."));
+        logStream.str("");
+        logStream << format_log_string("Turning on the water pump.") << " ";
+        logStream << "[PUMP DIG-OUT] => " << *waterPumpDigitalOut;
+        m_mainLogger->logInfo(logStream.str());
         waterPumpDigitalOut->activate();
     }
 
@@ -222,12 +228,18 @@ namespace rpi_gc::automatic_watering {
 
         // As per requirements for the activation of the watering system we need to activate
         // the water valve before the water pump without waiting.
-        m_mainLogger->logInfo(format_log_string("Turning off the water valve."));
+        std::ostringstream logStream{};
+        logStream << format_log_string("Turning off the water valve.") << " ";
+        logStream << "[VALVE DIG-OUT] => " << *waterValveDigitalOut;
+        m_mainLogger->logInfo(logStream.str());
         waterValveDigitalOut->deactivate();
 
         std::this_thread::sleep_for(valvePumpSeparationTime);
 
-        m_mainLogger->logInfo(format_log_string("Turning off the water pump."));
+        logStream.str("");
+        logStream << format_log_string("Turning off the water pump.") << " ";
+        logStream << "[PUMP DIG-OUT] => " << *waterPumpDigitalOut;
+        m_mainLogger->logInfo(logStream.str());
         waterPumpDigitalOut->deactivate();
     }
 
