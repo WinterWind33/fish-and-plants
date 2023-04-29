@@ -47,20 +47,16 @@ jobs:
 
     - name: Static Tests Run
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-      continue-on-error: true
       run: ${{github.workspace}}/bin/test_app --order rand [static]
 
     - name: Unit Tests Run
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-      continue-on-error: true
       run: ${{github.workspace}}/bin/test_app --order rand [unit]
 
     - name: Integration Tests Run
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-      continue-on-error: true
       run: ${{github.workspace}}/bin/test_app --order rand [integration]
 
     - name: Functional Tests Run
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-      continue-on-error: true
       run: ${{github.workspace}}/bin/test_app --order rand [functional]
