@@ -17,9 +17,11 @@ namespace gh_hal::hardware_access {
     struct BoardChip {
         virtual ~BoardChip() noexcept = default;
 
+        [[nodiscard]]
         virtual std::unique_ptr<BoardDigitalPin> requestDigitalPin(std::string consumer,
             BoardDigitalPin::offset_type offset, const DigitalPinRequestDirection direction) noexcept = 0;
 
+        [[nodiscard]]
         virtual std::vector<std::unique_ptr<BoardDigitalPin>> requestDigitalPinPool(std::string consumer,
             std::vector<BoardDigitalPin::offset_type> offset, const DigitalPinRequestDirection direction) noexcept = 0;
 
@@ -47,6 +49,7 @@ namespace gh_hal::hardware_access {
         //!
         //! \param chipPath The path of the chip to be opened.
         //! \return A pointer to the opened chip or nullptr in case of an error.
+        [[nodiscard]]
         static std::unique_ptr<board_chip_type> openChipByPath(std::filesystem::path chipPath);
     };
 
