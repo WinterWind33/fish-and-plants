@@ -42,6 +42,19 @@
             "console": "externalTerminal"
         },
         {
+            "name": "(Windows) Launch automatic-watering Tests",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/Debug/test_app.exe",
+            "args": [
+                "-b",
+                "[automatic-watering]"
+            ],
+            "cwd": "${workspaceRoot}/bin/Debug",
+            "preLaunchTask": "[Windows] (Debug) Build All",
+            "console": "externalTerminal"
+        },
+        {
             "name": "(Windows) Launch All Unit Tests",
             "type": "cppvsdbg",
             "request": "launch",
