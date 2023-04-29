@@ -30,12 +30,14 @@ namespace rpi_gc::automatic_watering {
         constexpr StringViewType AUTOMATIC_WATERING_SYSTEM_LOG_NAME{"Automatic Watering System"};
     } // namespace strings
 
-    DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(logger_pointer mainLogger, logger_pointer userLogger,
+    DailyCycleAutomaticWateringSystem::DailyCycleAutomaticWateringSystem(
+        hardware_access_mutex_reference hardwareMutex, logger_pointer mainLogger, logger_pointer userLogger,
         hardware_controller_atomic_ref hardwareController, time_provider_atomic_ref timeProvider) noexcept :
         m_mainLogger{std::move(mainLogger)},
         m_userLogger{std::move(userLogger)},
         m_hardwareController{std::move(hardwareController)},
-        m_timeProvider{std::move(timeProvider)} {
+        m_timeProvider{std::move(timeProvider)},
+        m_hardwareAccessMutex{std::move(hardwareMutex)} {
         assert(m_mainLogger != nullptr);
         assert(m_userLogger != nullptr);
     }
@@ -178,6 +180,8 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAutomaticWateringSystem::activate_watering_hardware() noexcept {
+        std::lock_guard<std::mutex> hardwareLock{m_hardwareAccessMutex};
+
         WateringSystemHardwareController::digital_output_type* const waterValveDigitalOut {
             m_hardwareController.get().load()->getWaterValveDigitalOut()
         };
@@ -198,6 +202,7 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAutomaticWateringSystem::disable_watering_hardware() noexcept {
+        std::lock_guard<std::mutex> hardwareLock{m_hardwareAccessMutex};
         const time_provider_pointer::value_type timeProvide{m_timeProvider.get().load()};
         assert(timeProvide != nullptr);
 

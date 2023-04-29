@@ -26,6 +26,7 @@
 #include <memory>
 #include <algorithm>
 #include <atomic>
+#include <mutex>
 
 namespace automatic_watering {
 
@@ -164,7 +165,7 @@ int main(int argc, char* argv[]) {
     }
 
     auto awsTimeProviderSmartPtr{::automatic_watering::CreateConfigurableAWSTimeProvider()};
-
+    std::mutex awsHardwareAccessMutex{};
     rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem::time_provider_pointer awsTimeProvider{
         awsTimeProviderSmartPtr.get()
     };
@@ -174,13 +175,14 @@ int main(int argc, char* argv[]) {
 
     mainLogger->logInfo("Initiating the automatic watering hardware controller.");
     awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(
-        std::ref(*boardChip), constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
+        std::ref(awsHardwareAccessMutex), std::ref(*boardChip), constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
 
     std::atomic<rpi_gc::automatic_watering::WateringSystemHardwareController*> hardwareControllerAtomic{awsHardwareController.get()};
 
     mainLogger->logInfo("Initiating the automatic watering system.");
     AutomaticWateringSystemPointer automaticWateringSystem{
         std::make_shared<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>(
+            std::ref(awsHardwareAccessMutex),
             mainLogger,
             userLogger,
             std::ref(hardwareControllerAtomic),

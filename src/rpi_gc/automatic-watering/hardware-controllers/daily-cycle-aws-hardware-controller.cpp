@@ -13,7 +13,8 @@ namespace rpi_gc::automatic_watering {
     } // namespace details
 
     DailyCycleAWSHardwareController::DailyCycleAWSHardwareController(
-        chip_reference chipRef, const digital_output_id waterValvePinId, const digital_output_id waterPumpValvePinId) noexcept :
+        mutex_reference mutex, chip_reference chipRef, const digital_output_id waterValvePinId, const digital_output_id waterPumpValvePinId) noexcept :
+        m_mutex{std::move(mutex)},
         m_chipRef{std::move(chipRef)} {
 
         m_waterValveDigitalOut = std::make_pair(
@@ -30,10 +31,12 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAWSHardwareController::setWaterValveDigitalOutputID(const digital_output_id pinID) noexcept {
+        std::lock_guard<std::mutex> lock{m_mutex.get()};
         change_digital_out(m_waterValveDigitalOut, pinID);
     }
 
     void DailyCycleAWSHardwareController::setWaterPumpDigitalOutputID(const digital_output_id pinID) noexcept {
+        std::lock_guard<std::mutex> lock{m_mutex.get()};
         change_digital_out(m_waterPumpDigitalOut, pinID);
     }
 

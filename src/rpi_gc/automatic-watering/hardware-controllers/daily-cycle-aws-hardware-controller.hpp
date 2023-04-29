@@ -11,6 +11,7 @@
 #include <memory>
 #include <functional>
 #include <tuple>
+#include <mutex>
 
 namespace rpi_gc::automatic_watering {
 
@@ -18,9 +19,10 @@ namespace rpi_gc::automatic_watering {
     public:
         using digital_output_id = gh_hal::hardware_access::BoardDigitalPin::offset_type;
         using chip_reference = std::reference_wrapper<gh_hal::hardware_access::BoardChip>;
+        using mutex_reference = std::reference_wrapper<std::mutex>;
 
         explicit DailyCycleAWSHardwareController(
-            chip_reference chipRef, const digital_output_id waterValvePinId, const digital_output_id waterPumpValvePinId) noexcept;
+            mutex_reference mutex, chip_reference chipRef, const digital_output_id waterValvePinId, const digital_output_id waterPumpValvePinId) noexcept;
 
         inline digital_output_type* getWaterValveDigitalOut() noexcept override {
             return std::get<1>(m_waterValveDigitalOut).get();
@@ -34,6 +36,7 @@ namespace rpi_gc::automatic_watering {
         void setWaterPumpDigitalOutputID(const digital_output_id id) noexcept;
 
     private:
+        mutex_reference m_mutex;
         chip_reference m_chipRef;
         std::pair<digital_output_id, std::unique_ptr<digital_output_type>> m_waterValveDigitalOut{};
         std::pair<digital_output_id, std::unique_ptr<digital_output_type>> m_waterPumpDigitalOut{};
