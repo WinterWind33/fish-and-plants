@@ -8,6 +8,8 @@
 #include <gh_log/logger.hpp>
 #include <gh_log/spl-logger.hpp>
 
+#include <hardware-management/hardware-chip-initializer.hpp>
+
 // Commands
 #include <gh_cmd/gh_cmd.hpp>
 #include <commands/application-command.hpp>
@@ -24,6 +26,7 @@
 #include <memory>
 #include <algorithm>
 #include <atomic>
+#include <mutex>
 
 namespace automatic_watering {
 
@@ -111,6 +114,12 @@ namespace commands_factory {
 
 } // namespace commands_factory
 
+namespace hardware_chip_paths {
+
+    constexpr std::string_view RASPBERRY_PI_3B_PLUS_CHIP_PATH_GPIO0{"/dev/gpiochip0"};
+
+} // namespace hardware_chip_paths
+
 // This is the entry point of the application. Here, it starts
 // the main execution of the greenhouse controller.
 int main(int argc, char* argv[]) {
@@ -125,7 +134,6 @@ int main(int argc, char* argv[]) {
         strings::application::MAIN_LOG_FILENAME
     )};
     mainLogger->setAutomaticFlushLevel(gh_log::ELoggingLevel::Info);
-
     mainLogger->logInfo("Initiating system: starting log now.");
 
     LoggerPointer userLogger{gh_log::SPLLogger::createColoredStdOutLogger("Reporter")};
@@ -133,11 +141,31 @@ int main(int argc, char* argv[]) {
 
     OutputStringStream applicationHelpStream{};
 
-    mainLogger->logWarning("Initiating hardware abstraction layer.");
-    gh_hal::HALContext halContext{mainLogger, false, true};
+    mainLogger->logInfo("Initiating hardware abstraction layer.");
+    rpi_gc::hardware_management::HardwareInitializer<gh_hal::hardware_access::BoardChipFactory> hardwareInitializer{mainLogger};
+
+    std::unique_ptr<gh_hal::hardware_access::BoardChip> boardChip{};
+    try {
+        // We try to initialize the board chip. If this doesn't go well we can't
+        // proceed with the application process.
+        boardChip = hardwareInitializer.initializeBoardChip(std::filesystem::path{hardware_chip_paths::RASPBERRY_PI_3B_PLUS_CHIP_PATH_GPIO0});
+    } catch(const std::exception& hardwareInitializationError) {
+        constexpr std::string_view ABORTING_MESSAGE{"Aborting the process. Return code: -1."};
+
+        std::ostringstream userFeedbackStream{};
+        userFeedbackStream << "Failed to initialize the hardware abstraction layer. ";
+        userFeedbackStream << "Message: " << hardwareInitializationError.what() << ' ';
+
+        userLogger->logError(userFeedbackStream.str());
+        userLogger->logWarning("See the log file for more details.");
+        userLogger->logInfo(std::string{ABORTING_MESSAGE});
+        mainLogger->logInfo(std::string{ABORTING_MESSAGE});
+
+        return -1;
+    }
 
     auto awsTimeProviderSmartPtr{::automatic_watering::CreateConfigurableAWSTimeProvider()};
-
+    std::mutex awsHardwareAccessMutex{};
     rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem::time_provider_pointer awsTimeProvider{
         awsTimeProviderSmartPtr.get()
     };
@@ -145,17 +173,16 @@ int main(int argc, char* argv[]) {
     using AutomaticWateringSystemPointer = std::shared_ptr<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>;
     std::unique_ptr<rpi_gc::automatic_watering::DailyCycleAWSHardwareController> awsHardwareController{};
 
-    try {
-        awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
-    } catch(const gh_hal::HALError& error) {
-        mainLogger->logError(error.what());
+    mainLogger->logInfo("Initiating the automatic watering hardware controller.");
+    awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(
+        std::ref(awsHardwareAccessMutex), std::ref(*boardChip), constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
 
-        awsHardwareController = std::make_unique<rpi_gc::automatic_watering::DailyCycleAWSHardwareController>(constants::WATER_VALVE_PIN_ID, constants::WATER_PUMP_PIN_ID);
-    }
     std::atomic<rpi_gc::automatic_watering::WateringSystemHardwareController*> hardwareControllerAtomic{awsHardwareController.get()};
 
+    mainLogger->logInfo("Initiating the automatic watering system.");
     AutomaticWateringSystemPointer automaticWateringSystem{
         std::make_shared<rpi_gc::automatic_watering::DailyCycleAutomaticWateringSystem>(
+            std::ref(awsHardwareAccessMutex),
             mainLogger,
             userLogger,
             std::ref(hardwareControllerAtomic),

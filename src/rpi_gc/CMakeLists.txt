@@ -23,6 +23,7 @@ set(RPI_GC_HEADER_FILES
     "commands/help-command.hpp"
     "commands/bivalent-command.hpp"
     "commands/automatic-watering/automatic-watering-command.hpp"
+    "hardware-management/hardware-chip-initializer.hpp"
     "user-interface/application-strings.hpp"
     "user-interface/commands-strings.hpp"
 )

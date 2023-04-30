@@ -10,15 +10,14 @@
 #include <cerrno> // For errors with libgpiod
 
 // C++ STL
+#include <filesystem>
 #endif // USE_LIBGPIOD
 
-#include <filesystem>
 // C++ STL
 #include <sstream>
 #include <string_view>
 
-namespace gh_hal
-{
+namespace gh_hal {
 
     HALContext::HALContext(logger_pointer logger, const bool bIsSim, [[maybe_unused]] const bool bForceFullMap) noexcept :
         m_logger{std::move(logger)},

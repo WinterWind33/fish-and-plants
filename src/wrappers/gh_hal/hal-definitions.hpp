@@ -8,7 +8,7 @@
 namespace gh_hal {
 
     //! \brief Represents the ID of a PIN inside the used board.
-    using PinID = std::uint32_t;
+    using PinID [[deprecated("Use hardware_access::BoardDigitalPin::offset_type instead.")]] = std::uint32_t;
 
 } // namespace gh_hal
 

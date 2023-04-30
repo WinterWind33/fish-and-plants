@@ -1,16 +1,47 @@
 # Copyright (c) 2023 Andrea Ballestrazzi
 
 set(GH_HAL_SOURCE_FILES
+    "backends/simulated/simulated-chip.cpp"
+    "hardware-access/board-chip.cpp"
+    "hardware-abstraction-layer.cpp"
     "hal-context.cpp"
     "hal-board-pin.cpp"
+
+    "internal/board-chip-impl.cpp"
+    "internal/board-digital-pin-impl.cpp"
+    "internal/line-request.cpp"
 )
+
 set(GH_HAL_HEADER_FILES
+    "backends/simulated/simulated-chip.hpp"
+    "backends/simulated/simulated-digital-board-pin.hpp"
+    "hardware-access/board-chip.hpp"
+    "hardware-access/board-digital-pin.hpp"
+    "hardware-abstraction-layer.hpp"
     "hal-context.hpp"
     "hal-error.hpp"
     "hal-definitions.hpp"
     "hal-digital-output.hpp"
     "hal-board-pin.hpp"
+
+    "internal/board-chip-impl.hpp"
+    "internal/board-digital-pin-impl.hpp"
+    "internal/line-request.hpp"
 )
+
+if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
+
+    list(APPEND GH_HAL_SOURCE_FILES
+        "backends/libgpiod/miscellaneous.cpp"
+        "backends/libgpiod/chip-api.cpp"
+    )
+
+    list(APPEND GH_HAL_HEADER_FILES
+        "backends/libgpiod/miscellaneous.hpp"
+        "backends/libgpiod/chip-api.hpp"
+    )
+
+endif()
 
 # We create a static library
 add_library(gh_hal STATIC ${GH_HAL_HEADER_FILES} ${GH_HAL_SOURCE_FILES})

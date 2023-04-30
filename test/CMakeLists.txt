@@ -11,6 +11,9 @@ set(TEST_APP_HEADER_FILES
     # Test doubles
     "gh_hal/test-doubles/hal-context.mock.hpp"
     "gh_hal/test-doubles/hal-digital-output.mock.hpp"
+    "gh_hal/test-doubles/hardware-access/board-chip.mock.hpp"
+    "gh_hal/test-doubles/hardware-access/board-chip-factory.mock.hpp"
+    "gh_hal/test-doubles/hardware-access/board-digital-pin.mock.hpp"
     "gh_cmd/test-doubles/option-visitor.mock.hpp"
     "gh_cmd/test-doubles/option-parser.mock.hpp"
     "gh_cmd/test-doubles/command-option.mock.hpp"
@@ -28,6 +31,7 @@ set(TEST_APP_SOURCE_FILES
 
     # Modules
     "gh_hal/hal-board-pin.tests.cpp"
+    "gh_hal/hardware-access/board-chip.tests.cpp"
     "gh_cmd/switch.tests.cpp"
     "gh_cmd/value.tests.cpp"
     "gh_cmd/default-option-parser.tests.cpp"
@@ -38,6 +42,9 @@ set(TEST_APP_SOURCE_FILES
     "rpi_gc/commands/automatic-watering-command.tests.cpp"
     "rpi_gc/commands/abort-command.tests.cpp"
     "rpi_gc/automatic-watering/daily-cycle-automatic-watering-system.tests.cpp"
+    "rpi_gc/automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.tests.cpp"
+    "rpi_gc/hardware-management/hardware-initializer.tests.cpp"
+    "rpi_gc/functional/aws-hardware-controller-interactions.tests.cpp"
 
     # integration tests
     "integration/rpi_gc/application-command-integration.tests.cpp"

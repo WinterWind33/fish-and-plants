@@ -14,8 +14,8 @@
 namespace gh_hal
 {
 
-    class HALContext
-    {
+    class [[deprecated("Please do not use directly. Instead use the board chip factory.")]]
+    HALContext {
     public:
         using logger_pointer = std::shared_ptr<gh_log::Logger>;
 
