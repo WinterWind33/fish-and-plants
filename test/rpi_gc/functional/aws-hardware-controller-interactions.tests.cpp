@@ -122,9 +122,11 @@ SCENARIO("User changes the board PINs during a Daily Cycle", "[functional][non-r
             EXPECT_CALL(boardChipMock, requestDigitalPin(testing::_, tests::constants::NEW_VALVE_DUMMY_ID, testing::_))
                 .After(releaseExp);
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            REQUIRE_NOTHROW(awsController.setWaterValveDigitalOutputID(tests::constants::NEW_VALVE_DUMMY_ID));
-            automaticWateringSystem.requestShutdown();
+            THEN("It should wait for the cycle to complete before changing the PIN") {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                REQUIRE_NOTHROW(awsController.setWaterValveDigitalOutputID(tests::constants::NEW_VALVE_DUMMY_ID));
+                automaticWateringSystem.requestShutdown();
+            }
         }
 
         AND_WHEN("The user changes the ID of the pump PIN") {
@@ -137,9 +139,11 @@ SCENARIO("User changes the board PINs during a Daily Cycle", "[functional][non-r
             EXPECT_CALL(boardChipMock, requestDigitalPin(testing::_, tests::constants::NEW_PUMP_DUMMY_ID, testing::_))
                 .After(releaseExp);
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            REQUIRE_NOTHROW(awsController.setWaterPumpDigitalOutputID(tests::constants::NEW_PUMP_DUMMY_ID));
-            automaticWateringSystem.requestShutdown();
+            THEN("It should wait for the cycle to complete before changing the PIN") {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                REQUIRE_NOTHROW(awsController.setWaterPumpDigitalOutputID(tests::constants::NEW_PUMP_DUMMY_ID));
+                automaticWateringSystem.requestShutdown();
+            }
         }
 
         AND_WHEN("The user changes both the ID of the pump PIN and the valve PIN") {
@@ -161,10 +165,12 @@ SCENARIO("User changes the board PINs during a Daily Cycle", "[functional][non-r
             EXPECT_CALL(boardChipMock, requestDigitalPin(testing::_, tests::constants::NEW_PUMP_DUMMY_ID, testing::_))
                 .After(pumpReleaseExp);
 
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            REQUIRE_NOTHROW(awsController.setWaterValveDigitalOutputID(tests::constants::NEW_VALVE_DUMMY_ID));
-            REQUIRE_NOTHROW(awsController.setWaterPumpDigitalOutputID(tests::constants::NEW_PUMP_DUMMY_ID));
-            automaticWateringSystem.requestShutdown();
+            THEN("It should wait for the cycle to complete before changing the PINs") {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                REQUIRE_NOTHROW(awsController.setWaterValveDigitalOutputID(tests::constants::NEW_VALVE_DUMMY_ID));
+                REQUIRE_NOTHROW(awsController.setWaterPumpDigitalOutputID(tests::constants::NEW_PUMP_DUMMY_ID));
+                automaticWateringSystem.requestShutdown();
+            }
         }
     }
 }
