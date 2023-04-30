@@ -23,7 +23,7 @@ namespace tests {
         constexpr rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type ACTIVATION_TIME{60};
 
         // Expressed in ms
-        constexpr rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type DEACTIVATION_TIME{60};
+        constexpr rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type DEACTIVATION_TIME{200};
 
         // Expressed in ms
         constexpr rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type DEACTSEP_TIME{5000};
