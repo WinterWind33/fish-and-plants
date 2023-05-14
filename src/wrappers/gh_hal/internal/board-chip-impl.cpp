@@ -65,7 +65,7 @@ namespace gh_hal::internal {
 
         auto newLineRequest{std::make_pair(
             offsets,
-            LineRequest{std::move(consumer), std::ref(*m_chipPtr), offsets, direction})};
+            LineRequest{std::move(consumer), std::ref(*m_chipPtr), offsets, direction, /*bRequestActiveLow = */ true})};
 
         auto boardPins{std::get<1>(newLineRequest).getBoardPins()};
         m_lineRequests.push_back(std::move(newLineRequest));
@@ -97,7 +97,7 @@ namespace gh_hal::internal {
 
         auto newLineRequest{std::make_pair(
             offsets,
-            LineRequest{std::move(consumer), std::ref(*m_chipPtr), offsets, direction})};
+            LineRequest{std::move(consumer), std::ref(*m_chipPtr), offsets, direction, /*bRequestActiveLow = */ true})};
 
         auto boardPins{std::get<1>(newLineRequest).getBoardPins()};
         m_lineRequests.push_back(std::move(newLineRequest));
