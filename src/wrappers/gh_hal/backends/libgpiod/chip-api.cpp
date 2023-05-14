@@ -11,32 +11,61 @@ namespace gh_hal::backends::libgpiod_impl {
         return std::make_unique<NativeChipType>(chipPath);
     }
 
+    namespace details {
+
+        [[nodiscard]]
+        static ::gpiod::line_settings createLineSettings(const NativeLineDirectionType direction, const bool bUseActiveLowMode) noexcept {
+            ::gpiod::line_settings settings{};
+
+            settings.set_direction(direction);
+            settings.set_active_low(bUseActiveLowMode);
+
+            return settings;
+        }
+
+        [[nodiscard]]
+        static NativeLineRequestType requestLinesImpl(NativeChipType& chip, std::string consumer, std::vector<NativeLineOffsetType> offsets,
+            ::gpiod::line_settings&& lineSettings) noexcept {
+
+            assert(static_cast<bool>(chip));
+
+            ::gpiod::line::offsets nativeOffsets{};
+
+            // Now we need to transform the input offsets vector to a gpiod vector
+            // because libgpiod stores offsets in a custom class that accepts the value
+            // as its only parameter.
+            std::transform(offsets.cbegin(), offsets.cend(), std::back_inserter(nativeOffsets), [](const NativeLineOffsetType offsetValue){
+                return ::gpiod::line::offset{offsetValue};
+            });
+
+            // Now we can perform the native request.
+            NativeLineRequestType lineRequest{
+                chip.prepare_request()
+                    .set_consumer(consumer)
+                    .add_line_settings(
+                        nativeOffsets,
+                        std::move(lineSettings)
+                    )
+                    .do_request()
+            };
+
+            return lineRequest;
+        }
+
+    } // namespace details
+
     NativeLineRequestType requestLines(NativeChipType& chip, std::string consumer, std::vector<NativeLineOffsetType> offsets,
         const NativeLineDirectionType direction) {
-        assert(static_cast<bool>(chip));
-
-        ::gpiod::line::offsets nativeOffsets{};
-
-        // Now we need to transform the input offsets vector to a gpiod vector
-        // because libgpiod stores offsets in a custom class that accepts the value
-        // as its only parameter.
-        std::transform(offsets.cbegin(), offsets.cend(), std::back_inserter(nativeOffsets), [](const NativeLineOffsetType offsetValue){
-            return ::gpiod::line::offset{offsetValue};
-        });
-
-        // Now we can perform the native request.
-        NativeLineRequestType lineRequest{
-            chip.prepare_request()
-                .set_consumer(consumer)
-                .add_line_settings(
-                    nativeOffsets,
-                    ::gpiod::line_settings{}
-                        .set_direction(direction)
-                )
-                .do_request()
-        };
-
-        return lineRequest;
+        return
+            details::requestLinesImpl(chip, std::move(consumer), std::move(offsets), details::createLineSettings(direction, /*bUseActiveLow = */ false));
     }
+
+    namespace active_low {
+        NativeLineRequestType requestLines(NativeChipType& chip, std::string consumer, std::vector<NativeLineOffsetType> offsets,
+        const NativeLineDirectionType direction) {
+        return
+            details::requestLinesImpl(chip, std::move(consumer), std::move(offsets), details::createLineSettings(direction, /*bUseActiveLow = */ true));
+    }
+    } // namespace active_low
 
 } // namespace gh_hal::backends::libgpiod_impl
