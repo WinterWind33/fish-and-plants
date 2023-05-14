@@ -6,9 +6,6 @@ on:
   push:
     branches-ignore:
       - "main"
-      # We don't need to run this workflow for branches that
-      # updates only CI/CD scripts. We ignore those branches.
-      - 'CI-UPDATE/**'
 
 jobs:
   build:
@@ -18,15 +15,24 @@ jobs:
         with:
           submodules: recursive
 
+      - name: (RPI_GC) Check changed files
+        id: RPI_GC-changed-files
+        uses: tj-actions/changed-files@v35
+        with:
+          files: |
+            src/**
+            test/**
+
       - name: Compiler Setup
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf
 
-      - name: CMake configure
+      - name: Aarch64 Build
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
-          mkdir build
-          cmake -B ./build -DCOMPILE_AARCH64_ON_LINUX=True -DCOMPILE_FOR_CORTEX_A53=True --toolchain "toolchains/aarch64-toolchain.cmake" -Wno-dev
-
-      - name: AARCH64 Build
-        run: cmake --build ./build --config Release
+          mkdir buildLinux
+          cd scripts
+          chmod +x aarch64-perform-release.sh
+          ./aarch64-perform-release.sh

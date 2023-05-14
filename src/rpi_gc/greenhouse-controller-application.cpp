@@ -129,7 +129,7 @@ namespace rpi_gc {
         OutputStringStream versionStream{};
         versionStream << rpi_gc_VERSION_MAJOR << ".";
         versionStream << rpi_gc_VERSION_MINOR << ".";
-        versionStream << rpi_gc_VERSION_PATCH;
+        versionStream << rpi_gc_VERSION_PATCH << "-rc0";
 
         return versionStream.str();
     }

@@ -47,7 +47,8 @@ set(PRODUCTION_LIB_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/lib")
 
 option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 as testing framework." ON)
 option(USE_SPDLOG "Use SPDLOG submodule as logging framework." ON)
-option(USE_CPPGPIO "Use CppGPIO submodule as the main I/O ports communication module." ON)
+option(USE_CPPGPIO "Use CppGPIO submodule as the main I/O ports communication module." OFF)
+option(USE_LIBGPIOD "Use libgpiod module as the main I/O ports communication module." ON)
 option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
 option(USE_POPL20 "Use popl20 header-only library as command line parser." ON)
 

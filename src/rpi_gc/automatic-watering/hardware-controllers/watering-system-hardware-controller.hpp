@@ -3,7 +3,7 @@
 #define WATERING_SYSTEM_HARDWARE_CONTROLLER
 
 // HAL
-#include <gh_hal/hal-digital-output.hpp>
+#include <gh_hal/hardware-access/board-digital-pin.hpp>
 
 namespace rpi_gc::automatic_watering {
 
@@ -11,7 +11,7 @@ namespace rpi_gc::automatic_watering {
     public:
         virtual ~WateringSystemHardwareController() noexcept = default;
 
-        using digital_output_type = gh_hal::HALDigitalOutput;
+        using digital_output_type = gh_hal::hardware_access::BoardDigitalPin;
 
         [[nodiscard]] virtual digital_output_type* getWaterValveDigitalOut() noexcept = 0;
         [[nodiscard]] virtual digital_output_type* getWaterPumpDigitalOut() noexcept = 0;

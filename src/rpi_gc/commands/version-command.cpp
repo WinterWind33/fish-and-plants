@@ -11,6 +11,7 @@ namespace rpi_gc {
     bool VersionCommand::execute() noexcept {
         m_outputStream.get() << strings::application::NAME << " - Version " <<
             rpi_gc_VERSION_MAJOR << "." << rpi_gc_VERSION_MINOR << "." << rpi_gc_VERSION_PATCH;
+        m_outputStream.get() << "-rc0";
         m_outputStream.get() << std::endl;
 
         return true;

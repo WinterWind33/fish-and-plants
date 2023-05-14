@@ -41,6 +41,7 @@ namespace rpi_gc::automatic_watering {
         using time_provider_atomic_ref = std::reference_wrapper<time_provider_pointer>;
         using stop_event_listener = std::condition_variable;
         using stop_event_mutex = std::mutex;
+        using hardware_access_mutex_reference = std::reference_wrapper<std::mutex>;
 
         ~DailyCycleAutomaticWateringSystem() noexcept override = default;
 
@@ -50,7 +51,7 @@ namespace rpi_gc::automatic_watering {
         //!
         //! \param[in] mainLogger The logger that writes to the application main log file
         //! \param[in] userLog The logger that prints the messages to the preferred user display device (std::cout mainly)
-        DailyCycleAutomaticWateringSystem(main_logger_pointer mainLogger, user_logger_pointer userLog,
+        DailyCycleAutomaticWateringSystem(hardware_access_mutex_reference hardwareMutex, main_logger_pointer mainLogger, user_logger_pointer userLog,
             hardware_controller_atomic_ref hardwareController, time_provider_atomic_ref timeProvider) noexcept;
 
         //!!
@@ -76,6 +77,7 @@ namespace rpi_gc::automatic_watering {
         time_provider_atomic_ref m_timeProvider;
         stop_event_listener m_stopListener{};
         stop_event_mutex m_stopMutex{};
+        hardware_access_mutex_reference m_hardwareAccessMutex;
 
         bool m_bIsRunning{};
 

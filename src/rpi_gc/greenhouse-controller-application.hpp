@@ -32,7 +32,7 @@ namespace rpi_gc {
         GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, logger_pointer mainLogger) noexcept;
         ~GreenhouseControllerApplication() noexcept override = default;
 
-        //! \brief Does nothing for now.
+        //! \brief Runs the main greenhousse controller application.
         void run() noexcept override;
 
         bool processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept override;

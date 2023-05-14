@@ -2,7 +2,7 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "[BUILD] (Windows Debug) Build All",
+			"label": "[Windows] (Debug) Build All",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -20,7 +20,21 @@
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Linux Debug) Build All",
+			"label": "[Linux] Configure all",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/buildLinux"
+			},
+			"command": "cmake",
+			"args": [
+				"..",
+				"-Wno-dev"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Linux] (Debug) Build All",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/buildLinux"
@@ -29,16 +43,15 @@
 			"args": [
 				"--build",
 				".",
-				"--target",
-				"ALL_BUILD",
 				"--config",
 				"Debug"
 			],
 			"problemMatcher": [],
-			"group": "build"
+			"group": "build",
+			"dependsOn": "[Linux] Configure all"
 		},
 		{
-			"label": "[BUILD] (Windows Release) Build All",
+			"label": "[Windows] (Release) Build All",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -56,7 +69,7 @@
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Windows Debug) Build RPI_GC",
+			"label": "[Windows] (Debug) Build RPI_GC",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -74,7 +87,25 @@
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Windows Debug) Build test_app",
+			"label": "[Windows] (Debug) Build gh_log",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--target",
+				"gh_log",
+				"--config",
+				"Debug"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "[Windows] (Debug) Build test_app",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/build"
@@ -92,7 +123,7 @@
 			"group": "build"
 		},
 		{
-			"label": "(Linux) Clean build folder",
+			"label": "[Linux] Clean build folder",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/buildLinux"
@@ -106,37 +137,31 @@
 			"group": "build"
 		},
 		{
-			"label": "[CMake] (Aarch64 Debug) Configure",
+			"label": "[Linux-ARM64] Configure",
 			"type": "shell",
 			"options": {
 				"cwd": "${workspaceFolder}/buildLinux"
 			},
-			"dependsOn": "(Linux) Clean build folder",
+			"dependsOn": "[Linux] Clean build folder",
 			"command": "cmake",
 			"args": [
 				"..",
 				"-DCOMPILE_AARCH64_ON_LINUX=True",
 				"--toolchain",
-				"toolchains/aarch64-toolchain.cmake"
+				"toolchains/aarch64-toolchain.cmake",
+				"-Wno-dev"
 			],
 			"problemMatcher": [],
 			"group": "build"
 		},
 		{
-			"label": "[BUILD] (Aarch64 Release) Perform release",
+			"label": "[Linux-ARM64] (Release) Perform release",
 			"type": "shell",
 			"options": {
-				"cwd": "${workspaceFolder}/buildLinux"
+				"cwd": "${workspaceFolder}/scripts"
 			},
-			"command": "cmake",
-			"args": [
-				"--build",
-				".",
-				"--config",
-				"Release",
-				"--target",
-				"ALL_BUILD"
-			],
+			"command": "./aarch64-perform-release.sh",
+			"args": [],
 			"problemMatcher": [],
 			"group": "build"
 		}
