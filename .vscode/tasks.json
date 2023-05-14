@@ -47,7 +47,8 @@
 				"Debug"
 			],
 			"problemMatcher": [],
-			"group": "build"
+			"group": "build",
+			"dependsOn": "[Linux] Configure all"
 		},
 		{
 			"label": "[Windows] (Release) Build All",
