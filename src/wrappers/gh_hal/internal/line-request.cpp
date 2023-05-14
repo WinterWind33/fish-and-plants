@@ -6,16 +6,21 @@
 namespace gh_hal::internal {
 
     LineRequest::LineRequest(
-        consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept {
-        request_lines(std::move(consumer), std::move(chip), std::move(offsets), direction);
+        consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction, const bool bRequestActiveLow) noexcept {
+        request_lines(std::move(consumer), std::move(chip), std::move(offsets), direction, bRequestActiveLow);
     }
 
 #ifdef USE_LIBGPIOD
     void LineRequest::request_lines(
-        consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept {
+        consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction, const bool bRequestActiveLow) noexcept {
         try {
-            m_lineRequest = std::make_unique<backend_type>(direction,
-                backends::libgpiod_impl::requestLines(chip.get(), std::move(consumer), std::move(offsets), details::LibgpiodConverter.convert(direction)));
+            if(bRequestActiveLow) {
+                m_lineRequest = std::make_unique<backend_type>(direction,
+                    backends::libgpiod_impl::active_low::requestLines(chip.get(), std::move(consumer), std::move(offsets), details::LibgpiodConverter.convert(direction)));
+            } else {
+                m_lineRequest = std::make_unique<backend_type>(direction,
+                    backends::libgpiod_impl::requestLines(chip.get(), std::move(consumer), std::move(offsets), details::LibgpiodConverter.convert(direction)));
+            }
         } catch(...) {}
     }
 
@@ -38,7 +43,8 @@ namespace gh_hal::internal {
 #else
 
     void LineRequest::request_lines(
-        consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction) noexcept {
+        consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction,
+        [[maybe_unused]] const bool bRequestActiveLow) noexcept {
         m_lineRequest = std::make_unique<backend_type>(direction, std::vector<backends::simulated::DigitalBoardPin>{});
 
         std::transform(offsets.cbegin(), offsets.cend(), std::back_inserter(std::get<1>(*m_lineRequest)),
