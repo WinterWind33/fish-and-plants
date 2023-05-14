@@ -47,7 +47,8 @@ namespace gh_hal::backends::libgpiod_impl {
     namespace active_low {
         //!!
         //! \brief Performs a request for the given lines to the given chip. It converts
-        //!  the given offsets to ::gpiod::line::offsets objects first.
+        //!  the given offsets to ::gpiod::line::offsets objects first. The final request will be
+        //!  an "active-low" request, i.e. the I/O pins logics will be inverted.
         //!
         //! \param chip The chip to which perform the line request.
         //! \param consumer The consumer that will use the requested lines. Can be a simple string with the name
