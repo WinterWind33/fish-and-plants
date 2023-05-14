@@ -58,5 +58,5 @@ jobs:
       run: ${{github.workspace}}/bin/test_app --order rand [integration]
 
     - name: Functional Tests Run
-      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true' && matrix.os != 'macos-latest'
       run: ${{github.workspace}}/bin/test_app --order rand [functional]

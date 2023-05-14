@@ -23,6 +23,7 @@ namespace gh_hal::backends::libgpiod_impl {
     //!
     //! \param chipPath The path of the chip to open.
     //! \return A unique pointer to a newly opened chip.
+    [[nodiscard]]
     std::unique_ptr<NativeChipType> openChip(std::filesystem::path chipPath);
 
     //!!
@@ -35,11 +36,32 @@ namespace gh_hal::backends::libgpiod_impl {
     //! \param offsets The GPIO pins IDs that are going to be requested.
     //! \param direction The direction (input/output) of the requested lines
     //! \return A newly opened line request.
+    [[nodiscard]]
     NativeLineRequestType requestLines(
         NativeChipType& chip,
         std::string consumer,
         std::vector<NativeLineOffsetType> offsets,
         const NativeLineDirectionType direction
     );
+
+    namespace active_low {
+        //!!
+        //! \brief Performs a request for the given lines to the given chip. It converts
+        //!  the given offsets to ::gpiod::line::offsets objects first. The final request will be
+        //!  an "active-low" request, i.e. the I/O pins logics will be inverted.
+        //!
+        //! \param chip The chip to which perform the line request.
+        //! \param consumer The consumer that will use the requested lines. Can be a simple string with the name
+        //!  of the service.
+        //! \param offsets The GPIO pins IDs that are going to be requested.
+        //! \param direction The direction (input/output) of the requested lines
+        //! \return A newly opened line request.
+        [[nodiscard]]
+        NativeLineRequestType requestLines(NativeChipType& chip,
+            std::string consumer,
+            std::vector<NativeLineOffsetType> offsets,
+            const NativeLineDirectionType direction
+        );
+    } // namespace active_low
 
 } // namespace gh_hal::backends::libgpiod_impl
