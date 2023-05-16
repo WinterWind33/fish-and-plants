@@ -110,7 +110,7 @@ namespace rpi_gc {
     void AutomaticWateringCommand::registerOptionEvent(option_type::long_name_type optionName, option_event event) noexcept {
         assert(!optionName.empty());
 
-        if(optionName == strings::commands::HELP) {
+        if(optionName == strings::commands::options::AUTOMATIC_WATERING_HELP) {
             // The user can't register an event for the "--help" command.
             assert(false);
 
