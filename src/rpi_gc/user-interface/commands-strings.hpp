@@ -28,6 +28,11 @@ namespace rpi_gc::strings::commands {
         } // namespace abort
     } // namespace feedbacks
 
+    namespace options {
+        constexpr StringViewType AUTOMATIC_WATERING_HELP{"help"};
+        constexpr StringViewType AUTOMATIC_WATERING_STOP{"stop"};
+    } // namespace options
+
 } // namespace rpi_gc
 
 #endif // !COMMANDS_STRINGS_HPP
