@@ -103,5 +103,4 @@ TEST_CASE("AutomaticWateringCommand Events unit tests", "[unit][solitary][rpi_gc
             }
         }
     }
-
 }
