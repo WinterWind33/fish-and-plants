@@ -222,8 +222,8 @@ int main(int argc, char* argv[]) {
 
             const auto value{valueOption->value()};
             const auto clampedValue{
-                details::ClampWithError(
-                    value, 0ll, std::numeric_limits<decltype(value)>::max(), *userLogger, "The activation time is out of the acceptable range [0, inf]. The value will be clamped.")};
+                details::ClampWithError<decltype(value)>(
+                    value, 0, std::numeric_limits<std::int64_t>::max(), *userLogger, "The activation time is out of the acceptable range [0, inf]. The value will be clamped.")};
 
             std::ostringstream formatString{};
             formatString << "Automatic watering system activation time set to ";
@@ -248,8 +248,8 @@ int main(int argc, char* argv[]) {
 
             const auto value{valueOption->value()};
             const auto clampedValue{
-                details::ClampWithError(
-                    value, 0ll, std::numeric_limits<decltype(value)>::max(), *userLogger, "The deactivation time is out of the acceptable range [0, inf]. The value will be clamped.")};
+                details::ClampWithError<decltype(value)>(
+                    value, 0, std::numeric_limits<std::int64_t>::max(), *userLogger, "The deactivation time is out of the acceptable range [0, inf]. The value will be clamped.")};
 
             std::ostringstream formatString{};
             formatString << "Automatic watering system deactivation time set to ";
@@ -274,8 +274,8 @@ int main(int argc, char* argv[]) {
 
             const auto value{valueOption->value()};
             const auto clampedValue{
-                details::ClampWithError(
-                    value, 0ll, std::numeric_limits<decltype(value)>::max(), *userLogger, "The separation time is out of the acceptable range [0, inf]. The value will be clamped.")};
+                details::ClampWithError<decltype(value)>(
+                    value, 0, std::numeric_limits<std::int64_t>::max(), *userLogger, "The separation time is out of the acceptable range [0, inf]. The value will be clamped.")};
 
             std::ostringstream formatString{};
             formatString << "Pump-valve deactivation separation time set to ";
