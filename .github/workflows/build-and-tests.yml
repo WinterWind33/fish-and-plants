@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup clang-tidy
-        run: sudo apt-get install -y clang clang-tidy
+        run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
 
       - name: Retrieve changed files
         id: changed-files
