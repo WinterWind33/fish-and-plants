@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup clang-tidy
-        run: sudo apt-get install -y clang-tidy
+        run: sudo apt-get install -y clang clang-tidy
 
       - name: Retrieve changed files
         id: changed-files
@@ -37,19 +37,18 @@ jobs:
 
       - name: Compile commands export
         env:
-          CC:   gcc-12
-          CXX:  g++-12
+          CC:   clang
+          CXX:  clang++
         run: |
+          mkdir build
           cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Wno-dev
-          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -Wno-dev
 
       - name: Execute clang-tidy
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "Parsing file: $file"
-            clang-tidy -p ./build/compile_commands.json -checks=-*,cppcoreguidelines-*,clang-analyzer-* $file \
-              -- -DUSE_POPL20 -DUSE_CPPGPIO -DUSE_SPDLOG -Isrc/rpi_gc -Isrc/wrappers -Isrc/third-party/popl20 -Isrc/third-party/CppGPIO/include
+            clang-tidy -p ./build/compile_commands.json -checks=-*,cppcoreguidelines-*,clang-analyzer-*,modernize-*,performance-* $file
           done
 
   build_matrix:
