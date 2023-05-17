@@ -24,7 +24,7 @@ namespace gh_hal {
         //!!
         //! \brief Get the Backend Module Version
         //!
-        static version_type GetBackendModuleVersion() noexcept;
+        static auto GetBackendModuleVersion() noexcept -> version_type;
     };
 
 } // namespace gh_hal

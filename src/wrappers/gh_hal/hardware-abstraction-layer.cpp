@@ -28,7 +28,7 @@ namespace gh_hal {
 #endif // USE_LIBGPIOD
 
     } // namespace details
-/*test change*/
+
     auto BackendModule::GetBackendModuleName() noexcept -> name_type {
         return name_type{details::BACKEND_MODULE_NAME};
     }
