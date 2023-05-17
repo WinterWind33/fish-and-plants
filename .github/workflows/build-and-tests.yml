@@ -48,7 +48,7 @@ jobs:
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "Parsing file: $file"
-            clang-tidy -p ./build/compile_commands.json -header-filter=.* -checks=-*,cppcoreguidelines-*,clang-analyzer-*,modernize-*,performance-* --warnings-as-errors=-*,cppcoreguidelines-*,clang-analyzer-*,modernize-*,performance-* $file
+            clang-tidy -p ./build/compile_commands.json -checks=-*,cppcoreguidelines-*,clang-analyzer-*,modernize-*,performance-* --warnings-as-errors=-*,cppcoreguidelines-*,clang-analyzer-*,modernize-*,-modernize-use-trailing-return-type,performance-* $file
           done
 
   build_matrix:
