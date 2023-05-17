@@ -36,6 +36,7 @@ jobs:
             *.txt
 
       - name: Compile commands export
+        if: steps.changed-files.outputs.any_changed == 'true'
         env:
           CC:   clang
           CXX:  clang++
