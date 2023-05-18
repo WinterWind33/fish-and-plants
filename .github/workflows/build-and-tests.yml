@@ -47,7 +47,7 @@ jobs:
       - name: Execute clang-tidy
         if: steps.changed-files.outputs.any_changed == 'true'
         run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+          for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
             echo "Parsing file: $file"
             clang-tidy -p ./build/compile_commands.json $file -extra-arg=-std=c++20 -- -DUSE_POPL20 -Isrc/third-party/popl20
           done
