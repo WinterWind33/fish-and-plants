@@ -72,6 +72,7 @@ namespace gh_cmd {
         virtual void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept = 0;
 
         //! \brief Checks whether or not this option was set at least once in the given input lines.
+        [[nodiscard]]
         virtual bool isSet() const noexcept = 0;
 
         //! \brief Clears the internal option state, resetting it.
@@ -109,6 +110,7 @@ namespace gh_cmd {
         void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept override;
         void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
 
+        [[nodiscard]]
         bool isSet() const noexcept override;
         value_type value() const noexcept override;
         void clear() noexcept override;
@@ -143,6 +145,7 @@ namespace gh_cmd {
         void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept override;
         void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
 
+        [[nodiscard]]
         bool isSet() const noexcept override;
         value_type value() const noexcept override;
         void clear() noexcept override;
@@ -391,7 +394,7 @@ namespace gh_cmd {
             using option_parser_ref = std::reference_wrapper<popl::OptionParser>;
 
             CommandOptionInserterVisitor(option_parser_ref optionParser) noexcept :
-                m_optionParser{std::move(optionParser)} {}
+                m_optionParser{optionParser} {}
 
             void visit(std::shared_ptr<popl::Option> option) noexcept override {
                 std::shared_ptr<OptionType> optionPtr{std::static_pointer_cast<OptionType>(std::move(option))};
