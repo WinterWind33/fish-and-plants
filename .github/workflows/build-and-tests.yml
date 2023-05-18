@@ -52,7 +52,7 @@ jobs:
             clang-tidy -p ./build/compile_commands.json -checks=-*,cppcoreguidelines-*,clang-analyzer-*,modernize-*,performance-* --warnings-as-errors=-*,cppcoreguidelines-*,clang-analyzer-*,modernize-*,-modernize-use-trailing-return-type,performance-* $file
           done
 
-  build_matrix:
+  build-matrix:
     needs: clang-tidy
     strategy:
       matrix:
