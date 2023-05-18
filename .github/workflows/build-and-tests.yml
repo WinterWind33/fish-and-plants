@@ -36,7 +36,6 @@ jobs:
             *.txt
 
       - name: Compile commands export
-        if: steps.changed-files.outputs.any_changed == 'true'
         env:
           CC:   clang
           CXX:  clang++
@@ -45,7 +44,6 @@ jobs:
           cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Wno-dev
 
       - name: Execute clang-tidy
-        if: steps.changed-files.outputs.any_changed == 'true'
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
             echo "Parsing file: $file"
