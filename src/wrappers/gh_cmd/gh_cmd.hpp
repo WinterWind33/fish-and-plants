@@ -18,6 +18,7 @@
 #include <functional>
 #include <optional>
 #include <cassert>
+#include <array>
 
 namespace gh_cmd {
 
@@ -28,6 +29,7 @@ namespace gh_cmd {
     //!  Can be a smart pointer, a reference etc.
     template<typename OptionType>
     struct OptionVisitor {
+        virtual ~OptionVisitor() noexcept = default;
         virtual void visit(OptionType option) noexcept = 0;
     };
 
@@ -230,9 +232,9 @@ namespace gh_cmd {
     // Switch implementation
     template<typename C>
     inline Switch<C>::Switch(short_name_type shortName, long_name_type longName, string_type description) noexcept {
-        const short_name_type shortNameRawString[2] = {shortName, 0};
+        const std::array<short_name_type, 2> shortNameRawString{shortName, 0};
 
-        m_switchImpl = std::make_shared<impl_type>(shortNameRawString, std::move(longName), std::move(description));
+        m_switchImpl = std::make_shared<impl_type>(shortNameRawString.data(), std::move(longName), std::move(description));
     }
 
     template<typename C>
@@ -280,9 +282,9 @@ namespace gh_cmd {
     // Value implementation
     template<typename C, typename V>
     inline Value<C, V>::Value(short_name_type shortName, long_name_type longName, string_type description, value_type defaultValue) noexcept {
-        const short_name_type shortNameRawString[2] = {shortName, 0};
+        const std::array<short_name_type, 2> shortNameRawString{shortName, 0};
 
-        m_valueImpl = std::make_shared<impl_type>(shortNameRawString, std::move(longName), std::move(description), std::move(defaultValue));
+        m_valueImpl = std::make_shared<impl_type>(shortNameRawString.data(), std::move(longName), std::move(description), std::move(defaultValue));
         // We add the default value so that isSet() can properly return a valid value.
         Value::clear();
     }
