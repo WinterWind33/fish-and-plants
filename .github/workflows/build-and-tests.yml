@@ -49,7 +49,7 @@ jobs:
         run: |
           for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "Parsing file: $file"
-            clang-tidy -p ./build/compile_commands.json -checks=-*,cppcoreguidelines-*,clang-analyzer-*,modernize-*,performance-*,-modernize-use-trailing-return-type --warnings-as-errors=-*,cppcoreguidelines-*,clang-analyzer-*,modernize-*,-modernize-use-trailing-return-type,performance-* $file
+            clang-tidy -p ./build/compile_commands.json $file -extra-arg=-std=c++20 -- -DUSE_POPL20 -Isrc/third-party/popl20
           done
 
   build-matrix:
