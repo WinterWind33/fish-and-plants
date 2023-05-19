@@ -40,7 +40,7 @@ namespace gh_hal::backends::libgpiod_impl {
     NativeLineRequestType requestLines(
         NativeChipType& chip,
         const std::string& consumer,
-        std::vector<NativeLineOffsetType> offsets,
+        const std::vector<NativeLineOffsetType>& offsets,
         const NativeLineDirectionType direction
     );
 
