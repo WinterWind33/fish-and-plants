@@ -33,7 +33,7 @@ jobs:
 
       - name: Execute clang-tidy on production code
         run: |
-          chmod +x ./scripts-static-analyze-files.sh
+          chmod +x ./scripts/static-analyze-files.sh
           ./scripts/static-analyze-files.sh $(git diff --name-only main | grep "src/")
 
   build-matrix:
