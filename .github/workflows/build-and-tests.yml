@@ -23,18 +23,6 @@ jobs:
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
 
-      - name: Retrieve changed files
-        id: changed-files
-        uses: tj-actions/changed-files@v35
-        with:
-          files: |
-            src/**
-            test/**
-          files_ignore: |
-            src/third-party/**
-            test/third-party/**
-            *.txt
-
       - name: Compile commands export
         env:
           CC:   clang
@@ -43,12 +31,10 @@ jobs:
           mkdir build
           cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Wno-dev
 
-      - name: Execute clang-tidy
+      - name: Execute clang-tidy on production code
         run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
-            echo "Parsing file: $file"
-            clang-tidy -p ./build/compile_commands.json $file -extra-arg=-std=c++20 -- -DUSE_POPL20 -Isrc/third-party/popl20
-          done
+          chmod +x ./scripts-static-analyze-files.sh
+          ./scripts/static-analyze-files.sh $(git diff --name-only main | grep "src/")
 
   build-matrix:
     needs: clang-tidy
