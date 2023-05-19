@@ -20,7 +20,7 @@ namespace rpi_gc {
         using option_parser = gh_cmd::OptionParser<char_type>;
         using option_parser_pointer = std::unique_ptr<option_parser>;
         using ostream_ref = std::reference_wrapper<std::basic_ostream<char_type>>;
-        using option_event = std::function<void(option_parser::const_option_pointer)>;
+        using option_event = std::function<void(const option_parser::const_option_pointer&)>;
         using option_type = gh_cmd::CommandOption<char_type>;
 
         //!!
@@ -35,6 +35,7 @@ namespace rpi_gc {
 
         void printHelp(help_ostream_type outputStream) const noexcept override;
 
+        [[nodiscard]]
         constexpr name_type getName() const noexcept override {
             return strings::commands::AUTOMATIC_WATERING;
         }
