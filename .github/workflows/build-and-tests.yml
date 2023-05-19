@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
@@ -45,7 +45,7 @@ jobs:
 
       - name: Execute clang-tidy
         run: |
-          for file in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
             echo "Parsing file: $file"
             clang-tidy -p ./build/compile_commands.json $file -extra-arg=-std=c++20 -- -DUSE_POPL20 -Isrc/third-party/popl20
           done
