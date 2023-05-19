@@ -25,7 +25,7 @@ namespace gh_hal::backends::libgpiod_impl {
 
         [[nodiscard]]
         static NativeLineRequestType requestLinesImpl(NativeChipType& chip, std::string consumer, std::vector<NativeLineOffsetType> offsets,
-            ::gpiod::line_settings&& lineSettings) noexcept {
+            const ::gpiod::line_settings& lineSettings) noexcept {
 
             assert(static_cast<bool>(chip));
 
@@ -44,7 +44,7 @@ namespace gh_hal::backends::libgpiod_impl {
                     .set_consumer(consumer)
                     .add_line_settings(
                         nativeOffsets,
-                        std::move(lineSettings)
+                        lineSettings
                     )
                     .do_request()
             };
