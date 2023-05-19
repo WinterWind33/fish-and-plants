@@ -17,8 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0
+          submodules: recursive
 
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
