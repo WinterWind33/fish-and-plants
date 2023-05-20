@@ -52,6 +52,8 @@ namespace constants {
 
 } // namespace constants
 
+// test changesasdasd
+
 namespace commands_factory {
 
     template<typename WateringSystemPointer, typename OptionParserType>
@@ -99,13 +101,13 @@ namespace commands_factory {
         std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(autoWateringOptionParser))};
         autoWateringCommand->registerOptionEvent(
             "start",
-            [wateringSystem]([[maybe_unused]] AutomaticWateringCommand::option_parser::const_option_pointer) {
+            [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
                 wateringSystem->startAutomaticWatering();
             }
         );
         autoWateringCommand->registerOptionEvent(
             "stop",
-            [wateringSystem]([[maybe_unused]] AutomaticWateringCommand::option_parser::const_option_pointer) {
+            [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
                 wateringSystem->requestShutdown();
             }
         );
@@ -124,7 +126,7 @@ namespace hardware_chip_paths {
 namespace details {
 
     template<typename T>
-    T ClampWithError(const T value, const T minVal, const T maxVal, gh_log::Logger& logger, std::string errorMessage) noexcept {
+    T ClampWithError(const T value, const T minVal, const T maxVal, gh_log::Logger& logger, const std::string& errorMessage) noexcept {
         T clampedValue{std::clamp(value, minVal, maxVal)};
 
         if(clampedValue != value)
@@ -146,7 +148,7 @@ int main(int argc, char* argv[]) {
 
     LoggerPointer mainLogger{gh_log::SPLLogger::createFileLogger(
         StringType{strings::application::NAME},
-        strings::application::MAIN_LOG_FILENAME
+        std::filesystem::path{strings::application::MAIN_LOG_FILENAME}
     )};
     mainLogger->setAutomaticFlushLevel(gh_log::ELoggingLevel::Info);
     mainLogger->logInfo("Initiating system: starting log now.");
@@ -214,7 +216,7 @@ int main(int argc, char* argv[]) {
 
     autoWateringCommand->registerOptionEvent(
         "activation-time",
-        [&awsTimeProvider, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+        [&awsTimeProvider, mainLogger, userLogger](const AutomaticWateringCommand::option_parser::const_option_pointer& option) {
             auto valueOption = std::static_pointer_cast<
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
@@ -240,7 +242,7 @@ int main(int argc, char* argv[]) {
 
     autoWateringCommand->registerOptionEvent(
         "deactivation-time",
-        [&awsTimeProvider, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+        [&awsTimeProvider, mainLogger, userLogger](const AutomaticWateringCommand::option_parser::const_option_pointer& option) {
             auto valueOption = std::static_pointer_cast<
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
@@ -266,7 +268,7 @@ int main(int argc, char* argv[]) {
 
     autoWateringCommand->registerOptionEvent(
         "pumpvalve-deactsep-time",
-        [&awsTimeProvider, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+        [&awsTimeProvider, mainLogger, userLogger](const AutomaticWateringCommand::option_parser::const_option_pointer& option) {
             auto valueOption = std::static_pointer_cast<
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
@@ -292,7 +294,7 @@ int main(int argc, char* argv[]) {
 
     autoWateringCommand->registerOptionEvent(
         "valve-pin-id",
-        [&hardwareControllerAtomic, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+        [&hardwareControllerAtomic, mainLogger, userLogger](const AutomaticWateringCommand::option_parser::const_option_pointer& option) {
             auto valueOption = std::static_pointer_cast<
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id>>(option);
 
@@ -312,7 +314,7 @@ int main(int argc, char* argv[]) {
 
     autoWateringCommand->registerOptionEvent(
         "pump-pin-id",
-        [&hardwareControllerAtomic, mainLogger, userLogger](AutomaticWateringCommand::option_parser::const_option_pointer option) {
+        [&hardwareControllerAtomic, mainLogger, userLogger](const AutomaticWateringCommand::option_parser::const_option_pointer& option) {
             auto valueOption = std::static_pointer_cast<
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id>>(option);
 

@@ -15,6 +15,7 @@ namespace gh_hal::backends::libgpiod_impl {
     //! \brief Retrieves the version of the libgpiod library.
     //!
     //! \return The version of the libgpiod library.
-    VersionString GetLibraryVersion() noexcept;
+    [[nodiscard]]
+    auto GetLibraryVersion() noexcept -> VersionString;
 
 } // namespace gh_hal::backends::libgpiod_impl

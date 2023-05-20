@@ -30,7 +30,7 @@ namespace gh_hal::internal {
         using chip_unique_ptr = std::unique_ptr<details::BackendChipType>;
         using offsets_vector = std::vector<hardware_access::BoardDigitalPin::offset_type>;
 
-        explicit BoardChipImpl(std::filesystem::path chipPath);
+        explicit BoardChipImpl(const std::filesystem::path& chipPath);
 
         // Line requests
         std::unique_ptr<hardware_access::BoardDigitalPin> requestDigitalPin(std::string consumer,

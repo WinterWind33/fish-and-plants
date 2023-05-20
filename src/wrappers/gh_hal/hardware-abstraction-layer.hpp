@@ -19,12 +19,12 @@ namespace gh_hal {
         //!!
         //! \brief Get the Backend Module Name
         //!
-        static name_type GetBackendModuleName() noexcept;
+        static auto GetBackendModuleName() noexcept -> name_type;
 
         //!!
         //! \brief Get the Backend Module Version
         //!
-        static version_type GetBackendModuleVersion() noexcept;
+        static auto GetBackendModuleVersion() noexcept -> version_type;
     };
 
 } // namespace gh_hal

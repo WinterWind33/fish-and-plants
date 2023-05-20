@@ -102,13 +102,13 @@ namespace gh_log {
         m_logger->flush_on(details::LoggingLevelConverter::toSpdlogLevel(level));
     }
 
-    std::shared_ptr<SPLLogger> SPLLogger::createFileLogger(std::string name, std::filesystem::path filepath) noexcept {
-        return std::make_shared<SPLLogger>(spdlog::basic_logger_mt(std::move(name), filepath.string()));
+    std::shared_ptr<SPLLogger> SPLLogger::createFileLogger(const std::string& name, const std::filesystem::path& filepath) noexcept {
+        return std::make_shared<SPLLogger>(spdlog::basic_logger_mt(name, filepath.string()));
     }
 
-    std::shared_ptr<SPLLogger> SPLLogger::createColoredStdOutLogger(std::string name) noexcept {
+    std::shared_ptr<SPLLogger> SPLLogger::createColoredStdOutLogger(const std::string& name) noexcept {
         // Color defaulted to automatic.
-        return std::make_shared<SPLLogger>(spdlog::stderr_color_mt(std::move(name)));
+        return std::make_shared<SPLLogger>(spdlog::stderr_color_mt(name));
     }
 
 } // namespace gh_log

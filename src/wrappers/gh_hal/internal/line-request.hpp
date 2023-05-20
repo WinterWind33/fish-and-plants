@@ -88,7 +88,7 @@ namespace gh_hal::internal {
         using offset_type = hardware_access::BoardDigitalPin::offset_type;
 
         explicit LineRequest(
-            consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction,
+            const consumer_type& consumer, chip_reference chip, const std::vector<offset_type>& offsets, const hardware_access::DigitalPinRequestDirection direction,
             const bool bRequestActiveLow = false) noexcept;
 
         [[nodiscard]]
@@ -98,7 +98,7 @@ namespace gh_hal::internal {
         std::unique_ptr<backend_type> m_lineRequest{};
 
         void request_lines(
-            consumer_type consumer, chip_reference chip, std::vector<offset_type> offsets, const hardware_access::DigitalPinRequestDirection direction,
+            const consumer_type& consumer, chip_reference chip, const std::vector<offset_type>& offsets, const hardware_access::DigitalPinRequestDirection direction,
             const bool bRequestActiveLow) noexcept;
     };
 

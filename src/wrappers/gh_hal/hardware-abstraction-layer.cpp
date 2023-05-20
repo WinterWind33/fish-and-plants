@@ -15,7 +15,7 @@ namespace gh_hal {
 #ifdef USE_LIBGPIOD
         constexpr std::string_view BACKEND_MODULE_NAME{"libgpiod"};
 
-        backends::libgpiod_impl::VersionString GetBackendModuleVersionString() noexcept {
+        auto GetBackendModuleVersionString() noexcept -> backends::libgpiod_impl::VersionString {
             return backends::libgpiod_impl::GetLibraryVersion();
         }
 #else

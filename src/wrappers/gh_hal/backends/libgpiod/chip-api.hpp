@@ -24,7 +24,7 @@ namespace gh_hal::backends::libgpiod_impl {
     //! \param chipPath The path of the chip to open.
     //! \return A unique pointer to a newly opened chip.
     [[nodiscard]]
-    std::unique_ptr<NativeChipType> openChip(std::filesystem::path chipPath);
+    std::unique_ptr<NativeChipType> openChip(const std::filesystem::path& chipPath);
 
     //!!
     //! \brief Performs a request for the given lines to the given chip. It converts
@@ -39,8 +39,8 @@ namespace gh_hal::backends::libgpiod_impl {
     [[nodiscard]]
     NativeLineRequestType requestLines(
         NativeChipType& chip,
-        std::string consumer,
-        std::vector<NativeLineOffsetType> offsets,
+        const std::string& consumer,
+        const std::vector<NativeLineOffsetType>& offsets,
         const NativeLineDirectionType direction
     );
 
@@ -58,8 +58,8 @@ namespace gh_hal::backends::libgpiod_impl {
         //! \return A newly opened line request.
         [[nodiscard]]
         NativeLineRequestType requestLines(NativeChipType& chip,
-            std::string consumer,
-            std::vector<NativeLineOffsetType> offsets,
+            const std::string& consumer,
+            const std::vector<NativeLineOffsetType>& offsets,
             const NativeLineDirectionType direction
         );
     } // namespace active_low

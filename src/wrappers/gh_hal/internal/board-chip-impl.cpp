@@ -23,8 +23,8 @@ namespace gh_hal::internal {
 
 #ifdef USE_LIBGPIOD
         [[nodiscard]]
-        std::unique_ptr<BackendChipType> openChip(std::filesystem::path chipPath) {
-            return backends::libgpiod_impl::openChip(std::move(chipPath));
+        std::unique_ptr<BackendChipType> openChip(const std::filesystem::path& chipPath) {
+            return backends::libgpiod_impl::openChip(chipPath);
         }
 #else
         [[nodiscard]]
@@ -34,8 +34,8 @@ namespace gh_hal::internal {
 #endif // USE_LIBGPIOD
     } // namespace details
 
-    BoardChipImpl::BoardChipImpl(std::filesystem::path chipPath) :
-        m_chipPtr{details::openChip(std::move(chipPath))} {}
+    BoardChipImpl::BoardChipImpl(const std::filesystem::path& chipPath) :
+        m_chipPtr{details::openChip(chipPath)} {}
 
     BoardChipImpl::operator bool() const noexcept {
         return static_cast<bool>(*m_chipPtr);
@@ -65,7 +65,7 @@ namespace gh_hal::internal {
 
         auto newLineRequest{std::make_pair(
             offsets,
-            LineRequest{std::move(consumer), std::ref(*m_chipPtr), offsets, direction, /*bRequestActiveLow = */ true})};
+            LineRequest{consumer, std::ref(*m_chipPtr), offsets, direction, /*bRequestActiveLow = */ true})};
 
         auto boardPins{std::get<1>(newLineRequest).getBoardPins()};
         m_lineRequests.push_back(std::move(newLineRequest));
@@ -97,7 +97,7 @@ namespace gh_hal::internal {
 
         auto newLineRequest{std::make_pair(
             offsets,
-            LineRequest{std::move(consumer), std::ref(*m_chipPtr), offsets, direction, /*bRequestActiveLow = */ true})};
+            LineRequest{consumer, std::ref(*m_chipPtr), offsets, direction, /*bRequestActiveLow = */ true})};
 
         auto boardPins{std::get<1>(newLineRequest).getBoardPins()};
         m_lineRequests.push_back(std::move(newLineRequest));

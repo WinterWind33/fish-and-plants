@@ -28,6 +28,7 @@ namespace gh_hal::internal {
         explicit BoardDigitalPinImpl(const hardware_access::BoardDigitalPin::offset_type offsetValue,
             const hardware_access::DigitalPinRequestDirection direction, backend_type_reference backImpl) noexcept;
 
+        [[nodiscard]]
         hardware_access::DigitalPinRequestDirection getDirection() const noexcept override {
             return m_direction;
         }

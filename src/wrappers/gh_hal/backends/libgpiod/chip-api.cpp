@@ -7,7 +7,7 @@
 
 namespace gh_hal::backends::libgpiod_impl {
 
-    std::unique_ptr<NativeChipType> openChip(std::filesystem::path chipPath) {
+    std::unique_ptr<NativeChipType> openChip(const std::filesystem::path& chipPath) {
         return std::make_unique<NativeChipType>(chipPath);
     }
 
@@ -24,8 +24,8 @@ namespace gh_hal::backends::libgpiod_impl {
         }
 
         [[nodiscard]]
-        static NativeLineRequestType requestLinesImpl(NativeChipType& chip, std::string consumer, std::vector<NativeLineOffsetType> offsets,
-            ::gpiod::line_settings&& lineSettings) noexcept {
+        static NativeLineRequestType requestLinesImpl(NativeChipType& chip, const std::string& consumer, const std::vector<NativeLineOffsetType>& offsets,
+            const ::gpiod::line_settings& lineSettings) noexcept {
 
             assert(static_cast<bool>(chip));
 
@@ -44,7 +44,7 @@ namespace gh_hal::backends::libgpiod_impl {
                     .set_consumer(consumer)
                     .add_line_settings(
                         nativeOffsets,
-                        std::move(lineSettings)
+                        lineSettings
                     )
                     .do_request()
             };
@@ -54,17 +54,17 @@ namespace gh_hal::backends::libgpiod_impl {
 
     } // namespace details
 
-    NativeLineRequestType requestLines(NativeChipType& chip, std::string consumer, std::vector<NativeLineOffsetType> offsets,
+    NativeLineRequestType requestLines(NativeChipType& chip, const std::string& consumer, const std::vector<NativeLineOffsetType>& offsets,
         const NativeLineDirectionType direction) {
         return
-            details::requestLinesImpl(chip, std::move(consumer), std::move(offsets), details::createLineSettings(direction, /*bUseActiveLow = */ false));
+            details::requestLinesImpl(chip, consumer, offsets, details::createLineSettings(direction, /*bUseActiveLow = */ false));
     }
 
     namespace active_low {
-        NativeLineRequestType requestLines(NativeChipType& chip, std::string consumer, std::vector<NativeLineOffsetType> offsets,
+        NativeLineRequestType requestLines(NativeChipType& chip, const std::string& consumer, const std::vector<NativeLineOffsetType>& offsets,
         const NativeLineDirectionType direction) {
         return
-            details::requestLinesImpl(chip, std::move(consumer), std::move(offsets), details::createLineSettings(direction, /*bUseActiveLow = */ true));
+            details::requestLinesImpl(chip, consumer, offsets, details::createLineSettings(direction, /*bUseActiveLow = */ true));
     }
     } // namespace active_low
 

@@ -11,7 +11,33 @@ env:
   BUILD_TYPE: Release
 
 jobs:
-  build_matrix:
+  clang-tidy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup clang-tidy
+        run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
+
+      - name: Compile commands export
+        env:
+          CC:   clang
+          CXX:  clang++
+        run: |
+          mkdir build
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Wno-dev
+
+      - name: Execute clang-tidy on production code
+        run: |
+          chmod +x ./scripts/static-analyze-files.sh
+          ./scripts/static-analyze-files.sh $(git diff --name-only origin/main | grep "src/")
+
+  build-matrix:
+    needs: clang-tidy
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]

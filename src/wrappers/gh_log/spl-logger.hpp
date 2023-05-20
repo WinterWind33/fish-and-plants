@@ -25,10 +25,10 @@ namespace gh_log {
         ~SPLLogger() noexcept override = default;
 
         [[nodiscard]]
-        static std::shared_ptr<SPLLogger> createFileLogger(std::string name, std::filesystem::path filepath) noexcept;
+        static std::shared_ptr<SPLLogger> createFileLogger(const std::string& name, const std::filesystem::path& filepath) noexcept;
 
         [[nodiscard]]
-        static std::shared_ptr<SPLLogger> createColoredStdOutLogger(std::string name) noexcept;
+        static std::shared_ptr<SPLLogger> createColoredStdOutLogger(const std::string& name) noexcept;
 
         void logMessage(const ELoggingLevel logLevel, LogStringType message) override;
 

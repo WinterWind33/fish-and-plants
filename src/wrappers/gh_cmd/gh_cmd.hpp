@@ -18,6 +18,7 @@
 #include <functional>
 #include <optional>
 #include <cassert>
+#include <array>
 
 namespace gh_cmd {
 
@@ -28,6 +29,7 @@ namespace gh_cmd {
     //!  Can be a smart pointer, a reference etc.
     template<typename OptionType>
     struct OptionVisitor {
+        virtual ~OptionVisitor() noexcept = default;
         virtual void visit(OptionType option) noexcept = 0;
     };
 
@@ -70,6 +72,7 @@ namespace gh_cmd {
         virtual void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept = 0;
 
         //! \brief Checks whether or not this option was set at least once in the given input lines.
+        [[nodiscard]]
         virtual bool isSet() const noexcept = 0;
 
         //! \brief Clears the internal option state, resetting it.
@@ -107,6 +110,7 @@ namespace gh_cmd {
         void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept override;
         void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
 
+        [[nodiscard]]
         bool isSet() const noexcept override;
         value_type value() const noexcept override;
         void clear() noexcept override;
@@ -141,6 +145,7 @@ namespace gh_cmd {
         void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept override;
         void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
 
+        [[nodiscard]]
         bool isSet() const noexcept override;
         value_type value() const noexcept override;
         void clear() noexcept override;
@@ -230,9 +235,9 @@ namespace gh_cmd {
     // Switch implementation
     template<typename C>
     inline Switch<C>::Switch(short_name_type shortName, long_name_type longName, string_type description) noexcept {
-        const short_name_type shortNameRawString[2] = {shortName, 0};
+        const std::array<short_name_type, 2> shortNameRawString{shortName, 0};
 
-        m_switchImpl = std::make_shared<impl_type>(shortNameRawString, std::move(longName), std::move(description));
+        m_switchImpl = std::make_shared<impl_type>(shortNameRawString.data(), std::move(longName), std::move(description));
     }
 
     template<typename C>
@@ -280,9 +285,9 @@ namespace gh_cmd {
     // Value implementation
     template<typename C, typename V>
     inline Value<C, V>::Value(short_name_type shortName, long_name_type longName, string_type description, value_type defaultValue) noexcept {
-        const short_name_type shortNameRawString[2] = {shortName, 0};
+        const std::array<short_name_type, 2> shortNameRawString{shortName, 0};
 
-        m_valueImpl = std::make_shared<impl_type>(shortNameRawString, std::move(longName), std::move(description), std::move(defaultValue));
+        m_valueImpl = std::make_shared<impl_type>(shortNameRawString.data(), std::move(longName), std::move(description), std::move(defaultValue));
         // We add the default value so that isSet() can properly return a valid value.
         Value::clear();
     }
@@ -389,7 +394,7 @@ namespace gh_cmd {
             using option_parser_ref = std::reference_wrapper<popl::OptionParser>;
 
             CommandOptionInserterVisitor(option_parser_ref optionParser) noexcept :
-                m_optionParser{std::move(optionParser)} {}
+                m_optionParser{optionParser} {}
 
             void visit(std::shared_ptr<popl::Option> option) noexcept override {
                 std::shared_ptr<OptionType> optionPtr{std::static_pointer_cast<OptionType>(std::move(option))};
