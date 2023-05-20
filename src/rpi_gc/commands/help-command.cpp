@@ -8,17 +8,10 @@
 
 namespace rpi_gc {
 
-    HelpCommand::HelpCommand(ostream_ref outputStream, std::vector<TerminalCommandType*> commands) noexcept :
+    HelpCommand::HelpCommand(ostream_ref outputStream, std::vector<terminal_command_const_ref> commands) noexcept :
         m_outputStream{std::move(outputStream)},
-        m_asOption{std::make_shared<gh_cmd::Switch<char_type>>('h', "help", "Displays this help page.")} {
-
-        // Here we need to retrieve the help page of all the input commands.
-        for(const auto& command : commands) {
-            OutputStringStream formatStream{};
-            command->printHelp(formatStream);
-            m_commandsHelpPages.push_back(formatStream.str());
-        }
-    }
+        m_asOption{std::make_shared<gh_cmd::Switch<char_type>>('h', "help", "Displays this help page.")},
+        m_terminalCommands{std::move(commands)} {}
 
     bool HelpCommand::execute() noexcept {
         print_header();
@@ -45,12 +38,6 @@ namespace rpi_gc {
         m_outputStream.get() << std::setfill('-') << std::setw(80);
         m_outputStream.get() << '-' << std::setfill(' ') << std::endl;
 
-        for(const auto& helpPage : m_commandsHelpPages) {
-            m_outputStream.get() << helpPage << std::endl;
-            m_outputStream.get() << std::setfill('-') << std::setw(80);
-            m_outputStream.get() << '-' << std::setfill(' ') << std::endl;
-        }
-
         return true;
     }
 
@@ -66,7 +53,7 @@ namespace rpi_gc {
     void HelpCommand::print_header() noexcept {
         ostream_ref::type& out = m_outputStream.get();
 
-        out << strings::application::NAME << " - Version " << rpi_gc_VERSION_MAJOR << '.' << rpi_gc_VERSION_MINOR << '.' << rpi_gc_VERSION_PATCH << '.' << std::endl;
+        out << strings::application::NAME << " - Version " << HelpCommand::get_app_version() << std::endl;
         out << "Developed by " << strings::application::TEAM_NAME << std::endl;
     }
 
@@ -96,6 +83,13 @@ namespace rpi_gc {
         out << "===> USAGE <===" << std::endl;
         out << "In order to start some controller job you need to use the application terminal and provide commands "
             << "to the terminal prompt. The commands implemented so far are available below." << std::endl;
+    }
+
+    std::string HelpCommand::get_app_version() noexcept {
+        std::ostringstream outputStream{};
+        outputStream << rpi_gc_VERSION_MAJOR << '.' << rpi_gc_VERSION_MINOR << '.' << rpi_gc_VERSION_PATCH << "-rc0";
+
+        return outputStream.str();
     }
 
 } // namespace rpi_gc

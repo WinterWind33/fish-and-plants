@@ -336,10 +336,10 @@ int main(int argc, char* argv[]) {
 
     auto helpCommand = std::make_unique<HelpCommand>(
         std::cout,
-        std::vector<TerminalCommandType*>{
-            versionCommand.get(),
-            autoWateringCommand.get(),
-            abortCommand.get()
+        std::vector<HelpCommand::terminal_command_const_ref>{
+            std::cref(*versionCommand),
+            std::cref(*autoWateringCommand),
+            std::cref(*abortCommand)
         }
     );
 
