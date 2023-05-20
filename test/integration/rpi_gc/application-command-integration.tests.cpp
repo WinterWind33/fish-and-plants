@@ -17,7 +17,7 @@ TEST_CASE("Bivalent commands and ApplicationCommand integration", "[integration]
         gh_cmd::DefaultOptionParser<CharType> optionParser{};
 
         VersionCommand versionCommand{outputStream};
-        HelpCommand helpCommand{outputStream, std::vector<TerminalCommandType*>{&versionCommand}};
+        HelpCommand helpCommand{outputStream, std::vector<HelpCommand::terminal_command_const_ref>{versionCommand}};
 
         ApplicationCommand commandUnderTest{outputStream, optionParser};
         commandUnderTest.addBivalentCommand(versionCommand);

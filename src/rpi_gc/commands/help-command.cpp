@@ -19,24 +19,22 @@ namespace rpi_gc {
         print_description();
         m_outputStream.get() << std::endl;
 
-        m_outputStream.get() << "===> COMMANDS <===" << std::endl;
-        m_outputStream.get() << std::endl;
+        m_outputStream.get() << "## COMMANDS" << std::endl;
+        m_outputStream.get() << "Here is a list of all the implemented commands: " << std::endl;
 
-        // Time to print the help page of this command. We print it first
-        // as the help is the most important command.
-        printHelp(m_outputStream.get());
-        m_outputStream.get() << std::endl;
-        m_outputStream.get() << std::setfill('-') << std::setw(80);
-        m_outputStream.get() << '-' << std::setfill(' ') << std::endl;
+        m_outputStream.get() << "\t" << "- help : displays this page;" << std::endl;
+        m_outputStream.get() << "\t" << "- exit : exits the application performing a resource soft-destruction." << std::endl;
+        m_outputStream.get() << "\t" << "\tThis means that the application waits the resources and controller to be release before exiting;" << std::endl;
 
-        // Next we print the "exit" command help page so it doesn't get buried
-        // under the others
-        m_outputStream.get() << "[NAME]" << std::endl;
-        m_outputStream.get() << "\t" << strings::commands::EXIT << " - Stops the application execution and exits" << std::endl;
-        m_outputStream.get() << "[DESCRIPTION]" << std::endl;
-        m_outputStream.get() << "\tStops the application execution releasing the resources and waiting for them (soft exit)." << std::endl;
-        m_outputStream.get() << std::setfill('-') << std::setw(80);
-        m_outputStream.get() << '-' << std::setfill(' ') << std::endl;
+        for(const auto& terminalCommand : m_terminalCommands) {
+            m_outputStream.get() << "\t" << "- " << terminalCommand.get().getName() << std::endl;
+        }
+
+        m_outputStream.get() << std::endl;
+        m_outputStream.get() << "If you want to know more about these commands just type the command followed by \'help\':" << std::endl;
+        m_outputStream.get() << "Example: " << std::endl;
+        m_outputStream.get() << "$ auto-watering --help" << std::endl;
+
 
         return true;
     }
@@ -65,24 +63,23 @@ namespace rpi_gc {
     void HelpCommand::print_description() noexcept {
         ostream_ref::type& out = m_outputStream.get();
 
-        out << "=======================> WARNING <=======================" << std::endl;
+        out << "!!! WARNING !!!" << std::endl;
         out << "The features implemented inside this software are experimental and can be highly unstable! "
             << "USE WITH CAUTION!" << std::endl;
         out << "THIS SOFTWARE DOESN\'T COME WITH ANY WARRANTIES." << std::endl;
-        out << "=========================================================" << std::endl;
         out << std::endl;
-        out << "Greenhouse Controller is an experimental application that runs on a Raspberry PI or other hardware platforms "
-            << "that serve as aeroponic greenhouses\' automatic controllers." << std::endl;
+        out << "Greenhouse Controller is an experimental application that is capable to run on chips with GPIO PINs that support Linux OS. "
+            << "RPI_PG serves as an aeroponic greenhouse controller." << std::endl;
         out << std::endl;
-        out << "===> DESCRIPTION <===" << std::endl;
-        out << "The main scope of this software is to read values from the external sensors, that are attached "
-            << "to the greenhouse\'s plants, and provide actions based on these values. Example: if the humidity "
-            << "is below a certain temperature value, the software informs the hardware to provide water to the "
-            << "plants." << std::endl;
+        out << "## DESCRIPTION" << std::endl;
+        out << "The software allows the user to run automatic irrigation inside the greenhouse in Daily Cycle mode. "
+            << "This means that the automatic irrigation is activated for X time and deactivated for Y time. The timings "
+            << "are fully customizable through the \'auto-watering\' command options. The software handles the activation "
+            << "and deactivation of the PINs that control the hardware pump and valves." << std::endl;
         out << std::endl;
-        out << "===> USAGE <===" << std::endl;
-        out << "In order to start some controller job you need to use the application terminal and provide commands "
-            << "to the terminal prompt. The commands implemented so far are available below." << std::endl;
+        out << "### USAGE" << std::endl;
+        out << "The application has a terminal-like interface so the user have to interact with the terminal prompt to "
+            << "control the automatic irrigation. Below you can find a list with all of the implemented commands." << std::endl;
     }
 
     std::string HelpCommand::get_app_version() noexcept {
