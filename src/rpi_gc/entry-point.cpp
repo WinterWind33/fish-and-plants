@@ -330,16 +330,19 @@ int main(int argc, char* argv[]) {
         }
     );
 
+    auto abortCommandOptionParser{std::make_unique<gh_cmd::DefaultOptionParser<CharType>>("[OPTIONS] => abort")};
+    abortCommandOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>('h', "help", "Displays this help page."));
     auto abortCommand = std::make_unique<commands::AbortCommand>(mainLogger,
-        std::vector<commands::AbortCommand::emergency_stoppable_system_pointer>{automaticWateringSystem}
+        std::vector<commands::AbortCommand::emergency_stoppable_system_pointer>{automaticWateringSystem},
+        std::move(abortCommandOptionParser)
     );
 
     auto helpCommand = std::make_unique<HelpCommand>(
         std::cout,
-        std::vector<TerminalCommandType*>{
-            versionCommand.get(),
-            autoWateringCommand.get(),
-            abortCommand.get()
+        std::vector<HelpCommand::terminal_command_const_ref>{
+            std::cref(*versionCommand),
+            std::cref(*autoWateringCommand),
+            std::cref(*abortCommand)
         }
     );
 
