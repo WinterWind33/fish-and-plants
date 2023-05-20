@@ -126,7 +126,7 @@ namespace hardware_chip_paths {
 namespace details {
 
     template<typename T>
-    T ClampWithError(const T value, const T minVal, const T maxVal, gh_log::Logger& logger, std::string errorMessage) noexcept {
+    T ClampWithError(const T value, const T minVal, const T maxVal, gh_log::Logger& logger, const std::string& errorMessage) noexcept {
         T clampedValue{std::clamp(value, minVal, maxVal)};
 
         if(clampedValue != value)
