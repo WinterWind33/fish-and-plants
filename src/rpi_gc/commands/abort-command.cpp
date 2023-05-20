@@ -5,6 +5,8 @@
 #include <cassert>
 #include <version>
 
+#include <iostream> // TODO: This is terrible. Need to be refactored once the commands are refactored.
+
 #ifdef __cpp_lib_format
 #include <format>
 #else
@@ -13,13 +15,35 @@
 
 namespace rpi_gc::commands {
 
-    AbortCommand::AbortCommand(logger_pointer mainLogger, std::vector<emergency_stoppable_system_pointer> systems) noexcept :
+    AbortCommand::AbortCommand(logger_pointer mainLogger, std::vector<emergency_stoppable_system_pointer> systems, option_parser_pointer optionParser) noexcept :
         m_mainLogger{std::move(mainLogger)},
-        m_stoppableSystems{std::move(systems)} {
+        m_stoppableSystems{std::move(systems)},
+        m_optionParser{std::move(optionParser)} {
         assert(static_cast<bool>(m_mainLogger));
+        assert(static_cast<bool>(m_optionParser));
+    }
+
+    bool AbortCommand::processInputOptions(const std::vector<string_type>& inputTokens) noexcept {
+        m_optionParser->parse(inputTokens);
+        return true;
     }
 
     bool AbortCommand::execute() noexcept {
+        auto options{m_optionParser->getOptions()};
+
+        // If the --help option is selected we need to print the help.
+        auto helpIt = std::find_if(options.begin(), options.end(), [](const option_parser::option_pointer& option) -> bool{
+            return option->getLongName() == "help";
+        });
+
+        if(helpIt != options.end() && (*helpIt)->isSet()) {
+            printHelp(std::cout);
+            for(auto& option : options)
+                option->clear();
+
+            return true;
+        }
+
         m_mainLogger->logWarning(format_log_message(strings::commands::feedbacks::abort::ABORT_ISSUED));
         m_mainLogger->logWarning(format_log_message(strings::commands::feedbacks::abort::STARTING_EMERGENCY_ABORT));
 
@@ -38,9 +62,10 @@ namespace rpi_gc::commands {
         outputStream.get() << "\t" << strings::commands::ABORT << " - Aborts the greenhouse controller's automatic systems without ";
         outputStream.get() << "exiting the application." << std::endl;
         outputStream.get() << "[DESCRIPTION]" << std::endl;
-        outputStream.get() << "\t" << "The abort system is designed to stop every automatic job without taking too much time. It only ";
-        outputStream.get() << "releases important resources in order to do no harm to humans or plants. These resources can be ";
-        outputStream.get() << "digital outputs, hardware I/O etc...";
+        outputStream.get() << "\t" << "The abort system is designed to stop every automatic job, like automatic irrigation, in an emergency situation." << std::endl;
+        outputStream.get() << "\tThis means that all the running jobs are interrupted and hardware is shutted down to prevent any damage ";
+        outputStream.get() << "to equipment and plants.";
+        outputStream.get() << std::endl;
     }
 
     StringType AbortCommand::format_log_message(StringViewType message) noexcept {

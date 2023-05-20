@@ -103,6 +103,8 @@ namespace rpi_gc {
         outputStream.get() << "\t" << "Manages the automatic irrigation of the greenhouse activating or" << std::endl;
         outputStream.get() << "\tdisactivating the pump and the valve in order to make the water flow." << std::endl;
         outputStream.get() << std::endl;
+        outputStream.get() << "\tThe hardware configuration is active-LOW." << std::endl;
+        outputStream.get() << std::endl;
 
         m_optionParser->printHelp(outputStream.get());
     }

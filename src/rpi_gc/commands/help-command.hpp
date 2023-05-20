@@ -1,6 +1,5 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
-#ifndef HELP_COMMAND_HPP
-#define HELP_COMMAND_HPP
+#pragma once
 
 #include <common/types.hpp>
 #include <commands/bivalent-command.hpp>
@@ -15,11 +14,12 @@ namespace rpi_gc {
     //!!
     //! \brief Represents the Help command, i.e. the command executed when the user types "help" in the
     //!  app home prompt.
-    class HelpCommand : public BivalentCommand<CharType> {
+    class HelpCommand final : public BivalentCommand<CharType> {
     public:
         using ostream_ref = std::reference_wrapper<OutputStream>;
+        using terminal_command_const_ref = std::reference_wrapper<const TerminalCommandType>;
 
-        HelpCommand(ostream_ref outputStream, std::vector<TerminalCommandType*> commands) noexcept;
+        explicit HelpCommand(ostream_ref outputStream, std::vector<terminal_command_const_ref> commands) noexcept;
         ~HelpCommand() noexcept override = default;
 
         constexpr name_type getName() const noexcept override { return strings::commands::HELP; }
@@ -47,12 +47,13 @@ namespace rpi_gc {
         string_type m_applicationHelp{};
         option_pointer m_asOption{};
 
-        std::vector<std::string> m_commandsHelpPages{};
+        std::vector<terminal_command_const_ref> m_terminalCommands{};
+
+        [[nodiscard]]
+        static std::string get_app_version() noexcept;
 
         void print_header() noexcept;
         void print_description() noexcept;
     };
 
 } // namespace rpi_gc
-
-#endif // !HELP_COMMAND_HPP
