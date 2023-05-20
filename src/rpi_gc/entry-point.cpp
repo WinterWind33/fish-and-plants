@@ -148,7 +148,7 @@ int main(int argc, char* argv[]) {
 
     LoggerPointer mainLogger{gh_log::SPLLogger::createFileLogger(
         StringType{strings::application::NAME},
-        strings::application::MAIN_LOG_FILENAME
+        std::filesystem::path{strings::application::MAIN_LOG_FILENAME}
     )};
     mainLogger->setAutomaticFlushLevel(gh_log::ELoggingLevel::Info);
     mainLogger->logInfo("Initiating system: starting log now.");
