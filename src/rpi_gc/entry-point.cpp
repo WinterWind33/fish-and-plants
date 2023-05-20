@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <atomic>
 #include <mutex>
+#include <limits>
 
 namespace automatic_watering {
 
@@ -122,6 +123,20 @@ namespace hardware_chip_paths {
 
 } // namespace hardware_chip_paths
 
+namespace details {
+
+    template<typename T>
+    T ClampWithError(const T value, const T minVal, const T maxVal, gh_log::Logger& logger, std::string errorMessage) noexcept {
+        T clampedValue{std::clamp(value, minVal, maxVal)};
+
+        if(clampedValue != value)
+            logger.logError(errorMessage);
+
+        return clampedValue;
+    }
+
+} // namespace details
+
 // This is the entry point of the application. Here, it starts
 // the main execution of the greenhouse controller.
 int main(int argc, char* argv[]) {
@@ -206,13 +221,19 @@ int main(int argc, char* argv[]) {
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
-            auto* const timeProvider = dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
-            timeProvider->setActivationTimeTicks(valueOption->value());
+
+            const auto value{valueOption->value()};
+            const auto clampedValue{
+                details::ClampWithError<decltype(value)>(
+                    value, 0, std::numeric_limits<std::int64_t>::max(), *userLogger, "The activation time is out of the acceptable range [0, inf]. The value will be clamped.")};
 
             std::ostringstream formatString{};
-            formatString << "Received new automatic watering system activation time: ";
-            formatString << valueOption->value();
+            formatString << "Automatic watering system activation time set to ";
+            formatString << clampedValue;
             formatString << "ms.";
+
+            auto* const timeProvider = dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
+            timeProvider->setActivationTimeTicks(clampedValue);
 
             userLogger->logInfo(formatString.str());
             mainLogger->logInfo(formatString.str());
@@ -226,13 +247,19 @@ int main(int argc, char* argv[]) {
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
-            auto* const timeProvider = dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
-            timeProvider->setDeactivationTimeTicks(valueOption->value());
+
+            const auto value{valueOption->value()};
+            const auto clampedValue{
+                details::ClampWithError<decltype(value)>(
+                    value, 0, std::numeric_limits<std::int64_t>::max(), *userLogger, "The deactivation time is out of the acceptable range [0, inf]. The value will be clamped.")};
 
             std::ostringstream formatString{};
-            formatString << "Received new automatic watering system deactivation time: ";
-            formatString << valueOption->value();
+            formatString << "Automatic watering system deactivation time set to ";
+            formatString << clampedValue;
             formatString << "ms.";
+
+            auto* const timeProvider = dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
+            timeProvider->setDeactivationTimeTicks(clampedValue);
 
             userLogger->logInfo(formatString.str());
             mainLogger->logInfo(formatString.str());
@@ -246,13 +273,19 @@ int main(int argc, char* argv[]) {
                 const gh_cmd::Value<CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(option);
 
             assert(static_cast<bool>(valueOption));
-            auto* const timeProvider = dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
-            timeProvider->setPumpValveWaitTimeTicks(valueOption->value());
+
+            const auto value{valueOption->value()};
+            const auto clampedValue{
+                details::ClampWithError<decltype(value)>(
+                    value, 0, std::numeric_limits<std::int64_t>::max(), *userLogger, "The separation time is out of the acceptable range [0, inf]. The value will be clamped.")};
 
             std::ostringstream formatString{};
-            formatString << "Received new pump-valve deactivation separation time: ";
-            formatString << valueOption->value();
+            formatString << "Pump-valve deactivation separation time set to ";
+            formatString << clampedValue;
             formatString << "ms.";
+
+            auto* const timeProvider = dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(awsTimeProvider.load());
+            timeProvider->setPumpValveWaitTimeTicks(clampedValue);
 
             userLogger->logWarning(formatString.str());
             mainLogger->logWarning(formatString.str());
