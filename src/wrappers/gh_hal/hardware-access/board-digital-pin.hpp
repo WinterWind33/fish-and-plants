@@ -31,6 +31,7 @@ namespace gh_hal::hardware_access {
         //! \brief Retrieves the direction of this digital pin.
         //!
         //! \return The direction of the digital pin.
+        [[nodiscard]]
         virtual DigitalPinRequestDirection getDirection() const noexcept = 0;
 
         //!!
