@@ -12,8 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          submodules: recursive
 
       - name: (RPI_GC) Check changed files
         id: RPI_GC-changed-files
