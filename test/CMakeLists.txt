@@ -9,8 +9,6 @@ set(TEST_APP_HEADER_FILES
     "catch2-gmock-listener.hpp"
 
     # Test doubles
-    "gh_hal/test-doubles/hal-context.mock.hpp"
-    "gh_hal/test-doubles/hal-digital-output.mock.hpp"
     "gh_hal/test-doubles/hardware-access/board-chip.mock.hpp"
     "gh_hal/test-doubles/hardware-access/board-chip-factory.mock.hpp"
     "gh_hal/test-doubles/hardware-access/board-digital-pin.mock.hpp"
@@ -30,7 +28,6 @@ set(TEST_APP_SOURCE_FILES
     "test-app-entry-point.cpp"
 
     # Modules
-    "gh_hal/hal-board-pin.tests.cpp"
     "gh_hal/hardware-access/board-chip.tests.cpp"
     "gh_cmd/switch.tests.cpp"
     "gh_cmd/value.tests.cpp"

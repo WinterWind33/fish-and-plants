@@ -18,9 +18,6 @@
 #include <commands/help-command.hpp>
 #include <commands/automatic-watering/automatic-watering-command.hpp>
 
-#include <gh_hal/hal-context.hpp>
-#include <gh_hal/hal-error.hpp>
-
 // C++ STL
 #include <iostream>
 #include <memory>

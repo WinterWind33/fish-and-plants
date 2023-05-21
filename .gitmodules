@@ -1,3 +1,0 @@
-[submodule "src/third-party/CppGPIO"]
-	path = src/third-party/CppGPIO
-	url = https://github.com/JoachimSchurig/CppGPIO.git
