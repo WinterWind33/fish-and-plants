@@ -6,6 +6,12 @@ for file in "$@";
 do
     # We only want to process .hpp and .cpp files.
     if [[ $file == *.hpp ]] || [[ $file == *.cpp ]]; then
+        # We need to check whether or not the file exists. If the file doesn't
+        # then we don't want to process it.
+        if [ ! -f "$file" ]; then
+            echo "[INFO] => Skipping the file $file because it doesn't exist."
+            continue
+        fi
         echo "[INFO] => Processing file $file"
         clang-tidy -p buildLinux/compile_commands.json $file -extra-arg=-std=c++20 -- \
             -DUSE_POPL20 -DUSE_LIBGPIOD -DUSE_SPDLOG \
