@@ -23,7 +23,8 @@ endif()
 if(USE_POPL20)
     message(STATUS "Using popl20 header only library as command-line interpreter.")
 
-    add_subdirectory("popl20")
+    set(POPL20_INCLUDE_FILES "popl20/popl20/popl.hpp")
+    add_library(popl20 INTERFACE ${POPL20_INCLUDE_FILES})
 endif()
 
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
