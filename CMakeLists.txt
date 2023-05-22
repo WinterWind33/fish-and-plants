@@ -60,7 +60,9 @@ option(USE_POPL20 "Use popl20 header-only library as command line parser." ON)
 add_subdirectory("src/third-party")
 
 # Add wrapper libraries.
-add_subdirectory("src/wrappers")
+add_subdirectory("src/wrappers/gh_cmd")
+add_subdirectory("src/wrappers/gh_hal")
+add_subdirectory("src/wrappers/gh_log")
 
 # Add the greenhouse controller application to the build system.
 add_subdirectory("src/rpi_gc")
