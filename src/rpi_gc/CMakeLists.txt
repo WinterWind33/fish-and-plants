@@ -56,7 +56,7 @@ target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers
 
 target_link_libraries(rpi_gc_lib PRIVATE gh_hal)
 target_link_libraries(rpi_gc_lib PRIVATE gh_log)
-target_link_libraries(rpi_gc_lib PUBLIC gh_cmd)
+target_link_libraries(rpi_gc_lib PRIVATE gh_cmd)
 
 add_executable(rpi_gc "entry-point.cpp")
 
@@ -70,8 +70,9 @@ set_target_properties(rpi_gc
 # Dependencies
 # Here we don't want to include gh_hal and gh_log directly as this will result
 # in possible includes clash. Instead, we include their parent directory.
-target_include_directories(rpi_gc PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
-target_include_directories(rpi_gc PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
+target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/rpi_gc")
+target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/wrappers")
 
 target_link_libraries(rpi_gc PRIVATE gh_log)
+target_link_libraries(rpi_gc PRIVATE gh_cmd)
 target_link_libraries(rpi_gc PRIVATE rpi_gc_lib)
