@@ -56,7 +56,7 @@ target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 # Dependencies
 
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
-    set(LIBGPIOG_NAME "libgpiod-2.0.1")
+    set(LIBGPIOG_NAME "libgpiod-${LIBGPIOD_VERSION}")
     set(LIBGPIOD_LIB_DIR ${PROJECT_SOURCE_DIR}/src/third-party/${LIBGPIOG_NAME}/lib)
     set(LIBGPIOD_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/third-party/${LIBGPIOG_NAME}/include)
     target_include_directories(gh_hal PRIVATE ${LIBGPIOD_INCLUDE_DIR})

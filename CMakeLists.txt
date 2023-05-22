@@ -45,9 +45,12 @@ set(PRODUCTION_LIB_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/lib")
 
 # === Options ===
 
-option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 as testing framework." ON)
-option(USE_SPDLOG "Use SPDLOG submodule as logging framework." ON)
-option(USE_LIBGPIOD "Use libgpiod module as the main I/O ports communication module." ON)
+set(CATCH2_VERSION "3.3.2")
+set(SPDLOG_VERSION "1.11.0")
+set(LIBGPIOD_VERSION "2.0.1")
+option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 ${CATCH2_VERSION} as testing framework." ON)
+option(USE_SPDLOG "Use SPDLOG ${SPDLOG_VERSION} submodule as logging framework." ON)
+option(USE_LIBGPIOD "Use libgpiod ${LIBGPIOD_VERSION} module as the main I/O ports communication module." ON)
 option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
 option(USE_POPL20 "Use popl20 header-only library as command line parser." ON)
 

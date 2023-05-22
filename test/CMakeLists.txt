@@ -96,8 +96,6 @@ endif()
 # === Third party submodules configuration ===
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK)
-    set(CATCH2_VERSION "3.3.2")
-
     message("[INFO] => Using amalgamated Catch2 v${CATCH2_VERSION} as testing framework.")
 
     set(CATCH2_DIR "${PROJECT_SOURCE_DIR}/test/third-party/Catch2-${CATCH2_VERSION}")
