@@ -33,7 +33,7 @@ namespace rpi_gc {
     } // namespace details
 
     AutomaticWateringCommand::AutomaticWateringCommand(ostream_ref outputStream, option_parser_pointer optionParser) noexcept :
-        m_outputStream{std::move(outputStream)},
+        m_outputStream{outputStream},
         m_optionParser{std::move(optionParser)} {}
 
     bool AutomaticWateringCommand::processInputOptions(const std::vector<string_type>& inputTokens) noexcept {
