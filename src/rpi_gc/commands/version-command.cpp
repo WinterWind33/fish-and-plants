@@ -5,7 +5,7 @@
 namespace rpi_gc {
 
     VersionCommand::VersionCommand(ostream_ref outputStream) noexcept :
-        m_outputStream{std::move(outputStream)},
+        m_outputStream{outputStream},
         m_asOption{std::make_shared<gh_cmd::Switch<char_type>>('v', "version", "Displays the version of this application.")} {}
 
     bool VersionCommand::execute() noexcept {
