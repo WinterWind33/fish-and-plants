@@ -9,7 +9,7 @@
 namespace rpi_gc {
 
     HelpCommand::HelpCommand(ostream_ref outputStream, std::vector<terminal_command_const_ref> commands) noexcept :
-        m_outputStream{std::move(outputStream)},
+        m_outputStream{outputStream},
         m_asOption{std::make_shared<gh_cmd::Switch<char_type>>('h', "help", "Displays this help page.")},
         m_terminalCommands{std::move(commands)} {}
 
