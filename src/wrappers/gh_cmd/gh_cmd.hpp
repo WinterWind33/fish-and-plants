@@ -177,7 +177,7 @@ namespace gh_cmd {
 
         //! \brief Parses the given input tokens searching for options, unknown options and
         //!  non-options tokens. These tokens can be retrieve by the getters below.
-        virtual void parse(const std::vector<string_type>& args) noexcept = 0;
+        virtual void parse(const std::vector<string_type>& args) = 0;
 
         //! \brief Resets the state of this parser, erasing all of the previous saved
         //!  options, unknowns etc.
@@ -216,7 +216,7 @@ namespace gh_cmd {
 
         void addOption(std::shared_ptr<CommandOption<char_type>> option) noexcept override;
         void addSwitch(std::shared_ptr<Switch<char_type>> option) noexcept override;
-        void parse(const std::vector<string_type>& args) noexcept override;
+        void parse(const std::vector<string_type>& args) override;
         void reset() noexcept override;
         void printHelp(std::basic_ostream<char_type>& outputStream) const noexcept override;
 
@@ -428,7 +428,7 @@ namespace gh_cmd {
     }
 
     template<typename C>
-    inline void DefaultOptionParser<C>::parse(const std::vector<string_type>& args) noexcept {
+    inline void DefaultOptionParser<C>::parse(const std::vector<string_type>& args) {
         // Before proceeding we need to create a vector of const char* because the
         // popl parser uses primitive types and not string types.
         std::vector<const char_type*> rawStrings{};
