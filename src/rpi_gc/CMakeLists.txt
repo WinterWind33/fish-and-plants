@@ -2,7 +2,7 @@
 
 # RPI_GC's header files
 set(RPI_GC_HEADER_FILES
-    "rpi_gc-config-file.hpp"
+    "version/version-numbers.hpp"
     "greenhouse-controller-application.hpp"
     "abort-system/emergency-stoppable-system.hpp"
     "abort-system/terminable-system.hpp"
@@ -59,13 +59,18 @@ target_link_libraries(rpi_gc_lib PRIVATE gh_log)
 target_link_libraries(rpi_gc_lib PRIVATE gh_cmd)
 
 add_executable(rpi_gc "entry-point.cpp")
-
 set_target_properties(rpi_gc
     PROPERTIES
+    VERSION "1.0.0"
     ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
     LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
+set(RPI_GC_VERSION_MAJOR 1)
+set(RPI_GC_VERSION_MINOR 0)
+set(RPI_GC_VERSION_PATCH 0)
+set(RPI_GC_VERSION_RC_NAME "rc-1")
+configure_file("${PROJECT_SOURCE_DIR}/src/rpi_gc/rpi_gc-config-file.hpp.in" "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp")
 
 # Dependencies
 # Here we don't want to include gh_hal and gh_log directly as this will result
