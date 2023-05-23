@@ -51,12 +51,12 @@ set_target_properties(gh_hal
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
-target_include_directories(gh_hal PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
+target_include_directories(gh_hal PRIVATE "${PROJECT_SOURCE_DIR}/src/wrappers")
 
 # Dependencies
 
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
-    set(LIBGPIOG_NAME "libgpiod-2.0.1")
+    set(LIBGPIOG_NAME "libgpiod-${LIBGPIOD_VERSION}")
     set(LIBGPIOD_LIB_DIR ${PROJECT_SOURCE_DIR}/src/third-party/${LIBGPIOG_NAME}/lib)
     set(LIBGPIOD_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/third-party/${LIBGPIOG_NAME}/include)
     target_include_directories(gh_hal PRIVATE ${LIBGPIOD_INCLUDE_DIR})
@@ -70,4 +70,4 @@ if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
     target_compile_definitions(gh_hal PRIVATE "USE_LIBGPIOD")
 endif()
 
-target_link_libraries(gh_hal PUBLIC gh_log)
+target_link_libraries(gh_hal PRIVATE gh_log)

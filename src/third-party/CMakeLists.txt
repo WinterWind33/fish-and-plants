@@ -3,8 +3,6 @@
 include(FetchContent)
 
 if(USE_SPDLOG)
-    set(SPDLOG_VERSION "1.11.0")
-
     message(STATUS "Using spdlog v${SPDLOG_VERSION} as logger framework.")
 
     FetchContent_Declare(spdlog
@@ -25,13 +23,14 @@ endif()
 if(USE_POPL20)
     message(STATUS "Using popl20 header only library as command-line interpreter.")
 
-    add_subdirectory("popl20")
+    set(POPL20_INCLUDE_FILES "popl20/popl20/popl.hpp")
+    add_library(popl20 INTERFACE ${POPL20_INCLUDE_FILES})
 endif()
 
 if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
     message(STATUS "Using libgpiod as as the main I/O communication module.")
 
-    set(LIBGPIOD_NAME "libgpiod-2.0.1")
+    set(LIBGPIOD_NAME "libgpiod-${LIBGPIOD_VERSION}")
 
     set(LIBGPIOD_FILENAME "${LIBGPIOD_NAME}.tar.gz")
     set(LIBGPIOD_PARENT_FOLDER_PATH "${PROJECT_SOURCE_DIR}/src/third-party/_temp")

@@ -3,6 +3,7 @@
 
 // C++ STL
 #include <algorithm>
+#include <exception>
 
 namespace rpi_gc {
 
@@ -32,13 +33,19 @@ namespace rpi_gc {
     } // namespace details
 
     AutomaticWateringCommand::AutomaticWateringCommand(ostream_ref outputStream, option_parser_pointer optionParser) noexcept :
-        m_outputStream{std::move(outputStream)},
+        m_outputStream{outputStream},
         m_optionParser{std::move(optionParser)} {}
 
     bool AutomaticWateringCommand::processInputOptions(const std::vector<string_type>& inputTokens) noexcept {
         assert(m_optionParser != nullptr);
 
-        m_optionParser->parse(inputTokens);
+        try {
+            m_optionParser->parse(inputTokens);
+        }catch(const std::exception& exc) {
+            m_outputStream.get() << "[ERROR] => " << exc.what() << std::endl;
+            m_outputStream.get() << "[ERROR] => The command won\'t be executed." << std::endl;
+            return false;
+        }
         return true;
     }
 

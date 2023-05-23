@@ -2,7 +2,7 @@
 #include <testing-core.hpp>
 
 #include <greenhouse-controller-application.hpp>
-#include <rpi_gc-config-file.hpp>
+#include <version/version-numbers.hpp>
 
 // User interface
 #include <user-interface/application-strings.hpp>
@@ -41,7 +41,9 @@ namespace tests {
 
     rpi_gc::StringType GenerateVersionString() noexcept {
         rpi_gc::OutputStringStream stream{};
-        stream << rpi_gc_VERSION_MAJOR << "." << rpi_gc_VERSION_MINOR << "." << rpi_gc_VERSION_PATCH << "-rc0";
+        stream << rpi_gc::version::RPI_GC_VERSION_MAJOR << "." << rpi_gc::version::RPI_GC_VERSION_MINOR << "." << rpi_gc::version::RPI_GC_VERSION_PATCH;
+        if constexpr (!rpi_gc::version::RPI_GC_VERSION_RC_NAME.empty())
+            stream << "-" << rpi_gc::version::RPI_GC_VERSION_RC_NAME;
 
         return stream.str();
     }
@@ -101,7 +103,7 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
         GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
 
         WHEN("A supported option (help) is given into the terminal buffer") {
-            std::vector<const CharType*> strings{strings::application::EXECUTABLE_NAME.data(), "--help"};
+            std::vector<std::string> strings{std::string{strings::application::EXECUTABLE_NAME}, std::string{"--help"}};
 
             THEN("The application command should correctly parse the input line") {
                 auto commandMockPtr = std::make_unique<testing::StrictMock<mocks::TerminalCommandMock<CharType>>>();
@@ -110,7 +112,7 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
                    .WillOnce(testing::Return(true));
 
                 applicationUnderTest.setApplicationCommand(std::move(commandMockPtr));
-                applicationUnderTest.processInputOptions(2, strings.data());
+                applicationUnderTest.processInputOptions(strings);
             }
         }
     }

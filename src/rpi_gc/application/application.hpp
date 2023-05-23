@@ -6,6 +6,8 @@
 
 // C++ STL
 #include <cstdint>
+#include <vector>
+#include <string>
 
 namespace rpi_gc {
     //! \brief Represents the basic interface of an application object that
@@ -20,7 +22,7 @@ namespace rpi_gc {
         //! \brief Processes the given terminal input options. It can decide whether or not the
         //! application can execute (maybe the user typed --help or --version).
         //! \return True if the application can run, false otherwise.
-        virtual bool processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept = 0;
+        virtual bool processInputOptions(const std::vector<std::string>& inputArgs) noexcept = 0;
     };
 
 } // namespace rpi_gc

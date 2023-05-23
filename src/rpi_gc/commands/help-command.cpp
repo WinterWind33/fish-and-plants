@@ -1,6 +1,6 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <commands/help-command.hpp>
-#include <rpi_gc-config-file.hpp>
+#include <version/version-numbers.hpp>
 
 // C++ STL
 #include <cassert>
@@ -9,7 +9,7 @@
 namespace rpi_gc {
 
     HelpCommand::HelpCommand(ostream_ref outputStream, std::vector<terminal_command_const_ref> commands) noexcept :
-        m_outputStream{std::move(outputStream)},
+        m_outputStream{outputStream},
         m_asOption{std::make_shared<gh_cmd::Switch<char_type>>('h', "help", "Displays this help page.")},
         m_terminalCommands{std::move(commands)} {}
 
@@ -84,7 +84,11 @@ namespace rpi_gc {
 
     std::string HelpCommand::get_app_version() noexcept {
         std::ostringstream outputStream{};
-        outputStream << rpi_gc_VERSION_MAJOR << '.' << rpi_gc_VERSION_MINOR << '.' << rpi_gc_VERSION_PATCH << "-rc0";
+        outputStream <<
+            version::RPI_GC_VERSION_MAJOR << '.' << version::RPI_GC_VERSION_MINOR << '.' << version::RPI_GC_VERSION_PATCH;
+
+        if constexpr (!version::RPI_GC_VERSION_RC_NAME.empty())
+            outputStream << "-" << version::RPI_GC_VERSION_RC_NAME;
 
         return outputStream.str();
     }
