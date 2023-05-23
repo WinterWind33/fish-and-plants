@@ -21,7 +21,7 @@ set_target_properties(gh_log
 )
 
 set(GH_LOG_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/wrappers")
-target_include_directories(gh_log PUBLIC ${GH_LOG_INCLUDE_DIR})
+target_include_directories(gh_log PRIVATE ${GH_LOG_INCLUDE_DIR})
 
 if(USE_SPDLOG)
     set(SPDLOG_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/src/third-party/spdlog-1.10.0/include")
