@@ -8,8 +8,8 @@
 namespace rpi_gc {
 
     ApplicationCommand::ApplicationCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept :
-        m_outputStream{std::move(outputStream)},
-        m_optionParser{std::move(optionParser)} {}
+        m_outputStream{outputStream},
+        m_optionParser{optionParser} {}
 
     bool ApplicationCommand::processInputOptions(const std::vector<string_type>& options) noexcept {
         m_optionParser.get().parse(options);
@@ -67,7 +67,7 @@ namespace rpi_gc {
         assert(!m_bivalentCommands.contains(asOption->getLongName()));
 
         m_optionParser.get().addOption(asOption);
-        m_bivalentCommands.emplace(asOption->getLongName(), std::move(bivalentCommand));
+        m_bivalentCommands.emplace(asOption->getLongName(), bivalentCommand);
     }
 
 } // namespace rpi_gc
