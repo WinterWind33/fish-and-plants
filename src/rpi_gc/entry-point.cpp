@@ -364,7 +364,7 @@ int main(int argc, char* argv[]) {
     mainApplication.addTerminableSystem(std::move(automaticWateringSystem));
 
     std::vector<std::string> inputArgs{};
-    std::transform(argv, argv + argc, inputArgs.begin(), [](const char* str){
+    std::transform(argv, argv + argc, std::back_inserter(inputArgs), [](const char* str){
         return std::string{str};
     });
 
