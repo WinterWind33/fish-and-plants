@@ -70,7 +70,7 @@ set(RPI_GC_VERSION_MAJOR 1)
 set(RPI_GC_VERSION_MINOR 0)
 set(RPI_GC_VERSION_PATCH 0)
 set(RPI_GC_VERSION_RC_NAME "rc-1")
-configure_file("${PROJECT_SOURCE_DIR}/src/rpi_gc/rpi_gc-config-file.hpp.in" "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp")
+configure_file("${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp.in" "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp")
 
 # Dependencies
 # Here we don't want to include gh_hal and gh_log directly as this will result
