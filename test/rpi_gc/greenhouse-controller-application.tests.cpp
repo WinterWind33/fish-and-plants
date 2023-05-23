@@ -2,7 +2,7 @@
 #include <testing-core.hpp>
 
 #include <greenhouse-controller-application.hpp>
-#include <rpi_gc-config-file.hpp>
+#include <version/version-numbers.hpp>
 
 // User interface
 #include <user-interface/application-strings.hpp>
@@ -41,7 +41,9 @@ namespace tests {
 
     rpi_gc::StringType GenerateVersionString() noexcept {
         rpi_gc::OutputStringStream stream{};
-        stream << rpi_gc_VERSION_MAJOR << "." << rpi_gc_VERSION_MINOR << "." << rpi_gc_VERSION_PATCH << "-rc0";
+        stream << rpi_gc::version::RPI_GC_VERSION_MAJOR << "." << rpi_gc::version::RPI_GC_VERSION_MINOR << "." << rpi_gc::version::RPI_GC_VERSION_PATCH;
+        if constexpr (!rpi_gc::version::RPI_GC_VERSION_RC_NAME.empty())
+            stream << "-" << rpi_gc::version::RPI_GC_VERSION_RC_NAME;
 
         return stream.str();
     }

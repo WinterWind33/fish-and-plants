@@ -1,6 +1,6 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <commands/version-command.hpp>
-#include <rpi_gc-config-file.hpp>
+#include <version/version-numbers.hpp>
 
 namespace rpi_gc {
 
@@ -10,8 +10,11 @@ namespace rpi_gc {
 
     bool VersionCommand::execute() noexcept {
         m_outputStream.get() << strings::application::NAME << " - Version " <<
-            rpi_gc_VERSION_MAJOR << "." << rpi_gc_VERSION_MINOR << "." << rpi_gc_VERSION_PATCH;
-        m_outputStream.get() << "-rc0";
+            version::RPI_GC_VERSION_MAJOR << "." << version::RPI_GC_VERSION_MINOR << "." << version::RPI_GC_VERSION_PATCH;
+
+        if constexpr (!version::RPI_GC_VERSION_RC_NAME.empty())
+            m_outputStream.get() << "-" << version::RPI_GC_VERSION_RC_NAME;
+
         m_outputStream.get() << std::endl;
 
         return true;

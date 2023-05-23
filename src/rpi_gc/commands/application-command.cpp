@@ -1,8 +1,6 @@
 // Copyright (C) 2023 Andrea Ballestrazzi
 #include <commands/application-command.hpp>
 
-#include <rpi_gc-config-file.hpp> // For printing the version.
-
 // C++ STL
 #include <cassert>
 #include <algorithm> // for std::find_if

@@ -2,7 +2,7 @@
 #include <greenhouse-controller-application.hpp>
 
 // Resources
-#include <rpi_gc-config-file.hpp>
+#include <version/version-numbers.hpp>
 #include <user-interface/commands-strings.hpp>
 
 // C++ STL
@@ -127,9 +127,12 @@ namespace rpi_gc {
 
     StringType GreenhouseControllerApplication::create_version_string() noexcept {
         OutputStringStream versionStream{};
-        versionStream << rpi_gc_VERSION_MAJOR << ".";
-        versionStream << rpi_gc_VERSION_MINOR << ".";
-        versionStream << rpi_gc_VERSION_PATCH << "-rc0";
+        versionStream << version::RPI_GC_VERSION_MAJOR << ".";
+        versionStream << version::RPI_GC_VERSION_MINOR << ".";
+        versionStream << version::RPI_GC_VERSION_PATCH;
+
+        if constexpr (!version::RPI_GC_VERSION_RC_NAME.empty())
+            versionStream << "-" << version::RPI_GC_VERSION_RC_NAME;
 
         return versionStream.str();
     }
