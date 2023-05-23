@@ -13,28 +13,26 @@
 namespace rpi_gc {
 
     GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, logger_pointer mainLogger) noexcept :
-        m_outputStream{std::move(outputStream)},
-        m_inputStream{std::move(inputStream)},
+        m_outputStream{outputStream},
+        m_inputStream{inputStream},
         m_mainLogger{std::move(mainLogger)} {
         assert(static_cast<bool>(m_mainLogger));
     }
 
 
-    bool GreenhouseControllerApplication::processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept {
-        std::vector<StringType> tokens{};
-        for(std::int32_t i{}; i < argc; ++i)
-            tokens.push_back(argv[i]);
-
+    bool GreenhouseControllerApplication::processInputOptions(const std::vector<std::string>& inputArgs) noexcept {
         // We execute the parsing only if there are tokens to parse apart
-        // from the application itselt (the first token).
-        if(tokens.size() > 1) {
-            assert(m_applicationCommand != nullptr);
-            m_bCanApplicationCommandExecute = m_applicationCommand->processInputOptions(tokens);
-
-            // If we are in this conditional branch then for now we don't have
-            // situations where this can be false.
-            assert(m_bCanApplicationCommandExecute);
+        // from the application itself (the first token).
+        if(inputArgs.size() < 2) {
+            return true;
         }
+
+        assert(m_applicationCommand != nullptr);
+        m_bCanApplicationCommandExecute = m_applicationCommand->processInputOptions(inputArgs);
+
+        // If we are in this conditional branch then for now we don't have
+        // situations where this can be false.
+        assert(m_bCanApplicationCommandExecute);
 
         return true;
     }

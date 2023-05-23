@@ -363,7 +363,12 @@ int main(int argc, char* argv[]) {
 
     mainApplication.addTerminableSystem(std::move(automaticWateringSystem));
 
-    if(!mainApplication.processInputOptions(argc, argv))
+    std::vector<std::string> inputArgs{};
+    std::transform(argv, argv + argc, inputArgs.begin(), [](const char* str){
+        return std::string{str};
+    });
+
+    if(!mainApplication.processInputOptions(inputArgs))
         return 1;
 
     mainLogger->logInfo("Starting application loop.");

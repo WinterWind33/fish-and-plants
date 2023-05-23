@@ -35,7 +35,7 @@ namespace rpi_gc {
         //! \brief Runs the main greenhousse controller application.
         void run() noexcept override;
 
-        bool processInputOptions(const std::int32_t argc, const CharType* const argv[]) noexcept override;
+        bool processInputOptions(const std::vector<std::string>& inputArgs) noexcept override;
 
         //! \brief Adds a command that can be executed during the application loop.
         //!  The command MUST not exist inside the internal pool.
