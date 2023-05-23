@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.19)
 if(COMPILE_AARCH64_ON_LINUX)
     # Note: if aarch64 compilation is triggered then a valid aarch64 toolchain
     # should be passed. See the "toolchains" folder for options.
-    message("[INFO] => Compiling for aarch64 on Linux.")
+    message(STATUS "Compiling for aarch64 on Linux.")
 
     # Target operating system name.
     set(CMAKE_SYSTEM_NAME Linux)
@@ -27,12 +27,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # If we are compiling with gcc or clang we need to pass the -fconcpets
 # option in order to compile with concepts.
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT CMAKE_EXPORT_COMPILE_COMMANDS)
-    message("[INFO] => Compiling with: -fconcepts.")
+    message(STATUS "Compiling with: -fconcepts.")
     add_compile_options(-fconcepts)
 endif()
 
 if(NOT MSVC)
-    message("[INFO] => Compiling with -g option")
+    message(STATUS "Compiling with -g option")
 
     # With clang or gcc we need this option in order to debug the
     # project.

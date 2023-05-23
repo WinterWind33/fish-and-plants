@@ -96,18 +96,18 @@ endif()
 # === Third party submodules configuration ===
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK)
-    message("[INFO] => Using amalgamated Catch2 v${CATCH2_VERSION} as testing framework.")
+    message(STATUS "Using amalgamated Catch2 v${CATCH2_VERSION} as testing framework.")
 
     set(CATCH2_DIR "${PROJECT_SOURCE_DIR}/test/third-party/Catch2-${CATCH2_VERSION}")
     set(AMALGAMATED_HPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.hpp")
     set(AMALGAMATED_CPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.cpp")
 
-    message("[INFO] => Downloading Catch2 amalgamated HPP file.")
+    message(STATUS "Downloading Catch2 amalgamated HPP file.")
     file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.hpp"
         ${AMALGAMATED_HPP_FILE}
     )
 
-    message("[INFO] => Downloading Catch2 amalgamated CPP file.")
+    message(STATUS "Downloading Catch2 amalgamated CPP file.")
     file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.cpp"
         ${AMALGAMATED_CPP_FILE}
     )
@@ -135,7 +135,7 @@ if(USE_CATCH2_AS_TESTING_FRAMEWORK)
 endif()
 
 if(USE_GMOCK)
-    message("[INFO] => Using GMock as test doubles framework.")
+    message(STATUS "Using GMock as test doubles framework.")
 
     FetchContent_Declare(
         googletest
