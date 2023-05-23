@@ -92,10 +92,10 @@ namespace rpi_gc {
                 continue;
             }
 
-            const bool bCanExec = m_commands.at(commandName)->processInputOptions(lineTokens);
-            if(bCanExec) {
+            if(m_commands.at(commandName)->processInputOptions(lineTokens)) {
                 m_commands[commandName]->execute();
             }
+
 
             // We add a new line after the command execution so the user feedback
             // is more clean.
