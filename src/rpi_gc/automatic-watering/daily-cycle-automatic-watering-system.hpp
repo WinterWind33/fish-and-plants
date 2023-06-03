@@ -67,6 +67,9 @@ namespace rpi_gc::automatic_watering {
 
         void startAutomaticWatering() noexcept override;
 
+        void setWaterPumpEnabled(const bool bEnabled) noexcept;
+        void setWaterValveEnabled(const bool bEnabled) noexcept;
+
         inline bool isRunning() const noexcept { return m_bIsRunning; }
 
     private:
@@ -78,6 +81,8 @@ namespace rpi_gc::automatic_watering {
         stop_event_listener m_stopListener{};
         stop_event_mutex m_stopMutex{};
         hardware_access_mutex_reference m_hardwareAccessMutex;
+        std::atomic_bool m_bWaterPumpEnabled{};
+        std::atomic_bool m_bWaterValveEnabled{};
 
         bool m_bIsRunning{};
 

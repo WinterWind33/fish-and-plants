@@ -101,7 +101,7 @@ namespace commands_factory {
 
         autoWateringOptionParser->addOption(
             std::make_shared<gh_cmd::Switch<CharType>>(
-                'n', "disable-walve", "Disables the valve in the automatic watering system cycles."));
+                'n', "disable-valve", "Disables the valve in the automatic watering system cycles."));
 
         autoWateringOptionParser->addOption(
             std::make_shared<gh_cmd::Switch<CharType>>(
@@ -122,6 +122,34 @@ namespace commands_factory {
             "stop",
             [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
                 wateringSystem->requestShutdown();
+            }
+        );
+
+        autoWateringCommand->registerOptionEvent(
+            "disable-pump",
+            [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
+                wateringSystem->setWaterPumpEnabled(false);
+            }
+        );
+
+        autoWateringCommand->registerOptionEvent(
+            "disable-valve",
+            [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
+                wateringSystem->setWaterValveEnabled(false);
+            }
+        );
+
+        autoWateringCommand->registerOptionEvent(
+            "enable-pump",
+            [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
+                wateringSystem->setWaterPumpEnabled(true);
+            }
+        );
+
+        autoWateringCommand->registerOptionEvent(
+            "enable-valve",
+            [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
+                wateringSystem->setWaterValveEnabled(true);
             }
         );
 

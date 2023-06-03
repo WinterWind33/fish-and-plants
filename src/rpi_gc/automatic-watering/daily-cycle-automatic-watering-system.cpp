@@ -243,4 +243,12 @@ namespace rpi_gc::automatic_watering {
         waterPumpDigitalOut->deactivate();
     }
 
+    void DailyCycleAutomaticWateringSystem::setWaterValveEnabled(const bool bEnabled) noexcept {
+        m_bWaterValveEnabled.store(bEnabled);
+    }
+
+    void DailyCycleAutomaticWateringSystem::setWaterPumpEnabled(const bool bEnabled) noexcept {
+        m_bWaterPumpEnabled.store(bEnabled);
+    }
+
 } // namespace rpi_gc::automatic_watering
