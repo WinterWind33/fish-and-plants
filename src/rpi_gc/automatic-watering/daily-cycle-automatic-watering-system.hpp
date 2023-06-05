@@ -70,6 +70,7 @@ namespace rpi_gc::automatic_watering {
         void setWaterPumpEnabled(const bool bEnabled) noexcept;
         void setWaterValveEnabled(const bool bEnabled) noexcept;
 
+        [[nodiscard]]
         inline bool isRunning() const noexcept { return m_bIsRunning; }
 
     private:
@@ -86,7 +87,7 @@ namespace rpi_gc::automatic_watering {
 
         bool m_bIsRunning{};
 
-        void run_automatic_watering(std::stop_token stopToken, main_logger_pointer logger) noexcept;
+        void run_automatic_watering(std::stop_token stopToken, const main_logger_pointer& logger) noexcept;
 
         void activate_watering_hardware() noexcept;
         void disable_watering_hardware() noexcept;

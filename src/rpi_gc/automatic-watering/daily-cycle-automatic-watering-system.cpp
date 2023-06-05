@@ -35,9 +35,9 @@ namespace rpi_gc::automatic_watering {
         hardware_controller_atomic_ref hardwareController, time_provider_atomic_ref timeProvider) noexcept :
         m_mainLogger{std::move(mainLogger)},
         m_userLogger{std::move(userLogger)},
-        m_hardwareController{std::move(hardwareController)},
-        m_timeProvider{std::move(timeProvider)},
-        m_hardwareAccessMutex{std::move(hardwareMutex)} {
+        m_hardwareController{hardwareController},
+        m_timeProvider{timeProvider},
+        m_hardwareAccessMutex{hardwareMutex} {
         assert(m_mainLogger != nullptr);
         assert(m_userLogger != nullptr);
     }
@@ -123,7 +123,7 @@ namespace rpi_gc::automatic_watering {
         m_bIsRunning = true;
     }
 
-    void DailyCycleAutomaticWateringSystem::run_automatic_watering(std::stop_token stopToken, logger_pointer logger) noexcept {
+    void DailyCycleAutomaticWateringSystem::run_automatic_watering(std::stop_token stopToken, const logger_pointer& logger) noexcept {
         const time_provider_pointer::value_type timeProvider{m_timeProvider.get().load()};
         assert(timeProvider != nullptr);
 
