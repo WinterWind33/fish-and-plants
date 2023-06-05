@@ -110,14 +110,33 @@ namespace rpi_gc::automatic_watering {
             return;
         }
 
+        // If the user disactivated both the water pump and the water valve then there is no
+        // need to proceed and activate the watering system
+        if(!m_bWaterValveEnabled.load() && !m_bWaterPumpEnabled.load()) {
+            const StringType msgDevicesNotEnabled{
+                format_log_string("Both the water valve and the water pump are not enabled.")};
+            const StringType msgRunAborted{format_log_string("Automatic watering system start aborted.")};
+            const StringType msgSuggestion{"Consider enabling the water pump and/or the water valve to start a job."};
+
+            m_mainLogger->logWarning(msgDevicesNotEnabled);
+            m_userLogger->logWarning(msgDevicesNotEnabled);
+
+            m_mainLogger->logWarning(msgRunAborted);
+            m_userLogger->logWarning(msgRunAborted);
+
+            m_userLogger->logInfo(msgSuggestion);
+
+            return;
+        }
+
         const StringType formattedLogString{format_log_string(strings::feedbacks::START_WATERING_JOB)};
         m_mainLogger->logInfo(formattedLogString);
 
         // We also notify the user for this action.
         m_userLogger->logInfo(formattedLogString);
 
-        m_workerThread = thread_type{[this](std::stop_token stopToken, logger_pointer logger){
-            run_automatic_watering(std::move(stopToken), std::move(logger));
+        m_workerThread = thread_type{[this](std::stop_token stopToken, const logger_pointer& logger){
+            run_automatic_watering(std::move(stopToken), logger);
         }, m_mainLogger};
 
         m_bIsRunning = true;
