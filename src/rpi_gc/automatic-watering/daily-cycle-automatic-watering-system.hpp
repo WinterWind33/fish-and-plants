@@ -20,6 +20,7 @@
 #include <functional>
 #include <condition_variable>
 #include <mutex>
+#include <tuple>
 
 namespace rpi_gc::automatic_watering {
 
@@ -88,6 +89,12 @@ namespace rpi_gc::automatic_watering {
         bool m_bIsRunning{};
 
         void run_automatic_watering(std::stop_token stopToken, const main_logger_pointer& logger) noexcept;
+
+        // Updates the status of the valve and pump devices according to the given
+        // initial status. If the initial status of a device was "enabled" then this will
+        // set it to "disable" and it will deactivate the corresponding hardware PIN.
+        [[nodiscard]]
+        std::pair<bool, bool> update_devices_status(const bool bWasValveEnabled, const bool bWasPumpEnabled) noexcept;
 
         void activate_watering_hardware() noexcept;
         void disable_watering_hardware() noexcept;

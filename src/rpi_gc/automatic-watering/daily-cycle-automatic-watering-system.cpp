@@ -146,6 +146,11 @@ namespace rpi_gc::automatic_watering {
         const time_provider_pointer::value_type timeProvider{m_timeProvider.get().load()};
         assert(timeProvider != nullptr);
 
+        // Saving the devices status for later as we need to know if the user
+        // decided to deactivate them during a cycle.
+        bool bWasValveEnabled{m_bWaterValveEnabled.load()};
+        bool bWasPumpEnabled{m_bWaterPumpEnabled.load()};
+
         logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_START));
         if(stopToken.stop_requested()) {
             logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_STOP_REQUESTED));
@@ -171,6 +176,22 @@ namespace rpi_gc::automatic_watering {
                 break;
             }
 
+            // Make sure we deactivate the PINs if the user disabled the devices during the
+            // activation.
+            auto [bNewValveStatus, bNewPumpStatus]{update_devices_status(bWasValveEnabled, bWasPumpEnabled)};
+            bWasValveEnabled = bNewValveStatus;
+            bWasPumpEnabled = bNewPumpStatus;
+
+            // If both the devices have been disabled, then we don't need to proceed with the job and we can
+            // shut it down right now.
+            if(!bNewValveStatus && !bNewPumpStatus) {
+                constexpr std::string_view FEEDBACK_MESSAGE{"Aborting the automatic watering system job as devices have been disabled."};
+                m_userLogger->logWarning(format_log_string(FEEDBACK_MESSAGE));
+                m_mainLogger->logWarning(format_log_string(FEEDBACK_MESSAGE));
+
+                break;
+            }
+
             const WateringSystemTimeProvider::time_unit hardwareDeactivationTime{timeProvider->getWateringSystemDeactivationDuration()};
 
             // Now we can shut off the hardware.
@@ -181,6 +202,37 @@ namespace rpi_gc::automatic_watering {
         }
 
         logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_END));
+    }
+
+    std::pair<bool, bool> DailyCycleAutomaticWateringSystem::update_devices_status(const bool bWasValveEnabled, const bool bWasPumpEnabled) noexcept {
+        // Here we only need to check whether the device is being disabled. If the device
+        // was disabled and then enabled it will wait the next cycle iteration to go up.
+        const bool bIsValveEnabled{m_bWaterValveEnabled.load()};
+        const bool bHasValveBeenDisabled{bWasValveEnabled && !bIsValveEnabled};
+
+        if(bHasValveBeenDisabled) {
+            WateringSystemHardwareController::digital_output_type* const waterValveDigitalOut {
+                m_hardwareController.get().load()->getWaterValveDigitalOut()
+            };
+            assert(waterValveDigitalOut != nullptr);
+
+            m_mainLogger->logWarning(format_log_string("Deactivating the water valve digital out as it has been disabled."));
+            waterValveDigitalOut->deactivate();
+        }
+
+        const bool bIsPumpEnabled{m_bWaterPumpEnabled.load()};
+        const bool bHasPumpBeenDisabled{bWasPumpEnabled && !bIsPumpEnabled};
+        if(bHasPumpBeenDisabled) {
+            WateringSystemHardwareController::digital_output_type* const waterPumpDigitalOut {
+                m_hardwareController.get().load()->getWaterPumpDigitalOut()
+            };
+            assert(waterPumpDigitalOut != nullptr);
+
+            m_mainLogger->logWarning(format_log_string("Deactivating the water pump digital out as it has been disabled."));
+            waterPumpDigitalOut->deactivate();
+        }
+
+        return std::make_pair(bIsValveEnabled, bIsPumpEnabled);
     }
 
     StringType DailyCycleAutomaticWateringSystem::format_log_string(StringViewType message) noexcept {
@@ -214,16 +266,21 @@ namespace rpi_gc::automatic_watering {
         // As per requirements for the activation of the watering system we need to activate
         // the water valve before the water pump without waiting.
         std::ostringstream logStream{};
-        logStream << format_log_string("Turning on the water valve.") << " ";
-        logStream << "[VALVE DIG-OUT] => " << *waterValveDigitalOut;
-        m_mainLogger->logInfo(logStream.str());
-        waterValveDigitalOut->activate();
 
-        logStream.str("");
-        logStream << format_log_string("Turning on the water pump.") << " ";
-        logStream << "[PUMP DIG-OUT] => " << *waterPumpDigitalOut;
-        m_mainLogger->logInfo(logStream.str());
-        waterPumpDigitalOut->activate();
+        if(m_bWaterValveEnabled.load()) {
+            logStream << format_log_string("Turning on the water valve.") << " ";
+            logStream << "[VALVE DIG-OUT] => " << *waterValveDigitalOut;
+            m_mainLogger->logInfo(logStream.str());
+            waterValveDigitalOut->activate();
+        }
+
+        if(m_bWaterPumpEnabled.load()) {
+            logStream.str("");
+            logStream << format_log_string("Turning on the water pump.") << " ";
+            logStream << "[PUMP DIG-OUT] => " << *waterPumpDigitalOut;
+            m_mainLogger->logInfo(logStream.str());
+            waterPumpDigitalOut->activate();
+        }
     }
 
     void DailyCycleAutomaticWateringSystem::disable_watering_hardware() noexcept {
@@ -245,21 +302,30 @@ namespace rpi_gc::automatic_watering {
         };
         assert(waterPumpDigitalOut != nullptr);
 
+        const bool bValveEnabled{m_bWaterValveEnabled.load()};
+        const bool bPumpEnabled{m_bWaterPumpEnabled.load()};
+
         // As per requirements for the activation of the watering system we need to activate
         // the water valve before the water pump without waiting.
         std::ostringstream logStream{};
-        logStream << format_log_string("Turning off the water valve.") << " ";
-        logStream << "[VALVE DIG-OUT] => " << *waterValveDigitalOut;
-        m_mainLogger->logInfo(logStream.str());
-        waterValveDigitalOut->deactivate();
 
-        std::this_thread::sleep_for(valvePumpSeparationTime);
+        if(bValveEnabled) {
+            logStream << format_log_string("Turning off the water valve.") << " ";
+            logStream << "[VALVE DIG-OUT] => " << *waterValveDigitalOut;
+            m_mainLogger->logInfo(logStream.str());
+            waterValveDigitalOut->deactivate();
+        }
 
-        logStream.str("");
-        logStream << format_log_string("Turning off the water pump.") << " ";
-        logStream << "[PUMP DIG-OUT] => " << *waterPumpDigitalOut;
-        m_mainLogger->logInfo(logStream.str());
-        waterPumpDigitalOut->deactivate();
+        if(bValveEnabled && bPumpEnabled)
+            std::this_thread::sleep_for(valvePumpSeparationTime);
+
+        if(bPumpEnabled) {
+            logStream.str("");
+            logStream << format_log_string("Turning off the water pump.") << " ";
+            logStream << "[PUMP DIG-OUT] => " << *waterPumpDigitalOut;
+            m_mainLogger->logInfo(logStream.str());
+            waterPumpDigitalOut->deactivate();
+        }
     }
 
     void DailyCycleAutomaticWateringSystem::setWaterValveEnabled(const bool bEnabled) noexcept {
