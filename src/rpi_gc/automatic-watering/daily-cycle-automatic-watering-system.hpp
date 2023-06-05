@@ -82,8 +82,8 @@ namespace rpi_gc::automatic_watering {
         stop_event_listener m_stopListener{};
         stop_event_mutex m_stopMutex{};
         hardware_access_mutex_reference m_hardwareAccessMutex;
-        std::atomic_bool m_bWaterPumpEnabled{};
-        std::atomic_bool m_bWaterValveEnabled{};
+        std::atomic_bool m_bWaterPumpEnabled{true};
+        std::atomic_bool m_bWaterValveEnabled{true};
 
         bool m_bIsRunning{};
 
