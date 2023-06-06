@@ -20,6 +20,7 @@
 #include <functional>
 #include <condition_variable>
 #include <mutex>
+#include <tuple>
 
 namespace rpi_gc::automatic_watering {
 
@@ -65,8 +66,27 @@ namespace rpi_gc::automatic_watering {
         //! \note Possibly a blocking call.
         void emergencyAbort() noexcept override;
 
+        //!!
+        //! \brief Starts the automatic watering system job in a separate worker thread.
+        //!
+        //! \note The automatic watering system won't start if both the water pump and the water valve
+        //!  are disabled before this call. In that case, a log is printed to the main and user loggers.
+        //!
         void startAutomaticWatering() noexcept override;
 
+        //!!
+        //! \brief Set the water pump enabled state.
+        //!
+        //! \param bEnabled True if the water pump need to be enabled.
+        void setWaterPumpEnabled(const bool bEnabled) noexcept;
+
+        //!!
+        //! \brief Set the water valve enabled state.
+        //!
+        //! \param bEnabled True if the water valve need to be enabled.
+        void setWaterValveEnabled(const bool bEnabled) noexcept;
+
+        [[nodiscard]]
         inline bool isRunning() const noexcept { return m_bIsRunning; }
 
     private:
@@ -78,10 +98,18 @@ namespace rpi_gc::automatic_watering {
         stop_event_listener m_stopListener{};
         stop_event_mutex m_stopMutex{};
         hardware_access_mutex_reference m_hardwareAccessMutex;
+        std::atomic_bool m_bWaterPumpEnabled{true};
+        std::atomic_bool m_bWaterValveEnabled{true};
 
         bool m_bIsRunning{};
 
-        void run_automatic_watering(std::stop_token stopToken, main_logger_pointer logger) noexcept;
+        void run_automatic_watering(std::stop_token stopToken, const main_logger_pointer& logger) noexcept;
+
+        // Updates the status of the valve and pump devices according to the given
+        // initial status. If the initial status of a device was "enabled" then this will
+        // set it to "disable" and it will deactivate the corresponding hardware PIN.
+        [[nodiscard]]
+        std::pair<bool, bool> update_devices_status(const bool bWasValveEnabled, const bool bWasPumpEnabled) noexcept;
 
         void activate_watering_hardware() noexcept;
         void disable_watering_hardware() noexcept;

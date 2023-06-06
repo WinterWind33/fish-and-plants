@@ -95,6 +95,22 @@ namespace commands_factory {
                 constants::WATER_PUMP_PIN_ID
             ));
 
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Switch<CharType>>(
+                'o', "disable-pump", "Disables the pump in the automatic watering system cycles."));
+
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Switch<CharType>>(
+                'n', "disable-valve", "Disables the valve in the automatic watering system cycles."));
+
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Switch<CharType>>(
+                'E', "enable-pump", "Enables the water pump in the automatic watering system cycles."));
+
+        autoWateringOptionParser->addOption(
+            std::make_shared<gh_cmd::Switch<CharType>>(
+                'G', "enable-valve", "Enables the water valve in the auotmatic watering system cycles."));
+
         std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(autoWateringOptionParser))};
         autoWateringCommand->registerOptionEvent(
             "start",
@@ -106,6 +122,34 @@ namespace commands_factory {
             "stop",
             [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
                 wateringSystem->requestShutdown();
+            }
+        );
+
+        autoWateringCommand->registerOptionEvent(
+            "disable-pump",
+            [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
+                wateringSystem->setWaterPumpEnabled(false);
+            }
+        );
+
+        autoWateringCommand->registerOptionEvent(
+            "disable-valve",
+            [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
+                wateringSystem->setWaterValveEnabled(false);
+            }
+        );
+
+        autoWateringCommand->registerOptionEvent(
+            "enable-pump",
+            [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
+                wateringSystem->setWaterPumpEnabled(true);
+            }
+        );
+
+        autoWateringCommand->registerOptionEvent(
+            "enable-valve",
+            [wateringSystem]([[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
+                wateringSystem->setWaterValveEnabled(true);
             }
         );
 
