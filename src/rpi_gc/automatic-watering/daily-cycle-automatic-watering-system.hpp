@@ -66,9 +66,24 @@ namespace rpi_gc::automatic_watering {
         //! \note Possibly a blocking call.
         void emergencyAbort() noexcept override;
 
+        //!!
+        //! \brief Starts the automatic watering system job in a separate worker thread.
+        //!
+        //! \note The automatic watering system won't start if both the water pump and the water valve
+        //!  are disabled before this call. In that case, a log is printed to the main and user loggers.
+        //!
         void startAutomaticWatering() noexcept override;
 
+        //!!
+        //! \brief Set the water pump enabled state.
+        //!
+        //! \param bEnabled True if the water pump need to be enabled.
         void setWaterPumpEnabled(const bool bEnabled) noexcept;
+
+        //!!
+        //! \brief Set the water valve enabled state.
+        //!
+        //! \param bEnabled True if the water valve need to be enabled.
         void setWaterValveEnabled(const bool bEnabled) noexcept;
 
         [[nodiscard]]
