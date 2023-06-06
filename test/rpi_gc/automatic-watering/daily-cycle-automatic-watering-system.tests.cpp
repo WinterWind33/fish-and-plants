@@ -49,7 +49,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests", "[unit][solitary][rpi_
         std::ref(timeProviderAtomic)
     };
 
-    GIVEN("A time configuration for the watering system") {
+    GIVEN("An automatic watering system object") {
         constexpr WateringSystemTimeProvider::time_unit ACTIVATION_TIME{60};
         constexpr WateringSystemTimeProvider::time_unit DEACTIVATION_TIME{100};
         constexpr WateringSystemTimeProvider::time_unit VALVE_PUMP_SEPARATION_TIME{100};
@@ -62,15 +62,55 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests", "[unit][solitary][rpi_
             .WillRepeatedly(testing::Return(VALVE_PUMP_SEPARATION_TIME));
 
         StrictMock<gh_hal::hardware_access::mocks::BoardDigitalPinMock> waterValveOutput{}, waterPumpOutput{};
-        EXPECT_CALL(waterValveOutput, printStatus).Times(testing::AtLeast(1));
-        EXPECT_CALL(waterPumpOutput, printStatus).Times(testing::AtLeast(1));
         EXPECT_CALL(hardwareControllerMockRef, getWaterValveDigitalOut).WillRepeatedly(testing::Return(&waterValveOutput));
         EXPECT_CALL(hardwareControllerMockRef, getWaterPumpDigitalOut).WillRepeatedly(testing::Return(&waterPumpOutput));
 
         WHEN("The watering system is activated") {
             using testing::Expectation;
 
+            AND_WHEN("The valve is disabled") {
+                awsUnderTest.setWaterValveEnabled(false);
+                EXPECT_CALL(waterPumpOutput, printStatus).Times(testing::AtLeast(1));
+
+                THEN("It should only operate the water pump") {
+                    EXPECT_CALL(waterValveOutput, activate).Times(0);
+                    EXPECT_CALL(waterValveOutput, deactivate).Times(0);
+
+                    EXPECT_CALL(waterPumpOutput, activate).Times(1);
+                    EXPECT_CALL(waterPumpOutput, deactivate).Times(1);
+
+                    awsUnderTest.startAutomaticWatering();
+
+                    // We must wait the start of the thread before requesting a stop.
+                    std::this_thread::sleep_for(tests::WAIT_FOR_THREAD_TO_START);
+
+                    awsUnderTest.requestShutdown();
+                }
+            }
+
+            AND_WHEN("The pump is disabled") {
+                awsUnderTest.setWaterPumpEnabled(false);
+                EXPECT_CALL(waterValveOutput, printStatus).Times(testing::AtLeast(1));
+
+                THEN("It should only operate the water valve") {
+                    EXPECT_CALL(waterPumpOutput, activate).Times(0);
+                    EXPECT_CALL(waterPumpOutput, deactivate).Times(0);
+
+                    EXPECT_CALL(waterValveOutput, activate).Times(1);
+                    EXPECT_CALL(waterValveOutput, deactivate).Times(1);
+
+                    awsUnderTest.startAutomaticWatering();
+
+                    // We must wait the start of the thread before requesting a stop.
+                    std::this_thread::sleep_for(tests::WAIT_FOR_THREAD_TO_START);
+
+                    awsUnderTest.requestShutdown();
+                }
+            }
+
             THEN("It should correctly activate the water valve before the water pump") {
+                EXPECT_CALL(waterValveOutput, printStatus).Times(testing::AtLeast(1));
+                EXPECT_CALL(waterPumpOutput, printStatus).Times(testing::AtLeast(1));
                 Expectation waterValveOnExp = EXPECT_CALL(waterValveOutput, activate)
                     .Times(1);
                 Expectation waterPumpOnExp = EXPECT_CALL(waterPumpOutput, activate)
@@ -89,6 +129,8 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests", "[unit][solitary][rpi_
             }
 
             THEN("It should correctly deactivate the water valve before the water pump") {
+                EXPECT_CALL(waterValveOutput, printStatus).Times(testing::AtLeast(1));
+                EXPECT_CALL(waterPumpOutput, printStatus).Times(testing::AtLeast(1));
                 EXPECT_CALL(waterValveOutput, activate);
                 EXPECT_CALL(waterPumpOutput, activate);
 
