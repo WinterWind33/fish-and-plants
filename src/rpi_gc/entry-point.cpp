@@ -187,9 +187,8 @@ int main(int argc, char* argv[]) {
     using ApplicationOptionParser = DefaultOptionParser;
     using LoggerPointer = std::shared_ptr<gh_log::Logger>;
 
-    LoggerPointer mainLogger{gh_log::SPLLogger::createFileLogger(
-        StringType{strings::application::NAME},
-        std::filesystem::path{strings::application::MAIN_LOG_FILENAME}
+    LoggerPointer mainLogger{gh_log::SPLLogger::createDailyRotatingLogger(
+        StringType{strings::application::NAME}
     )};
     mainLogger->setAutomaticFlushLevel(gh_log::ELoggingLevel::Info);
     mainLogger->logInfo("Initiating system: starting log now.");

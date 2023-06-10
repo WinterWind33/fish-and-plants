@@ -30,6 +30,9 @@ namespace gh_log {
         [[nodiscard]]
         static std::shared_ptr<SPLLogger> createColoredStdOutLogger(const std::string& name) noexcept;
 
+        [[nodiscard]]
+        static std::shared_ptr<SPLLogger> createDailyRotatingLogger(const std::string& name) noexcept;
+
         void logMessage(const ELoggingLevel logLevel, LogStringType message) override;
 
         void logTrace(const LogStringType& msg) override;
