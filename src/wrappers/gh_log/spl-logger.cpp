@@ -1,8 +1,10 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #ifdef USE_SPDLOG
 #include <gh_log/spl-logger.hpp>
+
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/sinks/daily_file_sink.h>
 
 // C++ STL
 #include <cassert>
@@ -109,6 +111,11 @@ namespace gh_log {
     std::shared_ptr<SPLLogger> SPLLogger::createColoredStdOutLogger(const std::string& name) noexcept {
         // Color defaulted to automatic.
         return std::make_shared<SPLLogger>(spdlog::stderr_color_mt(name));
+    }
+
+    std::shared_ptr<SPLLogger> SPLLogger::createDailyRotatingLogger(const std::string& name) noexcept {
+        //NOLINTNEXTLINE
+        return std::make_shared<SPLLogger>(spdlog::daily_logger_mt(name, "daily-log.log"));
     }
 
 } // namespace gh_log
