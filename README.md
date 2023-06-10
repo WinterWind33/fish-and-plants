@@ -44,6 +44,8 @@ MIT License. See [LICENSE](./LICENSE).
 
 ## Credits
 
+These are the third party libraries used for the application.
+
 ### Production code
 
 - [spdlog](https://github.com/gabime/spdlog)
