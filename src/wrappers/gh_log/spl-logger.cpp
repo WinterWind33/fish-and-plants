@@ -1,8 +1,12 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #ifdef USE_SPDLOG
 #include <gh_log/spl-logger.hpp>
+
+//NOLINTNEXTLINE
 #include <spdlog/sinks/basic_file_sink.h>
+//NOLINTNEXTLINE
 #include <spdlog/sinks/stdout_color_sinks.h>
+//NOLINTNEXTLINE
 #include <spdlog/sinks/daily_file_sink.h>
 
 // C++ STL
