@@ -19,6 +19,9 @@ If you want to know more about the project, you can read a summary [here](docs/p
 
 - [Download the stable release](https://github.com/WinterWind33/fish-and-plants/releases) for GNU/Linux, macOS or Windows.
 
+*Please, note that the application runs correctly only on arm64 Linux architectures. For other architectures and all macOS and Windows operating systems, the
+hardware interface is simulated.*
+
 ## Setup the Repo
 
 If you want to clone the repository to your local machine and play with the code or build the executable yourself, you can follow these steps:
