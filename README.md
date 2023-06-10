@@ -5,6 +5,8 @@ that will automate it to the hardware that is needed to grow the plants inside t
 
 This repository holds the main software that runs inside the Raspberry PI that will control inputs and outputs.
 
+If you want to know more about the project, you can read a summary [here](docs/project/summary.md).
+
 ## Features
 
 ## Download
