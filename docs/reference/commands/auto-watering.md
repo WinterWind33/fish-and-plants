@@ -8,29 +8,5 @@ The command is responsible to activate, deactivate and control the flow of the a
 
 The flow of the automatic watering system (**AWS**) can be described
 
-```plantuml
-@startuml V1.0.0 Automatic watering flow
-
-start
-
-repeat
-    partition "**Step** AWS Activation" {
-        :Activate valve;
-        :Activate pump;
-    }
-    :**Wait** ACTIVATION_TIME;
-
-    partition "**Step** AWS Deactivation" {
-        :Deactivate valve;
-        :**Wait** DEACT_SEP_TIME;
-        :Deactivate pump;
-    }
-    :**Wait** DEACTIVATION_TIME;
-
-repeat while (Stop requested?) is no
-
-stop
-
-@enduml
-
+![Alt text](image.png)
 ```
