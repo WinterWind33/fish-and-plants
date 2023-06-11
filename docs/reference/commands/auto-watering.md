@@ -2,11 +2,11 @@
 
 The command is responsible to activate, deactivate and control the flow of the automatic irrigation of the greenhouse.
 
-**Note:** in the following documentation, **AWS** will be used as a short name for *automatic watering system*. The automatic watering system is the main entity that will handle the plants watering flow inside the application. When the AWS is started, water will be given to the plants and when it's deactivated, no water will reach them.
+**Note:** in the following documentation, **AWS** will be used as a short name for *automatic watering system*. The automatic watering system is the main entity that will handle the plants watering flow inside the application. When the AWS is started, water will be given to the plants and when it's deactivated no water will reach them.
 
 ## Command description
 
-Please, note that the command uses an **active-low** configuration on all the flow. This was introduced to fix the support for relays. This will properly change in future versions of the application to make it a configurable choice.
+Please, note that the command uses an **active-low** hardware configuration on all the flow. This was introduced to fix the support for relays. This will properly change in future versions of the application to make it a configurable choice.
 
 ### Name
 
@@ -20,7 +20,7 @@ Please, note that the command uses an **active-low** configuration on all the fl
 
 All the options listed below can be processed even if the irrigation flow is active. This means that if you want to change some parameter of the AWS, you can do that even if it's running.
 
-Based on the timing, the changes wil ltake effect after the cycle or after the current step completion (see below the irrigation flow for the steps).
+Based on the timing, the changes will take effect after the entire flow cycle or after the current step completion (see below the irrigation flow for the steps).
 
 ```ps
     -h, --help                          Displays the help page.
@@ -40,7 +40,7 @@ Based on the timing, the changes wil ltake effect after the cycle or after the c
 
 ```
 
-**NOTE: Use the -o, -n, -E and -G options with care. They are experimental and should be used only BEFORE the automatic watering system is started. Using this during the execution of the flow may result in undefined behaviors and hardware can be damaged in the process.**
+**NOTE: Use the -o, -n, -E and -G options with care. They are experimental and should be used only BEFORE the automatic watering system is started or when it's disabled. Using them during the execution of the flow may result in undefined behaviors and hardware can be damaged in the process.**
 
 #### `-S` or `--start` option
 
@@ -54,7 +54,7 @@ This will *deactivate* the automatic watering system flow, after the step that i
 
 This will set the activation time of the irrigation. This means that the irrigation system will bring water to the plants for the specified time.
 
-The time parameter is an integer measured in **milliseconds**. The default activation time is six seconds.
+The time parameter is an integer measured in **milliseconds**. The default activation time is 6 seconds.
 
 **Note**: the name `Daily-cycle` simply means that the irrigation flow is performed using a set of steps that is repeated accross the day, even multiple times. This is the current implementation of the irrigation flow.
 
@@ -74,7 +74,7 @@ Using the short name:
 
 #### `-D` or `--deactivation-time` option
 
-This will set the deactivation time of the irrigation. After the activation time step is elapsed, the AWS will be deactivated and all the hardware devices turned off. These will remain turned off for the specified time.
+This will set the deactivation time of the irrigation. After the activation time step is elapsed, the AWS will be deactivated and all the hardware devices turned off. These remain turned off for the specified time.
 
 The time parameter is an integer measured in **milliseconds**. The default activation time is 10 minutes (600 seconds = 600'000 milliseconds).
 
@@ -109,3 +109,5 @@ The flow of the automatic watering system (**AWS**) can be described with the fo
 ![Alt text](aws-flow.png)
 
 As you can see, during the irrigation deactivation there is a wait time that is needed to restore the pressure of the water flow so that the pump doesn't get damaged during the process.
+
+The flow can be interrupted after each step or during a `wait`: in this case, it will stop the wait and it will begin the teardown of the flow, putting the AWS state to "not running".
