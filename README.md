@@ -38,6 +38,10 @@ cmake --build . --config Release
 
 The repo uses CMake as the main build system, and it requires at least `CMake 3.19`.
 
+## Application reference
+
+[Here](./docs/reference/rpi_gc.md) you can find the main application reference.
+
 ## License
 
 MIT License. See [LICENSE](./LICENSE).
