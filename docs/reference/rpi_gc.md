@@ -17,3 +17,9 @@ Being the application based on a TUI, you can use the application, and thus cont
 - [auto-watering](./commands/auto-watering.md) : the main command used to control the irrigation automation;
 
 Every implemented command inside the application, apart from `help` and `exit`, have an help page: to show it, you can simply type the name of the command followed by `-h` or `--help`.
+
+### Logging
+
+The application creates daily logs in the format `daily-log_YYYY-MM-DD.log`. Every day at 00:00 the application creates a new file with the log of the current day.
+
+All the logs are saved inside the folder `logs`.
