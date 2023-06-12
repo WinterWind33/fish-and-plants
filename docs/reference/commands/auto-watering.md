@@ -102,6 +102,15 @@ You have to be careful using this option because you may damage hardware compone
 
 The time parameter is an integer measured in **milliseconds**. The default value is 600 milliseconds.
 
+#### `-V` and `-U` options
+
+- `-V, --valve-pin-id arg` : Sets the valve's output pin;
+- `-U, --pump-pin-id arg` : Sets the pump's output pin;
+
+These options are used to set the output PINs for the water valve and water pump. The PINs used are all digital outputs.
+
+If you change the pin ID during the AWS execution, the old PINs are deactivated and disabled and the new PINs are configured and ready for the next flow step.
+
 ## The automatic watering flow
 
 The flow of the automatic watering system (**AWS**) can be described with the following diagram:
