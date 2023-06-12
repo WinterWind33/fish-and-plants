@@ -115,7 +115,7 @@ namespace gh_log {
 
     std::shared_ptr<SPLLogger> SPLLogger::createDailyRotatingLogger(const std::string& name) noexcept {
         //NOLINTNEXTLINE
-        return std::make_shared<SPLLogger>(spdlog::daily_logger_mt(name, "daily-log.log"));
+        return std::make_shared<SPLLogger>(spdlog::daily_logger_mt(name, "logs/daily-log.log"));
     }
 
 } // namespace gh_log

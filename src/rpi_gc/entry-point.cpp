@@ -109,7 +109,7 @@ namespace commands_factory {
 
         autoWateringOptionParser->addOption(
             std::make_shared<gh_cmd::Switch<CharType>>(
-                'G', "enable-valve", "Enables the water valve in the auotmatic watering system cycles."));
+                'G', "enable-valve", "Enables the water valve in the automatic watering system cycles."));
 
         std::unique_ptr<AutomaticWateringCommand> autoWateringCommand{std::make_unique<AutomaticWateringCommand>(std::cout, std::move(autoWateringOptionParser))};
         autoWateringCommand->registerOptionEvent(
