@@ -1,4 +1,19 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #pragma once
 
-namespace rpi_gc::commands {} // namespace rpi_gc::commands
+#include <commands/terminal-command.hpp>
+#include <user-interface/commands-strings.hpp>
+
+namespace rpi_gc::commands {
+
+    class StatusCommand final : public TerminalCommandType {
+    public:
+
+        //!!
+        //! \brief Gets the name of this command. Resolves to "status".
+        constexpr name_type getName() const noexcept override {
+            return strings::commands::STATUS;
+        }
+    };
+
+} // namespace rpi_gc::commands
