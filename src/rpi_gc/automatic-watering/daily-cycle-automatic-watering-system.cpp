@@ -336,7 +336,7 @@ namespace rpi_gc::automatic_watering {
         m_bWaterPumpEnabled.store(bEnabled);
     }
 
-    void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) noexcept {
+    void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) const noexcept {
 
     }
 

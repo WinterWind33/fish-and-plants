@@ -88,7 +88,7 @@ namespace rpi_gc::automatic_watering {
         //! \param bEnabled True if the water valve need to be enabled.
         void setWaterValveEnabled(const bool bEnabled) noexcept;
 
-        void printDiagnostic(std::ostream& ost) noexcept override;
+        void printDiagnostic(std::ostream& ost) const noexcept override;
 
         [[nodiscard]]
         inline bool isRunning() const noexcept { return m_bIsRunning; }
