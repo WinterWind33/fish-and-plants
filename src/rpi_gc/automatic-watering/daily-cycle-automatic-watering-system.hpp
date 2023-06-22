@@ -6,6 +6,7 @@
 #include <automatic-watering/hardware-controllers/watering-system-hardware-controller.hpp>
 #include <automatic-watering/time-providers/watering-system-time-provider.hpp>
 
+#include <diagnostics/diagnostic-status-probeable.hpp>
 #include <abort-system/terminable-system.hpp>
 #include <abort-system/emergency-stoppable-system.hpp>
 
@@ -27,10 +28,11 @@ namespace rpi_gc::automatic_watering {
     //!!
     //! \brief Represents the automatic watering system that manages the greenhouse
     //!  irrigation on a daily basis using timers to stop and start the greenhouse's hardware.
-    class DailyCycleAutomaticWateringSystem :
+    class DailyCycleAutomaticWateringSystem final :
         public AutomaticWateringSystem,
         public abort_system::TerminableSystem,
-        public abort_system::EmergencyStoppableSystem {
+        public abort_system::EmergencyStoppableSystem,
+        public diagnostics::DiagnosticStatusProbeable {
     public:
         using logger_pointer = std::shared_ptr<gh_log::Logger>;
         using main_logger_pointer = logger_pointer;
@@ -85,6 +87,8 @@ namespace rpi_gc::automatic_watering {
         //!
         //! \param bEnabled True if the water valve need to be enabled.
         void setWaterValveEnabled(const bool bEnabled) noexcept;
+
+        void printDiagnostic(std::ostream& ost) noexcept override;
 
         [[nodiscard]]
         inline bool isRunning() const noexcept { return m_bIsRunning; }
