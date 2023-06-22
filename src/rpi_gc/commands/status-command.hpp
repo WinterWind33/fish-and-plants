@@ -14,6 +14,13 @@ namespace rpi_gc::commands {
         [[nodiscard]] constexpr name_type getName() const noexcept override {
             return strings::commands::STATUS;
         }
+
+        bool execute() noexcept override;
+
+        [[nodiscard]]
+        bool processInputOptions(const std::vector<string_type>& inputTockens) noexcept override;
+
+        void printHelp(help_ostream_type outputStream) const noexcept override;
     };
 
 } // namespace rpi_gc::commands
