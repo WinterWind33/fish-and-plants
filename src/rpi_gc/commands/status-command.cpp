@@ -39,6 +39,7 @@ namespace rpi_gc::commands {
         // Otherwise we can print all the diagnostics.
         for(const auto& diagnosticObj : m_diagnosticsObjects) {
             diagnosticObj.get().printDiagnostic(m_outputStream.get());
+            m_outputStream.get() << std::endl;
         }
 
         return true;

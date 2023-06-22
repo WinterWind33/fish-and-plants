@@ -16,7 +16,7 @@ namespace rpi_gc::commands {
 
     class StatusCommand final : public TerminalCommandType {
     public:
-        using diagnostic_probeable_ref = std::reference_wrapper<diagnostics::DiagnosticStatusProbeable>;
+        using diagnostic_probeable_ref = std::reference_wrapper<const diagnostics::DiagnosticStatusProbeable>;
         using option_parser = gh_cmd::OptionParser<CharType>;
         using option_parser_ptr = std::unique_ptr<option_parser>;
 
