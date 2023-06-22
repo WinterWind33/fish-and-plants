@@ -17,6 +17,9 @@
 #include <commands/version-command.hpp>
 #include <commands/help-command.hpp>
 #include <commands/automatic-watering/automatic-watering-command.hpp>
+#include <commands/status-command.hpp>
+
+#include <common/types.hpp>
 
 // C++ STL
 #include <iostream>
@@ -154,6 +157,20 @@ namespace commands_factory {
         );
 
         return autoWateringCommand;
+    }
+
+    template<typename WateringSystemPointer, typename OptionParserType>
+    [[nodiscard]] static std::unique_ptr<rpi_gc::commands::StatusCommand>
+        CreateStatusCommand(WateringSystemPointer wateringSystem) {
+        using namespace rpi_gc::commands;
+        assert(static_cast<bool>(wateringSystem));
+
+        auto optionParserPtr{std::make_unique<OptionParserType>("[OPTIONS] => status")};
+        optionParserPtr->addSwitch(std::make_shared<gh_cmd::Switch<rpi_gc::CharType>>('h', "help", "Displays this help page."));
+
+        std::vector<StatusCommand::diagnostic_probeable_ref> diagnosticables = {std::cref(*wateringSystem)};
+
+        return std::make_unique<StatusCommand>(std::move(optionParserPtr), std::move(diagnosticables), std::cout);
     }
 
 } // namespace commands_factory
@@ -379,12 +396,15 @@ int main(int argc, char* argv[]) {
         std::move(abortCommandOptionParser)
     );
 
+    auto statusCommand = commands_factory::CreateStatusCommand<AutomaticWateringSystemPointer, DefaultOptionParser>(automaticWateringSystem);
+
     auto helpCommand = std::make_unique<HelpCommand>(
         std::cout,
         std::vector<HelpCommand::terminal_command_const_ref>{
             std::cref(*versionCommand),
             std::cref(*autoWateringCommand),
-            std::cref(*abortCommand)
+            std::cref(*abortCommand),
+            std::cref(*statusCommand)
         }
     );
 
@@ -401,6 +421,7 @@ int main(int argc, char* argv[]) {
     mainApplication.addSupportedCommand(std::move(autoWateringCommand));
     mainApplication.addSupportedCommand(std::move(abortCommand));
     mainApplication.addSupportedCommand(std::move(versionCommand));
+    mainApplication.addSupportedCommand(std::move(statusCommand));
     mainApplication.addSupportedCommand(std::move(helpCommand));
     mainApplication.setApplicationCommand(std::move(applicationCommand));
 
