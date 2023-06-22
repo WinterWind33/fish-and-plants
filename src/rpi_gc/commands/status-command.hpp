@@ -11,7 +11,7 @@ namespace rpi_gc::commands {
 
         //!!
         //! \brief Gets the name of this command. Resolves to "status".
-        constexpr name_type getName() const noexcept override {
+        [[nodiscard]] constexpr name_type getName() const noexcept override {
             return strings::commands::STATUS;
         }
     };
