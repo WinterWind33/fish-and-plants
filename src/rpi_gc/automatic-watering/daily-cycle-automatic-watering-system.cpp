@@ -383,6 +383,35 @@ namespace rpi_gc::automatic_watering {
 
         if(isRunning())
             ost << " [Thread ID]:\t" << m_workerThread.get_id() << std::endl;
+
+        ost << " {AWS Flow}" << std::endl;
+        bool bValveEnabled{m_bWaterValveEnabled.load()};
+        bool bPumpEnabled{m_bWaterPumpEnabled.load()};
+
+        auto getDeviceStatusStr = [](const bool bEnabled) noexcept -> std::string_view {
+            if(bEnabled)
+                return "Enabled";
+
+            return "Disabled";
+        };
+
+        ost << "\t [Water valve status]: " << getDeviceStatusStr(bValveEnabled) << std::endl;
+        ost << "\t [Water pump status]: " << getDeviceStatusStr(bPumpEnabled) << std::endl;
+
+        if(bValveEnabled) {
+            ost << "\t [Water valve output PIN]: " << m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset() << std::endl;
+        }
+
+        if(bPumpEnabled) {
+            ost << "\t [Water pump output PIN]: " << m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset() << std::endl;
+        }
+
+        ost << "\t [Activation time]:\t"
+            << std::chrono::milliseconds{m_timeProvider.get().load()->getWateringSystemActivationDuration()}.count() << "ms" << std::endl;
+        ost << "\t [Deactivation time]:\t"
+            << std::chrono::milliseconds{m_timeProvider.get().load()->getWateringSystemDeactivationDuration()}.count() << "ms" << std::endl;
+        ost << "\t [Pump-valve sep time]:\t"
+            << std::chrono::milliseconds{m_timeProvider.get().load()->getPumpValveDeactivationTimeSeparation()}.count() << "ms" << std::endl;
     }
 
 } // namespace rpi_gc::automatic_watering
