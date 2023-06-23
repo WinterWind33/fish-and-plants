@@ -370,16 +370,19 @@ namespace rpi_gc::automatic_watering {
     } // namespace details
 
     void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) const noexcept {
-        ost << "--- Daily Cycled Automatic watering system diagnostics ---" << std::endl;
+        ost << std::endl;
+        ost << " [Diagnostic]:\tAutomatic watering system (AWS)" << std::endl;
+        ost << " [AWS Type]:\tCycled" << std::endl;
         try {
             const std::string_view statusStr{details::AWSStateDiagnosticConverter::convertStateToString(m_state.load())};
 
-            ost << " Status: " << statusStr << std::endl;
+            ost << " [Status]:\t" << statusStr << std::endl;
         } catch (const std::range_error& rangeError) {
             ost << "[ERROR] => " << rangeError.what() << std::endl;
         }
 
-        ost << "--- --- ---" << std::endl;
+        if(isRunning())
+            ost << " [Thread ID]:\t" << m_workerThread.get_id() << std::endl;
     }
 
 } // namespace rpi_gc::automatic_watering

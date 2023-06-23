@@ -30,7 +30,6 @@ namespace rpi_gc::commands {
             return true;
         }
 
-        m_outputStream.get() << "[SYSTEM STATUS]" << std::endl;
         if(m_diagnosticsObjects.empty()) {
             m_outputStream.get() << "No relevant diagnostic found." << std::endl;
             return true;
@@ -38,8 +37,10 @@ namespace rpi_gc::commands {
 
         // Otherwise we can print all the diagnostics.
         for(const auto& diagnosticObj : m_diagnosticsObjects) {
+            m_outputStream.get() << "<Diagnostic section start>" << std::endl;
             diagnosticObj.get().printDiagnostic(m_outputStream.get());
             m_outputStream.get() << std::endl;
+            m_outputStream.get() << "<section end>" << std::endl;
         }
 
         return true;
