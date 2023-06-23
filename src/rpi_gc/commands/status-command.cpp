@@ -56,6 +56,15 @@ namespace rpi_gc::commands {
     }
 
     void StatusCommand::printHelp(help_ostream_type outputStream) const noexcept {
+        outputStream.get() << "[NAME]" << std::endl;
+        outputStream.get() << "\t" << strings::commands::STATUS << " - display the status of all the active systems" << std::endl;
+        outputStream.get() << "[SYNOPSIS]" << std::endl;
+        outputStream.get() << "\t" << strings::commands::STATUS << " [OPTION]..." << std::endl;
+        outputStream.get() << "[DESCRIPTION]" << std::endl;
+        outputStream.get() << "\t" << "Retrieves status from all the active systems in the applications (AWS flows etc)" << std::endl;
+        outputStream.get() << "\tand it displays them in a structured way, every system separated by a section." << std::endl;
+        outputStream.get() << std::endl;
+
         m_optionParser->printHelp(outputStream);
     }
 
