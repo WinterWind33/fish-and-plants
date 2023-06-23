@@ -49,6 +49,8 @@ namespace gh_hal::hardware_access {
         //!  given output stream.
         //!
         virtual void printStatus(std::ostream& ost) const noexcept = 0;
+
+        virtual offset_type getOffset() const noexcept = 0;
     };
 
     inline std::ostream& operator<<(std::ostream& ost, const BoardDigitalPin& digPin) noexcept {
