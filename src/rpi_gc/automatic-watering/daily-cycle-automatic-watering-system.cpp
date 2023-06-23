@@ -72,6 +72,9 @@ namespace rpi_gc::automatic_watering {
         m_workerThread.join();
 
         m_state.store(EDailyCycleAWSState::Disabled);
+        // We reset the cycles counter because it starts when a new
+        // cycle is activated.
+        m_cyclesCounter.store(0);
     }
 
     void DailyCycleAutomaticWateringSystem::emergencyAbort() noexcept {
@@ -101,6 +104,9 @@ namespace rpi_gc::automatic_watering {
         m_workerThread.join();
 
         m_state.store(EDailyCycleAWSState::Disabled);
+        // We reset the cycles counter because it starts when a new
+        // cycle is activated.
+        m_cyclesCounter.store(0);
     }
 
     void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
@@ -203,6 +209,8 @@ namespace rpi_gc::automatic_watering {
             m_stopListener.wait_for(stopLock, hardwareDeactivationTime, [&stopToken](){
                 return stopToken.stop_requested();
             });
+
+            m_cyclesCounter++;
         }
 
         m_state.store(EDailyCycleAWSState::TearingDown);
@@ -387,6 +395,8 @@ namespace rpi_gc::automatic_watering {
         ost << " {AWS Flow}" << std::endl;
         bool bValveEnabled{m_bWaterValveEnabled.load()};
         bool bPumpEnabled{m_bWaterPumpEnabled.load()};
+
+        ost << "\t [Completed cycles]: " << m_cyclesCounter.load() << std::endl;
 
         auto getDeviceStatusStr = [](const bool bEnabled) noexcept -> std::string_view {
             if(bEnabled)

@@ -14,6 +14,7 @@
 #include <common/types.hpp>
 
 // C++ STL
+#include <cstdint>
 #include <memory>
 #include <thread>
 #include <atomic>
@@ -114,6 +115,7 @@ namespace rpi_gc::automatic_watering {
         std::atomic_bool m_bWaterPumpEnabled{true};
         std::atomic_bool m_bWaterValveEnabled{true};
         std::atomic<EDailyCycleAWSState> m_state{EDailyCycleAWSState::Disabled};
+        std::atomic<std::uint64_t> m_cyclesCounter{};
 
         void run_automatic_watering(std::stop_token stopToken, const main_logger_pointer& logger) noexcept;
 
