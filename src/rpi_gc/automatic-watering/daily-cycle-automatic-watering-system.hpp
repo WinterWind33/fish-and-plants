@@ -100,7 +100,7 @@ namespace rpi_gc::automatic_watering {
         void printDiagnostic(std::ostream& ost) const noexcept override;
 
         [[nodiscard]]
-        inline bool isRunning() const noexcept { return m_bIsRunning; }
+        inline bool isRunning() const noexcept { return (m_state.load() != EDailyCycleAWSState::Disabled); }
 
     private:
         main_logger_pointer m_mainLogger{};
@@ -113,8 +113,7 @@ namespace rpi_gc::automatic_watering {
         hardware_access_mutex_reference m_hardwareAccessMutex;
         std::atomic_bool m_bWaterPumpEnabled{true};
         std::atomic_bool m_bWaterValveEnabled{true};
-
-        bool m_bIsRunning{};
+        std::atomic<EDailyCycleAWSState> m_state{EDailyCycleAWSState::Disabled};
 
         void run_automatic_watering(std::stop_token stopToken, const main_logger_pointer& logger) noexcept;
 

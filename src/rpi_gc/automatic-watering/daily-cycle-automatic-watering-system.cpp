@@ -7,6 +7,10 @@
 #include <cassert>
 #include <version>
 #include <chrono>
+#include <algorithm>
+#include <array>
+#include <string_view>
+#include <stdexcept> // for std::range_error
 
 #ifdef __cpp_lib_format
 #include <format>
@@ -48,7 +52,7 @@ namespace rpi_gc::automatic_watering {
 
         // We also notify the user for this action.
         m_userLogger->logInfo(formattedLogString);
-        if(!m_bIsRunning) {
+        if(!isRunning()) {
             const StringType systemNotRunning{format_log_string(strings::feedbacks::SYSTEM_NOT_RUNNING)};
             m_mainLogger->logWarning(systemNotRunning);
 
@@ -67,7 +71,7 @@ namespace rpi_gc::automatic_watering {
         m_stopListener.notify_one();
         m_workerThread.join();
 
-        m_bIsRunning = false;
+        m_state.store(EDailyCycleAWSState::Disabled);
     }
 
     void DailyCycleAutomaticWateringSystem::emergencyAbort() noexcept {
@@ -77,7 +81,7 @@ namespace rpi_gc::automatic_watering {
         // We also notify the user for this action.
         m_userLogger->logInfo(formattedLogString);
 
-        if(!m_bIsRunning) {
+        if(!isRunning()) {
             const StringType systemNotRunning{format_log_string(strings::feedbacks::SYSTEM_NOT_RUNNING)};
             m_mainLogger->logWarning(systemNotRunning);
 
@@ -96,11 +100,11 @@ namespace rpi_gc::automatic_watering {
         m_stopListener.notify_one();
         m_workerThread.join();
 
-        m_bIsRunning = false;
+        m_state.store(EDailyCycleAWSState::Disabled);
     }
 
     void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
-        if(m_bIsRunning) {
+        if(isRunning()) {
             const StringType formattedErrorString{
                 format_log_string("Automatic watering system already running. Stop the previous instance before starting it again.")};
 
@@ -138,8 +142,6 @@ namespace rpi_gc::automatic_watering {
         m_workerThread = thread_type{[this](std::stop_token stopToken, const logger_pointer& logger){
             run_automatic_watering(std::move(stopToken), logger);
         }, m_mainLogger};
-
-        m_bIsRunning = true;
     }
 
     void DailyCycleAutomaticWateringSystem::run_automatic_watering(std::stop_token stopToken, const logger_pointer& logger) noexcept {
@@ -167,6 +169,8 @@ namespace rpi_gc::automatic_watering {
             m_stopListener.wait_for(stopLock, hardwareActivationTime, [&stopToken](){
                 return stopToken.stop_requested();
             });
+
+            m_state.store(EDailyCycleAWSState::Idling);
 
             if(stopToken.stop_requested()) {
                 // If the user requested an abort during th hardware activation
@@ -201,6 +205,7 @@ namespace rpi_gc::automatic_watering {
             });
         }
 
+        m_state.store(EDailyCycleAWSState::TearingDown);
         logger->logInfo(format_log_string(strings::feedbacks::AUTOMATIC_WATERING_JOB_END));
     }
 
@@ -252,6 +257,7 @@ namespace rpi_gc::automatic_watering {
 
     void DailyCycleAutomaticWateringSystem::activate_watering_hardware() noexcept {
         std::lock_guard<std::mutex> hardwareLock{m_hardwareAccessMutex};
+        m_state.store(EDailyCycleAWSState::Irrigating);
 
         WateringSystemHardwareController::digital_output_type* const waterValveDigitalOut {
             m_hardwareController.get().load()->getWaterValveDigitalOut()
@@ -336,8 +342,44 @@ namespace rpi_gc::automatic_watering {
         m_bWaterPumpEnabled.store(bEnabled);
     }
 
-    void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) const noexcept {
+    namespace details {
 
+        struct AWSStateDiagnosticConverter final {
+            static constexpr std::array<std::pair<EDailyCycleAWSState, std::string_view>, 4> ConversionMap{
+                std::pair{EDailyCycleAWSState::Disabled, std::string_view{"Disabled"}},
+                std::pair{EDailyCycleAWSState::Idling, std::string_view{"Idling"}},
+                std::pair{EDailyCycleAWSState::Irrigating, std::string_view{"Irrigating"}},
+                std::pair{EDailyCycleAWSState::TearingDown, std::string_view{"Tearing Down"}},
+            };
+
+
+            [[nodiscard]]
+            constexpr static std::string_view convertStateToString(const EDailyCycleAWSState state) {
+                auto msgIt = std::find_if(std::cbegin(ConversionMap), std::cend(ConversionMap),
+                    [state](const std::pair<EDailyCycleAWSState, std::string_view>& pair){
+                        return std::get<0>(pair) == state;
+                    });
+
+                if(msgIt != std::cend(ConversionMap))
+                    return std::get<1>(*msgIt);
+                else
+                    throw std::range_error("Enum entry not recognized.");
+            }
+        };
+
+    } // namespace details
+
+    void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) const noexcept {
+        ost << "--- Daily Cycled Automatic watering system diagnostics ---" << std::endl;
+        try {
+            const std::string_view statusStr{details::AWSStateDiagnosticConverter::convertStateToString(m_state.load())};
+
+            ost << " Status: " << statusStr << std::endl;
+        } catch (const std::range_error& rangeError) {
+            ost << "[ERROR] => " << rangeError.what() << std::endl;
+        }
+
+        ost << "--- --- ---" << std::endl;
     }
 
 } // namespace rpi_gc::automatic_watering
