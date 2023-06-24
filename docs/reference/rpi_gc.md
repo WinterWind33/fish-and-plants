@@ -16,6 +16,7 @@ Being the application based on a TUI, you can use the application, and thus cont
 - version : displays the name and the current version of the application;
 - [abort](./commands/abort.md) : aborts every execution flow and, for now, waiting every resource to be released (soft stop) but doesn't exit the application;
 - [auto-watering](./commands/auto-watering.md) : the main command used to control the irrigation automation;
+- [status](./commands/status-command.md) : retrieves the data regarding the flows currently running in the application;
 
 Every implemented command inside the application, apart from `help` and `exit`, have an help page: to show it, you can simply type the name of the command followed by `-h` or `--help`.
 
