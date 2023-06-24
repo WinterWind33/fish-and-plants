@@ -38,6 +38,10 @@ cmake --build . --config Release
 
 The repo uses CMake as the main build system, and it requires at least `CMake 3.19`.
 
+### Developers
+
+If you want to contribute to the prject, before you commit anything you need to configure [pre-commits](https://pre-commit.com/): in the main repo folder, type `pre-commit install`.
+
 ## Application reference
 
 [Here](./docs/reference/rpi_gc.md) you can find the main application reference.
