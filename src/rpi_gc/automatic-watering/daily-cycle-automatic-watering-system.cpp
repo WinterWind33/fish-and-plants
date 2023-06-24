@@ -380,7 +380,7 @@ namespace rpi_gc::automatic_watering {
     void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) const noexcept {
         ost << std::endl;
         ost << " [Diagnostic]:\tAutomatic watering system (AWS)" << std::endl;
-        ost << " [AWS Type]:\tCycled" << std::endl;
+        ost << " [AWS Mode]:\tCycled" << std::endl;
         try {
             const std::string_view statusStr{details::AWSStateDiagnosticConverter::convertStateToString(m_state.load())};
 
