@@ -53,10 +53,12 @@ option(USE_SPDLOG "Use SPDLOG ${SPDLOG_VERSION} submodule as logging framework."
 option(USE_LIBGPIOD "Use libgpiod ${LIBGPIOD_VERSION} module as the main I/O ports communication module." ON)
 option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
 option(USE_POPL20 "Use popl20 header-only library as command line parser." ON)
+option(USE_SEMVER "Use Neargye/semver third-library software as semantic versioning library." ON)
 
 # === SUB-PROJECTS ===
 
 # Add third party libraries.
+add_subdirectory("third-party")
 add_subdirectory("src/third-party")
 
 # Add wrapper libraries.
