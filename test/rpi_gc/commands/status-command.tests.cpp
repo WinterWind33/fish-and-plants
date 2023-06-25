@@ -5,6 +5,7 @@
 // Test doubles
 #include <rpi_gc/test-doubles/diagnostics/diagnostic-status-probeable.mock.hpp>
 #include <gh_cmd/test-doubles/option-parser.mock.hpp>
+#include <gh_cmd/test-doubles/command-option.mock.hpp>
 
 #include <testing-core.hpp>
 
@@ -69,6 +70,52 @@ TEST_CASE("Status command unit tests", "[unit][solitary][rpi_gc][commands][Statu
 
                 const bool bExec{commandUnderTest.processInputOptions({})};
                 CHECK(bExec);
+            }
+        }
+    }
+
+    SECTION("Command execute() method") {
+        using DiagnosticObjectMock = testing::StrictMock<diagnostics::mocks::DiagnosticStatusProbeableMock>;
+        using HelpOptionMock = testing::StrictMock<gh_cmd::mocks::CommandOptionMock<char>>;
+
+        GIVEN("A StatusCommand object with one diagnostic probeable object") {
+            auto [optionParserMock, optionParserMockSmartPtr]{
+                tests::createOptionParserMock<testing::NiceMock<OptionParserMockType>>()};
+
+            DiagnosticObjectMock diagnosticMock{};
+
+            commands::StatusCommand commandUnderTest{
+                std::move(optionParserMockSmartPtr), {std::cref(diagnosticMock)}, std::ref(dummyOutputStream)};
+
+            std::vector<OptionParserMockType::option_pointer> optionPointers{};
+            WHEN("An help option is passed as an argument to the command") {
+                auto helpOptionMock = std::make_shared<HelpOptionMock>();
+                EXPECT_CALL(*helpOptionMock, getLongName)
+                    .Times(testing::AtLeast(1))
+                    .WillRepeatedly(testing::Return("help"));
+
+                    EXPECT_CALL(*helpOptionMock, isSet)
+                        .Times(1)
+                        .WillOnce(testing::Return(true));
+
+                    EXPECT_CALL(*helpOptionMock, clear)
+                        .Times(1);
+
+                optionPointers.push_back(helpOptionMock);
+                ON_CALL(*optionParserMock, getOptions()).WillByDefault(testing::Return(optionPointers));
+
+                THEN("It should print the help page without printing any diagnostics") {
+                    EXPECT_CALL(diagnosticMock, printDiagnostic(testing::Ref(dummyOutputStream)))
+                        .Times(0);
+
+                    [[maybe_unused]] const bool bExec{commandUnderTest.execute()};
+                }
+
+                THEN("The execution should succeed") {
+                    const bool bExec{commandUnderTest.execute()};
+
+                    CHECK(bExec);
+                }
             }
         }
     }
