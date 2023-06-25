@@ -1,6 +1,9 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #pragma once
 
+// Third-party
+#include <semver.hpp>
+
 // C++ STL
 #include <cstdint>
 #include <string_view>
