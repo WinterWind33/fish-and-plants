@@ -22,6 +22,7 @@ set(TEST_APP_HEADER_FILES
     "rpi_gc/test-doubles/abort-system/emergency-stoppable-system.mock.hpp"
     "rpi_gc/test-doubles/automatic-watering/hardware-controllers/watering-system-hardware-controller.mock.hpp"
     "rpi_gc/test-doubles/automatic-watering/time-providers/watering-system-time-provider.mock.hpp"
+    "rpi_gc/test-doubles/diagnostics/diagnostic-status-probeable.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
@@ -38,6 +39,7 @@ set(TEST_APP_SOURCE_FILES
     "rpi_gc/commands/application-command.tests.cpp"
     "rpi_gc/commands/automatic-watering-command.tests.cpp"
     "rpi_gc/commands/abort-command.tests.cpp"
+    "rpi_gc/commands/status-command.tests.cpp"
     "rpi_gc/automatic-watering/daily-cycle-automatic-watering-system.tests.cpp"
     "rpi_gc/automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.tests.cpp"
     "rpi_gc/hardware-management/hardware-initializer.tests.cpp"

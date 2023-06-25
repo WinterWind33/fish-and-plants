@@ -21,8 +21,10 @@ set(RPI_GC_HEADER_FILES
     "commands/application-command.hpp"
     "commands/version-command.hpp"
     "commands/help-command.hpp"
+    "commands/status-command.hpp"
     "commands/bivalent-command.hpp"
     "commands/automatic-watering/automatic-watering-command.hpp"
+    "diagnostics/diagnostic-status-probeable.hpp"
     "hardware-management/hardware-chip-initializer.hpp"
     "user-interface/application-strings.hpp"
     "user-interface/commands-strings.hpp"
@@ -35,6 +37,7 @@ set(RPI_GC_SOURCE_FILES
     "commands/version-command.cpp"
     "commands/help-command.cpp"
     "commands/abort-command.cpp"
+    "commands/status-command.cpp"
     "commands/automatic-watering/automatic-watering-command.cpp"
     "automatic-watering/daily-cycle-automatic-watering-system.cpp"
     "automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.cpp"
@@ -70,7 +73,10 @@ set(RPI_GC_VERSION_MAJOR 1)
 set(RPI_GC_VERSION_MINOR 0)
 set(RPI_GC_VERSION_PATCH 0)
 set(RPI_GC_VERSION_RC_NAME "")
-configure_file("${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp.in" "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp")
+configure_file(
+    "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp.in" "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp"
+    NEWLINE_STYLE LF
+)
 
 # Dependencies
 # Here we don't want to include gh_hal and gh_log directly as this will result

@@ -49,6 +49,13 @@ namespace gh_hal::hardware_access {
         //!  given output stream.
         //!
         virtual void printStatus(std::ostream& ost) const noexcept = 0;
+
+        //!!
+        //! \brief Retrieves the offset of this pin, i.e. the PIN ID inside the
+        //!  board chip.
+        //! \return The pin offset.
+        [[nodiscard]]
+        virtual offset_type getOffset() const noexcept = 0;
     };
 
     inline std::ostream& operator<<(std::ostream& ost, const BoardDigitalPin& digPin) noexcept {

@@ -38,6 +38,11 @@ namespace gh_hal::internal {
 
         void printStatus(std::ostream& ostream) const noexcept override;
 
+        [[nodiscard]]
+        inline offset_type getOffset() const noexcept override {
+            return m_offset;
+        }
+
     private:
         const hardware_access::BoardDigitalPin::offset_type m_offset{};
         const hardware_access::DigitalPinRequestDirection m_direction{};

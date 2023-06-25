@@ -13,6 +13,7 @@ namespace rpi_gc::strings::commands {
     constexpr StringViewType ABORT{"abort"};
     constexpr StringViewType EXIT{"exit"};
     constexpr StringViewType AUTOMATIC_WATERING{"auto-watering"};
+    constexpr StringViewType STATUS{"status"};
 
     namespace feedbacks {
         constexpr StringViewType TYPE_HELP{"Type \'help\' for a list of the available commands."};

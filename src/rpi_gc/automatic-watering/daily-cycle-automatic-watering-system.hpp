@@ -1,11 +1,11 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
-#ifndef DAILY_CYCLE_AUTOMATIC_WATERING_SYSTEM_HPP
-#define DAILY_CYCLE_AUTOMATIC_WATERING_SYSTEM_HPP
+#pragma once
 
 #include <automatic-watering/automatic-watering-system.hpp>
 #include <automatic-watering/hardware-controllers/watering-system-hardware-controller.hpp>
 #include <automatic-watering/time-providers/watering-system-time-provider.hpp>
 
+#include <diagnostics/diagnostic-status-probeable.hpp>
 #include <abort-system/terminable-system.hpp>
 #include <abort-system/emergency-stoppable-system.hpp>
 
@@ -14,6 +14,7 @@
 #include <common/types.hpp>
 
 // C++ STL
+#include <cstdint>
 #include <memory>
 #include <thread>
 #include <atomic>
@@ -25,12 +26,23 @@
 namespace rpi_gc::automatic_watering {
 
     //!!
+    //! \brief Represents a basic FSM for the AWS.
+    //!  TODO: this need to be refactored in the future.
+    enum class EDailyCycleAWSState {
+        Disabled,
+        Idling,
+        Irrigating,
+        TearingDown
+    };
+
+    //!!
     //! \brief Represents the automatic watering system that manages the greenhouse
     //!  irrigation on a daily basis using timers to stop and start the greenhouse's hardware.
-    class DailyCycleAutomaticWateringSystem :
+    class DailyCycleAutomaticWateringSystem final :
         public AutomaticWateringSystem,
         public abort_system::TerminableSystem,
-        public abort_system::EmergencyStoppableSystem {
+        public abort_system::EmergencyStoppableSystem,
+        public diagnostics::DiagnosticStatusProbeable {
     public:
         using logger_pointer = std::shared_ptr<gh_log::Logger>;
         using main_logger_pointer = logger_pointer;
@@ -86,8 +98,10 @@ namespace rpi_gc::automatic_watering {
         //! \param bEnabled True if the water valve need to be enabled.
         void setWaterValveEnabled(const bool bEnabled) noexcept;
 
+        void printDiagnostic(std::ostream& ost) const noexcept override;
+
         [[nodiscard]]
-        inline bool isRunning() const noexcept { return m_bIsRunning; }
+        inline bool isRunning() const noexcept { return (m_state.load() != EDailyCycleAWSState::Disabled); }
 
     private:
         main_logger_pointer m_mainLogger{};
@@ -100,8 +114,8 @@ namespace rpi_gc::automatic_watering {
         hardware_access_mutex_reference m_hardwareAccessMutex;
         std::atomic_bool m_bWaterPumpEnabled{true};
         std::atomic_bool m_bWaterValveEnabled{true};
-
-        bool m_bIsRunning{};
+        std::atomic<EDailyCycleAWSState> m_state{EDailyCycleAWSState::Disabled};
+        std::atomic<std::uint64_t> m_cyclesCounter{};
 
         void run_automatic_watering(std::stop_token stopToken, const main_logger_pointer& logger) noexcept;
 
@@ -118,5 +132,3 @@ namespace rpi_gc::automatic_watering {
     };
 
 } // namespace rpi_gc::automatic_watering
-
-#endif // !DAILY_CYCLE_AUTOMATIC_WATERING_SYSTEM_HPP
