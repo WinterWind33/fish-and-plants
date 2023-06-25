@@ -11,7 +11,7 @@
 
 // C++ STL
 #include <tuple>
-#include <ostream>
+#include <sstream>
 
 namespace tests {
 
