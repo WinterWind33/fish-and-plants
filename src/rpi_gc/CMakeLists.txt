@@ -77,7 +77,9 @@ set_target_properties(rpi_gc
 set(RPI_GC_VERSION_MAJOR 1)
 set(RPI_GC_VERSION_MINOR 0)
 set(RPI_GC_VERSION_PATCH 0)
-set(RPI_GC_VERSION_RC_NAME "")
+# Uncomment this for an RC version.
+#set(RPI_GC_VERSION_RC_NUM 543)
+
 configure_file(
     "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp.in" "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp"
     NEWLINE_STYLE LF
