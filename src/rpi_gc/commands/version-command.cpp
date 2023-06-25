@@ -9,14 +9,7 @@ namespace rpi_gc {
         m_asOption{std::make_shared<gh_cmd::Switch<char_type>>('v', "version", "Displays the version of this application.")} {}
 
     bool VersionCommand::execute() noexcept {
-        m_outputStream.get() << strings::application::NAME << " - Version " <<
-            version::RPI_GC_VERSION_MAJOR << "." << version::RPI_GC_VERSION_MINOR << "." << version::RPI_GC_VERSION_PATCH;
-
-        if constexpr (!version::RPI_GC_VERSION_RC_NAME.empty())
-            m_outputStream.get() << "-" << version::RPI_GC_VERSION_RC_NAME;
-
-        m_outputStream.get() << std::endl;
-
+        m_outputStream.get() << version::getApplicationVersion() << std::endl;
         return true;
     }
 
