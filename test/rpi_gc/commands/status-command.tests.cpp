@@ -117,6 +117,22 @@ TEST_CASE("Status command unit tests", "[unit][solitary][rpi_gc][commands][Statu
                     CHECK(bExec);
                 }
             }
+
+            WHEN("The command is passed without any arguments") {
+                THEN("It should be printed the diagnosticable object status") {
+                    EXPECT_CALL(diagnosticMock, printDiagnostic(testing::Ref(dummyOutputStream)))
+                        .Times(1);
+
+                    [[maybe_unused]] const bool bExec{commandUnderTest.execute()};
+                }
+
+                THEN("The execution should succeed") {
+                    EXPECT_CALL(diagnosticMock, printDiagnostic(testing::_));
+
+                    const bool bExec{commandUnderTest.execute()};
+                    CHECK(bExec);
+                }
+            }
         }
     }
 }
