@@ -13,7 +13,7 @@ if(USE_SEMVER)
         message(STATUS "Skipping download of semver.hpp: file already exists.")
     endif()
 
-    add_library(semver_header_only ${SEMVER_HPP_FILE_ABS_PATH})
+    add_library(semver_header_only INTERFACE ${SEMVER_HPP_FILE_ABS_PATH})
     set_target_properties(semver_header_only
         PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
