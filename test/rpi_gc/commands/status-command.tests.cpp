@@ -63,6 +63,13 @@ TEST_CASE("Status command unit tests", "[unit][solitary][rpi_gc][commands][Statu
 
                 [[maybe_unused]] const bool bExec{commandUnderTest.processInputOptions(testArguments)};
             }
+
+            THEN("It should return a successful state to continue the execution") {
+                EXPECT_CALL(*optionParserMock, parse(testing::_));
+
+                const bool bExec{commandUnderTest.processInputOptions({})};
+                CHECK(bExec);
+            }
         }
     }
 }
