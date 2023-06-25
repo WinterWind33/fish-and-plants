@@ -51,6 +51,7 @@ namespace rpi_gc::commands {
             m_optionParser->parse(inputTockens);
         } catch([[maybe_unused]] const std::exception& exc) {
             assert(false);
+            return false;
         }
         return true;
     }
