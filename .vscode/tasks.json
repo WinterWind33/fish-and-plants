@@ -123,6 +123,24 @@
 			"group": "build"
 		},
 		{
+			"label": "[Windows] (Debug) Build project-management module",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}/build"
+			},
+			"command": "cmake",
+			"args": [
+				"--build",
+				".",
+				"--target",
+				"project_management_static",
+				"--config",
+				"Debug"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
 			"label": "[Linux] Clean build folder",
 			"type": "shell",
 			"options": {
