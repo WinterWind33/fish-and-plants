@@ -29,7 +29,7 @@ jobs:
         run: |
           mkdir build
           cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Wno-dev
-          ls -l
+          ls -l third-party
 
       - name: Execute clang-tidy on production code
         run: |
