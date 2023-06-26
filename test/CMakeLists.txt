@@ -151,6 +151,7 @@ if(USE_GMOCK)
     set(GOOGLE_TEST_TEMP_DIR "${PROJECT_SOURCE_DIR}/third-party/_temp")
 
     if(NOT EXISTS ${GOOGLE_TEST_DIR})
+        file(MAKE_DIRECTORY "${PROJECT_SOURCE_DIR}/third-party/_temp")
         file(DOWNLOAD
             "https://github.com/google/googletest/archive/refs/tags/v${GOOGLE_TEST_VERSION}.tar.gz"
             "${GOOGLE_TEST_TEMP_DIR}/GoogleTest-${GOOGLE_TEST_VERSION}.tar.gz"
