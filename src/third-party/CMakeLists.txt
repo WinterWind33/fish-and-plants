@@ -52,9 +52,6 @@ if(USE_LIBGPIOD AND UNIX AND NOT APPLE)
             WORKING_DIRECTORY ${LIBGPIOD_PARENT_FOLDER_PATH}
         )
 
-        # Cleanup: we don't need the tar.gz file anymore
-        #file(REMOVE ${LIBGPIOD_FILEPATH})
-
         set(LIBGPIOD_ABS_FOLDER ${LIBGPIOD_PARENT_FOLDER_PATH}/${LIBGPIOD_NAME})
 
         # in order to make it properly work the user must run the following command:
