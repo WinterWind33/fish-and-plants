@@ -44,6 +44,10 @@ set(RPI_GC_SOURCE_FILES
     "automatic-watering/time-providers/configurable-daily-cycle-aws-time-provider.cpp"
 )
 
+set(RPI_GC_EXECUTABLE_SOURCE_FILES
+    "entry-point.cpp"
+)
+
 # Here we add a library target so we can use it to link it against
 # the test app.
 add_library(rpi_gc_lib STATIC ${RPI_GC_HEADER_FILES} ${RPI_GC_SOURCE_FILES})
@@ -68,7 +72,7 @@ target_link_libraries(rpi_gc_lib PRIVATE gh_log)
 target_link_libraries(rpi_gc_lib PRIVATE gh_cmd)
 target_link_libraries(rpi_gc_lib PRIVATE project_management_static)
 
-add_executable(rpi_gc "entry-point.cpp")
+add_executable(rpi_gc ${RPI_GC_EXECUTABLE_SOURCE_FILES} ${RPI_GC_HEADER_FILES} ${RPI_GC_SOURCE_FILES})
 set_target_properties(rpi_gc
     PROPERTIES
     VERSION "1.0.0"
@@ -92,12 +96,14 @@ configure_file(
 # in possible includes clash. Instead, we include their parent directory.
 target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/wrappers")
+target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/modules/project-management/include")
 
 if(USE_SEMVER)
     target_link_libraries(rpi_gc PRIVATE semver_header_only)
     target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/third-party/semver/include")
 endif()
 
+target_link_libraries(rpi_gc PRIVATE gh_hal)
 target_link_libraries(rpi_gc PRIVATE gh_log)
 target_link_libraries(rpi_gc PRIVATE gh_cmd)
-target_link_libraries(rpi_gc PRIVATE rpi_gc_lib)
+target_link_libraries(rpi_gc PRIVATE project_management_static)
