@@ -146,29 +146,28 @@ if(USE_GMOCK)
     message(STATUS "Using GMock as test doubles framework.")
     set(GOOGLE_TEST_VERSION "1.13.0")
     set(GOOGLE_TEST_INSTALL_DIR "${PROJECT_SOURCE_DIR}/test/third-party/")
-    set(GOOGLE_TEST_DIR ${GOOGLE_TEST_INSTALL_DIR}/GoogleTest-${GOOGLE_TEST_VERSION})
+    # We make all lower case because Linux can have problems after
+    # extracting the tar.gz.
+    set(GOOGLE_TEST_DIR ${GOOGLE_TEST_INSTALL_DIR}/googletest-${GOOGLE_TEST_VERSION})
     set(GOOGLE_MOCK_DIR ${GOOGLE_TEST_DIR}/googlemock)
     set(GOOGLE_TEST_TEMP_DIR "${PROJECT_SOURCE_DIR}/third-party/_temp")
 
     if(NOT EXISTS ${GOOGLE_TEST_DIR})
-        file(MAKE_DIRECTORY "${PROJECT_SOURCE_DIR}/third-party/_temp")
         file(DOWNLOAD
             "https://github.com/google/googletest/archive/refs/tags/v${GOOGLE_TEST_VERSION}.tar.gz"
-            "${GOOGLE_TEST_TEMP_DIR}/GoogleTest-${GOOGLE_TEST_VERSION}.tar.gz"
+            "${GOOGLE_TEST_TEMP_DIR}/googletest-${GOOGLE_TEST_VERSION}.tar.gz"
         )
 
         # Now we need to extract the tar.gz.
         execute_process(
-            COMMAND ${CMAKE_COMMAND} -E tar xzf ${GOOGLE_TEST_TEMP_DIR}/GoogleTest-${GOOGLE_TEST_VERSION}.tar.gz
+            COMMAND ${CMAKE_COMMAND} -E tar xzf ${GOOGLE_TEST_TEMP_DIR}/googletest-${GOOGLE_TEST_VERSION}.tar.gz
             WORKING_DIRECTORY ${GOOGLE_TEST_TEMP_DIR}
         )
-
-        execute_process(COMMAND ls -l -R "third-party")
 
         # Now we need to move the google mock folder to the
         # install dir.
         file(COPY
-            ${GOOGLE_TEST_TEMP_DIR}/GoogleTest-${GOOGLE_TEST_VERSION}
+            ${GOOGLE_TEST_TEMP_DIR}/googletest-${GOOGLE_TEST_VERSION}
             DESTINATION ${GOOGLE_TEST_INSTALL_DIR}
         )
 
