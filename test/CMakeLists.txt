@@ -79,9 +79,6 @@ target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 
 target_link_libraries(test_app PRIVATE rpi_gc_lib)
-target_link_libraries(test_app PRIVATE gh_log)
-target_link_libraries(test_app PRIVATE gh_hal)
-target_link_libraries(test_app PRIVATE gh_cmd)
 
 if(MSVC)
     # Under Windows there is also the Release folder that
@@ -105,15 +102,23 @@ if(USE_CATCH2_AS_TESTING_FRAMEWORK)
     set(AMALGAMATED_HPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.hpp")
     set(AMALGAMATED_CPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.cpp")
 
-    message(STATUS "Downloading Catch2 amalgamated HPP file.")
-    file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.hpp"
-        ${AMALGAMATED_HPP_FILE}
-    )
+    if(NOT EXISTS ${AMALGAMATED_HPP_FILE})
+        message(STATUS "Downloading Catch2 amalgamated HPP file.")
+        file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.hpp"
+            ${AMALGAMATED_HPP_FILE}
+        )
+    else()
+        message(STATUS "Skipping Catch2 header file download because it already exists.")
+    endif()
 
-    message(STATUS "Downloading Catch2 amalgamated CPP file.")
-    file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.cpp"
-        ${AMALGAMATED_CPP_FILE}
-    )
+    if(NOT EXISTS ${AMALGAMATED_CPP_FILE})
+        message(STATUS "Downloading Catch2 amalgamated CPP file.")
+        file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.cpp"
+            ${AMALGAMATED_CPP_FILE}
+        )
+    else()
+        message(STATUS "Skipping Catch2 source file download because it already exists.")
+    endif()
 
     set(CATCH2_COMPILATION_FILES
         ${AMALGAMATED_HPP_FILE}
