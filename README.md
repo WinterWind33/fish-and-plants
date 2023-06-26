@@ -59,6 +59,7 @@ These are the third party libraries used for the application.
 - [spdlog](https://github.com/gabime/spdlog)
 - [popl](https://github.com/badaix/popl)
 - [libgpiod](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/)
+- [semver](https://github.com/Neargye/semver)
 
 ### Testing code
 
