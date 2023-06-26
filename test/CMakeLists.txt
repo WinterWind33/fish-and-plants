@@ -163,7 +163,7 @@ if(USE_GMOCK)
             WORKING_DIRECTORY ${GOOGLE_TEST_TEMP_DIR}
         )
 
-        execute_process(COMMAND ls -l "../third-party")
+        execute_process(COMMAND ls -l "..")
 
         # Now we need to move the google mock folder to the
         # install dir.
