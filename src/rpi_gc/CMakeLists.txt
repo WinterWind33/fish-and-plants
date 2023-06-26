@@ -61,10 +61,12 @@ endif()
 
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
+target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/modules/project-management/include")
 
 target_link_libraries(rpi_gc_lib PRIVATE gh_hal)
 target_link_libraries(rpi_gc_lib PRIVATE gh_log)
 target_link_libraries(rpi_gc_lib PRIVATE gh_cmd)
+target_link_libraries(rpi_gc_lib PRIVATE project_management_static)
 
 add_executable(rpi_gc "entry-point.cpp")
 set_target_properties(rpi_gc
