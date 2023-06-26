@@ -55,7 +55,7 @@ set_target_properties(rpi_gc_lib
 )
 
 if(USE_SEMVER)
-    target_link_libraries(rpi_gc_lib INTERFACE semver_header_only)
+    target_link_libraries(rpi_gc_lib PUBLIC semver_header_only)
     target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/third-party/semver/include")
 endif()
 
@@ -90,6 +90,11 @@ configure_file(
 # in possible includes clash. Instead, we include their parent directory.
 target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/wrappers")
+
+if(USE_SEMVER)
+    target_link_libraries(rpi_gc PRIVATE semver_header_only)
+    target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/third-party/semver/include")
+endif()
 
 target_link_libraries(rpi_gc PRIVATE gh_log)
 target_link_libraries(rpi_gc PRIVATE gh_cmd)
