@@ -66,6 +66,9 @@ add_subdirectory("src/wrappers/gh_cmd")
 add_subdirectory("src/wrappers/gh_hal")
 add_subdirectory("src/wrappers/gh_log")
 
+# Applications Modules
+add_subdirectory("src/modules/project-management")
+
 # Add the greenhouse controller application to the build system.
 add_subdirectory("src/rpi_gc")
 
