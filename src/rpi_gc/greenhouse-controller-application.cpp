@@ -125,13 +125,7 @@ namespace rpi_gc {
 
     StringType GreenhouseControllerApplication::create_version_string() noexcept {
         OutputStringStream versionStream{};
-        versionStream << version::RPI_GC_VERSION_MAJOR << ".";
-        versionStream << version::RPI_GC_VERSION_MINOR << ".";
-        versionStream << version::RPI_GC_VERSION_PATCH;
-
-        if constexpr (!version::RPI_GC_VERSION_RC_NAME.empty())
-            versionStream << "-" << version::RPI_GC_VERSION_RC_NAME;
-
+        versionStream << version::getApplicationVersion();
         return versionStream.str();
     }
 

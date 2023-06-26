@@ -54,6 +54,11 @@ set_target_properties(rpi_gc_lib
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
+if(USE_SEMVER)
+    target_link_libraries(rpi_gc_lib PUBLIC semver_header_only)
+    target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/third-party/semver/include")
+endif()
+
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 
@@ -72,7 +77,9 @@ set_target_properties(rpi_gc
 set(RPI_GC_VERSION_MAJOR 1)
 set(RPI_GC_VERSION_MINOR 0)
 set(RPI_GC_VERSION_PATCH 0)
-set(RPI_GC_VERSION_RC_NAME "")
+# Uncomment this for an RC version.
+#set(RPI_GC_VERSION_RC_NUM 0)
+
 configure_file(
     "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp.in" "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp"
     NEWLINE_STYLE LF
@@ -83,6 +90,11 @@ configure_file(
 # in possible includes clash. Instead, we include their parent directory.
 target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/wrappers")
+
+if(USE_SEMVER)
+    target_link_libraries(rpi_gc PRIVATE semver_header_only)
+    target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/third-party/semver/include")
+endif()
 
 target_link_libraries(rpi_gc PRIVATE gh_log)
 target_link_libraries(rpi_gc PRIVATE gh_cmd)

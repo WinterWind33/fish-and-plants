@@ -129,3 +129,5 @@ test/third-party/Catch2-*
 src/third-party/spdlog-*
 src/third-party/libgpiod*
 src/third-party/_temp*
+third-party/**
+!third-party/CMakeLists.txt

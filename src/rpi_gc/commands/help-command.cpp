@@ -84,12 +84,7 @@ namespace rpi_gc {
 
     std::string HelpCommand::get_app_version() noexcept {
         std::ostringstream outputStream{};
-        outputStream <<
-            version::RPI_GC_VERSION_MAJOR << '.' << version::RPI_GC_VERSION_MINOR << '.' << version::RPI_GC_VERSION_PATCH;
-
-        if constexpr (!version::RPI_GC_VERSION_RC_NAME.empty())
-            outputStream << "-" << version::RPI_GC_VERSION_RC_NAME;
-
+        outputStream << version::getApplicationVersion();
         return outputStream.str();
     }
 

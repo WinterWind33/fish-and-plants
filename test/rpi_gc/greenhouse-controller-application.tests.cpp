@@ -41,10 +41,7 @@ namespace tests {
 
     rpi_gc::StringType GenerateVersionString() noexcept {
         rpi_gc::OutputStringStream stream{};
-        stream << rpi_gc::version::RPI_GC_VERSION_MAJOR << "." << rpi_gc::version::RPI_GC_VERSION_MINOR << "." << rpi_gc::version::RPI_GC_VERSION_PATCH;
-        if constexpr (!rpi_gc::version::RPI_GC_VERSION_RC_NAME.empty())
-            stream << "-" << rpi_gc::version::RPI_GC_VERSION_RC_NAME;
-
+        stream << rpi_gc::version::getApplicationVersion();
         return stream.str();
     }
 
