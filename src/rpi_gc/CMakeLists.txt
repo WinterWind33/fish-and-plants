@@ -78,7 +78,7 @@ set(RPI_GC_VERSION_MAJOR 1)
 set(RPI_GC_VERSION_MINOR 0)
 set(RPI_GC_VERSION_PATCH 0)
 # Uncomment this for an RC version.
-#set(RPI_GC_VERSION_RC_NUM 543)
+#set(RPI_GC_VERSION_RC_NUM 0)
 
 configure_file(
     "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp.in" "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp"
