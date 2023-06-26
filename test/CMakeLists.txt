@@ -74,9 +74,9 @@ set_target_properties(test_app
     RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
 )
 
-target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/test")
-target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
-target_include_directories(test_app PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
+target_include_directories(test_app PRIVATE "${PROJECT_SOURCE_DIR}/test")
+target_include_directories(test_app PRIVATE "${PROJECT_SOURCE_DIR}/src/rpi_gc")
+target_include_directories(test_app PRIVATE "${PROJECT_SOURCE_DIR}/src/wrappers")
 
 target_link_libraries(test_app PRIVATE rpi_gc_lib)
 
@@ -129,7 +129,7 @@ if(USE_CATCH2_AS_TESTING_FRAMEWORK)
 
     # We want our custom main so we need to define this MACRO so
     # the compilation won't generate its custom main.
-    target_compile_definitions(Catch2 PUBLIC "CATCH_AMALGAMATED_CUSTOM_MAIN")
+    target_compile_definitions(Catch2 PRIVATE "CATCH_AMALGAMATED_CUSTOM_MAIN")
     set_target_properties(Catch2
         PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
@@ -144,16 +144,41 @@ endif()
 
 if(USE_GMOCK)
     message(STATUS "Using GMock as test doubles framework.")
+    set(GOOGLE_TEST_VERSION "1.13.0")
+    set(GOOGLE_TEST_INSTALL_DIR "${PROJECT_SOURCE_DIR}/test/third-party/")
+    set(GOOGLE_TEST_DIR ${GOOGLE_TEST_INSTALL_DIR}/GoogleTest-${GOOGLE_TEST_VERSION})
+    set(GOOGLE_MOCK_DIR ${GOOGLE_TEST_DIR}/googlemock)
+    set(GOOGLE_TEST_TEMP_DIR "${PROJECT_SOURCE_DIR}/third-party/_temp")
 
-    FetchContent_Declare(
-        googletest
-        URL "https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip"
-        SOURCE_DIR "${PROJECT_SOURCE_DIR}/test/third-party/GoogleTest-1.2.1"
-    )
+    if(NOT EXISTS ${GOOGLE_TEST_DIR})
+        file(DOWNLOAD
+            "https://github.com/google/googletest/archive/refs/tags/v${GOOGLE_TEST_VERSION}.tar.gz"
+            "${GOOGLE_TEST_TEMP_DIR}/GoogleTest-${GOOGLE_TEST_VERSION}.tar.gz"
+        )
+
+        # Now we need to extract the tar.gz.
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E tar xzf ${GOOGLE_TEST_TEMP_DIR}/GoogleTest-${GOOGLE_TEST_VERSION}.tar.gz
+            WORKING_DIRECTORY ${GOOGLE_TEST_TEMP_DIR}
+        )
+
+        # Now we need to move the google mock folder to the
+        # install dir.
+        file(COPY
+            ${GOOGLE_TEST_TEMP_DIR}/GoogleTest-${GOOGLE_TEST_VERSION}
+            DESTINATION ${GOOGLE_TEST_INSTALL_DIR}
+        )
+
+        file(REMOVE_RECURSE ${GOOGLE_TEST_TEMP_DIR})
+    else()
+        message(STATUS "Skipping GoogleTest download because it already exists.")
+    endif()
+
+
+    add_subdirectory("${GOOGLE_TEST_DIR}")
 
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    FetchContent_MakeAvailable(googletest)
 
     # We only want GMock.
     set(BUILD_GTEST OFF CACHE BOOL "" FORCE)
@@ -172,13 +197,6 @@ if(USE_GMOCK)
         RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
     )
 
-    set_target_properties(gtest_main
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
-
     set_target_properties(gmock_main
         PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
@@ -186,9 +204,16 @@ if(USE_GMOCK)
         RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
     )
 
-    target_compile_definitions(test_app PUBLIC USE_GMOCK)
+    set_target_properties(gtest_main
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
+    )
+
+    target_compile_definitions(test_app PRIVATE USE_GMOCK)
 
     # We ony want the google mock subdirectory.
-	target_include_directories(test_app PUBLIC "third-party/GoogleTest-1.2.1/googlemock/include")
-	target_link_libraries(test_app PRIVATE GTest::gmock)
+    target_include_directories(test_app PRIVATE "${GOOGLE_MOCK_DIR}/include")
+    target_link_libraries(test_app PRIVATE GTest::gmock)
 endif()
