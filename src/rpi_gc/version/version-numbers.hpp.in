@@ -23,6 +23,7 @@ namespace rpi_gc::version {
     //! \brief Retrieve rpi_gc application version.
     //!
     //! \return The version of the application.
+    [[nodiscard]]
     constexpr semver::version getApplicationVersion() noexcept {
         if constexpr (details::prerelease::RPI_GC_VERSION_RC_NUM.has_value()) {
             return semver::version{
