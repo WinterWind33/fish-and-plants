@@ -121,5 +121,18 @@
             ],
             "preLaunchTask": "[BUILD] (Linux Debug) Build test_app"
         },
+        {
+            "name": "(Windows) Launch all static Tests",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/Debug/test_app.exe",
+            "args": [
+                "-b",
+                "[static]"
+            ],
+            "cwd": "${workspaceRoot}/bin/Debug",
+            "preLaunchTask": "[Windows] (Debug) Build All",
+            "console": "externalTerminal"
+        }
     ]
 }
