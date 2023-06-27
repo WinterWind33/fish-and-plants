@@ -10,6 +10,10 @@
 
 namespace gc::project_management {
 
+    //!!
+    //! \brief Represent the class of a project of the greenhouse CAD. This class happens to be
+    //!  versioned and can be extended through a component architecture.
+    //!
     class Project final {
     public:
         using time_point_type = std::chrono::time_point<std::chrono::system_clock>;
