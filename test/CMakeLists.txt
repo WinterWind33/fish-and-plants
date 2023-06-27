@@ -29,6 +29,7 @@ set(TEST_APP_SOURCE_FILES
     "test-app-entry-point.cpp"
 
     # Modules
+    "modules/project-management/project.tests.cpp"
     "gh_hal/hardware-access/board-chip.tests.cpp"
     "gh_cmd/switch.tests.cpp"
     "gh_cmd/value.tests.cpp"
