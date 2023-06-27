@@ -78,6 +78,7 @@ set_target_properties(test_app
 target_include_directories(test_app PRIVATE "${PROJECT_SOURCE_DIR}/test")
 target_include_directories(test_app PRIVATE "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(test_app PRIVATE "${PROJECT_SOURCE_DIR}/src/wrappers")
+target_include_directories(test_app PRIVATE "${PROJECT_SOURCE_DIR}/src/modules/project-management")
 
 target_link_libraries(test_app PRIVATE rpi_gc_lib)
 
