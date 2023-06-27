@@ -4,7 +4,7 @@ set(PRJ_MGMT_INCLUDE_FILES
     "include/project-management/project.hpp"
 )
 
-add_library(project_management_static STATIC "src/temp.cpp")
+add_library(project_management_static STATIC ${PRJ_MGMT_INCLUDE_FILES} "src/temp.cpp")
 set_target_properties(project_management_static
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
