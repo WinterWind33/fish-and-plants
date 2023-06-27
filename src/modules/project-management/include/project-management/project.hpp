@@ -18,18 +18,21 @@ namespace gc::project_management {
 
         constexpr explicit Project(
             time_point_type creationTime, project_title projectTitle, project_version version) noexcept :
-            m_creationTimePoint{std::move(creationTime)},
-            m_projectTitle{std::move(projectTitle)},
-            m_projectVersion{std::move(version)} {}
+            m_creationTimePoint{creationTime},
+            m_projectTitle{projectTitle},
+            m_projectVersion{version} {}
 
+        [[nodiscard]]
         constexpr time_point_type getCreationTime() const noexcept {
             return m_creationTimePoint;
         }
 
+        [[nodiscard]]
         constexpr project_title getTitle() const noexcept {
             return m_projectTitle;
         }
 
+        [[nodiscard]]
         constexpr project_version getVersion() const noexcept {
             return m_projectVersion;
         }
