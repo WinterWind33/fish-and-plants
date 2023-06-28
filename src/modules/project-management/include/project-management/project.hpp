@@ -42,7 +42,7 @@ namespace gc::project_management {
         }
 
     private:
-        const time_point_type m_creationTimePoint;
+        time_point_type m_creationTimePoint;
         project_title m_projectTitle{};
         project_version m_projectVersion{};
     };
