@@ -30,6 +30,7 @@ set(TEST_APP_SOURCE_FILES
 
     # Modules
     "modules/project-management/project.tests.cpp"
+    "modules/project-management/version-integrity-checker.tests.cpp"
     "gh_hal/hardware-access/board-chip.tests.cpp"
     "gh_cmd/switch.tests.cpp"
     "gh_cmd/value.tests.cpp"
