@@ -21,6 +21,11 @@ namespace gc::project_management::integrity_check {
             m_newVersion{version} {}
 
         //!!
+        //! \brief WORKAROUND for GCC bug.
+        //!
+        constexpr ~VersionIntegrityChecker() noexcept override {}
+
+        //!!
         //! \brief Checks whether or not the given project has the same version
         //!  of the default one.
         //!
