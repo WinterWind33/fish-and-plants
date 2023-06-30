@@ -37,4 +37,20 @@ TEST_CASE("VersionIntegrityChecker unit tests", "[unit][solitary][modules][proje
             }
         }
     }
+
+    GIVEN("A project with the same version of the checker") {
+        Project project{Project::time_point_type{}, "TestProject", NEW_VERSION};
+
+        WHEN("The project version is updated") {
+            const bool bRes{checkUnderTest.tryApplyIntegrityFixes(project)};
+
+            THEN("The project version should be the same") {
+                CHECK(project.getVersion() == NEW_VERSION);
+            }
+
+            THEN("The execution should succeed") {
+                CHECK(bRes);
+            }
+        }
+    }
 }
