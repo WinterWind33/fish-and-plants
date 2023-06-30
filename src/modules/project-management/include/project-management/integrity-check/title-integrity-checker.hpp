@@ -22,11 +22,6 @@ namespace gc::project_management::integrity_check {
             m_defaultTitle{defaultTitle} {}
 
         //!!
-        //! \brief WORKAROUND for GCC bug.
-        //!
-        constexpr ~TitleIntegrityChecker() noexcept override {}
-
-        //!!
         //! \brief Checks whether or not the given project has a valid title. This means that
         //!  the title shouldn't be empty.
         //! \param project The project whose title need to be checked.
