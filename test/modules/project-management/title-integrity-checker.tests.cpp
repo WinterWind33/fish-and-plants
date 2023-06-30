@@ -3,16 +3,6 @@
 
 #include <testing-core.hpp>
 
-TEST_CASE("TitleIntegrityChecker static tests", "[static][modules][project-management][integrity-check][TitleIntegrityChecker]") {
-    using namespace gc::project_management;
-
-    constexpr Project TEST_PROJECT{Project::time_point_type{}, "", semver::version{1,0,0}};
-    constexpr std::string_view EXPECTED_TITLE{"DefaultTitle"};
-    constexpr integrity_check::TitleIntegrityChecker checkerUnderTest{EXPECTED_TITLE};
-
-    STATIC_CHECK_FALSE(checkerUnderTest.checkIntegrity(TEST_PROJECT));
-}
-
 TEST_CASE("TitleIntegrityChecker unit tests", "[unit][solitary][modules][project-management][integrity-check][TitleIntegrityChecker]") {
     using namespace gc::project_management;
 
@@ -21,6 +11,10 @@ TEST_CASE("TitleIntegrityChecker unit tests", "[unit][solitary][modules][project
 
     GIVEN("A project without a title") {
         Project project{Project::time_point_type{}, "", semver::version{1, 0, 0}};
+
+        THEN("The integrity check should fail") {
+            CHECK_FALSE(checkerUnderTest.checkIntegrity(project));
+        }
 
         WHEN("The title is updated") {
             const bool bRes{checkerUnderTest.tryApplyIntegrityFixes(project)};
@@ -38,6 +32,10 @@ TEST_CASE("TitleIntegrityChecker unit tests", "[unit][solitary][modules][project
     GIVEN("A project with a title") {
         constexpr std::string_view VALID_TITLE{"ValidTitle"};
         Project project{Project::time_point_type{}, VALID_TITLE, semver::version{1, 0, 0}};
+
+        THEN("The integrity check should pass") {
+            CHECK(checkerUnderTest.checkIntegrity(project));
+        }
 
         WHEN("The title is updated") {
             const bool bRes{checkerUnderTest.tryApplyIntegrityFixes(project)};
