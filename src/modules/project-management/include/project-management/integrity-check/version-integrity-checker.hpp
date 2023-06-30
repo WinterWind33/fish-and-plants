@@ -13,10 +13,12 @@ namespace gc::project_management::integrity_check {
         constexpr explicit VersionIntegrityChecker(semver::version version) noexcept :
             m_newVersion{version} {}
 
+        [[nodiscard]]
         constexpr bool checkIntegrity(const Project& project) const noexcept override {
             return m_newVersion == project.getVersion();
         }
 
+        [[nodiscard]]
         bool tryApplyIntegrityFixes(Project& project) override;
 
     private:

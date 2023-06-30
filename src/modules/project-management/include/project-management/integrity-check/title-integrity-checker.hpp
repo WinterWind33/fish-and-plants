@@ -15,10 +15,12 @@ namespace gc::project_management::integrity_check {
             m_defaultTitle{defaultTitle} {}
 
 
+        [[nodiscard]]
         constexpr bool checkIntegrity(const Project& project) const noexcept override {
             return !project.getTitle().empty();
         }
 
+        [[nodiscard]]
         bool tryApplyIntegrityFixes(Project& project) override {
             project = Project(project.getCreationTime(), m_defaultTitle, project.getVersion());
 

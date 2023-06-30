@@ -22,6 +22,7 @@ namespace gc::project_management::integrity_check {
         //!
         //! \param project The project whose integrity is to be checked.
         //! \return True is the integrity is fine, false otherwise.
+        [[nodiscard]]
         virtual bool checkIntegrity(const Project& project) const noexcept = 0;
 
         //!!
@@ -32,6 +33,7 @@ namespace gc::project_management::integrity_check {
         //!
         //! \param project The project whose integrity is to be restored.
         //! \return True if the fixes were fully applied, false otherwise.
+        [[nodiscard]]
         virtual bool tryApplyIntegrityFixes(Project& project) = 0;
     } ;
 
