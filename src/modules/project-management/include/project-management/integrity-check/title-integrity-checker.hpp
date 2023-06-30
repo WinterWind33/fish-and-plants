@@ -21,11 +21,7 @@ namespace gc::project_management::integrity_check {
         }
 
         [[nodiscard]]
-        bool tryApplyIntegrityFixes(Project& project) override {
-            project = Project(project.getCreationTime(), m_defaultTitle, project.getVersion());
-
-            return true;
-        }
+        bool tryApplyIntegrityFixes(Project& project) override;
 
     private:
         Project::project_title m_defaultTitle{};
