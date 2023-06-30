@@ -17,11 +17,7 @@ namespace gc::project_management::integrity_check {
             return m_newVersion == project.getVersion();
         }
 
-        constexpr bool tryApplyIntegrityFixes(Project& project) override {
-            project = Project{project.getCreationTime(), project.getTitle(), m_newVersion};
-
-            return true;
-        }
+        bool tryApplyIntegrityFixes(Project& project) override;
 
     private:
         const semver::version m_newVersion;
