@@ -15,7 +15,7 @@ namespace gc::project_management::integrity_check {
             m_defaultTitle{defaultTitle} {}
 
 
-        bool checkIntegrity(const Project& project) const noexcept override {
+        constexpr bool checkIntegrity(const Project& project) const noexcept override {
             return !project.getTitle().empty();
         }
 
