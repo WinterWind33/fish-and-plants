@@ -18,7 +18,7 @@ namespace rpi_gc::commands {
         using option_parser_pointer = std::unique_ptr<option_parser>;
         using event_handler_map = std::map<string_type, std::function<void(option_parser::const_option_pointer)>>;
 
-        explicit ProjectCommand(option_parser_pointer optionParser) noexcept;
+        explicit ProjectCommand(option_parser_pointer optionParser, event_handler_map eventHandlerMap) noexcept;
 
         //!!
         //! \brief Retrieves the name of this command: project.
@@ -38,6 +38,7 @@ namespace rpi_gc::commands {
 
     private:
         option_parser_pointer m_optionParser{};
+        event_handler_map m_eventHandlerMap{};
     };
 
 } // namespace rpi_gc::commands
