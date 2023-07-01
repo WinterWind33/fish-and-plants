@@ -44,6 +44,7 @@ set(TEST_APP_SOURCE_FILES
     "rpi_gc/commands/abort-command.tests.cpp"
     "rpi_gc/commands/status-command.tests.cpp"
     "rpi_gc/commands/version-command.tests.cpp"
+    "rpi_gc/commands/project-command.tests.cpp"
     "rpi_gc/automatic-watering/daily-cycle-automatic-watering-system.tests.cpp"
     "rpi_gc/automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.tests.cpp"
     "rpi_gc/hardware-management/hardware-initializer.tests.cpp"
