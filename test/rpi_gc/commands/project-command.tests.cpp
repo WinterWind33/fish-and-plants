@@ -15,7 +15,8 @@ TEST_CASE("ProjectCommand unit tests", "[unit][solitary][rpi_gc][commands][Proje
     using namespace rpi_gc;
 
     SECTION("getName() should return the correct name") {
-        const commands::ProjectCommand commandUnderTest{};
+        auto dummyOptionParser{std::make_unique<testing::NiceMock<gh_cmd::mocks::OptionParserMock<char>>>()};
+        const commands::ProjectCommand commandUnderTest{std::move(dummyOptionParser)};
 
         CHECK(commandUnderTest.getName() == strings::commands::PROJECT);
     }
@@ -24,7 +25,7 @@ TEST_CASE("ProjectCommand unit tests", "[unit][solitary][rpi_gc][commands][Proje
         GIVEN("A project command") {
             auto optionParserMock{std::make_unique<testing::StrictMock<gh_cmd::mocks::OptionParserMock<char>>>()};
             auto& optionParserMockRef{*optionParserMock};
-            commands::ProjectCommand commandUnderTest{};
+            commands::ProjectCommand commandUnderTest{std::move(optionParserMock)};
 
             WHEN("input options are processed") {
                 const std::vector<commands::ProjectCommand::string_type> inputOptions{"--help", "-h"};
@@ -40,7 +41,8 @@ TEST_CASE("ProjectCommand unit tests", "[unit][solitary][rpi_gc][commands][Proje
     }
 
     SECTION("Data tests") {
-        commands::ProjectCommand commandUnderTest{};
+        auto dummyOptionParser{std::make_unique<testing::NiceMock<gh_cmd::mocks::OptionParserMock<char>>>()};
+        commands::ProjectCommand commandUnderTest{std::move(dummyOptionParser)};
 
         SECTION("processInputOptions() should always return true") {
             const std::vector<commands::ProjectCommand::string_type> inputOptions{"--help", "junk"};
