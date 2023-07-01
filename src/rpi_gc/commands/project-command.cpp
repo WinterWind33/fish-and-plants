@@ -34,7 +34,16 @@ namespace rpi_gc::commands {
     }
 
     void ProjectCommand::printHelp(help_ostream_type outputStream) const noexcept {
+        outputStream.get() << "[NAME]" << std::endl;
+        outputStream.get() << "\t" << strings::commands::PROJECT << " - manages the project of an automated greenhouse" << std::endl;
+        outputStream.get() << "[SYNOPSIS]" << std::endl;
+        outputStream.get() << "\t" << strings::commands::PROJECT << " [OPTION]..." << std::endl;
+        outputStream.get() << "[DESCRIPTION]" << std::endl;
+        outputStream.get() << "\t" << "Manages the project information and configuration of an automated greenhouse. It is" << std::endl;
+        outputStream.get() << "\tcapable of handling the creation, loading and saving of the projects." << std::endl;
+        outputStream.get() << std::endl;
 
+        m_optionParser->printHelp(outputStream);
     }
 
 } // namespace rpi_gc::commands
