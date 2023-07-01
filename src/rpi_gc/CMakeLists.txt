@@ -42,6 +42,7 @@ set(RPI_GC_SOURCE_FILES
     "commands/status-command.cpp"
     "commands/project-command.cpp"
     "commands/automatic-watering/automatic-watering-command.cpp"
+    "gc-project/project-controller.cpp"
     "automatic-watering/daily-cycle-automatic-watering-system.cpp"
     "automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.cpp"
     "automatic-watering/time-providers/configurable-daily-cycle-aws-time-provider.cpp"
