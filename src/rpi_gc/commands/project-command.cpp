@@ -12,7 +12,7 @@ namespace rpi_gc::commands {
     }
 
     bool ProjectCommand::execute() noexcept {
-        return false;
+        return true;
     }
 
     bool ProjectCommand::processInputOptions(const std::vector<string_type>& inputTokens) noexcept {
