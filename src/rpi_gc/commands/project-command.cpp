@@ -8,7 +8,7 @@ namespace rpi_gc::commands {
     }
 
     bool ProjectCommand::processInputOptions(const std::vector<string_type>& inputTokes) noexcept {
-        return false;
+        return true;
     }
 
     void ProjectCommand::printHelp(help_ostream_type outputStream) const noexcept {
