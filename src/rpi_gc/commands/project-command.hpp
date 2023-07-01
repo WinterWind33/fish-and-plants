@@ -17,6 +17,9 @@ namespace rpi_gc::commands {
         constexpr name_type getName() const noexcept override {
             return strings::commands::PROJECT;
         }
+
+        [[nodiscard]]
+        bool execute() noexcept override;
     };
 
 } // namespace rpi_gc::commands
