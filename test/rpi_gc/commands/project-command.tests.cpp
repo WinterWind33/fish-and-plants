@@ -10,6 +10,7 @@
 // C++ STL
 #include <memory>
 #include <tuple>
+#include <map>
 
 TEST_CASE("ProjectCommand unit tests", "[unit][solitary][rpi_gc][commands][ProjectCommand]") {
     using namespace rpi_gc;
@@ -25,6 +26,7 @@ TEST_CASE("ProjectCommand unit tests", "[unit][solitary][rpi_gc][commands][Proje
         GIVEN("A project command") {
             auto optionParserMock{std::make_unique<testing::StrictMock<gh_cmd::mocks::OptionParserMock<char>>>()};
             auto& optionParserMockRef{*optionParserMock};
+
             commands::ProjectCommand commandUnderTest{std::move(optionParserMock)};
 
             WHEN("input options are processed") {
@@ -37,16 +39,43 @@ TEST_CASE("ProjectCommand unit tests", "[unit][solitary][rpi_gc][commands][Proje
                     [[maybe_unused]] const bool bRes{commandUnderTest.processInputOptions(inputOptions)};
                 }
             }
+
+
         }
     }
 
-    SECTION("Data tests") {
+    SECTION("State tests") {
         auto dummyOptionParser{std::make_unique<testing::NiceMock<gh_cmd::mocks::OptionParserMock<char>>>()};
+        std::map<std::string, bool> callsPool{
+            {"test", false}
+        };
+        commands::ProjectCommand::event_handler_map eventHandlerMap{
+            {
+                "test",
+                [&callsPool](
+                    [[maybe_unused]] commands::ProjectCommand::option_parser::const_option_pointer optionPointer){
+                    callsPool["test"] = true;
+                }
+            }
+        };
+
         commands::ProjectCommand commandUnderTest{std::move(dummyOptionParser)};
 
         SECTION("processInputOptions() should always return true") {
             const std::vector<commands::ProjectCommand::string_type> inputOptions{"--help", "junk"};
             CHECK(commandUnderTest.processInputOptions(inputOptions));
+        }
+
+        WHEN("The command is executed with a valid option") {
+            const bool bRes{commandUnderTest.execute()};
+
+            THEN("It should call the correct event handler") {
+                CHECK(callsPool["test"]);
+            }
+
+            THEN("The execution should succeed") {
+                CHECK(bRes);
+            }
         }
     }
 }

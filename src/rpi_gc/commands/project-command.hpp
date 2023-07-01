@@ -8,6 +8,7 @@
 // C++ STL
 #include <vector>
 #include <memory>
+#include <map>
 
 namespace rpi_gc::commands {
 
@@ -15,6 +16,7 @@ namespace rpi_gc::commands {
     public:
         using option_parser = gh_cmd::OptionParser<CharType>;
         using option_parser_pointer = std::unique_ptr<option_parser>;
+        using event_handler_map = std::map<string_type, std::function<void(option_parser::const_option_pointer)>>;
 
         explicit ProjectCommand(option_parser_pointer optionParser) noexcept;
 
