@@ -18,6 +18,7 @@
 #include <commands/help-command.hpp>
 #include <commands/automatic-watering/automatic-watering-command.hpp>
 #include <commands/status-command.hpp>
+#include <commands/project-command.hpp>
 
 #include <common/types.hpp>
 
