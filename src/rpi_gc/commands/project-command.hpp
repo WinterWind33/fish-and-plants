@@ -12,6 +12,9 @@
 
 namespace rpi_gc::commands {
 
+    //!!
+    //! \brief Commands that handles the creation, loading and saving of a Greenhouse CAD project.
+    //!
     class ProjectCommand final : public TerminalCommandType {
     public:
         using option_parser = gh_cmd::OptionParser<CharType>;
