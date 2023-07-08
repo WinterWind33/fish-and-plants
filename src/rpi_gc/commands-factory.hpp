@@ -17,15 +17,27 @@
 
 namespace rpi_gc::commands_factory {
 
+    //!!
+    //! \brief Interface of a command factory that creates a unique pointer to a command .
+    //!  of the specified type.
+    //!
+    //! \tparam CommandType The type of the command to create.
     template<typename CommandType>
     struct CommandFactory {
         using command_type = std::decay_t<CommandType>;
 
         virtual ~CommandFactory() noexcept = default;
 
+        //!!
+        //! \brief Creates a new command.
+        //!
+        //! \return The pointer to the command.
         virtual std::unique_ptr<command_type> create() = 0;
     };
 
+    //!!
+    //! \brief Factory of the ProjectCommand. Configures the options and the event handlers
+    //!  for this command.
     class ProjectCommandFactory final : public CommandFactory<commands::ProjectCommand> {
     public:
         explicit ProjectCommandFactory(std::ostream& ost, std::istream& ist, gc_project::ProjectController& projectController) noexcept;
