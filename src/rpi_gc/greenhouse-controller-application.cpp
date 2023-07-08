@@ -12,10 +12,12 @@
 
 namespace rpi_gc {
 
-    GreenhouseControllerApplication::GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, logger_pointer mainLogger) noexcept :
+    GreenhouseControllerApplication::GreenhouseControllerApplication(
+        ostream_ref outputStream, istream_ref inputStream, logger_pointer mainLogger, gc_project::ProjectController& projectController) noexcept :
         m_outputStream{outputStream},
         m_inputStream{inputStream},
-        m_mainLogger{std::move(mainLogger)} {
+        m_mainLogger{std::move(mainLogger)},
+        m_projectController{projectController} {
         assert(static_cast<bool>(m_mainLogger));
     }
 

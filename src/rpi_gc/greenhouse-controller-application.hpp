@@ -5,6 +5,7 @@
 #include <common/types.hpp>
 #include <application/application.hpp>
 #include <commands/terminal-command.hpp>
+#include <gc-project/project-controller.hpp>
 
 // Abort system
 #include <abort-system/terminable-system.hpp>
@@ -29,8 +30,7 @@ namespace rpi_gc {
         using istream_ref = std::reference_wrapper<InputStream>;
         using logger_pointer = std::shared_ptr<gh_log::Logger>;
 
-        GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, logger_pointer mainLogger) noexcept;
-        ~GreenhouseControllerApplication() noexcept override = default;
+        GreenhouseControllerApplication(ostream_ref outputStream, istream_ref inputStream, logger_pointer mainLogger, gc_project::ProjectController& projectController) noexcept;
 
         //! \brief Runs the main greenhousse controller application.
         void run() noexcept override;
@@ -53,6 +53,7 @@ namespace rpi_gc {
         ostream_ref m_outputStream;
         istream_ref m_inputStream;
         logger_pointer m_mainLogger{};
+        std::reference_wrapper<gc_project::ProjectController> m_projectController;
 
         std::map<StringType, std::unique_ptr<TerminalCommandType>> m_commands{};
         std::unique_ptr<TerminalCommandType> m_applicationCommand{};
