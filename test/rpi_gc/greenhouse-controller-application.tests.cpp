@@ -53,8 +53,9 @@ TEST_CASE("GreenhouseControllerApplication Header Lines", "[functional][rpi_gc][
 
     OutputStringStream outputStream{};
     InputStringStream inputStream{"exit"};
+    gc_project::ProjectController projectController{};
 
-    GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
+    GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>(), projectController};
 
     SECTION("When running the application") {
         SECTION("It should correctly print the application name and version (first line)") {
@@ -89,7 +90,7 @@ TEST_CASE("GreenhouseControllerApplication Header Lines", "[functional][rpi_gc][
     }
 }
 
-TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][solitary][rpi_gc][GreenhouseControllerApplication][terminal-input]") {
+TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][sociable][rpi_gc][GreenhouseControllerApplication][terminal-input]") {
     using namespace rpi_gc;
 
     GIVEN("An application controller") {
@@ -97,7 +98,8 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
 
         InputStringStream inputStream{};
         OutputStringStream outputStream{};
-        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
+        gc_project::ProjectController projectController{};
+        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>(), projectController};
 
         WHEN("A supported option (help) is given into the terminal buffer") {
             std::vector<std::string> strings{std::string{strings::application::EXECUTABLE_NAME}, std::string{"--help"}};
@@ -115,7 +117,7 @@ TEST_CASE("GreenhouseControllerApplication terminal input processing", "[unit][s
     }
 }
 
-TEST_CASE("GreenhouseControllerApplication termination unit tests", "[unit][solitary][rpi_gc][GreenhouseControllerApplication][termination]") {
+TEST_CASE("GreenhouseControllerApplication termination unit tests", "[unit][sociable][rpi_gc][GreenhouseControllerApplication][termination]") {
     using namespace rpi_gc;
 
     GIVEN("An application controller") {
@@ -123,7 +125,8 @@ TEST_CASE("GreenhouseControllerApplication termination unit tests", "[unit][soli
 
         InputStringStream inputStream{};
         OutputStringStream outputStream{};
-        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
+        gc_project::ProjectController projectController{};
+        GreenhouseControllerApplication applicationUnderTest{outputStream, inputStream, std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>(), projectController};
 
         AND_GIVEN("A registered terminable system") {
             using testing::StrictMock;
