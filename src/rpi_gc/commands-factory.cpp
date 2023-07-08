@@ -29,6 +29,14 @@ namespace rpi_gc::commands_factory {
         using parser_pointer = std::unique_ptr<gh_cmd::DefaultOptionParser<char>>;
 
         parser_pointer optionParser{std::make_unique<parser_type>(std::string{details::PROJECT_CMD_OPTION_PARSER_DESCRIPTION})};
+        optionParser->addSwitch(
+            std::make_shared<gh_cmd::Switch<char>>(
+                'h',
+                "help",
+                "Displays the help page"
+            )
+        );
+
         optionParser->addOption(
             std::make_shared<gh_cmd::Value<char, std::string>>(
                 'c',  // short name
