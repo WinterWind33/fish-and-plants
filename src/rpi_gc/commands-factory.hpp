@@ -2,6 +2,7 @@
 #pragma once
 
 #include <commands/project-command.hpp>
+#include <gc-project/project-controller.hpp>
 
 #include <commands/terminal-command.hpp>
 
@@ -43,6 +44,11 @@ namespace rpi_gc::commands_factory {
             m_mainLogger = std::move(loggerPtr);
         }
 
+        ProjectCommandFactory&
+            setProjectController(std::reference_wrapper<gc_project::ProjectController> projectController) noexcept {
+            m_projectController = projectController;
+        }
+
         std::unique_ptr<command_type> create() override;
 
     private:
@@ -50,6 +56,12 @@ namespace rpi_gc::commands_factory {
         std::reference_wrapper<std::istream> m_inputStream;
         std::shared_ptr<gh_log::Logger> m_userLogger;
         std::shared_ptr<gh_log::Logger> m_mainLogger;
+        std::reference_wrapper<gc_project::ProjectController> m_projectController;
+
+        command_type::option_parser_pointer
+            create_option_parser() const;
+
+        command_type::event_handler_map create_event_handler_map();
     };
 
 } // namespace rpi_gc::commands_factory
