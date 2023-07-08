@@ -46,7 +46,7 @@ set(PRODUCTION_LIB_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/lib")
 # === Options ===
 
 set(CATCH2_VERSION "3.3.2")
-set(SPDLOG_VERSION "1.11.0")
+set(SPDLOG_VERSION "1.12.0")
 set(LIBGPIOD_VERSION "2.0.1")
 option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 ${CATCH2_VERSION} as testing framework." ON)
 option(USE_SPDLOG "Use SPDLOG ${SPDLOG_VERSION} submodule as logging framework." ON)
