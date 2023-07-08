@@ -12,10 +12,12 @@ namespace rpi_gc::gc_project {
     public:
         using project_type = gc::project_management::Project;
 
+        [[nodiscard]]
         bool hasProject() const noexcept {
             return m_currentProject.has_value();
         }
 
+        [[nodiscard]]
         const project_type& getCurrentProject() const {
             return m_currentProject.value();
         }
