@@ -36,6 +36,7 @@ set(RPI_GC_HEADER_FILES
 # RPI_GC's source files
 set(RPI_GC_SOURCE_FILES
     "greenhouse-controller-application.cpp"
+    "commands-factory.cpp"
     "commands/application-command.cpp"
     "commands/version-command.cpp"
     "commands/help-command.cpp"
