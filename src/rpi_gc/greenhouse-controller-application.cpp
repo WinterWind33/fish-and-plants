@@ -64,7 +64,8 @@ namespace rpi_gc {
         m_outputStream.get() << strings::commands::feedbacks::TYPE_HELP << std::endl;
 
         while(inputLine != strings::commands::EXIT && m_inputStream.get().good()) {
-            m_outputStream.get() << "user@controller/home$ ";
+            print_project_path();
+
             std::getline(m_inputStream.get(), inputLine);
 
             // Empty line: we can skip this iteration as the user hasn't typed
@@ -111,10 +112,24 @@ namespace rpi_gc {
     }
 
     void GreenhouseControllerApplication::addSupportedCommand(std::unique_ptr<TerminalCommandType> command) noexcept {
-        const StringType commandName{command->getName()};
+        const std::string commandName{command->getName()};
         assert(!m_commands.contains(commandName));
 
         m_commands.emplace(commandName, std::move(command));
+    }
+
+    void GreenhouseControllerApplication::print_project_path() const {
+        constexpr std::string_view INVALID_PROJECT_TITLE{"no-project"};
+        const auto& projectController{m_projectController.get()};
+
+        m_outputStream.get() << "controller@";
+
+        if(projectController.hasProject())
+            m_outputStream.get() << projectController.getCurrentProject().getTitle();
+        else
+            m_outputStream.get() << INVALID_PROJECT_TITLE;
+
+        m_outputStream.get() << "$ ";
     }
 
     void GreenhouseControllerApplication::print_app_header() noexcept {

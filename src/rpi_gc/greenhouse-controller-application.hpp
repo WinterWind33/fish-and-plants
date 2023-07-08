@@ -65,6 +65,9 @@ namespace rpi_gc {
 
         void print_app_header() noexcept;
         void teardown() noexcept;
+
+        void print_project_path() const;
+
         static StringType create_version_string() noexcept;
     };
 
