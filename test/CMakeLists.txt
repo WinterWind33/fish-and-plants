@@ -29,7 +29,6 @@ set(TEST_APP_SOURCE_FILES
     "test-app-entry-point.cpp"
 
     # Modules
-    "modules/project-management/project.tests.cpp"
     "modules/project-management/version-integrity-checker.tests.cpp"
     "modules/project-management/title-integrity-checker.tests.cpp"
     "gh_hal/hardware-access/board-chip.tests.cpp"

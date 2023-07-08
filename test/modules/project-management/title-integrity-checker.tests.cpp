@@ -3,11 +3,14 @@
 
 #include <testing-core.hpp>
 
+// C++ STL
+#include <string_view>
+
 TEST_CASE("TitleIntegrityChecker unit tests", "[unit][solitary][modules][project-management][integrity-check][TitleIntegrityChecker]") {
     using namespace gc::project_management;
 
     constexpr std::string_view EXPECTED_TITLE{"DefaultTitle"};
-    integrity_check::TitleIntegrityChecker checkerUnderTest{EXPECTED_TITLE};
+    integrity_check::TitleIntegrityChecker checkerUnderTest{std::string{EXPECTED_TITLE}};
 
     GIVEN("A project without a title") {
         Project project{Project::time_point_type{}, "", semver::version{1, 0, 0}};
@@ -31,7 +34,7 @@ TEST_CASE("TitleIntegrityChecker unit tests", "[unit][solitary][modules][project
 
     GIVEN("A project with a title") {
         constexpr std::string_view VALID_TITLE{"ValidTitle"};
-        Project project{Project::time_point_type{}, VALID_TITLE, semver::version{1, 0, 0}};
+        Project project{Project::time_point_type{}, std::string{VALID_TITLE}, semver::version{1, 0, 0}};
 
         THEN("The integrity check should pass") {
             CHECK(checkerUnderTest.checkIntegrity(project));

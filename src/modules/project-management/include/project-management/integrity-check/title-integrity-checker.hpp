@@ -18,8 +18,8 @@ namespace gc::project_management::integrity_check {
         //!!
         //! \brief Constructs a new object with the given default title.
         //!
-        explicit constexpr TitleIntegrityChecker(Project::project_title defaultTitle) noexcept :
-            m_defaultTitle{defaultTitle} {}
+        explicit TitleIntegrityChecker(Project::project_title defaultTitle) noexcept :
+            m_defaultTitle{std::move(defaultTitle)} {}
 
         //!!
         //! \brief Checks whether or not the given project has a valid title. This means that
@@ -27,7 +27,7 @@ namespace gc::project_management::integrity_check {
         //! \param project The project whose title need to be checked.
         //! \return bool True if the project's title is OK, false otherwise.
         [[nodiscard]]
-        constexpr bool checkIntegrity(const Project& project) const noexcept override {
+        bool checkIntegrity(const Project& project) const noexcept override {
             return !project.getTitle().empty();
         }
 
