@@ -20,7 +20,7 @@ namespace gc::project_management {
         using project_version = semver::version;
         using project_title = std::string;
 
-        constexpr explicit Project(
+        explicit Project(
             time_point_type creationTime, project_title projectTitle, project_version version) noexcept :
             m_creationTimePoint{creationTime},
             m_projectTitle{std::move(projectTitle)},
@@ -32,7 +32,7 @@ namespace gc::project_management {
         }
 
         [[nodiscard]]
-        constexpr project_title getTitle() const noexcept {
+        project_title getTitle() const noexcept {
             return m_projectTitle;
         }
 
