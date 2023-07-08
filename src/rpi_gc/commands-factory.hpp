@@ -28,25 +28,16 @@ namespace rpi_gc::commands_factory {
 
     class ProjectCommandFactory final : public CommandFactory<commands::ProjectCommand> {
     public:
-        ProjectCommandFactory& setOutputStream(std::ostream& ost) noexcept {
-            m_outputStream = std::ref(ost);
-        }
+        explicit ProjectCommandFactory(std::ostream& ost, std::istream& ist, gc_project::ProjectController& projectController) noexcept;
 
-        ProjectCommandFactory& setInputStream(std::istream& ist) noexcept {
-            m_inputStream = std::ref(ist);
-        }
-
-        ProjectCommandFactory& setUserLogger(std::shared_ptr<gh_log::Logger> loggerPtr) noexcept {
+        inline ProjectCommandFactory& setUserLogger(std::shared_ptr<gh_log::Logger> loggerPtr) noexcept {
             m_userLogger = std::move(loggerPtr);
+            return *this;
         }
 
-        ProjectCommandFactory& setMainLogger(std::shared_ptr<gh_log::Logger> loggerPtr) noexcept {
+        inline ProjectCommandFactory& setMainLogger(std::shared_ptr<gh_log::Logger> loggerPtr) noexcept {
             m_mainLogger = std::move(loggerPtr);
-        }
-
-        ProjectCommandFactory&
-            setProjectController(std::reference_wrapper<gc_project::ProjectController> projectController) noexcept {
-            m_projectController = projectController;
+            return *this;
         }
 
         std::unique_ptr<command_type> create() override;
@@ -54,9 +45,9 @@ namespace rpi_gc::commands_factory {
     private:
         std::reference_wrapper<std::ostream> m_outputStream;
         std::reference_wrapper<std::istream> m_inputStream;
+        std::reference_wrapper<gc_project::ProjectController> m_projectController;
         std::shared_ptr<gh_log::Logger> m_userLogger;
         std::shared_ptr<gh_log::Logger> m_mainLogger;
-        std::reference_wrapper<gc_project::ProjectController> m_projectController;
 
         command_type::option_parser_pointer
             create_option_parser() const;

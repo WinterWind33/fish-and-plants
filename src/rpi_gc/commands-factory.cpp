@@ -15,6 +15,11 @@ namespace rpi_gc::commands_factory {
         constexpr std::string_view PROJECT_CMD_CREATE_OPTION_LONG_NAME{"create"};
     } // namesapce details
 
+    ProjectCommandFactory::ProjectCommandFactory(std::ostream& ost, std::istream& ist, gc_project::ProjectController& projectController) noexcept :
+        m_inputStream{ist},
+        m_outputStream{ost},
+        m_projectController{projectController} {}
+
     auto ProjectCommandFactory::create() -> std::unique_ptr<command_type> {
         return std::make_unique<command_type>(create_option_parser(), create_event_handler_map());
     }
