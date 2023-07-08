@@ -9,11 +9,6 @@ namespace rpi_gc {
 
     namespace details {
 
-        static void ClearOptions(auto&& options) noexcept {
-            for(auto& option : options)
-                option->clear();
-        }
-
         static void TriggerOptionEventIfBound(auto&& optionMap, auto&& option) noexcept {
             if(!optionMap.contains(option->getLongName()))
                 return;
@@ -65,7 +60,7 @@ namespace rpi_gc {
             // We have found the command help and it's set. We can execute it.
             printHelp(m_outputStream.get());
 
-            details::ClearOptions(options);
+            gh_cmd::utility::ClearAllOptions(options);
             return true;
         }
 
@@ -80,7 +75,7 @@ namespace rpi_gc {
 
         if(stopOptionIt != options.end() && (*stopOptionIt)->isSet()) {
             details::TriggerOptionEventIfBound(m_optionsEvents, *stopOptionIt);
-            details::ClearOptions(options);
+            gh_cmd::utility::ClearAllOptions(options);
             return true;
         }
 
@@ -94,7 +89,7 @@ namespace rpi_gc {
 
         // We need to reset the state of the option otherwise the next time the
         // user types it, it will execute all of the previous options.
-        details::ClearOptions(options);
+        gh_cmd::utility::ClearAllOptions(options);
 
         return true;
     }
