@@ -439,7 +439,12 @@ namespace gh_cmd {
     }
 
     namespace utility {
-        void ClearAllOptions(auto&& options) noexcept {
+
+        //!!
+        //! \brief Clears all the given options.
+        //!
+        //! \param options The options to clear.
+        inline void ClearAllOptions(auto&& options) noexcept {
             for(auto& option : options)
                 option->clear();
         }
