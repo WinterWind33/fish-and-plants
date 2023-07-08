@@ -20,7 +20,7 @@ namespace rpi_gc::commands {
         auto options{m_optionParser->getOptions()};
 
         // If the help option is requested, we don't need to process all the other options.
-        auto optionIt = std::find_if(std::begin(options), std::end(options), [](const option_parser::option_pointer optionPointer){
+        auto optionIt = std::find_if(std::begin(options), std::end(options), [](const option_parser::option_pointer& optionPointer){
             return optionPointer->getLongName() == "help" && optionPointer->isSet();
         });
 
