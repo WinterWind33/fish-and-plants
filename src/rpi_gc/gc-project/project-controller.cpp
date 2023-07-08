@@ -5,11 +5,11 @@ namespace rpi_gc::gc_project {
 
     void ProjectController::setCurrentProject(project_type newProject) {
         // We need to close the old project before setting the new one.
-        closeCurrentProject();
+        close_current_project();
         m_currentProject = newProject;
     }
 
-    void ProjectController::closeCurrentProject() noexcept {
+    void ProjectController::close_current_project() noexcept {
         // For now there isn't any complex behavior to do here.
         // We simply set the project.
         m_currentProject = std::nullopt;

@@ -8,6 +8,9 @@
 
 namespace rpi_gc::gc_project {
 
+    //!!
+    //! \brief Controller of a Greenhouse CAD project.
+    //!
     class ProjectController final {
     public:
         using project_type = gc::project_management::Project;
@@ -22,10 +25,15 @@ namespace rpi_gc::gc_project {
             return m_currentProject.value();
         }
 
+        //!!
+        //! \brief Sets the current project of this project controller. Closes
+        //!  the previous one if set.
+        //!
+        //! \param project The new project to control.
         void setCurrentProject(project_type project);
-        void closeCurrentProject() noexcept;
 
     private:
+        void close_current_project() noexcept;
         std::optional<project_type> m_currentProject{};
     };
 
