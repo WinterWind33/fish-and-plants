@@ -6,7 +6,7 @@
 
 // C++ STL
 #include <chrono>
-#include <string_view>
+#include <string>
 
 namespace gc::project_management {
 
@@ -18,7 +18,7 @@ namespace gc::project_management {
     public:
         using time_point_type = std::chrono::time_point<std::chrono::system_clock>;
         using project_version = semver::version;
-        using project_title = std::string_view;
+        using project_title = std::string;
 
         constexpr explicit Project(
             time_point_type creationTime, project_title projectTitle, project_version version) noexcept :
