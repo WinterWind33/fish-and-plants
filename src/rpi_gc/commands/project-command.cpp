@@ -3,6 +3,8 @@
 
 // C++ STL
 #include <cassert>
+#include <iostream> // TODO: Remove this
+#include <algorithm>
 
 namespace rpi_gc::commands {
 
@@ -17,13 +19,35 @@ namespace rpi_gc::commands {
         // the event handler map.
         auto options{m_optionParser->getOptions()};
 
+        // If the help option is requested, we don't need to process all the other options.
+        auto optionIt = std::find_if(std::begin(options), std::end(options), [](const option_parser::option_pointer optionPointer){
+            return optionPointer->getLongName() == "help" && optionPointer->isSet();
+        });
+
+        if(optionIt != std::end(options)) {
+            // The help option is typed, let's display it.
+            printHelp(std::cout);
+            gh_cmd::utility::ClearAllOptions(options);
+            return true;
+        }
+
+        bool bIsSomeSet{};
         for(auto& option : options) {
             if(option->isSet() && m_eventHandlerMap.contains(option->getLongName())) {
                 m_eventHandlerMap[option->getLongName()](option);
+                bIsSomeSet = true;
             }
-
-            option->clear();
         }
+
+        if(!bIsSomeSet) {
+            // This means that no option is given, the user typed only the command
+            // without option.
+            // In this case we want to display the help page.
+            // TODO: THIS IS HARD-CODED DEPENDENCY, REMOVE THIS.
+            printHelp(std::cout);
+        }
+
+        gh_cmd::utility::ClearAllOptions(options);
 
         return true;
     }
@@ -41,6 +65,8 @@ namespace rpi_gc::commands {
         outputStream.get() << "[DESCRIPTION]" << std::endl;
         outputStream.get() << "\t" << "Manages the project information and configuration of an automated greenhouse. It is" << std::endl;
         outputStream.get() << "\tcapable of handling the creation, loading and saving of the projects." << std::endl;
+        outputStream.get() << "\tWARNING: Due to limitations of the underlying parsing engine, please DO NOT use ";
+        outputStream.get() << "project titles with spaces." << std::endl;
         outputStream.get() << std::endl;
 
         m_optionParser->printHelp(outputStream);
