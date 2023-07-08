@@ -49,9 +49,11 @@ namespace rpi_gc::commands_factory {
         std::shared_ptr<gh_log::Logger> m_userLogger;
         std::shared_ptr<gh_log::Logger> m_mainLogger;
 
+        [[nodiscard]]
         command_type::option_parser_pointer
             create_option_parser() const;
 
+        [[nodiscard]]
         command_type::event_handler_map create_event_handler_map();
     };
 
