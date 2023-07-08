@@ -78,7 +78,7 @@ target_link_libraries(rpi_gc_lib PUBLIC gh_log)
 target_link_libraries(rpi_gc_lib PUBLIC gh_cmd)
 target_link_libraries(rpi_gc_lib PUBLIC project_management_static)
 
-add_executable(rpi_gc ${RPI_GC_EXECUTABLE_SOURCE_FILES} ${RPI_GC_HEADER_FILES} ${RPI_GC_SOURCE_FILES})
+add_executable(rpi_gc ${RPI_GC_EXECUTABLE_SOURCE_FILES})
 set_target_properties(rpi_gc
     PROPERTIES
     VERSION "1.0.0"
@@ -113,3 +113,4 @@ target_link_libraries(rpi_gc PRIVATE gh_hal)
 target_link_libraries(rpi_gc PRIVATE gh_log)
 target_link_libraries(rpi_gc PRIVATE gh_cmd)
 target_link_libraries(rpi_gc PRIVATE project_management_static)
+target_link_libraries(rpi_gc PRIVATE rpi_gc_lib)
