@@ -53,7 +53,7 @@ namespace rpi_gc::commands_factory {
 
         eventHandlerMap.emplace(
             std::string{details::PROJECT_CMD_CREATE_OPTION_LONG_NAME},
-            [this](command_type::option_parser::const_option_pointer ptr){
+            [this](const command_type::option_parser::const_option_pointer& ptr){
                 const auto& valueOption{dynamic_cast<const gh_cmd::Value<char, std::string>&>(*ptr)};
 
                 m_projectController.get().setCurrentProject(
