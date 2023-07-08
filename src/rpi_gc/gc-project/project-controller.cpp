@@ -6,7 +6,7 @@ namespace rpi_gc::gc_project {
     void ProjectController::setCurrentProject(project_type newProject) {
         // We need to close the old project before setting the new one.
         closeCurrentProject();
-        m_currentProject = std::move(newProject);
+        m_currentProject = newProject;
     }
 
     void ProjectController::closeCurrentProject() noexcept {
