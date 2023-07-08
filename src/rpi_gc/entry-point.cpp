@@ -10,16 +10,18 @@
 
 #include <hardware-management/hardware-chip-initializer.hpp>
 
+#include <gc-project/project-controller.hpp>
+
 // Commands
-#include <gh_cmd/gh_cmd.hpp>
+#include <commands-factory.hpp>
 #include <commands/application-command.hpp>
 #include <commands/abort-command.hpp>
 #include <commands/version-command.hpp>
 #include <commands/help-command.hpp>
 #include <commands/automatic-watering/automatic-watering-command.hpp>
 #include <commands/status-command.hpp>
-#include <commands/project-command.hpp>
 
+#include <gh_cmd/gh_cmd.hpp>
 #include <common/types.hpp>
 
 // C++ STL
@@ -268,8 +270,8 @@ int main(int argc, char* argv[]) {
     mainLogger->logInfo("Initiating application commands and user interface...");
     auto versionCommand = std::make_unique<VersionCommand>(std::cout);
 
-    auto autoWateringCommand = commands_factory::CreateAutomaticWateringCommand<AutomaticWateringSystemPointer, DefaultOptionParser>(
-            automaticWateringSystem
+    auto autoWateringCommand = ::commands_factory::CreateAutomaticWateringCommand<AutomaticWateringSystemPointer, DefaultOptionParser>(
+        automaticWateringSystem
     );
 
     autoWateringCommand->registerOptionEvent(
@@ -397,7 +399,13 @@ int main(int argc, char* argv[]) {
         std::move(abortCommandOptionParser)
     );
 
-    auto statusCommand = commands_factory::CreateStatusCommand<AutomaticWateringSystemPointer, DefaultOptionParser>(automaticWateringSystem);
+    auto statusCommand = ::commands_factory::CreateStatusCommand<AutomaticWateringSystemPointer, DefaultOptionParser>(automaticWateringSystem);
+
+    gc_project::ProjectController projectController{};
+    auto projectCommand = rpi_gc::commands_factory::ProjectCommandFactory{std::cout, std::cin, projectController}
+        .setMainLogger(mainLogger)
+        .setUserLogger(userLogger)
+        .create();
 
     auto helpCommand = std::make_unique<HelpCommand>(
         std::cout,
@@ -405,7 +413,8 @@ int main(int argc, char* argv[]) {
             std::cref(*versionCommand),
             std::cref(*autoWateringCommand),
             std::cref(*abortCommand),
-            std::cref(*statusCommand)
+            std::cref(*statusCommand),
+            std::cref(*projectCommand)
         }
     );
 
@@ -423,6 +432,7 @@ int main(int argc, char* argv[]) {
     mainApplication.addSupportedCommand(std::move(abortCommand));
     mainApplication.addSupportedCommand(std::move(versionCommand));
     mainApplication.addSupportedCommand(std::move(statusCommand));
+    mainApplication.addSupportedCommand(std::move(projectCommand));
     mainApplication.addSupportedCommand(std::move(helpCommand));
     mainApplication.setApplicationCommand(std::move(applicationCommand));
 
