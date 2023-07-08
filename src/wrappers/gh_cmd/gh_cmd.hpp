@@ -438,6 +438,19 @@ namespace gh_cmd {
         m_implParser->parse(static_cast<std::int32_t>(rawStrings.size()), rawStrings.data());
     }
 
+    namespace utility {
+
+        //!!
+        //! \brief Clears all the given options.
+        //!
+        //! \param options The options to clear.
+        inline void ClearAllOptions(auto&& options) noexcept {
+            for(auto& option : options)
+                option->clear();
+        }
+
+    } // namespace utility
+
 } // namespace gh_cmd
 
 #endif // !GH_CMD_HPP
