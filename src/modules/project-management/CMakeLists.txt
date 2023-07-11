@@ -5,6 +5,7 @@ set(PRJ_MGMT_INCLUDE_FILES
     "include/project-management/integrity-check/project-integrity-checker.hpp"
     "include/project-management/integrity-check/title-integrity-checker.hpp"
     "include/project-management/integrity-check/version-integrity-checker.hpp"
+    "include/project-management/project-io/project-writer.hpp"
 )
 
 set(PRJ_MGMT_SOURCE_FILES
