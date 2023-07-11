@@ -54,6 +54,7 @@ option(USE_LIBGPIOD "Use libgpiod ${LIBGPIOD_VERSION} module as the main I/O por
 option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
 option(USE_POPL20 "Use popl20 header-only library as command line parser." ON)
 option(USE_SEMVER "Use Neargye/semver third-library software as semantic versioning library." ON)
+option(GC_USE_NLOHMANN_JSON "Use nlohmann/json as json engine" ON)
 
 # === SUB-PROJECTS ===
 

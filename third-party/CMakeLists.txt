@@ -1,4 +1,6 @@
 
+include(FetchContent)
+
 if(USE_SEMVER)
     set(SEMVER_HPP_FILE_ABS_PATH "${PROJECT_SOURCE_DIR}/third-party/semver/include/semver.hpp")
 
@@ -22,4 +24,15 @@ if(USE_SEMVER)
         RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
         LINKER_LANGUAGE CXX
     )
+endif()
+
+if(GC_USE_NLOHMANN_JSON)
+    message(STATUS "Using NLohmann/json as json engine")
+
+    FetchContent_Declare(nlohmann_json
+        GIT_REPOSITORY "https://github.com/nlohmann/json.git"
+        GIT_TAG v3.11.2
+    )
+
+    FetchContent_MakeAvailable(nlohmann_json)
 endif()
