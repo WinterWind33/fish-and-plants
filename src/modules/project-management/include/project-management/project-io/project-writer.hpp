@@ -5,6 +5,7 @@
 
 // C++ STL
 #include <memory>
+#include <filesystem>
 
 namespace gc::project_management::project_io {
 
@@ -26,5 +27,7 @@ namespace gc::project_management::project_io {
         writer.serializeProject(project);
         return writer;
     }
+
+    std::unique_ptr<ProjectWriter> createJsonProjectFileWriter(std::filesystem::path outputFilePath);
 
 } // namespace gc::project_management::project_io

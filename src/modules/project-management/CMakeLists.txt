@@ -15,6 +15,7 @@ set(PRJ_MGMT_INCLUDE_FILES
 set(PRJ_MGMT_SOURCE_FILES
     "src/integrity-check/version-integrity-checker.cpp"
     "src/integrity-check/title-integrity-checker.cpp"
+    "src/project-io/project-writer.cpp"
     "src/project-io/json-project-writer.cpp"
 )
 
