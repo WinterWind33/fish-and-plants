@@ -16,7 +16,7 @@ namespace gc::project_management::project_io {
         nlohmann::json projectJson{};
 
         std::ostringstream creationTimeStream{};
-        creationTimeStream << project.getCreationTime();
+        creationTimeStream << std::chrono::system_clock::to_time_t(project.getCreationTime());
 
         projectJson =
         {
