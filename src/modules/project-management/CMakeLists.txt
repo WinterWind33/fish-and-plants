@@ -24,6 +24,5 @@ set_target_properties(project_management_static
 target_include_directories(project_management_static PUBLIC ${PRJ_MGMT_INCLUDE_ABS_DIR})
 
 if(USE_SEMVER)
-    target_link_libraries(project_management_static INTERFACE semver_header_only)
-    target_include_directories(project_management_static PUBLIC "${PROJECT_SOURCE_DIR}/third-party/semver/include")
+    target_link_libraries(project_management_static PUBLIC semver)
 endif()
