@@ -26,3 +26,7 @@ target_include_directories(project_management_static PUBLIC ${PRJ_MGMT_INCLUDE_A
 if(USE_SEMVER)
     target_link_libraries(project_management_static PUBLIC semver)
 endif()
+
+if(GC_USE_NLOHMANN_JSON)
+    target_link_libraries(project_management_static PRIVATE nlohmann_json)
+endif()
