@@ -9,8 +9,8 @@
 
 namespace gc::project_management::project_io {
 
-    JsonProjectWriter::JsonProjectWriter(std::ostream& outputStream) noexcept :
-        m_outputStream{outputStream} {}
+    JsonProjectWriter::JsonProjectWriter(std::unique_ptr<std::ostream> outputStream) noexcept :
+        m_outputStream{std::move(outputStream)} {}
 
     void JsonProjectWriter::serializeProject(const Project& project) {        ;
         nlohmann::json projectJson{};
@@ -25,7 +25,7 @@ namespace gc::project_management::project_io {
             {"creation_timedate", creationTimeStream.str()}
         };
 
-        m_outputStream.get() << projectJson;
+        *m_outputStream << projectJson;
     }
 
 } // namespace gc::project_management::project_io

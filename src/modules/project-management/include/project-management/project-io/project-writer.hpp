@@ -28,6 +28,6 @@ namespace gc::project_management::project_io {
         return writer;
     }
 
-    std::unique_ptr<ProjectWriter> createJsonProjectFileWriter(std::filesystem::path outputFilePath);
+    std::unique_ptr<ProjectWriter> createJsonProjectFileWriter(const std::filesystem::path& outputFilePath);
 
 } // namespace gc::project_management::project_io

@@ -11,12 +11,12 @@ namespace gc::project_management::project_io {
 
     class JsonProjectWriter final : public ProjectWriter {
     public:
-        explicit JsonProjectWriter(std::ostream& outputStream) noexcept;
+        explicit JsonProjectWriter(std::unique_ptr<std::ostream> outputStream) noexcept;
 
         void serializeProject(const Project& project) override;
 
     private:
-        std::reference_wrapper<std::ostream> m_outputStream;
+        std::unique_ptr<std::ostream> m_outputStream;
     };
 
 } // namespace gc::project_management::project_io
