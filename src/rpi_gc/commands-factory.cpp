@@ -51,7 +51,7 @@ namespace rpi_gc::commands_factory {
             std::make_shared<gh_cmd::Switch<char>>(
                 's',
                 "save",
-                "Save the project to file."
+                "If a project is loaded it serializes it to file named <project-name>.json. If no project is loaded nothing happens."
         ));
 
         return optionParser;
@@ -80,14 +80,18 @@ namespace rpi_gc::commands_factory {
             [this](const command_type::option_parser::const_option_pointer& ptr) {
                 // If there isn't any valid project loaded, there is no need
                 // to save it to file.
-                if(!m_projectController.get().hasProject())
+                if(!m_projectController.get().hasProject()) {
+                    m_userLogger->logWarning("No project is loaded. Nothing will be saved.");
                     return;
+                }
 
                 const auto& project{m_projectController.get().getCurrentProject()};
                 const std::filesystem::path outputFilePath{project.getTitle() + ".json"};
 
                 auto projectWriter{gc::project_management::project_io::createJsonProjectFileWriter(outputFilePath)};
 
+                m_userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+                m_mainLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
                 *projectWriter << project;
             }
         );
