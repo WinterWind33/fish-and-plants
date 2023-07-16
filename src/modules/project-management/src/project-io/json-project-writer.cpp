@@ -12,7 +12,7 @@ namespace gc::project_management::project_io {
     JsonProjectWriter::JsonProjectWriter(std::unique_ptr<std::ostream> outputStream) noexcept :
         m_outputStream{std::move(outputStream)} {}
 
-    void JsonProjectWriter::serializeProject(const Project& project) {        ;
+    void JsonProjectWriter::serializeProject(const Project& project) {
         nlohmann::json projectJson{};
 
         std::ostringstream creationTimeStream{};
