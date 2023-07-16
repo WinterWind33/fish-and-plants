@@ -1,5 +1,7 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <catch2-gmock-listener.hpp>
+#include <catch2/catch_session.hpp>
+#include <catch2/internal/catch_assertion_handler.hpp>
 
 #ifdef USE_GMOCK
 #include <gmock/gmock.h>

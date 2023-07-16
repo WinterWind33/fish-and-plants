@@ -100,49 +100,20 @@ endif()
 # === Third party submodules configuration ===
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK)
-    message(STATUS "Using amalgamated Catch2 v${CATCH2_VERSION} as testing framework.")
+    message(STATUS "Using Catch2 v${CATCH2_VERSION} as testing framework.")
 
     set(CATCH2_DIR "${PROJECT_SOURCE_DIR}/test/third-party/Catch2-${CATCH2_VERSION}")
     set(AMALGAMATED_HPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.hpp")
     set(AMALGAMATED_CPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.cpp")
 
-    if(NOT EXISTS ${AMALGAMATED_HPP_FILE})
-        message(STATUS "Downloading Catch2 amalgamated HPP file.")
-        file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.hpp"
-            ${AMALGAMATED_HPP_FILE}
-        )
-    else()
-        message(STATUS "Skipping Catch2 header file download because it already exists.")
-    endif()
-
-    if(NOT EXISTS ${AMALGAMATED_CPP_FILE})
-        message(STATUS "Downloading Catch2 amalgamated CPP file.")
-        file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.cpp"
-            ${AMALGAMATED_CPP_FILE}
-        )
-    else()
-        message(STATUS "Skipping Catch2 source file download because it already exists.")
-    endif()
-
-    set(CATCH2_COMPILATION_FILES
-        ${AMALGAMATED_HPP_FILE}
-        ${AMALGAMATED_CPP_FILE}
+    FetchContent_Declare(Catch2
+        GIT_REPOSITORY "https://github.com/catchorg/Catch2.git"
+        GIT_TAG v3.4.0
     )
 
-    add_library(Catch2 STATIC ${CATCH2_COMPILATION_FILES})
-
-    # We want our custom main so we need to define this MACRO so
-    # the compilation won't generate its custom main.
-    target_compile_definitions(Catch2 PRIVATE "CATCH_AMALGAMATED_CUSTOM_MAIN")
-    set_target_properties(Catch2
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
+    FetchContent_MakeAvailable(Catch2)
 
     target_link_libraries(test_app PRIVATE Catch2)
-    target_include_directories(test_app PRIVATE "${CATCH2_DIR}/include")
     target_compile_definitions(test_app PRIVATE "USE_CATCH2_AS_TESTING_FRAMEWORK")
 endif()
 
@@ -161,13 +132,6 @@ if(USE_GMOCK)
     set(BUILD_GTEST OFF CACHE BOOL "" FORCE)
 
     FetchContent_MakeAvailable(GoogleTest)
-
-    set_target_properties(gtest gtest_main gmock gmock_main
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
 
     target_compile_definitions(test_app PRIVATE USE_GMOCK)
 
