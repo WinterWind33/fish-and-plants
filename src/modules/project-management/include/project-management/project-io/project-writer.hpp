@@ -28,6 +28,12 @@ namespace gc::project_management::project_io {
         return writer;
     }
 
+    //!!
+    //! \brief Create a Json Project File Writer object with the specified path. If the directories
+    //!  in the path don't exist, it will create them before creating the new file.
+    //!
+    //! \param outputFilePath The file path of the json file.
+    //! \return A new project writer ready to serialize the project.
     std::unique_ptr<ProjectWriter> createJsonProjectFileWriter(const std::filesystem::path& outputFilePath);
 
 } // namespace gc::project_management::project_io
