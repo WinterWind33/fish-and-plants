@@ -54,6 +54,13 @@ namespace rpi_gc::commands_factory {
                 "If a project is loaded it serializes it to file named <project-name>.json. If no project is loaded nothing happens."
         ));
 
+        optionParser->addOption(
+            std::make_shared<gh_cmd::Value<char, std::string>>(
+                'S',
+                "save-to",
+                "If a project is loaded it serialized it to the specified file."
+        ));
+
         return optionParser;
     }
 

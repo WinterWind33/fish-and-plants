@@ -14,6 +14,4 @@ namespace rpi_gc::gc_project {
         // We simply set the project.
         m_currentProject = std::nullopt;
     }
-
-
 } // namespace rpi_gc::gc_project
