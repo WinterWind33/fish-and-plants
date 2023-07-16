@@ -45,6 +45,13 @@ namespace rpi_gc::commands_factory {
                 "gc-project" // Default value.
         ));
 
+        optionParser->addSwitch(
+            std::make_shared<gh_cmd::Switch<char>>(
+                's',
+                "save",
+                "Save the project to file."
+        ));
+
         return optionParser;
     }
 
