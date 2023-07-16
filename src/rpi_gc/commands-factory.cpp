@@ -93,8 +93,31 @@ namespace rpi_gc::commands_factory {
                 }
 
                 const auto& project{m_projectController.get().getCurrentProject()};
-                const std::filesystem::path outputFilePath{project.getTitle() + ".json"};
+                const std::filesystem::path outputFilePath{m_projectController.get().getCurrentProjectFilePath()};
 
+                auto projectWriter{gc::project_management::project_io::createJsonProjectFileWriter(outputFilePath)};
+
+                m_userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+                m_mainLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+                *projectWriter << project;
+            }
+        );
+
+        eventHandlerMap.emplace(
+            "save-to",
+            [this](const command_type::option_parser::const_option_pointer& ptr) {
+                // If there isn't any valid project loaded, there is no need
+                // to save it to file.
+                if(!m_projectController.get().hasProject()) {
+                    m_userLogger->logWarning("No project is loaded. Nothing will be saved.");
+                    return;
+                }
+
+                const auto& valueOption(dynamic_cast<const gh_cmd::Value<char, std::string>&>(*ptr));
+                const auto& project{m_projectController.get().getCurrentProject()};
+                const std::filesystem::path outputFilePath{valueOption.value()};
+
+                m_projectController.get().setCurrentProjectFilePath(outputFilePath);
                 auto projectWriter{gc::project_management::project_io::createJsonProjectFileWriter(outputFilePath)};
 
                 m_userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
