@@ -25,7 +25,9 @@ namespace gc::project_management::project_io {
             {"creation_timedate", creationTimeStream.str()}
         };
 
-        *m_outputStream << projectJson;
+        // here we use .dump() because it prints newlines. If we don't use it
+        // newlines won't be printed and the file is formatted on one line.
+        *m_outputStream << projectJson.dump(4);
     }
 
 } // namespace gc::project_management::project_io
