@@ -4,6 +4,8 @@
 #include <gh_cmd/gh_cmd.hpp>
 #include <version/version-numbers.hpp>
 
+#include <project-management/project-io/project-writer.hpp>
+
 // C++ STL
 #include <string_view>
 #include <chrono>
@@ -70,6 +72,23 @@ namespace rpi_gc::commands_factory {
                         version::getApplicationVersion()
                     }
                 );
+            }
+        );
+
+        eventHandlerMap.emplace(
+            "save",
+            [this](const command_type::option_parser::const_option_pointer& ptr) {
+                // If there isn't any valid project loaded, there is no need
+                // to save it to file.
+                if(!m_projectController.get().hasProject())
+                    return;
+
+                const auto& project{m_projectController.get().getCurrentProject()};
+                const std::filesystem::path outputFilePath{project.getTitle() + ".json"};
+
+                auto projectWriter{gc::project_management::project_io::createJsonProjectFileWriter(outputFilePath)};
+
+                *projectWriter << project;
             }
         );
 
