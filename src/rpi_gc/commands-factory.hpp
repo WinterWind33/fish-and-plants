@@ -65,6 +65,8 @@ namespace rpi_gc::commands_factory {
         command_type::option_parser_pointer
             create_option_parser() const;
 
+        void save_current_project();
+
         [[nodiscard]]
         command_type::event_handler_map create_event_handler_map();
     };

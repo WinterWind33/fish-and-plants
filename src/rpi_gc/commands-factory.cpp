@@ -72,6 +72,10 @@ namespace rpi_gc::commands_factory {
             [this](const command_type::option_parser::const_option_pointer& ptr){
                 const auto& valueOption{dynamic_cast<const gh_cmd::Value<char, std::string>&>(*ptr)};
 
+                // If there is an open project we need to save it before proceeding.
+                if(m_projectController.get().hasProject())
+                    save_current_project();
+
                 m_projectController.get().setCurrentProject(
                     gc::project_management::Project{
                         std::chrono::system_clock::now(),
@@ -92,14 +96,7 @@ namespace rpi_gc::commands_factory {
                     return;
                 }
 
-                const auto& project{m_projectController.get().getCurrentProject()};
-                const std::filesystem::path outputFilePath{m_projectController.get().getCurrentProjectFilePath()};
-
-                auto projectWriter{gc::project_management::project_io::createJsonProjectFileWriter(outputFilePath)};
-
-                m_userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
-                m_mainLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
-                *projectWriter << project;
+                save_current_project();
             }
         );
 
@@ -114,19 +111,24 @@ namespace rpi_gc::commands_factory {
                 }
 
                 const auto& valueOption(dynamic_cast<const gh_cmd::Value<char, std::string>&>(*ptr));
-                const auto& project{m_projectController.get().getCurrentProject()};
                 const std::filesystem::path outputFilePath{valueOption.value()};
 
                 m_projectController.get().setCurrentProjectFilePath(outputFilePath);
-                auto projectWriter{gc::project_management::project_io::createJsonProjectFileWriter(outputFilePath)};
-
-                m_userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
-                m_mainLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
-                *projectWriter << project;
+                save_current_project();
             }
         );
 
         return eventHandlerMap;
+    }
+
+    void ProjectCommandFactory::save_current_project() {
+        const auto& project{m_projectController.get().getCurrentProject()};
+        const std::filesystem::path outputFilePath{m_projectController.get().getCurrentProjectFilePath()};
+        auto projectWriter{gc::project_management::project_io::createJsonProjectFileWriter(outputFilePath)};
+
+        m_userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+        m_mainLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+        *projectWriter << project;
     }
 
 } // namespace rpi_gc::commands_factory
