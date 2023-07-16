@@ -31,12 +31,13 @@ namespace rpi_gc::gc_project {
         //!  the previous one if set.
         //!
         //! \param project The new project to control.
-        void setCurrentProject(project_type project);
+        void setCurrentProject(const project_type& project);
 
         void setCurrentProjectFilePath(std::filesystem::path filepath) noexcept {
             m_currentProjectFilePath = std::move(filepath);
         }
 
+        [[nodiscard]]
         const auto& getCurrentProjectFilePath() const noexcept {
             return m_currentProjectFilePath;
         }
