@@ -12,11 +12,14 @@ namespace gc::project_management::project_io {
     public:
         explicit JsonProjectReader(std::istream& inputStream) noexcept;
 
+        Project readProject();
+
     private:
         std::istream& m_inputStream;
     };
 
     inline JsonProjectReader& operator>>(JsonProjectReader& reader, Project& inputProject) {
+        inputProject = reader.readProject();
         return reader;
     }
 

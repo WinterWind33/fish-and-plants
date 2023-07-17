@@ -15,7 +15,7 @@ TEST_CASE("JsonProjectReader unit tests", "[unit][sociable][project-management][
     // The time point represents the 01/01/2023 12:30:40 PM timedate.
     std::istringstream inputStream{R"(
         {
-            "creation_timedate": "1672576240",
+            "creation_timedate": 1672576240,
             "title": "test-title",
             "version": "1.2.3"
         }
