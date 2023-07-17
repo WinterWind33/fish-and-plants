@@ -13,9 +13,13 @@ namespace gc::project_management::project_io {
 
     Project JsonProjectReader::readProject() {
         nlohmann::json inputProjectJson{};
-
+        // Read the JSON from the input file.
         m_inputStream >> inputProjectJson;
 
+        // Begin read the project header:
+        // - creation time-date
+        // - project title
+        // - project version
         const Project::time_point_type creationTimeDate{
             std::chrono::system_clock::from_time_t(inputProjectJson["creation_timedate"].get<std::time_t>())};
 
