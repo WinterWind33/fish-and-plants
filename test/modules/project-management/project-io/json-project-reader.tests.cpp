@@ -13,17 +13,17 @@ TEST_CASE("JsonProjectReader unit tests", "[unit][sociable][project-management][
     using namespace gc::project_management;
 
     // The time point represents the 01/01/2023 12:30:40 PM timedate.
-    std::istringstream inputStream{R"(
+    auto inputStream{std::make_unique<std::istringstream>(R"(
         {
             "creation_timedate": 1672576240,
             "title": "test-title",
             "version": "1.2.3"
         }
-    )"};
+    )")};
 
     const Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
 
-    project_io::JsonProjectReader projectReaderUnderTest{inputStream};
+    project_io::JsonProjectReader projectReaderUnderTest{std::move(inputStream)};
 
     SECTION("Should correctly read a trivial project") {
         Project inputProject{};
