@@ -13,7 +13,7 @@ namespace gc::project_management::project_io {
     public:
         explicit JsonProjectReader(std::istream& inputStream) noexcept;
 
-        Project readProject() override;
+        [[nodiscard]] Project readProject() override;
 
     private:
         std::istream& m_inputStream;

@@ -18,6 +18,7 @@ namespace gc::project_management::project_io {
         //! \brief Reads the project associated with this reader.
         //!
         //! \return Project The project to be read.
+        [[nodiscard]]
         virtual Project readProject() = 0;
     };
 
@@ -31,6 +32,6 @@ namespace gc::project_management::project_io {
     //!  If the file doesn't exist it throws an std::system_error.
     //! \param path
     //! \return std::unique_ptr<ProjectReader>
-    //std::unique_ptr<ProjectReader> CreateJsonProjectFileReader(const std::filesystem::path& path);
+    [[nodiscard]] std::unique_ptr<ProjectReader> CreateJsonProjectFileReader(const std::filesystem::path& path);
 
 } // namespace gc::project_management::project_io

@@ -12,7 +12,7 @@ TEST_CASE("ProjectReader Factory tests", "[integration][modules][project-managem
 
     SECTION("CreateJsonProjectFileReader() Function") {
         SECTION("Should throw a std::invalid_argument exception if the input file does not exist") {
-            CHECK_THROWS_AS(CreateJsonProjectFileReader("inexistent_dir/inexistent_file.json"), std::invalid_argument);
+            CHECK_THROWS_AS(project_io::CreateJsonProjectFileReader("inexistent_dir/inexistent_file.json"), std::invalid_argument);
         }
     }
 }
