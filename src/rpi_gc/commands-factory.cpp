@@ -83,7 +83,7 @@ namespace rpi_gc::commands_factory {
 
                 // If there is an open project we need to save it before proceeding.
                 if(m_projectController.get().hasProject())
-                    save_current_project();
+                    save_current_project("Saving old project before switching to new project.");
 
                 m_projectController.get().setCurrentProject(
                     gc::project_management::Project{
@@ -92,6 +92,9 @@ namespace rpi_gc::commands_factory {
                         version::getApplicationVersion()
                     }
                 );
+
+                m_userLogger->logInfo("Switched to new project " + valueOption.value());
+                m_mainLogger->logInfo("Switched to new project " + valueOption.value());
             }
         );
 
@@ -132,6 +135,11 @@ namespace rpi_gc::commands_factory {
             [this](const command_type::option_parser::const_option_pointer& ptr) {
                 const auto& valueOption(dynamic_cast<const gh_cmd::Value<char, std::string>&>(*ptr));
 
+                // If there is an open project we need to save it before proceeding.
+                if(m_projectController.get().hasProject()) {
+                    save_current_project("Saving old project before switching to new project.");
+                }
+
                 try{
                     auto inputJsonReader{gc::project_management::project_io::CreateJsonProjectFileReader(valueOption.value())};
 
@@ -141,6 +149,9 @@ namespace rpi_gc::commands_factory {
                     // Now we can set the new project in the project controller.
                     m_projectController.get().setCurrentProject(inputProject);
                     m_projectController.get().setCurrentProjectFilePath(valueOption.value());
+
+                    m_userLogger->logInfo("Switched to new project " + valueOption.value());
+                    m_mainLogger->logInfo("Switched to new project " + valueOption.value());
                 } catch(const std::invalid_argument& exc) {
                     const std::string errorString{std::string{"Cannot load the requested project. Message: "} + exc.what()};
 
@@ -154,13 +165,19 @@ namespace rpi_gc::commands_factory {
         return eventHandlerMap;
     }
 
-    void ProjectCommandFactory::save_current_project() {
+    void ProjectCommandFactory::save_current_project(const std::string& customMessage) {
         const auto& project{m_projectController.get().getCurrentProject()};
         const std::filesystem::path outputFilePath{m_projectController.get().getCurrentProjectFilePath()};
         auto projectWriter{gc::project_management::project_io::createJsonProjectFileWriter(outputFilePath)};
 
-        m_userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
-        m_mainLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+        if(customMessage.empty()) {
+            m_userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+            m_mainLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+        } else {
+            m_userLogger->logInfo(customMessage);
+            m_mainLogger->logInfo(customMessage);
+        }
+
         *projectWriter << project;
     }
 
