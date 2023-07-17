@@ -1,6 +1,4 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
-#pragma once
-
 #include <gc-project/project-controller.hpp>
 
 #include <testing-core.hpp>
