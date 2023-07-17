@@ -1,6 +1,6 @@
 // Copyright (c) 2023 Andrea ballestrazzi
 
-#include <project-management/project-io/project-reader.hpp>
+#include <src/project-io/json-project-reader.hpp>
 #include <project-management/project.hpp>
 
 #include <testing-core.hpp>

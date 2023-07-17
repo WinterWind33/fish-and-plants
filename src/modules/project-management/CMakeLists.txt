@@ -11,6 +11,7 @@ set(PRJ_MGMT_INCLUDE_FILES
 
     # Private includes.
     "src/project-io/json-project-writer.hpp"
+    "src/project-io/json-project-reader.hpp"
 )
 
 set(PRJ_MGMT_SOURCE_FILES
