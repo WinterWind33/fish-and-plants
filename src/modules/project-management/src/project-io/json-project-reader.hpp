@@ -6,17 +6,18 @@
 
 // C++ STL
 #include <istream>
+#include <memory>
 
 namespace gc::project_management::project_io {
 
     class JsonProjectReader final : public ProjectReader {
     public:
-        explicit JsonProjectReader(std::istream& inputStream) noexcept;
+        explicit JsonProjectReader(std::unique_ptr<std::istream> inputStream) noexcept;
 
         [[nodiscard]] Project readProject() override;
 
     private:
-        std::istream& m_inputStream;
+        std::unique_ptr<std::istream> m_inputStream;
     };
 
 } // namespace gc::project_management::project_io

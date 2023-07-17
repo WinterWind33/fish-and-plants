@@ -8,13 +8,13 @@
 
 namespace gc::project_management::project_io {
 
-    JsonProjectReader::JsonProjectReader(std::istream& ist) noexcept :
-        m_inputStream{ist} {}
+    JsonProjectReader::JsonProjectReader(std::unique_ptr<std::istream> ist) noexcept :
+        m_inputStream{std::move(ist)} {}
 
     Project JsonProjectReader::readProject() {
         nlohmann::json inputProjectJson{};
         // Read the JSON from the input file.
-        m_inputStream >> inputProjectJson;
+        *m_inputStream >> inputProjectJson;
 
         // Begin read the project header:
         // - creation time-date
