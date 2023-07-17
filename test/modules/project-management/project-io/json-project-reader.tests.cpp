@@ -25,7 +25,7 @@ TEST_CASE("JsonProjectReader unit tests", "[unit][sociable][project-management][
 
     project_io::JsonProjectReader projectReaderUnderTest{inputStream};
 
-    SECTION("Should correctly read the projct") {
+    SECTION("Should correctly read a trivial project") {
         Project inputProject{};
         projectReaderUnderTest >> inputProject;
 
