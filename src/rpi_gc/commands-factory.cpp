@@ -4,6 +4,8 @@
 #include <gh_cmd/gh_cmd.hpp>
 #include <version/version-numbers.hpp>
 
+#include <project-management/project-io/project-writer.hpp>
+
 // C++ STL
 #include <string_view>
 #include <chrono>
@@ -45,6 +47,20 @@ namespace rpi_gc::commands_factory {
                 "gc-project" // Default value.
         ));
 
+        optionParser->addSwitch(
+            std::make_shared<gh_cmd::Switch<char>>(
+                's',
+                "save",
+                "If a project is loaded it serializes it to file named <project-name>.json. If no project is loaded nothing happens."
+        ));
+
+        optionParser->addOption(
+            std::make_shared<gh_cmd::Value<char, std::string>>(
+                'S',
+                "save-to",
+                "If a project is loaded it serialized it to the specified file."
+        ));
+
         return optionParser;
     }
 
@@ -56,6 +72,10 @@ namespace rpi_gc::commands_factory {
             [this](const command_type::option_parser::const_option_pointer& ptr){
                 const auto& valueOption{dynamic_cast<const gh_cmd::Value<char, std::string>&>(*ptr)};
 
+                // If there is an open project we need to save it before proceeding.
+                if(m_projectController.get().hasProject())
+                    save_current_project();
+
                 m_projectController.get().setCurrentProject(
                     gc::project_management::Project{
                         std::chrono::system_clock::now(),
@@ -66,7 +86,49 @@ namespace rpi_gc::commands_factory {
             }
         );
 
+        eventHandlerMap.emplace(
+            "save",
+            [this](const command_type::option_parser::const_option_pointer& ptr) {
+                // If there isn't any valid project loaded, there is no need
+                // to save it to file.
+                if(!m_projectController.get().hasProject()) {
+                    m_userLogger->logWarning("No project is loaded. Nothing will be saved.");
+                    return;
+                }
+
+                save_current_project();
+            }
+        );
+
+        eventHandlerMap.emplace(
+            "save-to",
+            [this](const command_type::option_parser::const_option_pointer& ptr) {
+                // If there isn't any valid project loaded, there is no need
+                // to save it to file.
+                if(!m_projectController.get().hasProject()) {
+                    m_userLogger->logWarning("No project is loaded. Nothing will be saved.");
+                    return;
+                }
+
+                const auto& valueOption(dynamic_cast<const gh_cmd::Value<char, std::string>&>(*ptr));
+                const std::filesystem::path outputFilePath{valueOption.value()};
+
+                m_projectController.get().setCurrentProjectFilePath(outputFilePath);
+                save_current_project();
+            }
+        );
+
         return eventHandlerMap;
+    }
+
+    void ProjectCommandFactory::save_current_project() {
+        const auto& project{m_projectController.get().getCurrentProject()};
+        const std::filesystem::path outputFilePath{m_projectController.get().getCurrentProjectFilePath()};
+        auto projectWriter{gc::project_management::project_io::createJsonProjectFileWriter(outputFilePath)};
+
+        m_userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+        m_mainLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+        *projectWriter << project;
     }
 
 } // namespace rpi_gc::commands_factory

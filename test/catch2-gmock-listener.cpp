@@ -51,7 +51,7 @@ void GMCatch2Listener::OnTestPartResult(const testing::TestPartResult& result) {
     // Now we can finally handle the newly built assertion.
     C2AssertionHandler assertionHandler{C2_GMOCK_MACRO_NAME, sourceLineInfo, "", resultDisposition};
     assertionHandler.handleMessage(Catch::ResultWas::ExplicitFailure, messageStream.str());
-    assertionHandler.setCompleted();
+    assertionHandler.complete();
 }
 
 #endif // USE_CATCH2_AS_TESTING_FRAMEWORK && USE_GMOCK

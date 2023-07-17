@@ -48,6 +48,7 @@ set(TEST_APP_SOURCE_FILES
     "rpi_gc/automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.tests.cpp"
     "rpi_gc/hardware-management/hardware-initializer.tests.cpp"
     "rpi_gc/functional/aws-hardware-controller-interactions.tests.cpp"
+    "rpi_gc/gc-project/project-controller.tests.cpp"
 
     # integration tests
     "integration/rpi_gc/application-command-integration.tests.cpp"
@@ -100,88 +101,30 @@ endif()
 # === Third party submodules configuration ===
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK)
-    message(STATUS "Using amalgamated Catch2 v${CATCH2_VERSION} as testing framework.")
+    message(STATUS "Using Catch2 v${CATCH2_VERSION} as testing framework.")
 
     set(CATCH2_DIR "${PROJECT_SOURCE_DIR}/test/third-party/Catch2-${CATCH2_VERSION}")
     set(AMALGAMATED_HPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.hpp")
     set(AMALGAMATED_CPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.cpp")
 
-    if(NOT EXISTS ${AMALGAMATED_HPP_FILE})
-        message(STATUS "Downloading Catch2 amalgamated HPP file.")
-        file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.hpp"
-            ${AMALGAMATED_HPP_FILE}
-        )
-    else()
-        message(STATUS "Skipping Catch2 header file download because it already exists.")
-    endif()
-
-    if(NOT EXISTS ${AMALGAMATED_CPP_FILE})
-        message(STATUS "Downloading Catch2 amalgamated CPP file.")
-        file(DOWNLOAD "https://github.com/catchorg/Catch2/releases/download/v${CATCH2_VERSION}/catch_amalgamated.cpp"
-            ${AMALGAMATED_CPP_FILE}
-        )
-    else()
-        message(STATUS "Skipping Catch2 source file download because it already exists.")
-    endif()
-
-    set(CATCH2_COMPILATION_FILES
-        ${AMALGAMATED_HPP_FILE}
-        ${AMALGAMATED_CPP_FILE}
+    FetchContent_Declare(Catch2
+        GIT_REPOSITORY "https://github.com/catchorg/Catch2.git"
+        GIT_TAG v3.4.0
     )
 
-    add_library(Catch2 STATIC ${CATCH2_COMPILATION_FILES})
-
-    # We want our custom main so we need to define this MACRO so
-    # the compilation won't generate its custom main.
-    target_compile_definitions(Catch2 PRIVATE "CATCH_AMALGAMATED_CUSTOM_MAIN")
-    set_target_properties(Catch2
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
+    FetchContent_MakeAvailable(Catch2)
 
     target_link_libraries(test_app PRIVATE Catch2)
-    target_include_directories(test_app PRIVATE "${CATCH2_DIR}/include")
     target_compile_definitions(test_app PRIVATE "USE_CATCH2_AS_TESTING_FRAMEWORK")
 endif()
 
 if(USE_GMOCK)
     message(STATUS "Using GMock as test doubles framework.")
-    set(GOOGLE_TEST_VERSION "1.13.0")
-    set(GOOGLE_TEST_INSTALL_DIR "${PROJECT_SOURCE_DIR}/test/third-party/")
-    # We make all lower case because Linux can have problems after
-    # extracting the tar.gz.
-    set(GOOGLE_TEST_DIR ${GOOGLE_TEST_INSTALL_DIR}/googletest-${GOOGLE_TEST_VERSION})
-    set(GOOGLE_MOCK_DIR ${GOOGLE_TEST_DIR}/googlemock)
-    set(GOOGLE_TEST_TEMP_DIR "${PROJECT_SOURCE_DIR}/third-party/_temp")
 
-    if(NOT EXISTS ${GOOGLE_TEST_DIR})
-        file(DOWNLOAD
-            "https://github.com/google/googletest/archive/refs/tags/v${GOOGLE_TEST_VERSION}.tar.gz"
-            "${GOOGLE_TEST_TEMP_DIR}/googletest-${GOOGLE_TEST_VERSION}.tar.gz"
-        )
-
-        # Now we need to extract the tar.gz.
-        execute_process(
-            COMMAND ${CMAKE_COMMAND} -E tar xzf ${GOOGLE_TEST_TEMP_DIR}/googletest-${GOOGLE_TEST_VERSION}.tar.gz
-            WORKING_DIRECTORY ${GOOGLE_TEST_TEMP_DIR}
-        )
-
-        # Now we need to move the google mock folder to the
-        # install dir.
-        file(COPY
-            ${GOOGLE_TEST_TEMP_DIR}/googletest-${GOOGLE_TEST_VERSION}
-            DESTINATION ${GOOGLE_TEST_INSTALL_DIR}
-        )
-
-        file(REMOVE_RECURSE ${GOOGLE_TEST_TEMP_DIR})
-    else()
-        message(STATUS "Skipping GoogleTest download because it already exists.")
-    endif()
-
-
-    add_subdirectory("${GOOGLE_TEST_DIR}")
+    FetchContent_Declare(GoogleTest
+        GIT_REPOSITORY "https://github.com/google/googletest.git"
+        GIT_TAG "v1.13.0"
+    )
 
     # For Windows: Prevent overriding the parent project's compiler/linker settings
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -189,37 +132,10 @@ if(USE_GMOCK)
     # We only want GMock.
     set(BUILD_GTEST OFF CACHE BOOL "" FORCE)
 
-    set_target_properties(gtest
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
-
-    set_target_properties(gmock
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
-
-    set_target_properties(gtest_main
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
-
-    set_target_properties(gmock_main
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
+    FetchContent_MakeAvailable(GoogleTest)
 
     target_compile_definitions(test_app PRIVATE USE_GMOCK)
 
     # We ony want the google mock subdirectory.
-    target_include_directories(test_app PRIVATE "${GOOGLE_MOCK_DIR}/include")
     target_link_libraries(test_app PRIVATE GTest::gmock)
 endif()
