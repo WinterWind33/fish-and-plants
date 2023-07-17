@@ -20,6 +20,8 @@ namespace gc::project_management {
         using project_version = semver::version;
         using project_title = std::string;
 
+        Project() noexcept = default;
+
         explicit Project(
             time_point_type creationTime, project_title projectTitle, project_version version) noexcept :
             m_creationTimePoint{creationTime},
@@ -40,6 +42,8 @@ namespace gc::project_management {
         constexpr project_version getVersion() const noexcept {
             return m_projectVersion;
         }
+
+        bool operator==(const Project& other) const noexcept = default;
 
     private:
         time_point_type m_creationTimePoint;
