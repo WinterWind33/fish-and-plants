@@ -1,6 +1,7 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #pragma once
 
+#include <project-management/project-io/project-reader.hpp>
 #include <project-management/project.hpp>
 
 // C++ STL
@@ -8,19 +9,14 @@
 
 namespace gc::project_management::project_io {
 
-    class JsonProjectReader final {
+    class JsonProjectReader final : public ProjectReader {
     public:
         explicit JsonProjectReader(std::istream& inputStream) noexcept;
 
-        Project readProject();
+        Project readProject() override;
 
     private:
         std::istream& m_inputStream;
     };
-
-    inline JsonProjectReader& operator>>(JsonProjectReader& reader, Project& inputProject) {
-        inputProject = reader.readProject();
-        return reader;
-    }
 
 } // namespace gc::project_management::project_io
