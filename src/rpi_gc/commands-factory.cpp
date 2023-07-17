@@ -5,10 +5,12 @@
 #include <version/version-numbers.hpp>
 
 #include <project-management/project-io/project-writer.hpp>
+#include <project-management/project-io/project-reader.hpp>
 
 // C++ STL
 #include <string_view>
 #include <chrono>
+#include <stdexcept>
 
 namespace rpi_gc::commands_factory {
 
@@ -59,6 +61,13 @@ namespace rpi_gc::commands_factory {
                 'S',
                 "save-to",
                 "If a project is loaded it serialized it to the specified file."
+        ));
+
+        optionParser->addOption(
+            std::make_shared<gh_cmd::Value<char, std::string>>(
+                'l',
+                "load",
+                "Loads the given project."
         ));
 
         return optionParser;
@@ -115,6 +124,30 @@ namespace rpi_gc::commands_factory {
 
                 m_projectController.get().setCurrentProjectFilePath(outputFilePath);
                 save_current_project();
+            }
+        );
+
+        eventHandlerMap.emplace(
+            "load",
+            [this](const command_type::option_parser::const_option_pointer& ptr) {
+                const auto& valueOption(dynamic_cast<const gh_cmd::Value<char, std::string>&>(*ptr));
+
+                try{
+                    auto inputJsonReader{gc::project_management::project_io::CreateJsonProjectFileReader(valueOption.value())};
+
+                    gc::project_management::Project inputProject{};
+                    *inputJsonReader >> inputProject;
+
+                    // Now we can set the new project in the project controller.
+                    m_projectController.get().setCurrentProject(inputProject);
+                    m_projectController.get().setCurrentProjectFilePath(valueOption.value());
+                } catch(const std::invalid_argument& exc) {
+                    const std::string errorString{std::string{"Cannot load the requested project. Message: "} + exc.what()};
+
+                    m_userLogger->logError(errorString);
+                    m_mainLogger->logError(errorString);
+                    return;
+                }
             }
         );
 
