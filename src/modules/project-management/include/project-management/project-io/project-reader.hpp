@@ -3,6 +3,9 @@
 
 #include <project-management/project.hpp>
 
+// C++ STL
+#include <filesystem>
+
 namespace gc::project_management::project_io {
 
     //!!
@@ -22,5 +25,12 @@ namespace gc::project_management::project_io {
         inputProject = reader.readProject();
         return reader;
     }
+
+    //!!
+    //! \brief Create a Json Project File Reader object with the specified path.
+    //!  If the file doesn't exist it throws an std::system_error.
+    //! \param path
+    //! \return std::unique_ptr<ProjectReader>
+    //std::unique_ptr<ProjectReader> CreateJsonProjectFileReader(const std::filesystem::path& path);
 
 } // namespace gc::project_management::project_io
