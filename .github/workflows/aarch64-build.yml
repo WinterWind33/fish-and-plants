@@ -38,7 +38,7 @@ jobs:
       - uses: pguyot/arm-runner-action@v2
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         with:
-          image_additional_mb: 1024
+          image_additional_mb: 2048
           base_image: ${{ matrix.base_image }}
           cpu: ${{ matrix.cpu }}
           cpu_info: ${{ matrix.cpu_info }}
