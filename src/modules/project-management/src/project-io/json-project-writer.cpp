@@ -15,14 +15,11 @@ namespace gc::project_management::project_io {
     void JsonProjectWriter::serializeProject(const Project& project) {
         nlohmann::json projectJson{};
 
-        std::ostringstream creationTimeStream{};
-        creationTimeStream << std::chrono::system_clock::to_time_t(project.getCreationTime());
-
         projectJson =
         {
             {"version", project.getVersion().to_string()},
             {"title", project.getTitle()},
-            {"creation_timedate", creationTimeStream.str()}
+            {"creation_timedate", std::chrono::system_clock::to_time_t(project.getCreationTime())}
         };
 
         // here we use .dump() because it prints newlines. If we don't use it
