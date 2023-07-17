@@ -7,6 +7,7 @@ set(PRJ_MGMT_INCLUDE_FILES
     "include/project-management/integrity-check/title-integrity-checker.hpp"
     "include/project-management/integrity-check/version-integrity-checker.hpp"
     "include/project-management/project-io/project-writer.hpp"
+    "include/project-management/project-io/project-reader.hpp"
 
     # Private includes.
     "src/project-io/json-project-writer.hpp"
