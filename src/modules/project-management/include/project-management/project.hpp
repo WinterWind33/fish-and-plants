@@ -7,8 +7,31 @@
 // C++ STL
 #include <chrono>
 #include <string>
+#include <variant>
+#include <cstdint>
+#include <string>
+#include <tuple>
+#include <map>
 
 namespace gc::project_management {
+
+    namespace project_fields {
+        using Key = std::string;
+        using Value = std::variant<bool, std::int32_t, std::string>;
+        using Object = std::vector<Value>;
+
+        using ValueArray = std::vector<Value>;
+        using ObjectArray = std::vector<Object>;
+
+        using Field = std::variant<Object, ValueArray, ObjectArray>;
+
+        struct StructureNode {
+            std::map<Key, StructureNode> Tree{};
+            Field field{};
+        };
+
+    } // namespace project_fields
+
 
     //!!
     //! \brief Represent the class of a project of the greenhouse CAD. This class happens to be
@@ -19,6 +42,7 @@ namespace gc::project_management {
         using time_point_type = std::chrono::time_point<std::chrono::system_clock>;
         using project_version = semver::version;
         using project_title = std::string;
+        using structure = std::map<project_fields::Key, project_fields::StructureNode>;
 
         Project() noexcept = default;
 
@@ -49,6 +73,8 @@ namespace gc::project_management {
         time_point_type m_creationTimePoint;
         project_title m_projectTitle{};
         project_version m_projectVersion{};
+
+        structure m_projectStructure{};
     };
 
 } // namespace gc::project_management
