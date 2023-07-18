@@ -22,17 +22,19 @@ namespace gc::project_management {
         using Value = std::variant<bool, std::int32_t, std::string>;
 
         template<typename V>
-        concept ProjectValueType = std::is_same_v<V, bool> && std::is_same_v<V, std::int32_t> && std::is_same_v<V, std::string>;
+        concept ProjectValueType = std::is_same_v<V, bool> || std::is_same_v<V, std::int32_t> || std::is_same_v<V, std::string>;
 
-        using Object = std::vector<Value>;
+        using Object = std::map<Key, Value>;
         using ValueArray = std::vector<Value>;
         using ObjectArray = std::vector<Object>;
 
-        using Field = std::variant<Object, ValueArray, ObjectArray>;
+        using Field = std::map<Key, Value>;
 
         struct StructureNode {
-            std::map<Key, StructureNode> Tree{};
-            Field FieldValue{};
+            std::map<Key, Value> Values{};
+            std::map<Key, ValueArray> ValueArrays{};
+            std::map<Key, StructureNode> Objects{};
+            std::map<Key, std::vector<StructureNode>> ObjectsArray{};
         };
 
         template<typename FieldType>
@@ -50,7 +52,7 @@ namespace gc::project_management {
         using time_point_type = std::chrono::time_point<std::chrono::system_clock>;
         using project_version = semver::version;
         using project_title = std::string;
-        using structure = std::map<project_fields::Key, project_fields::StructureNode>;
+        using structure = project_fields::StructureNode;
 
         Project() noexcept = default;
 
@@ -76,9 +78,9 @@ namespace gc::project_management {
         }
 
         auto& addValueField(project_fields::Key key, project_fields::ProjectValueType auto&& value) noexcept {
-            m_projectStructure[key].FieldValue.emplace(project_fields::Object{std::forward(value)});
+            m_projectStructure.Values[key] = std::forward<decltype(value)>(value);
 
-            return m_projectStructure.at(key);
+            return m_projectStructure.Values;
         }
 
         auto& getStructure() noexcept {
