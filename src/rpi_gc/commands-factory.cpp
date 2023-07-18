@@ -6,6 +6,8 @@
 
 #include <project-management/project-io/project-writer.hpp>
 #include <project-management/project-io/project-reader.hpp>
+#include <project-management/integrity-check/title-integrity-checker.hpp>
+#include <project-management/integrity-check/version-integrity-checker.hpp>
 
 // C++ STL
 #include <string_view>
@@ -149,6 +151,30 @@ namespace rpi_gc::commands_factory {
                     if(m_projectController.get().hasProject() && m_projectController.get().getCurrentProject() == inputProject) {
                         m_userLogger->logWarning("The loaded project is the same as the current one. Skipping this action.");
                         return;
+                    }
+
+                    // We need to pass it to the integrity checks.
+                    gc::project_management::integrity_check::TitleIntegrityChecker titleIntegrityChecker{"unknown-project-0"};
+                    gc::project_management::integrity_check::VersionIntegrityChecker versionIntegrityChecker{rpi_gc::version::getApplicationVersion()};
+
+                    if(!titleIntegrityChecker.checkIntegrity(inputProject)) {
+                        const bool bRes{titleIntegrityChecker.tryApplyIntegrityFixes(inputProject)};
+                        if(!bRes) {
+                            m_userLogger->logError("Failed to fix the project title integrity");
+                            m_mainLogger->logError("Failed to fix the project title integrity");
+                        } else {
+                            m_userLogger->logWarning("Project title integrity restored to the value: \'uknown-project-0\'.");
+                        }
+                    }
+
+                    if(!versionIntegrityChecker.checkIntegrity(inputProject)) {
+                        const bool bRes{versionIntegrityChecker.tryApplyIntegrityFixes(inputProject)};
+                        if(!bRes) {
+                            m_userLogger->logError("Failed to fix the project version integrity");
+                            m_mainLogger->logError("Failed to fix the project version integrity");
+                        } else {
+                            m_userLogger->logInfo("Project version integrity restored to the value: " + rpi_gc::version::getApplicationVersion().to_string());
+                        }
                     }
 
                     // Now we can set the new project in the project controller.
