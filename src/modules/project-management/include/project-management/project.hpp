@@ -10,16 +10,18 @@
 #include <variant>
 #include <cstdint>
 #include <string>
+#include <vector>
 #include <tuple>
 #include <map>
+#include <type_traits>
 
 namespace gc::project_management {
 
     namespace project_fields {
         using Key = std::string;
         using Value = std::variant<bool, std::int32_t, std::string>;
-        using Object = std::vector<Value>;
 
+        using Object = std::vector<Value>;
         using ValueArray = std::vector<Value>;
         using ObjectArray = std::vector<Object>;
 
@@ -29,6 +31,9 @@ namespace gc::project_management {
             std::map<Key, StructureNode> Tree{};
             Field field{};
         };
+
+        template<typename FieldType>
+        concept ProjectFieldType = std::is_same_v<FieldType, Object> ||  std::is_same_v<FieldType, ValueArray> || std::is_same_v<FieldType, ObjectArray>;
 
     } // namespace project_fields
 
