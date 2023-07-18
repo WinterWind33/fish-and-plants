@@ -21,6 +21,9 @@ namespace gc::project_management {
         using Key = std::string;
         using Value = std::variant<bool, std::int32_t, std::string>;
 
+        template<typename V>
+        concept ProjectValueType = std::is_same_v<V, bool> && std::is_same_v<V, std::int32_t> && std::is_same_v<V, std::string>;
+
         using Object = std::vector<Value>;
         using ValueArray = std::vector<Value>;
         using ObjectArray = std::vector<Object>;
@@ -71,6 +74,21 @@ namespace gc::project_management {
         constexpr project_version getVersion() const noexcept {
             return m_projectVersion;
         }
+
+        auto& addValueField(project_fields::Key key, project_fields::ProjectValueType auto&& value) noexcept {
+            m_projectStructure[key].FieldValue.emplace(project_fields::Object{std::forward(value)});
+
+            return m_projectStructure.at(key);
+        }
+
+        auto& getStructure() noexcept {
+            return m_projectStructure;
+        }
+
+        const auto& getStructure() const noexcept {
+            return m_projectStructure;
+        }
+
 
     private:
         time_point_type m_creationTimePoint;
