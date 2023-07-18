@@ -24,7 +24,12 @@ namespace gc::project_management::project_io {
             std::chrono::system_clock::from_time_t(inputProjectJson["creation_timedate"].get<std::time_t>())};
 
         std::string projectTitle{inputProjectJson["title"].get<std::string>()};
-        const std::string projectVersionStr{inputProjectJson["version"].get<std::string>()};
+        std::string projectVersionStr{inputProjectJson["version"].get<std::string>()};
+
+        // If the version string is empty, we set it to 0.0.0 as default.
+        if(projectVersionStr.empty())
+            projectVersionStr = "0.0.0";
+
         semver::version projectVersion{semver::from_string(projectVersionStr)};
 
         return Project{creationTimeDate, std::move(projectTitle), projectVersion};
