@@ -33,6 +33,7 @@ set(TEST_APP_SOURCE_FILES
     "modules/project-management/project-io/json-project-reader.tests.cpp"
     "modules/project-management/project-io/project-reader.tests.cpp"
     "modules/project-management/title-integrity-checker.tests.cpp"
+    "modules/project-management/project.tests.cpp"
     "gh_hal/hardware-access/board-chip.tests.cpp"
     "gh_cmd/switch.tests.cpp"
     "gh_cmd/value.tests.cpp"
