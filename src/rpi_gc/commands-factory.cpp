@@ -148,7 +148,8 @@ namespace rpi_gc::commands_factory {
                     gc::project_management::Project inputProject{};
                     *inputJsonReader >> inputProject;
 
-                    if(m_projectController.get().hasProject() && m_projectController.get().getCurrentProject() == inputProject) {
+                    if(m_projectController.get().hasProject()
+                        && gc::project_management::SoftCompareProjects(m_projectController.get().getCurrentProject(), inputProject)) {
                         m_userLogger->logWarning("The loaded project is the same as the current one. Skipping this action.");
                         return;
                     }

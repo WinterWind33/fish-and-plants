@@ -29,7 +29,7 @@ namespace gc::project_management {
 
         struct StructureNode {
             std::map<Key, StructureNode> Tree{};
-            Field field{};
+            Field FieldValue{};
         };
 
         template<typename FieldType>
@@ -72,8 +72,6 @@ namespace gc::project_management {
             return m_projectVersion;
         }
 
-        bool operator==(const Project& other) const noexcept = default;
-
     private:
         time_point_type m_creationTimePoint;
         project_title m_projectTitle{};
@@ -81,5 +79,10 @@ namespace gc::project_management {
 
         structure m_projectStructure{};
     };
+
+    inline bool SoftCompareProjects(const Project& lhs, const Project& rhs) noexcept {
+        return lhs.getCreationTime() == rhs.getCreationTime() &&
+            lhs.getTitle() == rhs.getTitle() && lhs.getVersion() == rhs.getVersion();
+    }
 
 } // namespace gc::project_management

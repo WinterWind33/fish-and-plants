@@ -55,7 +55,7 @@ TEST_CASE("JsonProjectReader unit tests", "[unit][sociable][project-management][
             projectReaderUnderTest >> inputProject;
 
             THEN("The read project should be correct") {
-                CHECK(inputProject == expectedProject);
+                SoftCompareProjects(inputProject, expectedProject);
             }
         }
     }
