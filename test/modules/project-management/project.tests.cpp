@@ -12,12 +12,20 @@ TEST_CASE("Project fields static tests", "[static][modules][project-management][
     using namespace gc::project_management;
 
     STATIC_CHECK(ProjectFieldValue<bool>);
+    STATIC_CHECK(ProjectFieldValue<const bool&>);
     STATIC_CHECK(ProjectFieldValue<std::int32_t>);
+    STATIC_CHECK(ProjectFieldValue<const std::int32_t>);
+    STATIC_CHECK(ProjectFieldValue<const std::int32_t&>);
     STATIC_CHECK(ProjectFieldValue<std::int64_t>);
+    STATIC_CHECK(ProjectFieldValue<const std::int64_t&>);
     STATIC_CHECK(ProjectFieldValue<std::size_t>);
+    STATIC_CHECK(ProjectFieldValue<const std::size_t&>);
     STATIC_CHECK(ProjectFieldValue<float>);
+    STATIC_CHECK(ProjectFieldValue<const float&>);
     STATIC_CHECK(ProjectFieldValue<double>);
+    STATIC_CHECK(ProjectFieldValue<const double&>);
     STATIC_CHECK(ProjectFieldValue<std::string>);
+    STATIC_CHECK(ProjectFieldValue<const std::string&>);
 
     STATIC_CHECK(ProjectFieldKey<std::string>);
     STATIC_CHECK(ProjectFieldKey<const char*>);

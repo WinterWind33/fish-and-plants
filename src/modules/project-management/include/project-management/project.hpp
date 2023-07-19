@@ -20,7 +20,7 @@
 namespace gc::project_management {
 
     template<typename T>
-    concept ProjectFieldValue = std::integral<T> || std::floating_point<T> || std::same_as<T, std::string> || std::same_as<T, bool>;
+    concept ProjectFieldValue = std::integral<std::decay_t<T>> || std::floating_point<std::decay_t<T>> || std::same_as<std::decay_t<T>, std::string>;
 
     template<typename T>
     concept ProjectFieldKey = std::convertible_to<T, std::string>;
