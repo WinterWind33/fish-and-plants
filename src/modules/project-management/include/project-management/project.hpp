@@ -58,6 +58,7 @@ namespace gc::project_management {
             return *this;
         }
 
+        [[nodiscard]]
         const auto& getValues() const noexcept {
             return m_values;
         }
@@ -108,10 +109,12 @@ namespace gc::project_management {
             return m_projectStructure.Values;
         }
 
+        [[nodiscard]]
         auto& getStructure() noexcept {
             return m_projectStructure;
         }
 
+        [[nodiscard]]
         const auto& getStructure() const noexcept {
             return m_projectStructure;
         }
@@ -125,6 +128,7 @@ namespace gc::project_management {
         structure m_projectStructure{};
     };
 
+    [[nodiscard]]
     inline bool SoftCompareProjects(const Project& lhs, const Project& rhs) noexcept {
         return lhs.getCreationTime() == rhs.getCreationTime() &&
             lhs.getTitle() == rhs.getTitle() && lhs.getVersion() == rhs.getVersion();
