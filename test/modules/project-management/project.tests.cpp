@@ -50,7 +50,18 @@ TEMPLATE_TEST_CASE("ProjectNode unit tests", "[unit][solitary][modules][project-
                 TestType{0}
             });
 
+            THEN("The node should not have one single values") {
+                const auto& values{nodeUnderTest.getValues()};
 
+                CHECK(values.empty());
+            }
+
+            THEN("The node should have one value array") {
+                const auto& valueArrays{nodeUnderTest.getValuesArrays()};
+
+                REQUIRE(valueArrays.contains(std::string{KEY_VAL}));
+                CHECK(valueArrays[std::string{KEY_VAL}].size() == 2);
+            }
         }
     }
 }
