@@ -54,7 +54,7 @@ namespace gc::project_management {
         using value_impl_type = std::variant<bool, std::int32_t, double, std::string>;
 
         auto& addValue(ProjectFieldKey auto&& key, ProjectFieldValue auto&& value) {
-            m_values[std::forward<decltype(key)>(key)].emplace(std::forward<decltype(value)>(value));
+            m_values[std::forward<decltype(key)>(key)] = std::forward<decltype(value)>(value);
             return *this;
         }
 
