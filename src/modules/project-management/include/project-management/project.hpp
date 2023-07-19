@@ -72,6 +72,7 @@ namespace gc::project_management {
         }
 
         auto& addObject(ProjectFieldKey auto&& key, ProjectNode&& node) {
+            m_objects[std::forward<decltype(key)>(key)] = std::move(node);
             return *this;
         }
 
@@ -92,7 +93,7 @@ namespace gc::project_management {
     protected:
         std::map<std::string, value_impl_type> m_values{};
         std::map<std::string, std::vector<value_impl_type>> m_valuesArrays{};
-        std::map<std::string, std::vector<ProjectNode>> m_objects{};
+        std::map<std::string, ProjectNode> m_objects{};
     };
 
     using ProjectFieldObject = ProjectNode;
