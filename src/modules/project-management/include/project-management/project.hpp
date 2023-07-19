@@ -46,6 +46,28 @@ namespace gc::project_management {
     template<typename T>
     concept ProjectFieldValue = std::integral<T> || std::floating_point<T> || std::same_as<T, std::string> || std::same_as<T, bool>;
 
+    template<typename T>
+    concept ProjectFieldKey = std::convertible_to<T, std::string>;
+
+    class ProjectNode {
+    public:
+        using value_impl_type = std::variant<bool, std::int32_t, double, std::string>;
+
+        auto& addValue(ProjectFieldKey auto&& key, ProjectFieldValue auto&& value) noexcept {
+            // We need to check whether the value already exists or not. This is because
+            // we store both values arrays and single values using one map, so we need to check
+            // whether or not they co-exists (they should not).
+            auto& vals{m_values[std::forward<decltype(key)>(key)]};
+            vals = {std::forward<decltype(value)>(value)};
+
+            return *this;
+        }
+
+    protected:
+        std::map<std::string, std::vector<value_impl_type>> m_values{};
+        std::map<std::string, std::vector<ProjectNode>> m_objects{};
+    };
+
     //!!
     //! \brief Represent the class of a project of the greenhouse CAD. This class happens to be
     //!  versioned and can be extended through a component architecture.
