@@ -6,6 +6,7 @@
 
 // C++ STL
 #include <sstream>
+#include <string_view>
 
 TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-management][JsonProjectWriter]") {
     using namespace gc::project_management;
@@ -19,7 +20,7 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
 
         WHEN("A trivial project is serialized") {
             // Here "trivial" means a project without fields.
-            Project trivialProject{Project::time_point_type{}, "test-title", semver::version{1, 2, 3}};
+            const Project trivialProject{Project::time_point_type{}, "test-title", semver::version{1, 2, 3}};
 
             writerUnderTest << trivialProject;
 
@@ -32,6 +33,32 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
                 CHECK(actualJson["title"] == "test-title");
                 CHECK(actualJson["version"] == "1.2.3");
                 CHECK(actualJson["creation_timedate"] == 0);
+            }
+        }
+
+        AND_GIVEN("A project with a value field") {
+            constexpr std::string_view PROJECT_TITLE{"test-title"};
+            constexpr semver::version PROJECT_VERSION{1, 2, 3};
+
+            Project projectToWrite{Project::time_point_type{}, std::string{PROJECT_TITLE}, PROJECT_VERSION};
+
+            constexpr std::string_view FIELD_KEY{"test-key"};
+            constexpr std::int32_t FIELD_VALUE{89};
+            projectToWrite.addValue(FIELD_KEY.data(), FIELD_VALUE);
+
+            WHEN("The project is serialized") {
+                writerUnderTest << projectToWrite;
+
+                THEN("It should have all the correct trivial fields") {
+                    nlohmann::json actualJson{};
+                    std::istringstream ist{outStreamRef.str()};
+
+                    REQUIRE_NOTHROW(ist >> actualJson);
+
+                    CHECK(actualJson["title"] == "test-title");
+                    CHECK(actualJson["version"] == "1.2.3");
+                    CHECK(actualJson["creation_timedate"] == 0);
+                }
             }
         }
     }
