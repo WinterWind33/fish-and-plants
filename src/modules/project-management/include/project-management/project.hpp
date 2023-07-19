@@ -14,6 +14,7 @@
 #include <tuple>
 #include <map>
 #include <type_traits>
+#include <concepts>
 
 namespace gc::project_management {
 
@@ -42,6 +43,8 @@ namespace gc::project_management {
 
     } // namespace project_fields
 
+    template<typename T>
+    concept ProjectFieldValue = std::integral<T> || std::floating_point<T> || std::same_as<T, std::string> || std::same_as<T, bool>;
 
     //!!
     //! \brief Represent the class of a project of the greenhouse CAD. This class happens to be

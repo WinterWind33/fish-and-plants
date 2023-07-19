@@ -4,12 +4,19 @@
 
 #include <testing-core.hpp>
 
+// C++ STL
+#include <cstdint>
+
 TEST_CASE("Project fields static tests", "[static][modules][project-management][ProjectFields]") {
     using namespace gc::project_management;
 
-    STATIC_CHECK(project_fields::ProjectValueType<bool>);
-    STATIC_CHECK(project_fields::ProjectValueType<std::int32_t>);
-    STATIC_CHECK(project_fields::ProjectValueType<std::string>);
+    STATIC_CHECK(ProjectFieldValue<bool>);
+    STATIC_CHECK(ProjectFieldValue<std::int32_t>);
+    STATIC_CHECK(ProjectFieldValue<std::int64_t>);
+    STATIC_CHECK(ProjectFieldValue<std::size_t>);
+    STATIC_CHECK(ProjectFieldValue<float>);
+    STATIC_CHECK(ProjectFieldValue<double>);
+    STATIC_CHECK(ProjectFieldValue<std::string>);
 }
 
 TEST_CASE("Project unit tests", "[unit][sociable][modules][project-management][Project]") {
