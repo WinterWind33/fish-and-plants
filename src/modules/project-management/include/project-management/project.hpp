@@ -19,24 +19,6 @@
 
 namespace gc::project_management {
 
-    namespace project_fields {
-        using Key = std::string;
-        using Value = std::variant<bool, std::int32_t, std::string>;
-
-        template<typename V>
-        concept ProjectValueType = std::is_same_v<V, bool> || std::is_same_v<V, std::int32_t> || std::is_same_v<V, std::string>;
-
-        using Object = std::map<Key, Value>;
-        using ValueArray = std::vector<Value>;
-        using ObjectArray = std::vector<Object>;
-
-        using Field = std::map<Key, Value>;
-
-        template<typename FieldType>
-        concept ProjectFieldType = std::is_same_v<FieldType, Object> ||  std::is_same_v<FieldType, ValueArray> || std::is_same_v<FieldType, ObjectArray>;
-
-    } // namespace project_fields
-
     template<typename T>
     concept ProjectFieldValue = std::integral<T> || std::floating_point<T> || std::same_as<T, std::string> || std::same_as<T, bool>;
 
