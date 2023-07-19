@@ -82,6 +82,8 @@ namespace gc::project_management {
         std::map<std::string, std::vector<ProjectNode>> m_objects{};
     };
 
+    using ProjectFieldObject = ProjectNode;
+
     //!!
     //! \brief Represent the class of a project of the greenhouse CAD. This class happens to be
     //!  versioned and can be extended through a component architecture.

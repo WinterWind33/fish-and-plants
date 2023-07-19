@@ -63,5 +63,22 @@ TEMPLATE_TEST_CASE("ProjectNode unit tests", "[unit][solitary][modules][project-
                 CHECK(valueArrays.at(std::string{KEY_VAL}).size() == 2);
             }
         }
+
+        WHEN("A new object is added") {
+            constexpr std::string_view KEY_VAL{"key-value"};
+
+            ProjectFieldObject newObject{};
+            newObject.addValue("int_key", 0)
+                .addValue("double_key", 0.0)
+                .addValueArray("arr_key", {0.0, 0.0, 0.0});
+
+            nodeUnderTest.addObject(std::string{KEY_VAL}, std::move(newObject));
+
+            THEN("There should be one object node") {
+                const auto& objects{nodeUnderTest.getObjects()};
+
+                REQUIRE(objects.contains(std::string{KEY_VAL}));
+            }
+        }
     }
 }
