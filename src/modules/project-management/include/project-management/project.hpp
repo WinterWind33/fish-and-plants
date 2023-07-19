@@ -15,6 +15,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <ranges>
 
 namespace gc::project_management {
 
@@ -51,18 +52,26 @@ namespace gc::project_management {
             return *this;
         }
 
-        template<ProjectFieldValue ValueType>
-        auto& addValueArray(ProjectFieldKey auto&& key, std::vector<ValueType> arr) {
+        auto& addValueArray(ProjectFieldKey auto&& key, std::ranges::range auto&& arr) {
             std::vector<value_impl_type> finalArr{};
 
             // We need to construct the final array starting from the array one.
             // To do this, we transform the first array and we move the value to the new
             // one.
-            std::transform(std::begin(arr), std::end(arr), std::back_inserter(finalArr), [](ValueType& val) -> value_impl_type {
-                return value_impl_type{std::move(val)};
+            std::transform(std::begin(arr), std::end(arr), std::back_inserter(finalArr), [](auto&& val) -> value_impl_type {
+                return value_impl_type{std::forward<decltype(val)>(val)};
             });
 
             m_valuesArrays.emplace(std::forward<decltype(key)>(key), std::move(finalArr));
+            return *this;
+        }
+
+        template<ProjectFieldValue ValueType>
+        auto& addValueArray(ProjectFieldKey auto&& key, std::initializer_list<ValueType> items) {
+            return addValueArray<decltype(key), decltype(items)>(std::forward<decltype(key)>(key), std::forward<decltype(items)>(items));
+        }
+
+        auto& addObject(ProjectFieldKey auto&& key, ProjectNode&& node) {
             return *this;
         }
 
@@ -74,6 +83,10 @@ namespace gc::project_management {
         [[nodiscard]]
         const auto& getValuesArrays() const noexcept {
             return m_valuesArrays;
+        }
+
+        [[nodiscard]] const auto& getObjects() const noexcept {
+            return m_objects;
         }
 
     protected:
