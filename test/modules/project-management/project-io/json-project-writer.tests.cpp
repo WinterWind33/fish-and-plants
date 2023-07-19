@@ -8,6 +8,19 @@
 #include <sstream>
 #include <string_view>
 
+namespace tests {
+
+    nlohmann::json readJsonFromString(const std::string& str) {
+        nlohmann::json actualJson{};
+        std::istringstream ist{str};
+
+        ist >> actualJson;
+
+        return actualJson;
+    }
+
+} // namespace tests
+
 TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-management][JsonProjectWriter]") {
     using namespace gc::project_management;
     using namespace gc::project_management::project_io;
@@ -25,10 +38,7 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
             writerUnderTest << trivialProject;
 
             THEN("The final JSON should be correct") {
-                nlohmann::json actualJson{};
-                std::istringstream ist{outStreamRef.str()};
-
-                REQUIRE_NOTHROW(ist >> actualJson);
+                nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
 
                 CHECK(actualJson["title"] == "test-title");
                 CHECK(actualJson["version"] == "1.2.3");
@@ -50,14 +60,18 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
                 writerUnderTest << projectToWrite;
 
                 THEN("It should have all the correct trivial fields") {
-                    nlohmann::json actualJson{};
-                    std::istringstream ist{outStreamRef.str()};
-
-                    REQUIRE_NOTHROW(ist >> actualJson);
+                    nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
 
                     CHECK(actualJson["title"] == "test-title");
                     CHECK(actualJson["version"] == "1.2.3");
                     CHECK(actualJson["creation_timedate"] == 0);
+                }
+
+                THEN("It should have the field in the root node") {
+                    nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
+
+                    REQUIRE(actualJson.contains(FIELD_KEY));
+                    CHECK(actualJson[FIELD_KEY] == FIELD_VALUE);
                 }
             }
         }
