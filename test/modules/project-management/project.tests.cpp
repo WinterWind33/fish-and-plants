@@ -42,23 +42,15 @@ TEMPLATE_TEST_CASE("ProjectNode unit tests", "[unit][solitary][modules][project-
                 CHECK(std::get<TestType>(values.at(std::string{KEY_VAL})) == TestType{});
             }
         }
-    }
-}
 
-TEST_CASE("Project unit tests", "[unit][sociable][modules][project-management][Project]") {
-    using namespace gc::project_management;
+        WHEN("A new value array is added") {
+            constexpr std::string_view KEY_VAL("key-value");
+            nodeUnderTest.addValueArray(std::string{KEY_VAL}, std::vector<TestType>{
+                TestType{0},
+                TestType{0}
+            });
 
-    GIVEN("A simple project") {
-        Project projectUnderTest{Project::time_point_type{}, "test-title", semver::version{}};
 
-        WHEN("A std::string value is added") {
-            projectUnderTest.addValueField(std::string{"test-key"}, std::string{"test-value"});
-
-            THEN("The project structure should have the value") {
-                const auto& projectStructure{projectUnderTest.getStructure()};
-
-                CHECK(projectStructure.Values.contains("test-key"));
-            }
         }
     }
 }

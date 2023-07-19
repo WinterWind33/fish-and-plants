@@ -31,13 +31,6 @@ namespace gc::project_management {
 
         using Field = std::map<Key, Value>;
 
-        struct StructureNode {
-            std::map<Key, Value> Values{};
-            std::map<Key, ValueArray> ValueArrays{};
-            std::map<Key, StructureNode> Objects{};
-            std::map<Key, std::vector<StructureNode>> ObjectsArray{};
-        };
-
         template<typename FieldType>
         concept ProjectFieldType = std::is_same_v<FieldType, Object> ||  std::is_same_v<FieldType, ValueArray> || std::is_same_v<FieldType, ObjectArray>;
 
@@ -58,6 +51,12 @@ namespace gc::project_management {
             return *this;
         }
 
+        template<ProjectFieldValue ValueType>
+        auto& addValueArray(ProjectFieldKey auto&& key, std::vector<ValueType> arr) {
+
+            return *this;
+        }
+
         [[nodiscard]]
         const auto& getValues() const noexcept {
             return m_values;
@@ -73,12 +72,12 @@ namespace gc::project_management {
     //! \brief Represent the class of a project of the greenhouse CAD. This class happens to be
     //!  versioned and can be extended through a component architecture.
     //!
-    class Project final {
+    class Project final : public ProjectNode {
     public:
         using time_point_type = std::chrono::time_point<std::chrono::system_clock>;
         using project_version = semver::version;
         using project_title = std::string;
-        using structure = project_fields::StructureNode;
+        using structure = ProjectNode;
 
         Project() noexcept = default;
 
@@ -101,12 +100,6 @@ namespace gc::project_management {
         [[nodiscard]]
         constexpr project_version getVersion() const noexcept {
             return m_projectVersion;
-        }
-
-        auto& addValueField(project_fields::Key key, project_fields::ProjectValueType auto&& value) noexcept {
-            m_projectStructure.Values[key] = std::forward<decltype(value)>(value);
-
-            return m_projectStructure.Values;
         }
 
         [[nodiscard]]
