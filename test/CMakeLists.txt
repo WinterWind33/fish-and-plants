@@ -31,6 +31,7 @@ set(TEST_APP_SOURCE_FILES
     # Modules
     "modules/project-management/version-integrity-checker.tests.cpp"
     "modules/project-management/project-io/json-project-reader.tests.cpp"
+    "modules/project-management/project-io/json-project-writer.tests.cpp"
     "modules/project-management/project-io/project-reader.tests.cpp"
     "modules/project-management/title-integrity-checker.tests.cpp"
     "modules/project-management/project.tests.cpp"
