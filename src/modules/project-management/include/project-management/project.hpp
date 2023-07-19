@@ -53,7 +53,6 @@ namespace gc::project_management {
 
         template<ProjectFieldValue ValueType>
         auto& addValueArray(ProjectFieldKey auto&& key, std::vector<ValueType> arr) {
-
             return *this;
         }
 
@@ -62,9 +61,14 @@ namespace gc::project_management {
             return m_values;
         }
 
+        [[nodiscard]]
+        const auto& getValuesArrays() const noexcept {
+            return m_valuesArrays;
+        }
+
     protected:
         std::map<std::string, value_impl_type> m_values{};
-        std::map<std::string, std::vector<value_impl_type>> m_valuesArray{};
+        std::map<std::string, std::vector<value_impl_type>> m_valuesArrays{};
         std::map<std::string, std::vector<ProjectNode>> m_objects{};
     };
 

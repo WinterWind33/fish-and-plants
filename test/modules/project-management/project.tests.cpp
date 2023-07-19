@@ -60,7 +60,7 @@ TEMPLATE_TEST_CASE("ProjectNode unit tests", "[unit][solitary][modules][project-
                 const auto& valueArrays{nodeUnderTest.getValuesArrays()};
 
                 REQUIRE(valueArrays.contains(std::string{KEY_VAL}));
-                CHECK(valueArrays[std::string{KEY_VAL}].size() == 2);
+                CHECK(valueArrays.at(std::string{KEY_VAL}).size() == 2);
             }
         }
     }
