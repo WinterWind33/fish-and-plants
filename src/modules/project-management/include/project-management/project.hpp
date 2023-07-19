@@ -5,16 +5,16 @@
 #include <semver.hpp>
 
 // C++ STL
+#include <cstdint>
+#include <type_traits>
+#include <concepts>
 #include <chrono>
 #include <string>
 #include <variant>
-#include <cstdint>
 #include <string>
 #include <vector>
-#include <tuple>
 #include <map>
-#include <type_traits>
-#include <concepts>
+#include <algorithm>
 
 namespace gc::project_management {
 
@@ -53,6 +53,16 @@ namespace gc::project_management {
 
         template<ProjectFieldValue ValueType>
         auto& addValueArray(ProjectFieldKey auto&& key, std::vector<ValueType> arr) {
+            std::vector<value_impl_type> finalArr{};
+
+            // We need to construct the final array starting from the array one.
+            // To do this, we transform the first array and we move the value to the new
+            // one.
+            std::transform(std::begin(arr), std::end(arr), std::back_inserter(finalArr), [](ValueType& val) -> value_impl_type {
+                return value_impl_type{std::move(val)};
+            });
+
+            m_valuesArrays.emplace(std::forward<decltype(key)>(key), std::move(finalArr));
             return *this;
         }
 
