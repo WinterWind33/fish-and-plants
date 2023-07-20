@@ -19,6 +19,20 @@ namespace tests {
         return actualJson;
     }
 
+    template<typename T>
+    T createGenericValue() noexcept {
+        if constexpr (std::is_same_v<T, bool>)
+            return false;
+        else if constexpr (std::is_same_v<T, std::int32_t>)
+            return 42;
+        else if constexpr (std::is_same_v<T, double>)
+            return -56.0;
+        else if constexpr (std::is_same_v<T, std::string>)
+            return "temp-value";
+
+        return T{};
+    }
+
 } // namespace tests
 
 TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-management][JsonProjectWriter]") {
@@ -45,6 +59,19 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
                 CHECK(actualJson["creation_timedate"] == 0);
             }
         }
+    }
+}
+
+TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][sociable][modules][project-management][JsonProjectWriter][JSON-Formatting]",
+    std::int32_t, double, bool, std::string) {
+    using namespace gc::project_management;
+    using namespace gc::project_management::project_io;
+
+    auto outStream = std::make_unique<std::ostringstream>();
+    auto& outStreamRef{*outStream};
+
+    GIVEN("A JSON writer") {
+        JsonProjectWriter writerUnderTest{std::move(outStream)};
 
         AND_GIVEN("A project with a value field") {
             constexpr std::string_view PROJECT_TITLE{"test-title"};
@@ -53,8 +80,8 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
             Project projectToWrite{Project::time_point_type{}, std::string{PROJECT_TITLE}, PROJECT_VERSION};
 
             constexpr std::string_view FIELD_KEY{"test-key"};
-            constexpr std::int32_t FIELD_VALUE{89};
-            projectToWrite.addValue(FIELD_KEY.data(), FIELD_VALUE);
+            const TestType fieldValue{tests::createGenericValue<TestType>()};
+            projectToWrite.addValue(FIELD_KEY.data(), fieldValue);
 
             WHEN("The project is serialized") {
                 writerUnderTest << projectToWrite;
@@ -71,7 +98,7 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
                     nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
 
                     REQUIRE(actualJson.contains(FIELD_KEY));
-                    CHECK(actualJson[FIELD_KEY] == FIELD_VALUE);
+                    CHECK(actualJson[FIELD_KEY] == fieldValue);
                 }
             }
         }
