@@ -122,6 +122,16 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
 
                     REQUIRE(actualJson.contains(FIELD_KEY));
                 }
+
+                THEN("It should have the field with the correct array values") {
+                    nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
+
+                    const TestType expectedValue{tests::createGenericValue<TestType>()};
+
+                    for(const auto& val : actualJson[FIELD_KEY]) {
+                        CHECK(val.get<TestType>() == expectedValue);
+                    }
+                }
             }
         }
     }
