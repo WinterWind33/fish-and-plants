@@ -29,6 +29,8 @@ namespace gc::project_management::project_io {
         };
 
         // Now we need to traverse the project nodes and write all the sub-nodes.
+
+        // Single values
         const auto& values{project.getValues()};
         for(const auto& value : values) {
             const auto& key{std::get<0>(value)};
@@ -36,6 +38,21 @@ namespace gc::project_management::project_io {
             std::visit([&key, &projectJson](auto&& arg){
                 projectJson[key] = std::forward<decltype(arg)>(arg);
             }, std::get<1>(value));
+        }
+
+        // Values arrays
+        const auto& valuesArrays{project.getValuesArrays()};
+        for(const auto& arr : valuesArrays) {
+            const auto& key{std::get<0>(arr)};
+
+            nlohmann::json arrJson = nlohmann::json::array();
+            for(const auto& val : std::get<1>(arr)) {
+                std::visit([&arrJson](auto&& arg){
+                    arrJson.push_back(std::forward<decltype(arg)>(arg));
+                }, val);
+            }
+
+            projectJson[key] = std::move(arrJson);
         }
 
         // here we use .dump() because it prints newlines. If we don't use it
