@@ -73,12 +73,12 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
     GIVEN("A JSON writer") {
         JsonProjectWriter writerUnderTest{std::move(outStream)};
 
+        constexpr std::string_view PROJECT_TITLE{"test-title"};
+        constexpr semver::version PROJECT_VERSION{1, 2, 3};
+
+        Project projectToWrite{Project::time_point_type{}, std::string{PROJECT_TITLE}, PROJECT_VERSION};
+
         AND_GIVEN("A project with a value field") {
-            constexpr std::string_view PROJECT_TITLE{"test-title"};
-            constexpr semver::version PROJECT_VERSION{1, 2, 3};
-
-            Project projectToWrite{Project::time_point_type{}, std::string{PROJECT_TITLE}, PROJECT_VERSION};
-
             constexpr std::string_view FIELD_KEY{"test-key"};
             const TestType fieldValue{tests::createGenericValue<TestType>()};
             projectToWrite.addValue(FIELD_KEY.data(), fieldValue);
@@ -99,6 +99,28 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
 
                     REQUIRE(actualJson.contains(FIELD_KEY));
                     CHECK(actualJson[FIELD_KEY] == fieldValue);
+                }
+            }
+        }
+
+        AND_GIVEN("A project with a value array") {
+            constexpr std::string_view FIELD_KEY{"test-key"};
+            const std::vector<TestType> values{
+                tests::createGenericValue<TestType>(),
+                tests::createGenericValue<TestType>(),
+                tests::createGenericValue<TestType>(),
+                tests::createGenericValue<TestType>()
+            };
+
+            projectToWrite.addValueArray(FIELD_KEY.data(), values);
+
+            WHEN("The project is serialized") {
+                writerUnderTest << projectToWrite;
+
+                THEN("It should have the field") {
+                    nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
+
+                    REQUIRE(actualJson.contains(FIELD_KEY));
                 }
             }
         }
