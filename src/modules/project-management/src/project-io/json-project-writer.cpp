@@ -10,6 +10,11 @@
 
 namespace gc::project_management::project_io {
 
+    namespace details {
+        template<class>
+        inline constexpr bool InvalidVariantV = false;
+    }
+
     JsonProjectWriter::JsonProjectWriter(std::unique_ptr<std::ostream> outputStream) noexcept :
         m_outputStream{std::move(outputStream)} {}
 
@@ -38,6 +43,11 @@ namespace gc::project_management::project_io {
                     projectJson[key] = std::get<double>(val);
                 else if constexpr (std::is_same_v<T, std::string>)
                     projectJson[key] = std::get<std::string>(val);
+                else if constexpr (std::is_same_v<T, bool>)
+                    projectJson[key] = std::get<bool>(val);
+                else
+                    static_assert(details::InvalidVariantV<T>, "non-exhaustive visitor!");
+
             }, std::get<1>(value));
 
         // here we use .dump() because it prints newlines. If we don't use it
