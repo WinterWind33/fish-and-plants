@@ -1,6 +1,8 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #pragma once
 
+#include <gc-project/project-component.hpp>
+
 #include <project-management/project.hpp>
 
 // C++ STL
@@ -36,6 +38,10 @@ namespace rpi_gc::gc_project {
         void setCurrentProjectFilePath(std::filesystem::path filepath) noexcept {
             m_currentProjectFilePath = std::move(filepath);
         }
+
+        void collectProjectData() {}
+
+        void registerProjectComponent(ProjectComponent& projectComponent) noexcept {}
 
         [[nodiscard]]
         const auto& getCurrentProjectFilePath() const noexcept {

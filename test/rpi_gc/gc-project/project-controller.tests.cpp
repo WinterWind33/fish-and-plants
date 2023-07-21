@@ -29,18 +29,17 @@ TEST_CASE("ProjectController unit tests", "[unit][sociable][rpi_gc][gc-project][
         using namespace gc::project_management;
 
         Project dummyProject{Project::time_point_type{}, "test-project", semver::version{1, 2, 3}};
-        const Project expectedProject{dummyProject};
-
         projectControllerUnderTest.setCurrentProject(std::move(dummyProject));
+        const auto& expectedProject{projectControllerUnderTest.getCurrentProject()};
 
         WHEN("The project saving is triggered") {
             THEN("The project components all should be queried") {
                 std::array<mocks::ProjectComponentMock, 2> projectComponents{};
 
                 for(auto& comp : projectComponents) {
-                    EXPECT_CALL(comp, saveToProject(expectedProject)).Times(1);
+                    EXPECT_CALL(comp, saveToProject(::testing::Ref(expectedProject))).Times(1);
 
-                    projectControllerUnderTest.registerProjectComponent();
+                    projectControllerUnderTest.registerProjectComponent(comp);
                 }
 
                 projectControllerUnderTest.collectProjectData();
