@@ -424,4 +424,8 @@ namespace rpi_gc::automatic_watering {
             << std::chrono::milliseconds{m_timeProvider.get().load()->getPumpValveDeactivationTimeSeparation()}.count() << "ms" << std::endl;
     }
 
+    void DailyCycleAutomaticWateringSystem::saveToProject(const gc::project_management::Project& project) {
+
+    }
+
 } // namespace rpi_gc::automatic_watering
