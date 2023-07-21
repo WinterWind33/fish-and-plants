@@ -222,6 +222,10 @@ SCENARIO("JsonProjectWriter with complex project structures", "[unit][sociable][
                 REQUIRE(actualJson.contains("isLast"s));
                 REQUIRE(actualJson.contains("bools"s));
                 REQUIRE(actualJson.contains("subObject"s));
+
+                CHECK(actualJson["name"] == "Root");
+                CHECK(actualJson["isLast"] == false);
+                CHECK(actualJson["bools"].size() == 4);
             }
         }
     }
