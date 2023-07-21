@@ -3,9 +3,10 @@
 #include <automatic-watering/time-providers/daily-cycle-aws-time-provider.hpp>
 #include <gc-project/project-controller.hpp>
 
-// Tst doubles
+// Test doubles
 #include <rpi_gc/test-doubles/automatic-watering/hardware-controllers/watering-system-hardware-controller.mock.hpp>
 #include <gh_log/test-doubles/logger.mock.hpp>
+#include <gh_hal/test-doubles/hardware-access/board-digital-pin.mock.hpp>
 
 #include <testing-core.hpp>
 
@@ -22,6 +23,12 @@ SCENARIO("Daily-Cycle AWS project data saving", "[integration][AutomaticWatering
         std::make_unique<NiceMock<mocks::WateringSystemHardwareControllerMock>>()
     };
     mocks::WateringSystemHardwareControllerMock& hardwareControllerMockRef{*hardwareControllerMock};
+    NiceMock<gh_hal::hardware_access::mocks::BoardDigitalPinMock> valvePinMock{}, pumpPinMock{};
+    ON_CALL(valvePinMock, getOffset).WillByDefault(testing::Return(23));
+    ON_CALL(pumpPinMock, getOffset).WillByDefault(testing::Return(26));
+    ON_CALL(hardwareControllerMockRef, getWaterValveDigitalOut).WillByDefault(::testing::Return(&valvePinMock));
+    ON_CALL(hardwareControllerMockRef, getWaterPumpDigitalOut).WillByDefault(::testing::Return(&pumpPinMock));
+
     std::atomic<WateringSystemHardwareController*> atomicHardwareController{hardwareControllerMock.get()};
 
     std::shared_ptr<DailyCycleAWSTimeProvider> timeProvider{std::make_shared<DailyCycleAWSTimeProvider>()};

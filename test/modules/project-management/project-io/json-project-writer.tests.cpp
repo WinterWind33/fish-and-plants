@@ -34,7 +34,7 @@ namespace tests {
     T createGenericValue() noexcept {
         if constexpr (std::is_same_v<T, bool>)
             return false;
-        else if constexpr (std::is_same_v<T, std::int32_t>)
+        else if constexpr (std::is_same_v<T, std::int64_t>)
             return 42;
         else if constexpr (std::is_same_v<T, double>)
             return -56.0;
@@ -72,7 +72,7 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
 }
 
 TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][sociable][modules][project-management][JsonProjectWriter][JSON-Formatting]",
-    std::int32_t, double, bool, std::string) {
+    std::int64_t, double, bool, std::string) {
     using namespace gc::project_management;
     using namespace gc::project_management::project_io;
 

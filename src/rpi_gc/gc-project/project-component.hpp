@@ -15,7 +15,7 @@ namespace rpi_gc::gc_project {
         //! \brief Saves the component data inside the given project.
         //!
         //! \param project The project which will receive the component data.
-        virtual void saveToProject(const gc::project_management::Project& project) = 0;
+        virtual void saveToProject(gc::project_management::Project& project) = 0;
     };
 
 } // namespace rpi_gc::gc_project

@@ -32,7 +32,7 @@ TEST_CASE("Project fields static tests", "[static][modules][project-management][
 }
 
 TEMPLATE_TEST_CASE("ProjectNode unit tests", "[unit][solitary][modules][project-management][ProjectNode]",
-    std::int32_t, double, std::string) {
+    std::int64_t, double, std::string) {
     using namespace gc::project_management;
 
     GIVEN("An empty ProjectNode object") {

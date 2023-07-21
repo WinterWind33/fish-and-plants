@@ -424,8 +424,34 @@ namespace rpi_gc::automatic_watering {
             << std::chrono::milliseconds{m_timeProvider.get().load()->getPumpValveDeactivationTimeSeparation()}.count() << "ms" << std::endl;
     }
 
-    void DailyCycleAutomaticWateringSystem::saveToProject(const gc::project_management::Project& project) {
+    void DailyCycleAutomaticWateringSystem::saveToProject(gc::project_management::Project& project) {
+        using namespace gc::project_management;
+        using namespace std::string_literals;
+        ProjectNode awsNode{};
+        awsNode.addValue("mode"s, "cycled"s);
 
+        bool bValveEnabled{m_bWaterValveEnabled.load()};
+        bool bPumpEnabled{m_bWaterPumpEnabled.load()};
+
+        ProjectNode flowNode{};
+        flowNode.addValue("isWaterValveEnabled"s, bValveEnabled);
+        flowNode.addValue("isWaterPumpEnabled"s, bPumpEnabled);
+
+        if(bValveEnabled) {
+            flowNode.addValue("valvePinID"s, static_cast<std::size_t>(m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()));
+        }
+
+        if(bPumpEnabled) {
+            flowNode.addValue("pumpPinID"s, static_cast<std::size_t>(m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()));
+        }
+
+        flowNode.addValue("activationTime"s, std::chrono::milliseconds{m_timeProvider.get().load()->getWateringSystemActivationDuration()}.count());
+        flowNode.addValue("deactivationTime"s, std::chrono::milliseconds{m_timeProvider.get().load()->getWateringSystemDeactivationDuration()}.count());
+        flowNode.addValue("deactivationSepTime"s, std::chrono::milliseconds{m_timeProvider.get().load()->getPumpValveDeactivationTimeSeparation()}.count());
+
+        // Now we can put the nodes inside the project.
+        awsNode.addObject("flow"s, std::move(flowNode));
+        project.addObject("automaticWateringSystem"s, std::move(awsNode));
     }
 
 } // namespace rpi_gc::automatic_watering
