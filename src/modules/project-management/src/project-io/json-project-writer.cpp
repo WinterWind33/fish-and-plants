@@ -58,6 +58,16 @@ namespace gc::project_management::project_io {
 
             parentJson[key] = std::move(arrJson);
         }
+
+        // Time to serialize all the objects.
+        const auto& objects{node.getObjects()};
+        for(const auto& object : objects) {
+            // We need to create a new JSON node for every object.
+            nlohmann::json objectJsonNode{};
+            serializeProjectNode(std::get<1>(object), objectJsonNode);
+
+            parentJson[std::get<0>(object)] = std::move(objectJsonNode);
+        }
     }
 
 } // namespace gc::project_management::project_io
