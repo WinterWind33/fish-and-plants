@@ -8,6 +8,8 @@
 // C++ STL
 #include <optional>
 #include <filesystem>
+#include <vector>
+#include <functional>
 
 namespace rpi_gc::gc_project {
 
@@ -39,9 +41,11 @@ namespace rpi_gc::gc_project {
             m_currentProjectFilePath = std::move(filepath);
         }
 
-        void collectProjectData() {}
+        void collectProjectData();
 
-        void registerProjectComponent(ProjectComponent& projectComponent) noexcept {}
+        void registerProjectComponent(ProjectComponent& projectComponent) {
+            m_projectComponents.push_back(std::ref(projectComponent));
+        }
 
         [[nodiscard]]
         const auto& getCurrentProjectFilePath() const noexcept {
@@ -52,6 +56,7 @@ namespace rpi_gc::gc_project {
         void close_current_project() noexcept;
         std::optional<project_type> m_currentProject{};
         std::filesystem::path m_currentProjectFilePath{};
+        std::vector<std::reference_wrapper<ProjectComponent>> m_projectComponents{};
     };
 
 } // namespace rpi_gc::gc_project

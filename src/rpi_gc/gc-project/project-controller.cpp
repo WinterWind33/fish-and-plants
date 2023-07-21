@@ -17,4 +17,10 @@ namespace rpi_gc::gc_project {
         m_currentProjectFilePath.clear();
     }
 
+    void ProjectController::collectProjectData() {
+        for(auto& comp : m_projectComponents) {
+            comp.get().saveToProject(m_currentProject.value());
+        }
+    }
+
 } // namespace rpi_gc::gc_project
