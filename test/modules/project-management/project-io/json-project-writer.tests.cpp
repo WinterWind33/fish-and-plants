@@ -196,7 +196,7 @@ SCENARIO("JsonProjectWriter with complex project structures", "[unit][sociable][
         ProjectNode thirdLayer{};
         thirdLayer.addValue("name"s, "ThirdLayer"s);
         thirdLayer.addValue("isLast"s, false);
-        thirdLayer.addObject("subLayer"s, std::move(fourthLayer));
+        thirdLayer.addObject("subObject"s, std::move(fourthLayer));
 
         ProjectNode secondLayer{};
         secondLayer.addValue("name"s, "SecondLayer"s);
@@ -242,6 +242,19 @@ SCENARIO("JsonProjectWriter with complex project structures", "[unit][sociable][
                     CHECK(secondLayerObj["values"].size() == 5);
 
                     REQUIRE(secondLayerObj["subObject"].is_object());
+
+                    AND_THEN("The third layer should have all the correct entries") {
+                        const nlohmann::json& thirdLayerObj = secondLayerObj["subObject"];
+
+                        REQUIRE(thirdLayerObj.contains("name"s));
+                        REQUIRE(thirdLayerObj.contains("isLast"s));
+                        REQUIRE(thirdLayerObj.contains("subObject"s));
+
+                        CHECK(thirdLayerObj["name"] == "ThirdLayer");
+                        CHECK_FALSE(thirdLayerObj["isLast"]);
+
+                        REQUIRE(thirdLayerObj["subObject"].is_object());
+                    }
                 }
             }
         }
