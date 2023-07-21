@@ -1,7 +1,9 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #pragma once
 
-#include "project-management/project-io/project-writer.hpp"
+#include <project-management/project-io/project-writer.hpp>
+
+#include <nlohmann/json.hpp>
 
 // C++ STL
 #include <ostream>
@@ -19,6 +21,8 @@ namespace gc::project_management::project_io {
         void serializeProject(const Project& project) override;
     private:
         std::unique_ptr<std::ostream> m_outputStream;
+
+        void serializeProjectNode(const ProjectNode& node, nlohmann::json& parentJson);
     };
 
 } // namespace gc::project_management::project_io

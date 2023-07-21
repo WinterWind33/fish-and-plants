@@ -26,19 +26,26 @@ namespace gc::project_management::project_io {
         projectJson["creation_timedate"] = std::chrono::system_clock::to_time_t(project.getCreationTime());
 
         // Now we need to traverse the project nodes and write all the sub-nodes.
+        serializeProjectNode(project, projectJson);
 
+        // here we use .dump() because it prints newlines. If we don't use it
+        // newlines won't be printed and the file is formatted on one line.
+        *m_outputStream << projectJson.dump(4);
+    }
+
+    void JsonProjectWriter::serializeProjectNode(const ProjectNode& node, nlohmann::json& parentJson) {
         // Single values
-        const auto& values{project.getValues()};
+        const auto& values{node.getValues()};
         for(const auto& value : values) {
             const auto& key{std::get<0>(value)};
 
-            std::visit([&key, &projectJson](auto&& arg){
-                projectJson[key] = std::forward<decltype(arg)>(arg);
+            std::visit([&key, &parentJson](auto&& arg){
+                parentJson[key] = std::forward<decltype(arg)>(arg);
             }, std::get<1>(value));
         }
 
         // Values arrays
-        const auto& valuesArrays{project.getValuesArrays()};
+        const auto& valuesArrays{node.getValuesArrays()};
         for(const auto& arr : valuesArrays) {
             const auto& key{std::get<0>(arr)};
 
@@ -49,12 +56,8 @@ namespace gc::project_management::project_io {
                 }, val);
             }
 
-            projectJson[key] = std::move(arrJson);
+            parentJson[key] = std::move(arrJson);
         }
-
-        // here we use .dump() because it prints newlines. If we don't use it
-        // newlines won't be printed and the file is formatted on one line.
-        *m_outputStream << projectJson.dump(4);
     }
 
 } // namespace gc::project_management::project_io
