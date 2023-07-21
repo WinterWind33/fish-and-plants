@@ -28,6 +28,7 @@ set(RPI_GC_HEADER_FILES
     "commands/automatic-watering/automatic-watering-command.hpp"
     "diagnostics/diagnostic-status-probeable.hpp"
     "gc-project/project-controller.hpp"
+    "gc-project/project-component.hpp"
     "hardware-management/hardware-chip-initializer.hpp"
     "user-interface/application-strings.hpp"
     "user-interface/commands-strings.hpp"
