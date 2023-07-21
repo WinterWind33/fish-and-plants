@@ -25,7 +25,7 @@ TEST_CASE("ProjectController unit tests", "[unit][sociable][rpi_gc][gc-project][
         }
     }
 
-    GIVEN("A project controller with a projct") {
+    GIVEN("A project controller with a project") {
         using namespace gc::project_management;
 
         Project dummyProject{Project::time_point_type{}, "test-project", semver::version{1, 2, 3}};
@@ -38,6 +38,22 @@ TEST_CASE("ProjectController unit tests", "[unit][sociable][rpi_gc][gc-project][
 
                 for(auto& comp : projectComponents) {
                     EXPECT_CALL(comp, saveToProject(::testing::Ref(expectedProject))).Times(1);
+
+                    projectControllerUnderTest.registerProjectComponent(comp);
+                }
+
+                projectControllerUnderTest.collectProjectData();
+            }
+        }
+    }
+
+    GIVEN("A project controller without a project") {
+        WHEN("The project saving is triggered") {
+            THEN("No component should be queried") {
+                std::array<mocks::ProjectComponentMock, 2> projectComponents{};
+
+                for(auto& comp : projectComponents) {
+                    EXPECT_CALL(comp, saveToProject).Times(0);
 
                     projectControllerUnderTest.registerProjectComponent(comp);
                 }
