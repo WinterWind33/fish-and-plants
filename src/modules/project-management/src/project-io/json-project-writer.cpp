@@ -21,12 +21,9 @@ namespace gc::project_management::project_io {
     void JsonProjectWriter::serializeProject(const Project& project) {
         nlohmann::json projectJson{};
 
-        projectJson =
-        {
-            {"version", project.getVersion().to_string()},
-            {"title", project.getTitle()},
-            {"creation_timedate", std::chrono::system_clock::to_time_t(project.getCreationTime())}
-        };
+        projectJson["version"] = project.getVersion().to_string();
+        projectJson["title"] = project.getTitle();
+        projectJson["creation_timedate"] = std::chrono::system_clock::to_time_t(project.getCreationTime());
 
         // Now we need to traverse the project nodes and write all the sub-nodes.
 

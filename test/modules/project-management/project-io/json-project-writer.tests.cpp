@@ -7,6 +7,7 @@
 // C++ STL
 #include <sstream>
 #include <string_view>
+#include <iostream>
 
 namespace tests {
 
@@ -17,6 +18,17 @@ namespace tests {
         ist >> actualJson;
 
         return actualJson;
+    }
+
+    void checkBasicProjectData(const nlohmann::json& actualJson, const gc::project_management::Project& expectedProjectData) {
+        REQUIRE(actualJson.contains("title"));
+        CHECK(actualJson["title"] == expectedProjectData.getTitle());
+
+        REQUIRE(actualJson.contains("version"));
+        CHECK(actualJson["version"] == expectedProjectData.getVersion().to_string());
+
+        REQUIRE(actualJson.contains("creation_timedate"));
+        CHECK(actualJson["creation_timedate"] == std::chrono::system_clock::to_time_t(expectedProjectData.getCreationTime()));
     }
 
     template<typename T>
@@ -52,11 +64,9 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
             writerUnderTest << trivialProject;
 
             THEN("The final JSON should be correct") {
-                nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
+                nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
-                CHECK(actualJson["title"] == "test-title");
-                CHECK(actualJson["version"] == "1.2.3");
-                CHECK(actualJson["creation_timedate"] == 0);
+                tests::checkBasicProjectData(actualJson, trivialProject);
             }
         }
     }
@@ -87,18 +97,16 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
                 writerUnderTest << projectToWrite;
 
                 THEN("It should have all the correct trivial fields") {
-                    nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
+                    nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
-                    CHECK(actualJson["title"] == "test-title");
-                    CHECK(actualJson["version"] == "1.2.3");
-                    CHECK(actualJson["creation_timedate"] == 0);
+                    tests::checkBasicProjectData(actualJson, projectToWrite);
                 }
 
                 THEN("It should have the field in the root node") {
-                    nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
+                    nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
                     REQUIRE(actualJson.contains(FIELD_KEY));
-                    CHECK(actualJson[FIELD_KEY] == fieldValue);
+                    CHECK(actualJson[FIELD_KEY].get<TestType>() == fieldValue);
                 }
             }
         }
@@ -118,17 +126,17 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
                 writerUnderTest << projectToWrite;
 
                 THEN("It should have the field") {
-                    nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
+                    nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
-                    REQUIRE(actualJson.contains(FIELD_KEY));
+                    CHECK(actualJson.contains(FIELD_KEY));
                 }
 
                 THEN("It should have the field with the correct array values") {
-                    nlohmann::json actualJson{tests::readJsonFromString(outStreamRef.str())};
+                    nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
                     const TestType expectedValue{tests::createGenericValue<TestType>()};
 
-                    for(const auto& val : actualJson[FIELD_KEY]) {
+                    for(const auto& val : actualJson.at(FIELD_KEY.data())) {
                         CHECK(val.get<TestType>() == expectedValue);
                     }
                 }
