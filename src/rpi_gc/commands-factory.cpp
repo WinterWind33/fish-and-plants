@@ -179,7 +179,7 @@ namespace rpi_gc::commands_factory {
                     }
 
                     // Now we can set the new project in the project controller.
-                    m_projectController.get().setCurrentProject(inputProject);
+                    m_projectController.get().setCurrentProject(std::move(inputProject));
                     m_projectController.get().setCurrentProjectFilePath(valueOption.value());
 
                     m_userLogger->logInfo("Switched to new project " + valueOption.value());
