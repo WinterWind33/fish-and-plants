@@ -57,6 +57,7 @@ set(TEST_APP_SOURCE_FILES
 
     # integration tests
     "integration/rpi_gc/application-command-integration.tests.cpp"
+    "integration/automatic-watering-system-project-saving.tests.cpp"
 )
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK AND USE_GMOCK)
