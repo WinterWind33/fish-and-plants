@@ -210,6 +210,9 @@ namespace rpi_gc::commands_factory {
             m_mainLogger->logInfo(customMessage);
         }
 
+        // Now we make all components save the configuration to the project.
+        m_projectController.get().collectProjectData();
+
         *projectWriter << project;
     }
 
