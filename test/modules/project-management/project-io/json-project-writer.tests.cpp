@@ -176,3 +176,53 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
         }
     }
 }
+
+SCENARIO("JsonProjectWriter with complex project structures", "[unit][sociable][modules][project-management][JsonProjectWriter][complex-structures]") {
+    using namespace gc::project_management;
+    using namespace gc::project_management::project_io;
+
+    auto outStream = std::make_unique<std::ostringstream>();
+    auto& outStreamRef{*outStream};
+
+    GIVEN("A project with four nested layers") {
+        using namespace std::string_literals;
+        Project projectToWrite{};
+
+        ProjectNode fourthLayer{};
+        fourthLayer.addValue("name"s, "FourthLayer"s);
+        fourthLayer.addValue("isLast"s, true);
+        fourthLayer.addValue("floatValue"s, 40.0);
+
+        ProjectNode thirdLayer{};
+        thirdLayer.addValue("name"s, "ThirdLayer"s);
+        thirdLayer.addValue("isLast"s, false);
+        thirdLayer.addObject("subLayer"s, std::move(fourthLayer));
+
+        ProjectNode secondLayer{};
+        secondLayer.addValue("name"s, "SecondLayer"s);
+        secondLayer.addValue("isLast"s, false);
+        secondLayer.addValueArray("values"s, {1, 2, 3, 4, 5});
+        secondLayer.addObject("subObject1"s, std::move(thirdLayer));
+
+        projectToWrite.addValue("name"s, "Root"s);
+        projectToWrite.addValue("isLast"s, false);
+        projectToWrite.addValueArray("bools"s, {true, false, false, true});
+        projectToWrite.addObject("subObject"s, std::move(secondLayer));
+
+        WHEN("The project is serialized") {
+            JsonProjectWriter writerUnderTest{std::move(outStream)};
+            writerUnderTest << projectToWrite;
+
+            // We read the serialized JSON.
+            nlohmann::json actualJson{};
+            REQUIRE_NOTHROW(actualJson = tests::readJsonFromString(outStreamRef.str()));
+
+            THEN("The root layer should have all the correct entries") {
+                REQUIRE(actualJson.contains("name"s));
+                REQUIRE(actualJson.contains("isLast"s));
+                REQUIRE(actualJson.contains("bools"s));
+                REQUIRE(actualJson.contains("subObject"s));
+            }
+        }
+    }
+}

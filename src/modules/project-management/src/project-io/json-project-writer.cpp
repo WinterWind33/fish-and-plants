@@ -10,11 +10,6 @@
 
 namespace gc::project_management::project_io {
 
-    namespace details {
-        template<class>
-        inline constexpr bool InvalidVariantV = false;
-    }
-
     JsonProjectWriter::JsonProjectWriter(std::unique_ptr<std::ostream> outputStream) noexcept :
         m_outputStream{std::move(outputStream)} {}
 
