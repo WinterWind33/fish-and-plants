@@ -7,7 +7,6 @@
 // C++ STL
 #include <sstream>
 #include <string_view>
-#include <iostream>
 
 namespace tests {
 
@@ -254,6 +253,18 @@ SCENARIO("JsonProjectWriter with complex project structures", "[unit][sociable][
                         CHECK_FALSE(thirdLayerObj["isLast"]);
 
                         REQUIRE(thirdLayerObj["subObject"].is_object());
+
+                        AND_THEN("The fourth layer should have all the correct entries") {
+                            const nlohmann::json& fourthLayerObj = thirdLayerObj["subObject"];
+
+                            REQUIRE(fourthLayerObj.contains("name"s));
+                            REQUIRE(fourthLayerObj.contains("isLast"s));
+                            REQUIRE(fourthLayerObj.contains("floatValue"s));
+
+                            CHECK(fourthLayerObj["name"] == "FourthLayer");
+                            CHECK(fourthLayerObj["isLast"]);
+                            CHECK(fourthLayerObj["floatValue"] == 40.0);
+                        }
                     }
                 }
             }
