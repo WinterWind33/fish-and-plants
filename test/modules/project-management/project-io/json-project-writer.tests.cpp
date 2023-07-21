@@ -64,7 +64,7 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
             writerUnderTest << trivialProject;
 
             THEN("The final JSON should be correct") {
-                nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
+                const nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
                 tests::checkBasicProjectData(actualJson, trivialProject);
             }
@@ -97,13 +97,13 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
                 writerUnderTest << projectToWrite;
 
                 THEN("It should have all the correct trivial fields") {
-                    nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
+                    const nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
                     tests::checkBasicProjectData(actualJson, projectToWrite);
                 }
 
                 THEN("It should have the field in the root node") {
-                    nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
+                    const nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
                     REQUIRE(actualJson.contains(FIELD_KEY));
                     CHECK(actualJson[FIELD_KEY].get<TestType>() == fieldValue);
@@ -126,13 +126,13 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
                 writerUnderTest << projectToWrite;
 
                 THEN("It should have the field") {
-                    nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
+                    const nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
                     CHECK(actualJson.contains(FIELD_KEY));
                 }
 
                 THEN("It should have the field with the correct array values") {
-                    nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
+                    const nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
                     const TestType expectedValue{tests::createGenericValue<TestType>()};
 
@@ -146,22 +146,31 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
         AND_GIVEN("A project with an object") {
             using namespace std::string_literals;
             constexpr std::string_view FIELD_KEY{"test-key"};
+            constexpr std::string_view OBJECT_FIELD_KEY{"obj-key"};
 
             ProjectNode newObject{};
-            newObject.addValue("obj-key-1"s, true);
-            newObject.addValue("obj-key-2"s, 54);
-            newObject.addValue("obj-key-3"s, 32.0);
-            newObject.addValue("obj-key-4"s, "fancy-value"s);
+            newObject.addValue(OBJECT_FIELD_KEY.data(), tests::createGenericValue<TestType>());
 
             projectToWrite.addObject(FIELD_KEY.data(), std::move(newObject));
 
             WHEN("The project is serialized") {
                 writerUnderTest << projectToWrite;
 
-                THEN("It should have the field") {
-                    nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
+                THEN("It should have the object entry with the correct key") {
+                    const nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
 
                     CHECK(actualJson.contains(FIELD_KEY));
+                }
+
+                THEN("It should have the object with the correct values") {
+                    const nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
+
+                    REQUIRE(actualJson.contains(FIELD_KEY));
+
+                    const nlohmann::json& subObjJson = actualJson[FIELD_KEY];
+                    REQUIRE(subObjJson.contains(OBJECT_FIELD_KEY));
+
+                    CHECK(subObjJson[OBJECT_FIELD_KEY] == tests::createGenericValue<TestType>());
                 }
             }
         }
