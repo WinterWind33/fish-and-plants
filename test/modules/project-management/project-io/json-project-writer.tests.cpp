@@ -202,7 +202,7 @@ SCENARIO("JsonProjectWriter with complex project structures", "[unit][sociable][
         secondLayer.addValue("name"s, "SecondLayer"s);
         secondLayer.addValue("isLast"s, false);
         secondLayer.addValueArray("values"s, {1, 2, 3, 4, 5});
-        secondLayer.addObject("subObject1"s, std::move(thirdLayer));
+        secondLayer.addObject("subObject"s, std::move(thirdLayer));
 
         projectToWrite.addValue("name"s, "Root"s);
         projectToWrite.addValue("isLast"s, false);
@@ -224,8 +224,25 @@ SCENARIO("JsonProjectWriter with complex project structures", "[unit][sociable][
                 REQUIRE(actualJson.contains("subObject"s));
 
                 CHECK(actualJson["name"] == "Root");
-                CHECK(actualJson["isLast"] == false);
+                CHECK_FALSE(actualJson["isLast"]);
                 CHECK(actualJson["bools"].size() == 4);
+
+                REQUIRE(actualJson["subObject"].is_object());
+
+                AND_THEN("The second layer should have all the correct entries") {
+                    const nlohmann::json& secondLayerObj = actualJson["subObject"];
+
+                    REQUIRE(secondLayerObj.contains("name"s));
+                    REQUIRE(secondLayerObj.contains("isLast"s));
+                    REQUIRE(secondLayerObj.contains("values"s));
+                    REQUIRE(secondLayerObj.contains("subObject"s));
+
+                    CHECK(secondLayerObj["name"] == "SecondLayer");
+                    CHECK_FALSE(secondLayerObj["isLast"]);
+                    CHECK(secondLayerObj["values"].size() == 5);
+
+                    REQUIRE(secondLayerObj["subObject"].is_object());
+                }
             }
         }
     }
