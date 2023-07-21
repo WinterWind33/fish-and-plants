@@ -142,5 +142,28 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
                 }
             }
         }
+
+        AND_GIVEN("A project with an object") {
+            using namespace std::string_literals;
+            constexpr std::string_view FIELD_KEY{"test-key"};
+
+            ProjectNode newObject{};
+            newObject.addValue("obj-key-1"s, true);
+            newObject.addValue("obj-key-2"s, 54);
+            newObject.addValue("obj-key-3"s, 32.0);
+            newObject.addValue("obj-key-4"s, "fancy-value"s);
+
+            projectToWrite.addObject(FIELD_KEY.data(), std::move(newObject));
+
+            WHEN("The project is serialized") {
+                writerUnderTest << projectToWrite;
+
+                THEN("It should have the field") {
+                    nlohmann::json actualJson = tests::readJsonFromString(outStreamRef.str());
+
+                    CHECK(actualJson.contains(FIELD_KEY));
+                }
+            }
+        }
     }
 }
