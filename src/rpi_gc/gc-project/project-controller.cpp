@@ -18,6 +18,10 @@ namespace rpi_gc::gc_project {
     }
 
     void ProjectController::collectProjectData() {
+        if(!hasProject()) {
+            return;
+        }
+
         for(auto& comp : m_projectComponents) {
             comp.get().saveToProject(m_currentProject.value());
         }
