@@ -58,6 +58,24 @@ namespace gc::project_management {
             return *this;
         }
 
+        bool contains(ProjectFieldKey auto&& key) const noexcept {
+            return m_values.contains(std::forward<decltype(key)>(key)) ||
+                m_valuesArrays.contains(std::forward<decltype(key)>(key)) ||
+                m_objects.contains(std::forward<decltype(key)>(key));
+        }
+
+        bool containsValue(ProjectFieldKey auto&& key) const noexcept {
+            return m_values.contains(std::forward<decltype(key)>(key));
+        }
+
+        bool containsValueArray(ProjectFieldKey auto&& key) const noexcept {
+            return m_valuesArrays.contains(std::forward<decltype(key)>(key));
+        }
+
+        bool containsObject(ProjectFieldKey auto&& key) const noexcept {
+            return m_objects.contains(std::forward<decltype(key)>(key));
+        }
+
         template<ProjectFieldValue ValueType>
         ValueType getValue(ProjectFieldKey auto&& key) const {
             return std::get<ValueType>(m_values.at(std::forward<decltype(key)>(key)));

@@ -82,6 +82,7 @@ TEST_CASE("JsonProjectReader unit tests", "[unit][sociable][project-management][
                 REQUIRE(SoftCompareProjects(inputProject, expectedProject));
 
                 AND_THEN("The read project should have the correct value") {
+                    REQUIRE(inputProject.containsValue("test-value"));
                     CHECK(inputProject.getValue<std::int64_t>("test-value") == 42);
                 }
             }
