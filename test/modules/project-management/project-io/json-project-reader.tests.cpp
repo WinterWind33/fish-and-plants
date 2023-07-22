@@ -83,7 +83,7 @@ TEST_CASE("JsonProjectReader unit tests", "[unit][sociable][project-management][
     }
 }
 
-TEMPLATE_TEST_CASE("JsonProjectReader values unit tests", "[unit][solitary][modules][project-management][JsonProjectReader][values]",
+TEMPLATE_TEST_CASE("JsonProjectReader values unit tests", "[unit][sociable][modules][project-management][JsonProjectReader][values]",
     bool, std::int64_t, std::uint64_t, double, std::string) {
     static_assert(gc::project_management::ProjectFieldValue<TestType>);
 
@@ -184,6 +184,48 @@ TEMPLATE_TEST_CASE("JsonProjectReader values unit tests", "[unit][solitary][modu
 
                     for(const auto& val : arr)
                         CHECK(std::get<TestType>(val) == testValue);
+                }
+            }
+        }
+    }
+}
+
+TEST_CASE("JsonProjectReader objects unit tests", "[unit][sociable][modules][project-management][JsonProjectReader][objects]") {
+    using namespace gc::project_management;
+    using namespace gc::project_management::project_io;
+
+    GIVEN("A project with an object that has a value") {
+        std::ostringstream jsonStream{};
+        // Here we generate the JSON string based on TestType's type.
+        jsonStream << R"(
+            {
+                "creation_timedate": 1672576240,
+                "title": "test-title",
+                "version": "1.2.3",
+                "test-value-object": {
+                    "test-value": 42
+                }
+            }
+        )";
+
+        auto inputStream{std::make_unique<std::istringstream>(jsonStream.str())};
+
+        Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
+
+        WHEN("The project is read") {
+            project_io::JsonProjectReader projectReaderUnderTest{std::move(inputStream)};
+            Project inputProject{};
+            projectReaderUnderTest >> inputProject;
+
+            THEN("The read project basic data should be correct") {
+                REQUIRE(SoftCompareProjects(inputProject, expectedProject));
+
+                AND_THEN("The read project should have the correct value object") {
+                    REQUIRE(inputProject.containsValue("test-value-object"));
+                    const auto& obj{inputProject.getObject("test-value-object")};
+
+                    REQUIRE(obj.containsValue("test-value"));
+                    CHECK(obj.getValue<std::int64_t>("test-value") == 42);
                 }
             }
         }
