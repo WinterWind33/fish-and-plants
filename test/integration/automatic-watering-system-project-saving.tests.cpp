@@ -57,7 +57,39 @@ SCENARIO("Daily-Cycle AWS project data saving", "[integration][AutomaticWatering
             const Project& projectUnderTest{projectController.getCurrentProject()};
 
             const auto& objects{projectUnderTest.getObjects()};
-            REQUIRE(objects.size() == 1);
+            REQUIRE(objects.contains("automaticWateringSystem"));
+            const auto awsObject{objects.at("automaticWateringSystem")};
+
+            AND_THEN("The AWS object should be correct") {
+                const auto& values{awsObject.getValues()};
+                REQUIRE(values.contains("mode"));
+                CHECK(std::get<std::string>(values.at("mode")) == "cycled");
+
+                const auto& awsSubObjects{awsObject.getObjects()};
+                REQUIRE(awsSubObjects.contains("flow"));
+                const auto& awsFlowObject{awsSubObjects.at("flow")};
+
+                AND_THEN("The flow description should be correct") {
+                    const auto& awsFlowValues{awsFlowObject.getValues()};
+
+                    REQUIRE(awsFlowValues.size() == 7);
+                    REQUIRE(awsFlowValues.contains("isWaterValveEnabled"));
+                    REQUIRE(awsFlowValues.contains("isWaterPumpEnabled"));
+                    REQUIRE(awsFlowValues.contains("valvePinID"));
+                    REQUIRE(awsFlowValues.contains("pumpPinID"));
+                    REQUIRE(awsFlowValues.contains("activationTime"));
+                    REQUIRE(awsFlowValues.contains("deactivationTime"));
+                    REQUIRE(awsFlowValues.contains("deactivationSepTime"));
+
+                    CHECK(std::get<bool>(awsFlowValues.at("isWaterValveEnabled")) == true);
+                    CHECK(std::get<bool>(awsFlowValues.at("isWaterPumpEnabled")) == true);
+                    CHECK(std::get<std::uint64_t>(awsFlowValues.at("valvePinID")) == 23);
+                    CHECK(std::get<std::uint64_t>(awsFlowValues.at("pumpPinID")) == 26);
+                    CHECK(std::get<std::int64_t>(awsFlowValues.at("activationTime")) == timeProvider->getWateringSystemActivationDuration().count());
+                    CHECK(std::get<std::int64_t>(awsFlowValues.at("deactivationTime")) == timeProvider->getWateringSystemDeactivationDuration().count());
+                    CHECK(std::get<std::int64_t>(awsFlowValues.at("deactivationSepTime")) == timeProvider->getPumpValveDeactivationTimeSeparation().count());
+                }
+            }
         }
     }
 }

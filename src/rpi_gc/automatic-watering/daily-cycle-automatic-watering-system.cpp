@@ -393,8 +393,8 @@ namespace rpi_gc::automatic_watering {
             ost << " [Thread ID]:\t" << m_workerThread.get_id() << std::endl;
 
         ost << " {AWS Flow}" << std::endl;
-        bool bValveEnabled{m_bWaterValveEnabled.load()};
-        bool bPumpEnabled{m_bWaterPumpEnabled.load()};
+        const bool bValveEnabled{m_bWaterValveEnabled.load()};
+        const bool bPumpEnabled{m_bWaterPumpEnabled.load()};
 
         ost << "\t [Completed cycles]: " << m_cyclesCounter.load() << std::endl;
 
@@ -430,8 +430,8 @@ namespace rpi_gc::automatic_watering {
         ProjectNode awsNode{};
         awsNode.addValue("mode"s, "cycled"s);
 
-        bool bValveEnabled{m_bWaterValveEnabled.load()};
-        bool bPumpEnabled{m_bWaterPumpEnabled.load()};
+        const bool bValveEnabled{m_bWaterValveEnabled.load()};
+        const bool bPumpEnabled{m_bWaterPumpEnabled.load()};
 
         ProjectNode flowNode{};
         flowNode.addValue("isWaterValveEnabled"s, bValveEnabled);
