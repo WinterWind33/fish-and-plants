@@ -34,7 +34,7 @@ namespace gc::project_management {
             return *this;
         }
 
-        auto& addValue(ProjectFieldKey auto&& key, value_impl_type value) {
+        auto& addValue(ProjectFieldKey auto&& key, value_impl_type&& value) {
             m_values[std::forward<decltype(key)>(key)] = std::move(value);
             return *this;
         }
