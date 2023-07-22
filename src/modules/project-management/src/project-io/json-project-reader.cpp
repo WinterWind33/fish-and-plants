@@ -62,10 +62,10 @@ namespace gc::project_management::project_io {
                     finalProject.addValue(key, value.get<bool>());
                 }
                 else if(value.is_number_integer()) {
-                    finalProject.addValue(key, value.get<std::int64_t>());
-                }
-                else if(value.is_number_unsigned()) {
-                    finalProject.addValue(key, value.get<std::uint64_t>());
+                    if(value.is_number_unsigned())
+                        finalProject.addValue(key, value.get<std::uint64_t>());
+                    else
+                        finalProject.addValue(key, value.get<std::int64_t>());
                 }
                 else if(value.is_number_float()) {
                     finalProject.addValue(key, value.get<double>());
