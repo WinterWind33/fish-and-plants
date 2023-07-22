@@ -133,4 +133,59 @@ TEMPLATE_TEST_CASE("JsonProjectReader values unit tests", "[unit][solitary][modu
             }
         }
     }
+
+    GIVEN("A project with a value array") {
+        std::ostringstream jsonStream{};
+        // Here we generate the JSON string based on TestType's type.
+        jsonStream << R"(
+            {
+                "creation_timedate": 1672576240,
+                "title": "test-title",
+                "version": "1.2.3",
+                "test-value-array": [)";
+        const TestType testValue{tests::createTestValue<TestType>()};
+
+        constexpr std::size_t ARRAY_SIZE{5};
+        for(std::size_t i{0}; i < ARRAY_SIZE; ++i) {
+            if(i != 0)
+                jsonStream << ", ";
+
+            if constexpr (std::is_same_v<TestType, bool>)
+                jsonStream << std::boolalpha << testValue;
+            else if constexpr (std::is_same_v<TestType, double>)
+                jsonStream << std::fixed << testValue;
+            else if constexpr (std::is_same_v<TestType, std::string>)
+                jsonStream << '\"' << testValue << '\"';
+            else
+                jsonStream << testValue;
+        }
+
+        jsonStream << R"(
+            ]
+        }
+        )";
+
+        auto inputStream{std::make_unique<std::istringstream>(jsonStream.str())};
+
+        Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
+        expectedProject.addValueArray("test-value-array", {testValue});
+
+        WHEN("The project is read") {
+            project_io::JsonProjectReader projectReaderUnderTest{std::move(inputStream)};
+            Project inputProject{};
+            projectReaderUnderTest >> inputProject;
+
+            THEN("The read project basic data should be correct") {
+                REQUIRE(SoftCompareProjects(inputProject, expectedProject));
+
+                AND_THEN("The read project should have the correct value array") {
+                    REQUIRE(inputProject.containsValueArray("test-value-array"));
+                    const auto& arr{inputProject.getValueArray("test-value-array")};
+
+                    for(const auto& val : arr)
+                        CHECK(std::get<TestType>(val) == testValue);
+                }
+            }
+        }
+    }
 }
