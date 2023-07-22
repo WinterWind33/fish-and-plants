@@ -4,6 +4,8 @@
 #include <project-management/project-io/project-reader.hpp>
 #include <project-management/project.hpp>
 
+#include <nlohmann/json.hpp>
+
 // C++ STL
 #include <istream>
 #include <memory>
@@ -18,6 +20,8 @@ namespace gc::project_management::project_io {
 
     private:
         std::unique_ptr<std::istream> m_inputStream;
+
+        gc::project_management::ProjectNode read_project_node(const nlohmann::json& jsonNode);
     };
 
 } // namespace gc::project_management::project_io

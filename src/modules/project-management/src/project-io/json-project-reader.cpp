@@ -74,8 +74,7 @@ namespace gc::project_management::project_io {
 
             // If the value is an object, we read it as an object of values.
             else if(value.is_object()) {
-                ProjectNode valueObject{};
-                finalProject.addObject(key, std::move(valueObject));
+                finalProject.addObject(key, read_project_node(value));
             }
             // If the value is a simple value, we read it as a simple value.
             else {
@@ -84,6 +83,34 @@ namespace gc::project_management::project_io {
         }
 
         return finalProject;
+    }
+
+    ProjectNode JsonProjectReader::read_project_node(const nlohmann::json& jsonNode) {
+        ProjectNode finalNode{};
+
+        for(const auto& [key, value] : jsonNode.items()) {
+            // If the value is an array, we read it as an array of values.
+            if(value.is_array()) {
+                std::vector<ProjectNode::value_impl_type> valueArray{};
+                for(const auto& arrayValue : value) {
+                    // We need to instance a variant based on the array value type.
+                    ProjectNode::value_impl_type finalValue{details::createVariantFromJsonNode(arrayValue)};
+                    valueArray.push_back(std::move(finalValue));
+                }
+                finalNode.addValueArray(key, std::move(valueArray));
+            }
+
+            // If the value is an object, we read it as an object of values.
+            else if(value.is_object()) {
+                finalNode.addObject(key, read_project_node(value));
+            }
+            // If the value is a simple value, we read it as a simple value.
+            else {
+                finalNode.addValue(key, details::createVariantFromJsonNode(value));
+            }
+        }
+
+        return finalNode;
     }
 
 } // namespace gc::project_management::project_io

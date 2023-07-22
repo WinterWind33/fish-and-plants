@@ -221,11 +221,11 @@ TEST_CASE("JsonProjectReader objects unit tests", "[unit][sociable][modules][pro
                 REQUIRE(SoftCompareProjects(inputProject, expectedProject));
 
                 AND_THEN("The read project should have the correct value object") {
-                    REQUIRE(inputProject.containsValue("test-value-object"));
+                    REQUIRE(inputProject.containsObject("test-value-object"));
                     const auto& obj{inputProject.getObject("test-value-object")};
 
                     REQUIRE(obj.containsValue("test-value"));
-                    CHECK(obj.getValue<std::int64_t>("test-value") == 42);
+                    CHECK(obj.getValue<std::uint64_t>("test-value") == 42);
                 }
             }
         }
