@@ -58,6 +58,19 @@ namespace gc::project_management {
             return *this;
         }
 
+        template<ProjectFieldValue ValueType>
+        ValueType getValue(ProjectFieldKey auto&& key) const {
+            return std::get<ValueType>(m_values.at(std::forward<decltype(key)>(key)));
+        }
+
+        const auto& getValueArray(ProjectFieldKey auto&& key) const {
+            return m_valuesArrays.at(std::forward<decltype(key)>(key));
+        }
+
+        const auto& getObject(ProjectFieldKey auto&& key) const {
+            return m_objects.at(std::forward<decltype(key)>(key));
+        }
+
         [[nodiscard]]
         const auto& getValues() const noexcept {
             return m_values;
