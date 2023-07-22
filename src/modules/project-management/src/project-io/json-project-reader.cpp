@@ -8,6 +8,27 @@
 
 namespace gc::project_management::project_io {
 
+    namespace details {
+
+        auto createVariantFromJsonNode(const nlohmann::json& jsonNode) -> gc::project_management::ProjectNode::value_impl_type {
+            if(jsonNode.is_boolean())
+                return jsonNode.get<bool>();
+            else if(jsonNode.is_number_integer()) {
+                if(jsonNode.is_number_unsigned())
+                    return jsonNode.get<std::uint64_t>();
+                else
+                    return jsonNode.get<std::int64_t>();
+            }
+            else if(jsonNode.is_number_float())
+                return jsonNode.get<double>();
+            else if(jsonNode.is_string())
+                return jsonNode.get<std::string>();
+
+            throw std::runtime_error{"JSON node type not supported."};
+        }
+
+    } // namespace details
+
     JsonProjectReader::JsonProjectReader(std::unique_ptr<std::istream> ist) noexcept :
         m_inputStream{std::move(ist)} {}
 
@@ -44,8 +65,8 @@ namespace gc::project_management::project_io {
             if(value.is_array()) {
                 std::vector<ProjectNode::value_impl_type> valueArray{};
                 for(const auto& arrayValue : value) {
-                    // We need to instance a variant based on the array value.
-                    ProjectNode::value_impl_type finalValue{};
+                    // We need to instance a variant based on the array value type.
+                    ProjectNode::value_impl_type finalValue{details::createVariantFromJsonNode(arrayValue)};
                     valueArray.push_back(std::move(finalValue));
                 }
                 finalProject.addValueArray(key, std::move(valueArray));
@@ -58,21 +79,7 @@ namespace gc::project_management::project_io {
             }
             // If the value is a simple value, we read it as a simple value.
             else {
-                if(value.is_boolean()) {
-                    finalProject.addValue(key, value.get<bool>());
-                }
-                else if(value.is_number_integer()) {
-                    if(value.is_number_unsigned())
-                        finalProject.addValue(key, value.get<std::uint64_t>());
-                    else
-                        finalProject.addValue(key, value.get<std::int64_t>());
-                }
-                else if(value.is_number_float()) {
-                    finalProject.addValue(key, value.get<double>());
-                }
-                else if(value.is_string()) {
-                    finalProject.addValue(key, value.get<std::string>());
-                }
+                finalProject.addValue(key, details::createVariantFromJsonNode(value));
             }
         }
 

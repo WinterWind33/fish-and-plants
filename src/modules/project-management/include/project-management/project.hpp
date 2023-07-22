@@ -34,6 +34,11 @@ namespace gc::project_management {
             return *this;
         }
 
+        auto& addValue(ProjectFieldKey auto&& key, value_impl_type value) {
+            m_values[std::forward<decltype(key)>(key)] = std::move(value);
+            return *this;
+        }
+
         auto& addValueArray(ProjectFieldKey auto&& key, std::ranges::range auto&& arr) {
             std::vector<value_impl_type> finalArr{};
 
