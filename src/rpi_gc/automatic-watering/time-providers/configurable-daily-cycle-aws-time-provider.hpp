@@ -29,6 +29,10 @@ namespace rpi_gc::automatic_watering {
         void setDeactivationTimeTicks(const rep_type ticks) noexcept;
         void setPumpValveWaitTimeTicks(const rep_type ticks) noexcept;
 
+        void setWateringSystemActivationDuration(const time_unit duration) noexcept override;
+        void setWateringSystemDeactivationDuration(const time_unit duration) noexcept override;
+        void setPumpValveDeactivationTimeSeparation(const time_unit duration) noexcept override;
+
     private:
         std::atomic<rep_type> m_activationTimeTicks{};
         std::atomic<rep_type> m_deactivationTimeTicks{};

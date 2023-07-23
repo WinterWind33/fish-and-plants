@@ -9,17 +9,34 @@ namespace rpi_gc::automatic_watering {
     class DailyCycleAWSTimeProvider final : public WateringSystemTimeProvider {
     public:
 
-        constexpr time_unit getWateringSystemActivationDuration() const noexcept final {
-            return time_unit{6000};
+        constexpr time_unit getWateringSystemActivationDuration() const noexcept override {
+            return m_activationTime;
         }
 
-        constexpr time_unit getWateringSystemDeactivationDuration() const noexcept final {
-            return time_unit{600'000};
+        constexpr time_unit getWateringSystemDeactivationDuration() const noexcept override {
+            return m_deactivationTime;
         }
 
-        constexpr time_unit getPumpValveDeactivationTimeSeparation() const noexcept final {
-            return time_unit{600};
+        constexpr time_unit getPumpValveDeactivationTimeSeparation() const noexcept override {
+            return m_pumpValveDeactivationTimeSeparation;
         }
+
+        constexpr void setWateringSystemActivationDuration(const time_unit duration) noexcept override {
+            m_activationTime = duration;
+        }
+
+        constexpr void setWateringSystemDeactivationDuration(const time_unit duration) noexcept override {
+            m_deactivationTime = duration;
+        }
+
+        constexpr void setPumpValveDeactivationTimeSeparation(const time_unit duration) noexcept override {
+            m_pumpValveDeactivationTimeSeparation = duration;
+        }
+
+    private:
+        time_unit m_activationTime{6000};
+        time_unit m_deactivationTime{600'000};
+        time_unit m_pumpValveDeactivationTimeSeparation{600};
     };
 
 } // namespace automatic_watering
