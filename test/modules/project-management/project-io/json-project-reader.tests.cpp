@@ -294,4 +294,121 @@ TEST_CASE("JsonProjectReader complex project structure unit tests", "[unit][soci
             }
         }
     }
+
+    GIVEN("A project with four layers") {
+        std::ostringstream jsonStream{};
+        jsonStream << R"(
+            {
+                "creation_timedate": 1672576240,
+                "title": "test-title",
+                "version": "1.2.3",
+                "test-value": 42,
+                "test-value-array": [1, 2, 3],
+                "test-value-object": {
+                    "test-value": true,
+                    "test-value-array": [true, false, true],
+                    "test-value-object": {
+                        "test-value": 42.0,
+                        "test-value-array": [-54.0, -89.2, 1236.89],
+                        "test-value-object": {
+                            "test-value": "test-str",
+                            "test-value-array": ["test-str0", "test-str1", "test-str2" ]
+                        }
+                    }
+                }
+            }
+        )";
+
+        auto inputStream{std::make_unique<std::istringstream>(jsonStream.str())};
+
+        Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
+        expectedProject.addValue("test-value", 42);
+        expectedProject.addValueArray("test-value-array", {1, 2, 3});
+
+        ProjectNode obj{};
+        obj.addValue("test-value", 42);
+        obj.addValueArray("test-value-array", {1, 2, 3});
+
+        ProjectNode obj2{};
+        obj2.addValue("test-value", 42);
+        obj2.addValueArray("test-value-array", {1, 2, 3});
+
+        ProjectNode obj3{};
+        obj3.addValue("test-value", 42);
+        obj3.addValueArray("test-value-array", {1, 2, 3});
+
+        obj2.addObject("test-value-object", std::move(obj3));
+        obj.addObject("test-value-object", std::move(obj2));
+        expectedProject.addObject("test-value-object", std::move(obj));
+
+        WHEN("The project is read") {
+            project_io::JsonProjectReader projectReaderUnderTest{std::move(inputStream)};
+            Project inputProject{};
+            projectReaderUnderTest >> inputProject;
+
+            THEN("The read project basic data should be correct") {
+                REQUIRE(SoftCompareProjects(inputProject, expectedProject));
+
+                AND_THEN("The first layer should be correct") {
+                    REQUIRE(inputProject.containsValue("test-value"));
+                    CHECK(inputProject.getValue<std::uint64_t>("test-value") == 42);
+
+                    REQUIRE(inputProject.containsValueArray("test-value-array"));
+                    const auto& arr{inputProject.getValueArray("test-value-array")};
+
+                    CHECK(arr.size() == 3);
+                    CHECK(std::get<std::uint64_t>(arr[0]) == 1);
+                    CHECK(std::get<std::uint64_t>(arr[1]) == 2);
+                    CHECK(std::get<std::uint64_t>(arr[2]) == 3);
+
+                    REQUIRE(inputProject.containsObject("test-value-object"));
+                    const auto& inObj{inputProject.getObject("test-value-object")};
+
+                    AND_THEN("The second layer should be correct") {
+                        REQUIRE(inObj.containsValue("test-value"));
+                        CHECK(inObj.getValue<bool>("test-value"));
+
+                        REQUIRE(inObj.containsValueArray("test-value-array"));
+                        const auto& arr2{inObj.getValueArray("test-value-array")};
+
+                        CHECK(arr2.size() == 3);
+                        CHECK(std::get<bool>(arr2[0]));
+                        CHECK_FALSE(std::get<bool>(arr2[1]));
+                        CHECK(std::get<bool>(arr2[2]));
+
+                        REQUIRE(inObj.containsObject("test-value-object"));
+                        const auto& inObj2{inObj.getObject("test-value-object")};
+
+                        AND_THEN("The third layer should be correct") {
+                            REQUIRE(inObj2.containsValue("test-value"));
+                            CHECK(inObj2.getValue<double>("test-value") == 42.0);
+
+                            REQUIRE(inObj2.containsValueArray("test-value-array"));
+                            const auto& arr3{inObj2.getValueArray("test-value-array")};
+
+                            CHECK(arr3.size() == 3);
+                            CHECK(std::get<double>(arr3[0]) == -54.0);
+                            CHECK(std::get<double>(arr3[1]) == -89.2);
+                            CHECK(std::get<double>(arr3[2]) == 1236.89);
+
+                            REQUIRE(inObj2.containsObject("test-value-object"));
+                            const auto& inObj3{inObj2.getObject("test-value-object")};
+
+                            AND_THEN("The fourth layer should be correct") {
+                                REQUIRE(inObj3.containsValue("test-value"));
+                                CHECK(inObj3.getValue<std::string>("test-value") == "test-str");
+
+                                REQUIRE(inObj3.containsValueArray("test-value-array"));
+                                const auto& arr4{inObj3.getValueArray("test-value-array")};
+
+                                CHECK(std::get<std::string>(arr4[0]) == "test-str0");
+                                CHECK(std::get<std::string>(arr4[1]) == "test-str1");
+                                CHECK(std::get<std::string>(arr4[2]) == "test-str2");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
