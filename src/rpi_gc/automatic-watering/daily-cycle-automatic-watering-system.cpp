@@ -454,4 +454,8 @@ namespace rpi_gc::automatic_watering {
         project.addObject("automaticWateringSystem"s, std::move(awsNode));
     }
 
+    void DailyCycleAutomaticWateringSystem::loadConfigFromProject(const gc::project_management::Project& prj) {
+
+    }
+
 } // namespace rpi_gc::automatic_watering

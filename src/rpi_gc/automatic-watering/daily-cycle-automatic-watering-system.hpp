@@ -103,6 +103,7 @@ namespace rpi_gc::automatic_watering {
         void printDiagnostic(std::ostream& ost) const noexcept override;
 
         void saveToProject(gc::project_management::Project& project) override;
+        void loadConfigFromProject(const gc::project_management::Project& project) override;
 
         [[nodiscard]]
         inline bool isRunning() const noexcept { return (m_state.load() != EDailyCycleAWSState::Disabled); }
