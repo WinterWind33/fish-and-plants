@@ -63,44 +63,42 @@ namespace gc::project_management {
             return *this;
         }
 
-        bool contains(ProjectFieldKey auto&& key) const noexcept {
+        [[nodiscard]] bool contains(ProjectFieldKey auto&& key) const noexcept {
             return m_values.contains(std::forward<decltype(key)>(key)) ||
                 m_valuesArrays.contains(std::forward<decltype(key)>(key)) ||
                 m_objects.contains(std::forward<decltype(key)>(key));
         }
 
-        bool containsValue(ProjectFieldKey auto&& key) const noexcept {
+        [[nodiscard]] bool containsValue(ProjectFieldKey auto&& key) const noexcept {
             return m_values.contains(std::forward<decltype(key)>(key));
         }
 
-        bool containsValueArray(ProjectFieldKey auto&& key) const noexcept {
+        [[nodiscard]] bool containsValueArray(ProjectFieldKey auto&& key) const noexcept {
             return m_valuesArrays.contains(std::forward<decltype(key)>(key));
         }
 
-        bool containsObject(ProjectFieldKey auto&& key) const noexcept {
+        [[nodiscard]] bool containsObject(ProjectFieldKey auto&& key) const noexcept {
             return m_objects.contains(std::forward<decltype(key)>(key));
         }
 
         template<ProjectFieldValue ValueType>
-        ValueType getValue(ProjectFieldKey auto&& key) const {
+        [[nodiscard]] ValueType getValue(ProjectFieldKey auto&& key) const {
             return std::get<ValueType>(m_values.at(std::forward<decltype(key)>(key)));
         }
 
-        const auto& getValueArray(ProjectFieldKey auto&& key) const {
+        [[nodiscard]] const auto& getValueArray(ProjectFieldKey auto&& key) const {
             return m_valuesArrays.at(std::forward<decltype(key)>(key));
         }
 
-        const auto& getObject(ProjectFieldKey auto&& key) const {
+        [[nodiscard]] const auto& getObject(ProjectFieldKey auto&& key) const {
             return m_objects.at(std::forward<decltype(key)>(key));
         }
 
-        [[nodiscard]]
-        const auto& getValues() const noexcept {
+        [[nodiscard]] const auto& getValues() const noexcept {
             return m_values;
         }
 
-        [[nodiscard]]
-        const auto& getValuesArrays() const noexcept {
+        [[nodiscard]] const auto& getValuesArrays() const noexcept {
             return m_valuesArrays;
         }
 
