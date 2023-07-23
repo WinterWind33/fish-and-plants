@@ -21,15 +21,15 @@ namespace rpi_gc::automatic_watering {
             return m_pumpValveDeactivationTimeSeparation;
         }
 
-        constexpr void setWateringSystemActivationDuration(const time_unit duration) noexcept override {
+        [[nodiscard]] constexpr void setWateringSystemActivationDuration(const time_unit duration) noexcept override {
             m_activationTime = duration;
         }
 
-        constexpr void setWateringSystemDeactivationDuration(const time_unit duration) noexcept override {
+        [[nodiscard]] constexpr void setWateringSystemDeactivationDuration(const time_unit duration) noexcept override {
             m_deactivationTime = duration;
         }
 
-        constexpr void setPumpValveDeactivationTimeSeparation(const time_unit duration) noexcept override {
+        [[nodiscard]] constexpr void setPumpValveDeactivationTimeSeparation(const time_unit duration) noexcept override {
             m_pumpValveDeactivationTimeSeparation = duration;
         }
 

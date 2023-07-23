@@ -19,11 +19,11 @@ namespace rpi_gc::automatic_watering {
             const time_unit initialDeactivationTime,
             const time_unit initialPumpValveWaitTime) noexcept;
 
-        time_unit getWateringSystemActivationDuration() const noexcept override;
+        [[nodiscard]] time_unit getWateringSystemActivationDuration() const noexcept override;
 
-        time_unit getWateringSystemDeactivationDuration() const noexcept override;
+        [[nodiscard]] time_unit getWateringSystemDeactivationDuration() const noexcept override;
 
-        time_unit getPumpValveDeactivationTimeSeparation() const noexcept override;
+        [[nodiscard]] time_unit getPumpValveDeactivationTimeSeparation() const noexcept override;
 
         void setActivationTimeTicks(const rep_type ticks) noexcept;
         void setDeactivationTimeTicks(const rep_type ticks) noexcept;
