@@ -74,5 +74,19 @@ TEST_CASE("ProjectController unit tests", "[unit][sociable][rpi_gc][gc-project][
                 projectControllerUnderTest.collectProjectData();
             }
         }
+
+        WHEN("The project loading is triggered") {
+            THEN("No component should be queried") {
+                std::array<mocks::ProjectComponentMock, 2> projectComponents{};
+
+                for(auto& comp : projectComponents) {
+                    EXPECT_CALL(comp, loadConfigFromProject).Times(0);
+
+                    projectControllerUnderTest.registerProjectComponent(comp);
+                }
+
+                projectControllerUnderTest.loadProjectData();
+            }
+        }
     }
 }
