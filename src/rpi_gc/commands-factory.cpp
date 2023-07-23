@@ -182,6 +182,9 @@ namespace rpi_gc::commands_factory {
                     m_projectController.get().setCurrentProject(std::move(inputProject));
                     m_projectController.get().setCurrentProjectFilePath(valueOption.value());
 
+                    // Now we make all components load the configuration from the project.
+                    m_projectController.get().loadProjectData();
+
                     m_userLogger->logInfo("Switched to new project " + valueOption.value());
                     m_mainLogger->logInfo("Switched to new project " + valueOption.value());
                 } catch(const std::invalid_argument& exc) {
