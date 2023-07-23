@@ -10,7 +10,7 @@
 
 #include <testing-core.hpp>
 
-SCENARIO("Daily-Cycle AWS project data saving", "[integration][AutomaticWateringSystem][Project]") {
+SCENARIO("Daily-Cycle AWS project data saving", "[integration][AutomaticWateringSystem][Project][ProjectController]") {
     using namespace rpi_gc::gc_project;
     using namespace gc::project_management;
     using namespace rpi_gc::automatic_watering;
