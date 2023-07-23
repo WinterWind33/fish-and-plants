@@ -455,7 +455,59 @@ namespace rpi_gc::automatic_watering {
     }
 
     void DailyCycleAutomaticWateringSystem::loadConfigFromProject(const gc::project_management::Project& prj) {
+        using namespace gc::project_management;
+        using namespace std::string_literals;
 
+        // If the given project contains an "automaticWateringSystem" object we can check
+        // whether it's cycled mode or not. In the first case we can load the configuration.
+        if(!prj.containsObject("automaticWateringSystem"s))
+            return;
+
+        const ProjectNode& awsNode{prj.getObject("automaticWateringSystem"s)};
+
+        if(awsNode.getValue<StringType>("mode"s) != "cycled"s || !awsNode.containsObject("flow"s))
+            return;
+
+        // If the AWS is running we need to stop it before loading the new configuration.
+        if(isRunning()) {
+            const StringType formattedLogString{format_log_string("Automatic watering system is running. Stopping it before loading the new configuration.")};
+            m_mainLogger->logWarning(formattedLogString);
+            m_userLogger->logWarning(formattedLogString);
+
+            requestShutdown();
+        }
+
+        const ProjectNode& flowNode{awsNode.getObject("flow"s)};
+
+        const bool bValveEnabled{flowNode.getValue<bool>("isWaterValveEnabled"s)};
+        const bool bPumpEnabled{flowNode.getValue<bool>("isWaterPumpEnabled"s)};
+
+        m_bWaterValveEnabled.store(bValveEnabled);
+        m_bWaterPumpEnabled.store(bPumpEnabled);
+
+        if(bValveEnabled) {
+            const std::size_t valvePinID{flowNode.getValue<std::size_t>("valvePinID"s)};
+            m_hardwareController.get().load()->setWaterValveDigitalOutputID(valvePinID);
+        }
+
+        if(bPumpEnabled) {
+            const std::size_t pumpPinID{flowNode.getValue<std::size_t>("pumpPinID"s)};
+            m_hardwareController.get().load()->setWaterPumpDigitalOutputID(pumpPinID);
+        }
+
+        const WateringSystemTimeProvider::time_unit activationTime{
+            std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("activationTime"s)}
+        };
+        const WateringSystemTimeProvider::time_unit deactivationTime{
+            std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationTime"s)}
+        };
+        const WateringSystemTimeProvider::time_unit deactivationSepTime{
+            std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationSepTime"s)}
+        };
+
+        m_timeProvider.get().load()->setWateringSystemActivationDuration(activationTime);
+        m_timeProvider.get().load()->setWateringSystemDeactivationDuration(deactivationTime);
+        m_timeProvider.get().load()->setPumpValveDeactivationTimeSeparation(deactivationSepTime);
     }
 
 } // namespace rpi_gc::automatic_watering
