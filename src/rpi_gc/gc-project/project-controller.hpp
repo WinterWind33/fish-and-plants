@@ -42,7 +42,7 @@ namespace rpi_gc::gc_project {
         }
 
         void collectProjectData();
-        void loadProjectData() {};
+        void loadProjectData();
 
         void registerProjectComponent(ProjectComponent& projectComponent) {
             m_projectComponents.push_back(std::ref(projectComponent));

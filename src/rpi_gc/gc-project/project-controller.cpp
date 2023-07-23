@@ -27,4 +27,14 @@ namespace rpi_gc::gc_project {
         }
     }
 
+    void ProjectController::loadProjectData() {
+        if(!hasProject()) {
+            return;
+        }
+
+        for(auto& comp : m_projectComponents) {
+            comp.get().loadConfigFromProject(m_currentProject.value());
+        }
+    }
+
 } // namespace rpi_gc::gc_project
