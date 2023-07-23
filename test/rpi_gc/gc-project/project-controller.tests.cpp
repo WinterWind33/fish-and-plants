@@ -44,6 +44,20 @@ TEST_CASE("ProjectController unit tests", "[unit][sociable][rpi_gc][gc-project][
                 projectControllerUnderTest.collectProjectData();
             }
         }
+
+        WHEN("The project loading is triggered") {
+            THEN("loadConfigFromProject() should be called on all components") {
+                std::array<mocks::ProjectComponentMock, 2> projectComponents{};
+
+                for(auto& comp : projectComponents) {
+                    EXPECT_CALL(comp, loadConfigFromProject).Times(1);
+
+                    projectControllerUnderTest.registerProjectComponent(comp);
+                }
+
+                projectControllerUnderTest.loadProjectData();
+            }
+        }
     }
 
     GIVEN("A project controller without a project") {
