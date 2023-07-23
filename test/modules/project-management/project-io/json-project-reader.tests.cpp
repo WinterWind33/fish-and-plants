@@ -231,3 +231,67 @@ TEST_CASE("JsonProjectReader objects unit tests", "[unit][sociable][modules][pro
         }
     }
 }
+
+TEST_CASE("JsonProjectReader complex project structure unit tests", "[unit][sociable][modules][project-management][JsonProjectReader][objects]") {
+    using namespace gc::project_management;
+    using namespace gc::project_management::project_io;
+
+    GIVEN("A project with all the value types in it") {
+        std::ostringstream jsonStream{};
+        jsonStream << R"(
+            {
+                "creation_timedate": 1672576240,
+                "title": "test-title",
+                "version": "1.2.3",
+                "test-value": 42,
+                "test-value-array": [1, 2, 3],
+                "test-value-object": {
+                    "test-value": 42
+                }
+            }
+        )";
+
+        auto inputStream{std::make_unique<std::istringstream>(jsonStream.str())};
+
+        Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
+        expectedProject.addValue("test-value", 42);
+        expectedProject.addValueArray("test-value-array", {1, 2, 3});
+
+        ProjectNode obj{};
+        obj.addValue("test-value", 42);
+        expectedProject.addObject("test-value-object", std::move(obj));
+
+        WHEN("The project is read") {
+            project_io::JsonProjectReader projectReaderUnderTest{std::move(inputStream)};
+            Project inputProject{};
+            projectReaderUnderTest >> inputProject;
+
+            THEN("The read project basic data should be correct") {
+                REQUIRE(SoftCompareProjects(inputProject, expectedProject));
+
+                AND_THEN("The read project should have the correct value") {
+                    REQUIRE(inputProject.containsValue("test-value"));
+                    CHECK(inputProject.getValue<std::uint64_t>("test-value") == 42);
+                }
+
+                AND_THEN("The read project should have the correct value object") {
+                    REQUIRE(inputProject.containsObject("test-value-object"));
+                    const auto& obj{inputProject.getObject("test-value-object")};
+
+                    REQUIRE(obj.containsValue("test-value"));
+                    CHECK(obj.getValue<std::uint64_t>("test-value") == 42);
+                }
+
+                AND_THEN("The read project should have the correct value array") {
+                    REQUIRE(inputProject.containsValueArray("test-value-array"));
+                    const auto& arr{inputProject.getValueArray("test-value-array")};
+
+                    CHECK(arr.size() == 3);
+                    CHECK(std::get<std::uint64_t>(arr[0]) == 1);
+                    CHECK(std::get<std::uint64_t>(arr[1]) == 2);
+                    CHECK(std::get<std::uint64_t>(arr[2]) == 3);
+                }
+            }
+        }
+    }
+}
