@@ -11,7 +11,6 @@
 #include <chrono>
 #include <string>
 #include <variant>
-#include <string>
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -25,20 +24,42 @@ namespace gc::project_management {
     template<typename T>
     concept ProjectFieldKey = std::convertible_to<T, std::string>;
 
+    //!!
+    //! \brief Represent a node of a project of the greenhouse CAD. This class
+    //!  can be extended through a component architecture.
     class ProjectNode {
     public:
         using value_impl_type = std::variant<bool, std::int64_t, std::uint64_t, double, std::string>;
 
+        //!!
+        //! \brief Add a value to the node. If the value is already present, it will be overwritten.
+        //!
+        //! \param key The key of the value.
+        //! \param value The value to add.
+        //! \return A reference to the node.
         auto& addValue(ProjectFieldKey auto&& key, ProjectFieldValue auto&& value) {
             m_values[std::forward<decltype(key)>(key)] = std::forward<decltype(value)>(value);
             return *this;
         }
 
+        //!!
+        //! \brief Add a value to the node. If the value is already present, it will be overwritten.
+        //!  This overload directly adds a variant to the internal map.
+        //!
+        //! \param key The key of the value.
+        //! \param value The value to add.
+        //! \return A reference to the node.
         auto& addValue(ProjectFieldKey auto&& key, value_impl_type&& value) {
             m_values[std::forward<decltype(key)>(key)] = std::move(value);
             return *this;
         }
 
+        //!!
+        //! \brief Add a value array to the node. If the value is already present, it will be overwritten.
+        //!
+        //! \param key The key of the value.
+        //! \param arr The array to add.
+        //! \return A reference to the node.
         auto& addValueArray(ProjectFieldKey auto&& key, std::ranges::range auto&& arr) {
             std::vector<value_impl_type> finalArr{};
 
@@ -49,15 +70,29 @@ namespace gc::project_management {
                 return value_impl_type{std::forward<decltype(val)>(val)};
             });
 
-            m_valuesArrays.emplace(std::forward<decltype(key)>(key), std::move(finalArr));
+            m_valuesArrays[std::forward<decltype(key)>(key)] = std::move(finalArr);
             return *this;
         }
 
+        //!!
+        //! \brief Add a value array to the node. If the value is already present, it will be overwritten.
+        //!  This overload adds a value array to the node starting from an initializer list.
+        //!
+        //! \tparam ValueType The type of the value.
+        //! \param key The key of the value.
+        //! \param items The items to add.
+        //! \return A reference to the node.
         template<ProjectFieldValue ValueType>
         auto& addValueArray(ProjectFieldKey auto&& key, std::initializer_list<ValueType> items) {
             return addValueArray<decltype(key), decltype(items)>(std::forward<decltype(key)>(key), std::forward<decltype(items)>(items));
         }
 
+        //!!
+        //! \brief Add an object to the node. If the object is already present, it will be overwritten.
+        //!
+        //! \param key The key of the object.
+        //! \param node The object to add.
+        //! \return A reference to the node.
         auto& addObject(ProjectFieldKey auto&& key, ProjectNode&& node) {
             m_objects[std::forward<decltype(key)>(key)] = std::move(node);
             return *this;
@@ -140,42 +175,33 @@ namespace gc::project_management {
             m_projectTitle{std::move(projectTitle)},
             m_projectVersion{version} {}
 
-        [[nodiscard]]
-        constexpr time_point_type getCreationTime() const noexcept {
+        [[nodiscard]] constexpr time_point_type getCreationTime() const noexcept {
             return m_creationTimePoint;
         }
 
-        [[nodiscard]]
-        project_title getTitle() const noexcept {
+
+        [[nodiscard]] project_title getTitle() const noexcept {
             return m_projectTitle;
         }
 
-        [[nodiscard]]
-        constexpr project_version getVersion() const noexcept {
+
+        [[nodiscard]] constexpr project_version getVersion() const noexcept {
             return m_projectVersion;
         }
-
-        [[nodiscard]]
-        auto& getStructure() noexcept {
-            return m_projectStructure;
-        }
-
-        [[nodiscard]]
-        const auto& getStructure() const noexcept {
-            return m_projectStructure;
-        }
-
 
     private:
         time_point_type m_creationTimePoint;
         project_title m_projectTitle{};
         project_version m_projectVersion{};
-
-        structure m_projectStructure{};
     };
 
-    [[nodiscard]]
-    inline bool SoftCompareProjects(const Project& lhs, const Project& rhs) noexcept {
+    //!!
+    //! \brief Compare two projects. This function compares the creation time, the title and the version.
+    //!
+    //! \param lhs The first project to compare.
+    //! \param rhs The second project to compare.
+    //! \return True if the two projects are equal, false otherwise.
+    [[nodiscard]] inline bool SoftCompareProjects(const Project& lhs, const Project& rhs) noexcept {
         return lhs.getCreationTime() == rhs.getCreationTime() &&
             lhs.getTitle() == rhs.getTitle() && lhs.getVersion() == rhs.getVersion();
     }
