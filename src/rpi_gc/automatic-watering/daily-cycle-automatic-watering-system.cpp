@@ -477,7 +477,8 @@ namespace rpi_gc::automatic_watering {
         }
 
         // If the AWS is running we need to stop it before loading the new configuration.
-        if(isRunning()) {
+        const bool bWasRunning{isRunning()};
+        if(bWasRunning) {
             const StringType formattedLogString{format_log_string("Automatic watering system is running. Stopping it before loading the new configuration.")};
             m_mainLogger->logWarning(formattedLogString);
             m_userLogger->logWarning(formattedLogString);
@@ -517,9 +518,26 @@ namespace rpi_gc::automatic_watering {
             m_timeProvider.get().load()->setWateringSystemActivationDuration(activationTime);
             m_timeProvider.get().load()->setWateringSystemDeactivationDuration(deactivationTime);
             m_timeProvider.get().load()->setPumpValveDeactivationTimeSeparation(deactivationSepTime);
+
+            if(bWasRunning) {
+                const StringType formattedLogString{format_log_string("Automatic watering system was running. Restarting it.")};
+                m_mainLogger->logWarning(formattedLogString);
+                m_userLogger->logWarning(formattedLogString);
+
+                startAutomaticWatering();
+            }
         } catch(const std::bad_variant_access& exc) {
             m_userLogger->logError(format_log_string("The given AWS configuration contains a JSON format not recognized. No AWS configuration will be loaded."));
             m_userLogger->logWarning(format_log_string("Have you entered wrong values in the configuration?"));
+
+            if(bWasRunning) {
+                const StringType formattedLogString{format_log_string("Automatic watering system was running. Restoring old configuration it.")};
+                m_mainLogger->logWarning(formattedLogString);
+                m_userLogger->logWarning(formattedLogString);
+
+                startAutomaticWatering();
+            }
+
             return;
         }
     }
