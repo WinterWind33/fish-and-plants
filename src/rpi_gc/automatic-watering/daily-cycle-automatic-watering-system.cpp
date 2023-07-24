@@ -488,36 +488,25 @@ namespace rpi_gc::automatic_watering {
 
         const ProjectNode& flowNode{awsNode.getObject("flow"s)};
 
-        try {
-            const bool bValveEnabled{flowNode.getValue<bool>("isWaterValveEnabled"s)};
-            const bool bPumpEnabled{flowNode.getValue<bool>("isWaterPumpEnabled"s)};
+        bool bValveEnabled{}, bPumpEnabled{};
+        std::uint64_t valvePinID{}, pumpPinID{};
+        WateringSystemTimeProvider::time_unit activationTime{}, deactivationTime{}, deactivationSepTime{};
 
-            m_bWaterValveEnabled.store(bValveEnabled);
-            m_bWaterPumpEnabled.store(bPumpEnabled);
+        try {
+            bValveEnabled = flowNode.getValue<bool>("isWaterValveEnabled"s);
+            bPumpEnabled = flowNode.getValue<bool>("isWaterPumpEnabled"s);
 
             if(bValveEnabled) {
-                const std::uint64_t valvePinID{flowNode.getValue<std::uint64_t>("valvePinID"s)};
-                m_hardwareController.get().load()->setWaterValveDigitalOutputID(valvePinID);
+                valvePinID = flowNode.getValue<std::uint64_t>("valvePinID"s);
             }
 
             if(bPumpEnabled) {
-                const std::uint64_t pumpPinID{flowNode.getValue<std::uint64_t>("pumpPinID"s)};
-                m_hardwareController.get().load()->setWaterPumpDigitalOutputID(pumpPinID);
+                pumpPinID = flowNode.getValue<std::uint64_t>("pumpPinID"s);
             }
 
-            const WateringSystemTimeProvider::time_unit activationTime{
-                std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("activationTime"s)}
-            };
-            const WateringSystemTimeProvider::time_unit deactivationTime{
-                std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationTime"s)}
-            };
-            const WateringSystemTimeProvider::time_unit deactivationSepTime{
-                std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationSepTime"s)}
-            };
-
-            m_timeProvider.get().load()->setWateringSystemActivationDuration(activationTime);
-            m_timeProvider.get().load()->setWateringSystemDeactivationDuration(deactivationTime);
-            m_timeProvider.get().load()->setPumpValveDeactivationTimeSeparation(deactivationSepTime);
+            activationTime = std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("activationTime"s)};
+            deactivationTime = std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationTime"s)};
+            deactivationSepTime = std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationSepTime"s)};
 
             if(bWasRunning) {
                 const StringType formattedLogString{format_log_string("Automatic watering system was running. Restarting it.")};
@@ -531,7 +520,7 @@ namespace rpi_gc::automatic_watering {
             m_userLogger->logWarning(format_log_string("Have you entered wrong values in the configuration?"));
 
             if(bWasRunning) {
-                const StringType formattedLogString{format_log_string("Automatic watering system was running. Restoring old configuration it.")};
+                const StringType formattedLogString{format_log_string("Automatic watering system was running. Restoring the old configuration.")};
                 m_mainLogger->logWarning(formattedLogString);
                 m_userLogger->logWarning(formattedLogString);
 
@@ -540,6 +529,21 @@ namespace rpi_gc::automatic_watering {
 
             return;
         }
+
+        m_bWaterValveEnabled.store(bValveEnabled);
+        m_bWaterPumpEnabled.store(bPumpEnabled);
+
+        if(bValveEnabled) {
+            m_hardwareController.get().load()->setWaterValveDigitalOutputID(valvePinID);
+        }
+
+        if(bPumpEnabled) {
+            m_hardwareController.get().load()->setWaterPumpDigitalOutputID(pumpPinID);
+        }
+
+        m_timeProvider.get().load()->setWateringSystemActivationDuration(activationTime);
+        m_timeProvider.get().load()->setWateringSystemDeactivationDuration(deactivationTime);
+        m_timeProvider.get().load()->setPumpValveDeactivationTimeSeparation(deactivationSepTime);
     }
 
 } // namespace rpi_gc::automatic_watering
