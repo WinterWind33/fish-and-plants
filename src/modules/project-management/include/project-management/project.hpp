@@ -24,6 +24,11 @@ namespace gc::project_management {
     template<typename T>
     concept ProjectFieldKey = std::convertible_to<T, std::string>;
 
+    namespace details {
+        template<class>
+        inline constexpr bool InvalidVariantType = false;
+    } // namespace details
+
     //!!
     //! \brief Represent a node of a project of the greenhouse CAD. This class
     //!  can be extended through a component architecture.
@@ -118,14 +123,19 @@ namespace gc::project_management {
 
         template<ProjectFieldValue ValueType>
         [[nodiscard]] ValueType getValue(ProjectFieldKey auto&& key) const {
-            if constexpr (!std::is_same_v<ValueType, bool>) {
-                if constexpr (std::is_integral_v<ValueType> && std::is_unsigned_v<ValueType>)
-                    return std::get<std::uint64_t>(m_values.at(std::forward<decltype(key)>(key)));
-                else if constexpr (std::is_integral_v<ValueType>)
-                    return std::get<std::int64_t>(m_values.at(std::forward<decltype(key)>(key)));
+            if constexpr (std::is_same_v<ValueType, bool>) {
+                return std::get<bool>(m_values.at(std::forward<decltype(key)>(key)));
+            } else if constexpr (std::is_integral_v<ValueType> && std::is_signed_v<ValueType>) {
+                return std::get<std::int64_t>(m_values.at(std::forward<decltype(key)>(key)));
+            } else if constexpr (std::is_integral_v<ValueType> && std::is_unsigned_v<ValueType>) {
+                return std::get<std::uint64_t>(m_values.at(std::forward<decltype(key)>(key)));
+            } else if constexpr (std::is_floating_point_v<ValueType>) {
+                return std::get<double>(m_values.at(std::forward<decltype(key)>(key)));
+            } else if constexpr (std::is_convertible_v<ValueType, std::string>) {
+                return std::get<std::string>(m_values.at(std::forward<decltype(key)>(key)));
+            } else {
+                details::InvalidVariantType<ValueType>;
             }
-
-            return std::get<ValueType>(m_values.at(std::forward<decltype(key)>(key)));
         }
 
         [[nodiscard]] const auto& getValueArray(ProjectFieldKey auto&& key) const {
