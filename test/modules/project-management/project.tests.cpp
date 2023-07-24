@@ -90,3 +90,32 @@ TEMPLATE_TEST_CASE("ProjectNode unit tests", "[unit][solitary][modules][project-
         }
     }
 }
+
+TEMPLATE_TEST_CASE("ProjectNode queries unit tests", "[unit][solitary][modules][project-management][ProjectNode][queries]",
+   bool, char, std::int16_t, std::int32_t, std::int64_t, std::uint16_t, std::uint32_t, std::uint64_t, float, double, std::string) {
+    using namespace gc::project_management;
+
+    ProjectNode nodeUnderTest{};
+
+    constexpr std::string_view KEY_VAL{"key-value"};
+
+    if constexpr (std::is_floating_point_v<TestType>) {
+        nodeUnderTest.addValue(KEY_VAL.data(), 0.0);
+    } else if constexpr (std::is_same_v<TestType, bool>) {
+        nodeUnderTest.addValue(KEY_VAL.data(), false);
+    } else if constexpr (std::is_integral_v<TestType> && std::is_signed_v<TestType>) {
+        nodeUnderTest.addValue(KEY_VAL.data(), -42);
+    } else if constexpr (std::is_integral_v<TestType> && std::is_unsigned_v<TestType>) {
+        nodeUnderTest.addValue(KEY_VAL.data(), 42ull);
+    } else if constexpr (std::is_same_v<TestType, std::string>) {
+        nodeUnderTest.addValue(KEY_VAL.data(), std::string{"test"});
+    } else {
+        static_assert(details::InvalidVariantType<TestType>);
+    }
+
+    WHEN("A value is queried") {
+        THEN("It shouldn't throw any exception") {
+            CHECK_NOTHROW(nodeUnderTest.getValue<TestType>(KEY_VAL.data()));
+        }
+    }
+}

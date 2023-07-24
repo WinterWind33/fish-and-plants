@@ -131,10 +131,10 @@ namespace gc::project_management {
                 return std::get<std::uint64_t>(m_values.at(std::forward<decltype(key)>(key)));
             } else if constexpr (std::is_floating_point_v<ValueType>) {
                 return std::get<double>(m_values.at(std::forward<decltype(key)>(key)));
-            } else if constexpr (std::is_convertible_v<ValueType, std::string>) {
+            } else if constexpr (std::is_same_v<ValueType, std::string>) {
                 return std::get<std::string>(m_values.at(std::forward<decltype(key)>(key)));
             } else {
-                details::InvalidVariantType<ValueType>;
+                statis_assert(details::InvalidVariantType<ValueType>, "Value type not supported.");
             }
         }
 
