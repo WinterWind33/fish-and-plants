@@ -188,7 +188,19 @@ namespace rpi_gc::commands_factory {
                     m_userLogger->logInfo("Switched to new project " + valueOption.value());
                     m_mainLogger->logInfo("Switched to new project " + valueOption.value());
                 } catch(const std::invalid_argument& exc) {
-                    const std::string errorString{std::string{"Cannot load the requested project. Message: "} + exc.what()};
+                    const std::string errorString{std::string{"Invalid argument. Cannot load the requested project. Message: "} + exc.what()};
+
+                    m_userLogger->logError(errorString);
+                    m_mainLogger->logError(errorString);
+                    return;
+                } catch(const std::exception& exc) {
+                    const std::string errorString{std::string{"Generic error. Cannot load the requested project. Message: "} + exc.what()};
+
+                    m_userLogger->logError(errorString);
+                    m_mainLogger->logError(errorString);
+                    return;
+                } catch(...) {
+                    const std::string errorString{"Unknown error. Cannot load the requested project."};
 
                     m_userLogger->logError(errorString);
                     m_mainLogger->logError(errorString);
