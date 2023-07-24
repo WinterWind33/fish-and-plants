@@ -31,7 +31,7 @@ namespace rpi_gc {
         m_outputStream{outputStream},
         m_optionParser{std::move(optionParser)} {}
 
-    bool AutomaticWateringCommand::processInputOptions(const std::vector<string_type>& inputTokens) noexcept {
+    bool AutomaticWateringCommand::processInputOptions(const std::vector<string_type>& inputTokens) {
         assert(m_optionParser != nullptr);
 
         try {
