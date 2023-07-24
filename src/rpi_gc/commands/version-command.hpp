@@ -21,7 +21,7 @@ namespace rpi_gc {
         explicit VersionCommand(ostream_ref outputStream) noexcept;
         ~VersionCommand() noexcept override = default;
 
-        constexpr name_type getName() const noexcept override { return strings::commands::VERSION; }
+        [[nodiscard]] constexpr name_type getName() const noexcept override { return strings::commands::VERSION; }
 
         constexpr bool processInputOptions(const std::vector<string_type>& options) override { return true; }
 
@@ -38,7 +38,7 @@ namespace rpi_gc {
             return false;
         }
 
-        option_pointer getAsOption() const noexcept { return m_asOption; }
+        [[nodiscard]] option_pointer getAsOption() const noexcept override { return m_asOption; }
 
         void printHelp(help_ostream_type outputStream) const noexcept override;
 
