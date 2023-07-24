@@ -34,9 +34,13 @@ namespace rpi_gc::automatic_watering {
         }
 
     private:
-        time_unit m_activationTime{6000};
-        time_unit m_deactivationTime{600'000};
-        time_unit m_pumpValveDeactivationTimeSeparation{600};
+        constexpr static std::size_t DEFAULT_ACTIVATION_TIME = 6000;
+        constexpr static std::size_t DEFAULT_DEACTIVATION_TIME = 600'000;
+        constexpr static std::size_t DEFAULT_PUMP_VALVE_DEACTIVATION_TIME_SEPARATION = 600;
+
+        time_unit m_activationTime{DEFAULT_ACTIVATION_TIME};
+        time_unit m_deactivationTime{DEFAULT_DEACTIVATION_TIME};
+        time_unit m_pumpValveDeactivationTimeSeparation{DEFAULT_PUMP_VALVE_DEACTIVATION_TIME_SEPARATION};
     };
 
 } // namespace automatic_watering
