@@ -46,7 +46,7 @@ namespace rpi_gc::commands {
         return true;
     }
 
-    bool StatusCommand::processInputOptions(const std::vector<string_type>& inputTockens) noexcept {
+    bool StatusCommand::processInputOptions(const std::vector<string_type>& inputTockens) {
         try {
             m_optionParser->parse(inputTockens);
         } catch([[maybe_unused]] const std::exception& exc) {

@@ -402,6 +402,8 @@ int main(int argc, char* argv[]) {
     auto statusCommand = ::commands_factory::CreateStatusCommand<AutomaticWateringSystemPointer, DefaultOptionParser>(automaticWateringSystem);
 
     gc_project::ProjectController projectController{};
+    projectController.registerProjectComponent(*automaticWateringSystem);
+
     auto projectCommand = rpi_gc::commands_factory::ProjectCommandFactory{std::cout, std::cin, projectController}
         .setMainLogger(mainLogger)
         .setUserLogger(userLogger)

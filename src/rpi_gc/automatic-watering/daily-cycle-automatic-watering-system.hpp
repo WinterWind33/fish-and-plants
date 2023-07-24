@@ -5,6 +5,7 @@
 #include <automatic-watering/hardware-controllers/watering-system-hardware-controller.hpp>
 #include <automatic-watering/time-providers/watering-system-time-provider.hpp>
 
+#include <gc-project/project-component.hpp>
 #include <diagnostics/diagnostic-status-probeable.hpp>
 #include <abort-system/terminable-system.hpp>
 #include <abort-system/emergency-stoppable-system.hpp>
@@ -42,7 +43,8 @@ namespace rpi_gc::automatic_watering {
         public AutomaticWateringSystem,
         public abort_system::TerminableSystem,
         public abort_system::EmergencyStoppableSystem,
-        public diagnostics::DiagnosticStatusProbeable {
+        public diagnostics::DiagnosticStatusProbeable,
+        public gc_project::ProjectComponent {
     public:
         using logger_pointer = std::shared_ptr<gh_log::Logger>;
         using main_logger_pointer = logger_pointer;
@@ -99,6 +101,9 @@ namespace rpi_gc::automatic_watering {
         void setWaterValveEnabled(const bool bEnabled) noexcept;
 
         void printDiagnostic(std::ostream& ost) const noexcept override;
+
+        void saveToProject(gc::project_management::Project& project) override;
+        void loadConfigFromProject(const gc::project_management::Project& project) override;
 
         [[nodiscard]]
         inline bool isRunning() const noexcept { return (m_state.load() != EDailyCycleAWSState::Disabled); }

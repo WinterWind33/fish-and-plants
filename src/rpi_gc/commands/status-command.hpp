@@ -32,7 +32,7 @@ namespace rpi_gc::commands {
         bool execute() noexcept override;
 
         [[nodiscard]]
-        bool processInputOptions(const std::vector<string_type>& inputTockens) noexcept override;
+        bool processInputOptions(const std::vector<string_type>& inputTockens) override;
 
         void printHelp(help_ostream_type outputStream) const noexcept override;
     private:

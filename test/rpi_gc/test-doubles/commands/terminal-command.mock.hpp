@@ -24,7 +24,7 @@ namespace rpi_gc::mocks {
         MOCK_METHOD(bool, execute, (), (noexcept, override));
 
         // From TerminalCommand
-        MOCK_METHOD(bool, processInputOptions, (const std::vector<string_type>&), (noexcept, override));
+        MOCK_METHOD(bool, processInputOptions, (const std::vector<string_type>&), (override));
         MOCK_METHOD(void, printHelp, (help_ostream_type), (const, noexcept, override));
     };
 

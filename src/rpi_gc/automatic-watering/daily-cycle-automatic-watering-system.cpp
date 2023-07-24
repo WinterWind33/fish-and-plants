@@ -11,6 +11,7 @@
 #include <array>
 #include <string_view>
 #include <stdexcept> // for std::range_error
+#include <variant> // for std::bad_variant_access
 
 #ifdef __cpp_lib_format
 #include <format>
@@ -393,8 +394,8 @@ namespace rpi_gc::automatic_watering {
             ost << " [Thread ID]:\t" << m_workerThread.get_id() << std::endl;
 
         ost << " {AWS Flow}" << std::endl;
-        bool bValveEnabled{m_bWaterValveEnabled.load()};
-        bool bPumpEnabled{m_bWaterPumpEnabled.load()};
+        const bool bValveEnabled{m_bWaterValveEnabled.load()};
+        const bool bPumpEnabled{m_bWaterPumpEnabled.load()};
 
         ost << "\t [Completed cycles]: " << m_cyclesCounter.load() << std::endl;
 
@@ -422,6 +423,127 @@ namespace rpi_gc::automatic_watering {
             << std::chrono::milliseconds{m_timeProvider.get().load()->getWateringSystemDeactivationDuration()}.count() << "ms" << std::endl;
         ost << "\t [Pump-valve sep time]:\t"
             << std::chrono::milliseconds{m_timeProvider.get().load()->getPumpValveDeactivationTimeSeparation()}.count() << "ms" << std::endl;
+    }
+
+    void DailyCycleAutomaticWateringSystem::saveToProject(gc::project_management::Project& project) {
+        using namespace gc::project_management;
+        using namespace std::string_literals;
+        ProjectNode awsNode{};
+        awsNode.addValue("mode"s, "cycled"s);
+
+        const bool bValveEnabled{m_bWaterValveEnabled.load()};
+        const bool bPumpEnabled{m_bWaterPumpEnabled.load()};
+
+        ProjectNode flowNode{};
+        flowNode.addValue("isWaterValveEnabled"s, bValveEnabled);
+        flowNode.addValue("isWaterPumpEnabled"s, bPumpEnabled);
+
+        if(bValveEnabled) {
+            flowNode.addValue("valvePinID"s, static_cast<std::uint64_t>(m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()));
+        }
+
+        if(bPumpEnabled) {
+            flowNode.addValue("pumpPinID"s, static_cast<std::uint64_t>(m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()));
+        }
+
+        flowNode.addValue("activationTime"s, std::chrono::milliseconds{m_timeProvider.get().load()->getWateringSystemActivationDuration()}.count());
+        flowNode.addValue("deactivationTime"s, std::chrono::milliseconds{m_timeProvider.get().load()->getWateringSystemDeactivationDuration()}.count());
+        flowNode.addValue("deactivationSepTime"s, std::chrono::milliseconds{m_timeProvider.get().load()->getPumpValveDeactivationTimeSeparation()}.count());
+
+        // Now we can put the nodes inside the project.
+        awsNode.addObject("flow"s, std::move(flowNode));
+        project.addObject("automaticWateringSystem"s, std::move(awsNode));
+    }
+
+    void DailyCycleAutomaticWateringSystem::loadConfigFromProject(const gc::project_management::Project& prj) {
+        using namespace gc::project_management;
+        using namespace std::string_literals;
+
+        // If the given project contains an "automaticWateringSystem" object we can check
+        // whether it's cycled mode or not. In the first case we can load the configuration.
+        if(!prj.containsObject("automaticWateringSystem"s))
+            return;
+
+        const ProjectNode& awsNode{prj.getObject("automaticWateringSystem"s)};
+
+        if(awsNode.getValue<StringType>("mode"s) != "cycled"s) {
+            m_userLogger->logError(format_log_string("The given project contains an automatic watering system but the mode isn\'t recognized. No AWS configuration will be loaded."));
+            return;
+        }
+
+        if(!awsNode.containsObject("flow"s)) {
+            m_userLogger->logWarning(format_log_string("The given project doesn\'t contain the flow configuration. Skipping configuration loading."));
+            return;
+        }
+
+        // If the AWS is running we need to stop it before loading the new configuration.
+        const bool bWasRunning{isRunning()};
+        if(bWasRunning) {
+            const StringType formattedLogString{format_log_string("Automatic watering system is running. Stopping it before loading the new configuration.")};
+            m_mainLogger->logWarning(formattedLogString);
+            m_userLogger->logWarning(formattedLogString);
+
+            requestShutdown();
+        }
+
+        const ProjectNode& flowNode{awsNode.getObject("flow"s)};
+
+        bool bValveEnabled{}, bPumpEnabled{};
+        std::uint64_t valvePinID{}, pumpPinID{};
+        WateringSystemTimeProvider::time_unit activationTime{}, deactivationTime{}, deactivationSepTime{};
+
+        try {
+            bValveEnabled = flowNode.getValue<bool>("isWaterValveEnabled"s);
+            bPumpEnabled = flowNode.getValue<bool>("isWaterPumpEnabled"s);
+
+            if(bValveEnabled) {
+                valvePinID = flowNode.getValue<std::uint64_t>("valvePinID"s);
+            }
+
+            if(bPumpEnabled) {
+                pumpPinID = flowNode.getValue<std::uint64_t>("pumpPinID"s);
+            }
+
+            activationTime = std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("activationTime"s)};
+            deactivationTime = std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationTime"s)};
+            deactivationSepTime = std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationSepTime"s)};
+
+            if(bWasRunning) {
+                const StringType formattedLogString{format_log_string("Automatic watering system was running. Restarting it.")};
+                m_mainLogger->logWarning(formattedLogString);
+                m_userLogger->logWarning(formattedLogString);
+
+                startAutomaticWatering();
+            }
+        } catch(const std::bad_variant_access& exc) {
+            m_userLogger->logError(format_log_string("The given AWS configuration contains a JSON format not recognized. No AWS configuration will be loaded."));
+            m_userLogger->logWarning(format_log_string("Have you entered wrong values in the configuration?"));
+
+            if(bWasRunning) {
+                const StringType formattedLogString{format_log_string("Automatic watering system was running. Restoring the old configuration.")};
+                m_mainLogger->logWarning(formattedLogString);
+                m_userLogger->logWarning(formattedLogString);
+
+                startAutomaticWatering();
+            }
+
+            return;
+        }
+
+        m_bWaterValveEnabled.store(bValveEnabled);
+        m_bWaterPumpEnabled.store(bPumpEnabled);
+
+        if(bValveEnabled) {
+            m_hardwareController.get().load()->setWaterValveDigitalOutputID(valvePinID);
+        }
+
+        if(bPumpEnabled) {
+            m_hardwareController.get().load()->setWaterPumpDigitalOutputID(pumpPinID);
+        }
+
+        m_timeProvider.get().load()->setWateringSystemActivationDuration(activationTime);
+        m_timeProvider.get().load()->setWateringSystemDeactivationDuration(deactivationTime);
+        m_timeProvider.get().load()->setPumpValveDeactivationTimeSeparation(deactivationSepTime);
     }
 
 } // namespace rpi_gc::automatic_watering

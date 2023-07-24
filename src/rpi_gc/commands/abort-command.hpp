@@ -34,7 +34,7 @@ namespace rpi_gc::commands {
         //!  systems that will be aborted during the "execute()" command.
         explicit AbortCommand(logger_pointer mainLogger, std::vector<emergency_stoppable_system_pointer> systems, option_parser_pointer optionParser) noexcept;
 
-        constexpr name_type getName() const noexcept override {
+        [[nodiscard]] constexpr name_type getName() const noexcept override {
             return strings::commands::ABORT;
         }
 
@@ -43,7 +43,7 @@ namespace rpi_gc::commands {
         //!  for each abort to end.
         bool execute() noexcept override;
 
-        bool processInputOptions(const std::vector<string_type>& inputTokens) noexcept override;
+        bool processInputOptions(const std::vector<string_type>& inputTokens) override;
 
         void printHelp(help_ostream_type outputStream) const noexcept override;
 

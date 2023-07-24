@@ -29,7 +29,7 @@ namespace rpi_gc {
         //!  command options.
         AutomaticWateringCommand(ostream_ref outputStream, option_parser_pointer optionParser) noexcept;
 
-        bool processInputOptions(const std::vector<string_type>& inputTokens) noexcept override;
+        bool processInputOptions(const std::vector<string_type>& inputTokens) override;
 
         bool execute() noexcept override;
 

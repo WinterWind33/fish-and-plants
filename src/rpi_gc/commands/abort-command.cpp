@@ -23,7 +23,7 @@ namespace rpi_gc::commands {
         assert(static_cast<bool>(m_optionParser));
     }
 
-    bool AbortCommand::processInputOptions(const std::vector<string_type>& inputTokens) noexcept {
+    bool AbortCommand::processInputOptions(const std::vector<string_type>& inputTokens) {
         m_optionParser->parse(inputTokens);
         return true;
     }

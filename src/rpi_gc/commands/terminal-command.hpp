@@ -34,7 +34,7 @@ namespace rpi_gc {
         //! \param inputTokens The options tokes to parse.
         //! \return bool Returns true if the state of the command permits a correct execution,
         //!  false otherwise.
-        virtual bool processInputOptions(const std::vector<string_type>& inputTokens) noexcept = 0;
+        virtual bool processInputOptions(const std::vector<string_type>& inputTokens) = 0;
 
         //!!
         //! \brief Prints the help page of thic command to the given output stream.

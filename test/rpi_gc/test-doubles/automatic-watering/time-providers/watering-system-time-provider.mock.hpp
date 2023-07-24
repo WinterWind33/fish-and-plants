@@ -15,6 +15,9 @@ namespace rpi_gc::automatic_watering::mocks {
         MOCK_METHOD(time_unit, getWateringSystemActivationDuration, (), (const, noexcept, override));
         MOCK_METHOD(time_unit, getWateringSystemDeactivationDuration, (), (const, noexcept, override));
         MOCK_METHOD(time_unit, getPumpValveDeactivationTimeSeparation, (), (const, noexcept, override));
+        MOCK_METHOD(void, setWateringSystemActivationDuration, (const time_unit), (noexcept, override));
+        MOCK_METHOD(void, setWateringSystemDeactivationDuration, (const time_unit), (noexcept, override));
+        MOCK_METHOD(void, setPumpValveDeactivationTimeSeparation, (const time_unit), (noexcept, override));
     };
 
 } // namespace rpi_gc::automatic_watering::mocks

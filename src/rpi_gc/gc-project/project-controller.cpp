@@ -3,10 +3,10 @@
 
 namespace rpi_gc::gc_project {
 
-    void ProjectController::setCurrentProject(const project_type& newProject) {
+    void ProjectController::setCurrentProject(project_type&& newProject) {
         // We need to close the old project before setting the new one.
         close_current_project();
-        m_currentProject = newProject;
+        m_currentProject = std::move(newProject);
         m_currentProjectFilePath = std::filesystem::path{m_currentProject.value().getTitle() + ".json"};
     }
 
@@ -15,6 +15,26 @@ namespace rpi_gc::gc_project {
         // We simply set the project.
         m_currentProject = std::nullopt;
         m_currentProjectFilePath.clear();
+    }
+
+    void ProjectController::collectProjectData() {
+        if(!hasProject()) {
+            return;
+        }
+
+        for(auto& comp : m_projectComponents) {
+            comp.get().saveToProject(m_currentProject.value());
+        }
+    }
+
+    void ProjectController::loadProjectData() {
+        if(!hasProject()) {
+            return;
+        }
+
+        for(auto& comp : m_projectComponents) {
+            comp.get().loadConfigFromProject(m_currentProject.value());
+        }
     }
 
 } // namespace rpi_gc::gc_project

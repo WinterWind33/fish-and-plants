@@ -35,5 +35,17 @@ namespace rpi_gc::automatic_watering {
         m_pumpValveWaitTimeTicks.store(ticks);
     }
 
+    void ConfigurableDailyCycleAWSTimeProvider::setWateringSystemActivationDuration(const time_unit duration) noexcept {
+        setActivationTimeTicks(duration.count());
+    }
+
+    void ConfigurableDailyCycleAWSTimeProvider::setWateringSystemDeactivationDuration(const time_unit duration) noexcept {
+        setDeactivationTimeTicks(duration.count());
+    }
+
+    void ConfigurableDailyCycleAWSTimeProvider::setPumpValveDeactivationTimeSeparation(const time_unit duration) noexcept {
+        setPumpValveWaitTimeTicks(duration.count());
+    }
+
 
 } // namespace rpi_gc::automatic_watering

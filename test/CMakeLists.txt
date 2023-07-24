@@ -23,6 +23,7 @@ set(TEST_APP_HEADER_FILES
     "rpi_gc/test-doubles/automatic-watering/hardware-controllers/watering-system-hardware-controller.mock.hpp"
     "rpi_gc/test-doubles/automatic-watering/time-providers/watering-system-time-provider.mock.hpp"
     "rpi_gc/test-doubles/diagnostics/diagnostic-status-probeable.mock.hpp"
+    "rpi_gc/test-doubles/gc-project/project-component.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
@@ -30,7 +31,11 @@ set(TEST_APP_SOURCE_FILES
 
     # Modules
     "modules/project-management/version-integrity-checker.tests.cpp"
+    "modules/project-management/project-io/json-project-reader.tests.cpp"
+    "modules/project-management/project-io/json-project-writer.tests.cpp"
+    "modules/project-management/project-io/project-reader.tests.cpp"
     "modules/project-management/title-integrity-checker.tests.cpp"
+    "modules/project-management/project.tests.cpp"
     "gh_hal/hardware-access/board-chip.tests.cpp"
     "gh_cmd/switch.tests.cpp"
     "gh_cmd/value.tests.cpp"
@@ -52,6 +57,8 @@ set(TEST_APP_SOURCE_FILES
 
     # integration tests
     "integration/rpi_gc/application-command-integration.tests.cpp"
+    "integration/automatic-watering-system-project-saving.tests.cpp"
+    "integration/automatic-watering-system-project-loading.tests.cpp"
 )
 
 if(USE_CATCH2_AS_TESTING_FRAMEWORK AND USE_GMOCK)
@@ -83,7 +90,7 @@ target_include_directories(test_app PRIVATE "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(test_app PRIVATE "${PROJECT_SOURCE_DIR}/src/wrappers")
 target_include_directories(test_app PRIVATE "${PROJECT_SOURCE_DIR}/src/modules/project-management")
 
-target_link_libraries(test_app PRIVATE rpi_gc_lib)
+target_link_libraries(test_app PRIVATE rpi_gc_lib nlohmann_json::nlohmann_json)
 
 if(MSVC)
     # Under Windows there is also the Release folder that

@@ -66,7 +66,7 @@ jobs:
 
     - name: CMake Build
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j8
 
     - name: Static Tests Run
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'

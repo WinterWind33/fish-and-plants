@@ -11,7 +11,7 @@ namespace rpi_gc {
         m_outputStream{outputStream},
         m_optionParser{optionParser} {}
 
-    bool ApplicationCommand::processInputOptions(const std::vector<string_type>& options) noexcept {
+    bool ApplicationCommand::processInputOptions(const std::vector<string_type>& options) {
         m_optionParser.get().parse(options);
 
         return true;

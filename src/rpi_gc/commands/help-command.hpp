@@ -22,9 +22,9 @@ namespace rpi_gc {
         explicit HelpCommand(ostream_ref outputStream, std::vector<terminal_command_const_ref> commands) noexcept;
         ~HelpCommand() noexcept override = default;
 
-        constexpr name_type getName() const noexcept override { return strings::commands::HELP; }
+        [[nodiscard]] constexpr name_type getName() const noexcept override { return strings::commands::HELP; }
 
-        constexpr bool processInputOptions(const std::vector<string_type>& options) noexcept override { return true; }
+        constexpr bool processInputOptions(const std::vector<string_type>& options) override { return true; }
 
         //!!
         //! \brief Prints the main help page printing out the help pages of all the
@@ -34,7 +34,7 @@ namespace rpi_gc {
 
         bool executeAsOption() noexcept override;
 
-        option_pointer getAsOption() const noexcept override { return m_asOption; }
+        [[nodiscard]] option_pointer getAsOption() const noexcept override { return m_asOption; }
 
         void setApplicationHelp(string_type helpString) noexcept {
             m_applicationHelp = std::move(helpString);

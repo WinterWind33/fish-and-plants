@@ -52,7 +52,7 @@ namespace rpi_gc::commands {
         return true;
     }
 
-    bool ProjectCommand::processInputOptions(const std::vector<string_type>& inputTokens) noexcept {
+    bool ProjectCommand::processInputOptions(const std::vector<string_type>& inputTokens) {
         m_optionParser->parse(inputTokens);
         return true;
     }

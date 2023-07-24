@@ -32,8 +32,8 @@ namespace rpi_gc::automatic_watering {
             return std::get<1>(m_waterPumpDigitalOut).get();
         }
 
-        void setWaterValveDigitalOutputID(const digital_output_id id) noexcept;
-        void setWaterPumpDigitalOutputID(const digital_output_id id) noexcept;
+        void setWaterValveDigitalOutputID(const digital_output_id id) noexcept override;
+        void setWaterPumpDigitalOutputID(const digital_output_id id) noexcept override;
 
     private:
         mutex_reference m_mutex;

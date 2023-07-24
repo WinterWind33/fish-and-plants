@@ -81,6 +81,19 @@
             "console": "externalTerminal"
         },
         {
+            "name": "(Windows) Launch All Integration Tests",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/bin/Debug/test_app.exe",
+            "args": [
+                "-b",
+                "[integration]"
+            ],
+            "cwd": "${workspaceRoot}/bin/Debug",
+            "preLaunchTask": "[Windows] (Debug) Build All",
+            "console": "externalTerminal"
+        },
+        {
             "name": "(Linux) Launch rpi_gc",
             "type": "cppdbg",
             "request": "launch",
@@ -119,7 +132,7 @@
                 "ignoreFailures": true
               }
             ],
-            "preLaunchTask": "[BUILD] (Linux Debug) Build test_app"
+            "preLaunchTask": "[Linux] (Debug) Build All"
         },
         {
             "name": "(Windows) Launch all static Tests",

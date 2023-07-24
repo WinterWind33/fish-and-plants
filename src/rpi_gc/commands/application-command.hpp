@@ -22,11 +22,11 @@ namespace rpi_gc {
 
         ApplicationCommand(ostream_ref outputStream, option_parser_ref optionParser) noexcept;
 
-        bool processInputOptions(const std::vector<string_type>& options) noexcept override;
+        bool processInputOptions(const std::vector<string_type>& options) override;
 
         bool execute() noexcept override;
 
-        constexpr name_type getName() const noexcept override {
+        [[nodiscard]] constexpr name_type getName() const noexcept override {
             return name_type{strings::commands::APPLICATION};
         }
 

@@ -31,3 +31,26 @@ In this example, it will be create a new project entitled `example`:
 ```bash
 project --create example
 ```
+
+### `--load` option
+
+This command will load a project from the specified file.
+
+The project is loaded and parsed. The application has a `title` and `version` integrity checker that can automatically update the project title or version if they contain invalid or old data.
+
+If the JSON syntax is broken **it will result in undefined behavior**: the project can be loaded, discarded or partially loaded. Be careful.
+
+#### AWS Running
+
+If the AWS is running while performing a `project --load` operation, the AWS is stopped, its configuration saved to the current project (if open) and the new project is loaded:
+
+- if the new project is valid, it will be loaded and the AWS restarted with the new configuration;
+- if the new project is invalid, the AWS will restart with the old configuration.
+
+#### Example
+
+The following command will load the project contained inside the file `my-project.json`:
+
+```bash
+project --load my-project.json
+```
