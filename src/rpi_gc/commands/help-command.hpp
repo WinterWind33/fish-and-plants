@@ -24,7 +24,7 @@ namespace rpi_gc {
 
         constexpr name_type getName() const noexcept override { return strings::commands::HELP; }
 
-        constexpr bool processInputOptions(const std::vector<string_type>& options) noexcept override { return true; }
+        constexpr bool processInputOptions(const std::vector<string_type>& options) override { return true; }
 
         //!!
         //! \brief Prints the main help page printing out the help pages of all the

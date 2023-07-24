@@ -43,7 +43,7 @@ namespace rpi_gc::commands {
         //!  for each abort to end.
         bool execute() noexcept override;
 
-        bool processInputOptions(const std::vector<string_type>& inputTokens) noexcept override;
+        bool processInputOptions(const std::vector<string_type>& inputTokens) override;
 
         void printHelp(help_ostream_type outputStream) const noexcept override;
 

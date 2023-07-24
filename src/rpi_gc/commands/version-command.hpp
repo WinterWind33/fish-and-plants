@@ -23,7 +23,7 @@ namespace rpi_gc {
 
         constexpr name_type getName() const noexcept override { return strings::commands::VERSION; }
 
-        constexpr bool processInputOptions(const std::vector<string_type>& options) noexcept override { return true; }
+        constexpr bool processInputOptions(const std::vector<string_type>& options) override { return true; }
 
         //!!
         //! \brief Prints the name of the application and its version.

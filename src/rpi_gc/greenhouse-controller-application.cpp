@@ -95,8 +95,12 @@ namespace rpi_gc {
                 continue;
             }
 
-            if(m_commands.at(commandName)->processInputOptions(lineTokens)) {
-                m_commands[commandName]->execute();
+            try {
+                if(m_commands.at(commandName)->processInputOptions(lineTokens)) {
+                    m_commands[commandName]->execute();
+                }
+            } catch(const popl::invalid_option& ioexc) {
+                m_outputStream.get() << "[ERROR] => Invalid option: " << ioexc.what() << std::endl;
             }
 
 
