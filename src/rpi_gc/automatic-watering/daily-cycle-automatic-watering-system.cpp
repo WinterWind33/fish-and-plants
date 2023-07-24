@@ -438,11 +438,11 @@ namespace rpi_gc::automatic_watering {
         flowNode.addValue("isWaterPumpEnabled"s, bPumpEnabled);
 
         if(bValveEnabled) {
-            flowNode.addValue("valvePinID"s, static_cast<std::size_t>(m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()));
+            flowNode.addValue("valvePinID"s, static_cast<std::uint64_t>(m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()));
         }
 
         if(bPumpEnabled) {
-            flowNode.addValue("pumpPinID"s, static_cast<std::size_t>(m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()));
+            flowNode.addValue("pumpPinID"s, static_cast<std::uint64_t>(m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()));
         }
 
         flowNode.addValue("activationTime"s, std::chrono::milliseconds{m_timeProvider.get().load()->getWateringSystemActivationDuration()}.count());
@@ -486,12 +486,12 @@ namespace rpi_gc::automatic_watering {
         m_bWaterPumpEnabled.store(bPumpEnabled);
 
         if(bValveEnabled) {
-            const std::size_t valvePinID{flowNode.getValue<std::size_t>("valvePinID"s)};
+            const std::uint64_t valvePinID{flowNode.getValue<std::uint64_t>("valvePinID"s)};
             m_hardwareController.get().load()->setWaterValveDigitalOutputID(valvePinID);
         }
 
         if(bPumpEnabled) {
-            const std::size_t pumpPinID{flowNode.getValue<std::size_t>("pumpPinID"s)};
+            const std::uint64_t pumpPinID{flowNode.getValue<std::uint64_t>("pumpPinID"s)};
             m_hardwareController.get().load()->setWaterPumpDigitalOutputID(pumpPinID);
         }
 

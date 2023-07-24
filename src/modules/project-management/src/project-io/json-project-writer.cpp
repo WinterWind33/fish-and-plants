@@ -6,7 +6,6 @@
 
 // C++ STL
 #include <sstream>
-#include <type_traits>
 
 namespace gc::project_management::project_io {
 
