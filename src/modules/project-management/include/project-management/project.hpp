@@ -83,12 +83,14 @@ namespace gc::project_management {
 
         template<ProjectFieldValue ValueType>
         [[nodiscard]] ValueType getValue(ProjectFieldKey auto&& key) const {
-            if constexpr (std::is_integral_v<ValueType> && std::is_unsigned_v<ValueType>)
-                return std::get<std::uint64_t>(m_values.at(std::forward<decltype(key)>(key)));
-            else if constexpr (std::is_integral_v<ValueType>)
-                return std::get<std::int64_t>(m_values.at(std::forward<decltype(key)>(key)));
-            else
-                return std::get<ValueType>(m_values.at(std::forward<decltype(key)>(key)));
+            if constexpr (!std::is_same_v<ValueType, bool>) {
+                if constexpr (std::is_integral_v<ValueType> && std::is_unsigned_v<ValueType>)
+                    return std::get<std::uint64_t>(m_values.at(std::forward<decltype(key)>(key)));
+                else if constexpr (std::is_integral_v<ValueType>)
+                    return std::get<std::int64_t>(m_values.at(std::forward<decltype(key)>(key)));
+            }
+
+            return std::get<ValueType>(m_values.at(std::forward<decltype(key)>(key)));
         }
 
         [[nodiscard]] const auto& getValueArray(ProjectFieldKey auto&& key) const {
