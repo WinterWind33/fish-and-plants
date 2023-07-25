@@ -13,10 +13,10 @@
 
 namespace gh_log {
 
-    //! \brief Represents the type of the string used by
-    //!  loggers.
-    using LogStringType = std::string;
+//! \brief Represents the type of the string used by
+//!  loggers.
+using LogStringType = std::string;
 
-} // namespace gh_log
+}  // namespace gh_log
 
-#endif // !GH_LOG_LIB_BASE_HPP
+#endif  // !GH_LOG_LIB_BASE_HPP
