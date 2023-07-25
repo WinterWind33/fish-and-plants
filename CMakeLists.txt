@@ -20,7 +20,6 @@ project(FishAndPlants CXX)
 enable_language(CXX)
 
 # === C++ and Compilation Configuration ===
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -44,7 +43,6 @@ set(PRODUCTION_EXE_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/bin")
 set(PRODUCTION_LIB_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/lib")
 
 # === Options ===
-
 set(CATCH2_VERSION "3.4.0")
 set(SPDLOG_VERSION "1.12.0")
 set(LIBGPIOD_VERSION "2.0.1")
@@ -52,7 +50,7 @@ option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 ${CATCH2_VERSION} as testing 
 option(USE_SPDLOG "Use SPDLOG ${SPDLOG_VERSION} submodule as logging framework." ON)
 option(USE_LIBGPIOD "Use libgpiod ${LIBGPIOD_VERSION} module as the main I/O ports communication module." ON)
 option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
-option(USE_POPL20 "Use popl20 header-only library as command line parser." ON)
+option(USE_POPL "Use popl header-only library as command line parser." ON)
 option(USE_SEMVER "Use Neargye/semver third-library software as semantic versioning library." ON)
 option(GC_USE_NLOHMANN_JSON "Use nlohmann/json as json engine" ON)
 
