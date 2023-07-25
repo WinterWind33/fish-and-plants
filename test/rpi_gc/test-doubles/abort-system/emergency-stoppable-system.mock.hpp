@@ -10,12 +10,12 @@
 
 namespace rpi_gc::abort_system::mocks {
 
-    class EmergencyStoppableSystemMock : public rpi_gc::abort_system::EmergencyStoppableSystem {
-    public:
-        ~EmergencyStoppableSystemMock() noexcept override = default;
+class EmergencyStoppableSystemMock : public rpi_gc::abort_system::EmergencyStoppableSystem {
+public:
+    ~EmergencyStoppableSystemMock() noexcept override = default;
 
-        MOCK_METHOD(void, emergencyAbort, (), (noexcept, override));
-    };
+    MOCK_METHOD(void, emergencyAbort, (), (noexcept, override));
+};
 
 } // namespace rpi_gc::abort_system::mocks
 

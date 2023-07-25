@@ -5,13 +5,13 @@
 
 namespace gh_hal::backends::simulated {
 
-    SimulatedChip::SimulatedChip(chip_path chipPath) noexcept :
-        m_chipPath{std::move(chipPath)},
-        m_bIsOpened{true} {}
+SimulatedChip::SimulatedChip(chip_path chipPath) noexcept
+    : m_chipPath{std::move(chipPath)},
+      m_bIsOpened{true} {}
 
-    void SimulatedChip::close() noexcept {
-        m_bIsOpened = false;
-        m_chipPath.clear();
-    }
+void SimulatedChip::close() noexcept {
+    m_bIsOpened = false;
+    m_chipPath.clear();
+}
 
 } // namespace gh_hal::backends::simulated

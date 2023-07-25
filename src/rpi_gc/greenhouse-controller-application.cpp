@@ -179,4 +179,4 @@ void GreenhouseControllerApplication::addTerminableSystem(
     m_terminableSystems.push_back(std::move(system));
 }
 
-}  // namespace rpi_gc
+} // namespace rpi_gc

@@ -76,6 +76,6 @@ private:
     static StringType create_version_string() noexcept;
 };
 
-}  // namespace rpi_gc
+} // namespace rpi_gc
 
-#endif  // !GREENHOUSE_CONTROLLER_APPLICATION_HPP
+#endif // !GREENHOUSE_CONTROLLER_APPLICATION_HPP

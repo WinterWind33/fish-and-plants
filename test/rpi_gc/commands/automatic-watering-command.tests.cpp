@@ -5,23 +5,24 @@
 #include <user-interface/application-strings.hpp>
 
 // Test Doubles
-#include <gh_cmd/test-doubles/option-parser.mock.hpp>
 #include <gh_cmd/test-doubles/command-option.mock.hpp>
+#include <gh_cmd/test-doubles/option-parser.mock.hpp>
 
 namespace tests {
 
-    template<typename MockType>
-    auto ConfigureCommandOptionMock(auto&& longOptionName, const bool bIsSet) noexcept {
-        auto commandStubPointer = std::make_shared<MockType>();
-        ON_CALL(*commandStubPointer, getLongName).WillByDefault(testing::Return(longOptionName));
-        ON_CALL(*commandStubPointer, isSet).WillByDefault(testing::Return(bIsSet));
+template <typename MockType>
+auto ConfigureCommandOptionMock(auto&& longOptionName, const bool bIsSet) noexcept {
+    auto commandStubPointer = std::make_shared<MockType>();
+    ON_CALL(*commandStubPointer, getLongName).WillByDefault(testing::Return(longOptionName));
+    ON_CALL(*commandStubPointer, isSet).WillByDefault(testing::Return(bIsSet));
 
-        return commandStubPointer;
-    }
+    return commandStubPointer;
+}
 
 } // namespace tests
 
-TEST_CASE("AutomaticWateringCommand Events unit tests", "[unit][solitary][rpi_gc][AutomaticWateringCommand][events]") {
+TEST_CASE("AutomaticWateringCommand Events unit tests",
+          "[unit][solitary][rpi_gc][AutomaticWateringCommand][events]") {
     using namespace rpi_gc;
     using testing::StrictMock;
 
@@ -37,24 +38,27 @@ TEST_CASE("AutomaticWateringCommand Events unit tests", "[unit][solitary][rpi_gc
         const AutomaticWateringCommand::option_type::long_name_type OPTION_NAME{"test-option"};
         bool bEventCalled{false};
 
-        auto eventMock = [&bEventCalled, OPTION_NAME](AutomaticWateringCommand::option_parser::const_option_pointer optionPointer){
-            REQUIRE(optionPointer != nullptr);
+        auto eventMock =
+            [&bEventCalled, OPTION_NAME](
+                AutomaticWateringCommand::option_parser::const_option_pointer optionPointer) {
+                REQUIRE(optionPointer != nullptr);
 
-            CHECK(optionPointer->getLongName() == OPTION_NAME);
-            bEventCalled = true;
-        };
+                CHECK(optionPointer->getLongName() == OPTION_NAME);
+                bEventCalled = true;
+            };
 
         commandUnderTest.registerOptionEvent(OPTION_NAME, eventMock);
 
         AND_WHEN("The command is parsed and executed with the option") {
             using CommandOptionStub = testing::NiceMock<gh_cmd::mocks::CommandOptionMock<CharType>>;
-            auto optionMock{tests::ConfigureCommandOptionMock<CommandOptionStub>(OPTION_NAME, true)};
+            auto optionMock{
+                tests::ConfigureCommandOptionMock<CommandOptionStub>(OPTION_NAME, true)};
 
             EXPECT_CALL(*optionParserRef, getOptions())
                 .Times(1)
-                .WillOnce(testing::Return(std::vector<AutomaticWateringCommand::option_parser::option_pointer>{
-                    optionMock
-                }));
+                .WillOnce(testing::Return(
+                    std::vector<AutomaticWateringCommand::option_parser::option_pointer>{
+                        optionMock}));
 
             commandUnderTest.execute();
 
@@ -66,15 +70,16 @@ TEST_CASE("AutomaticWateringCommand Events unit tests", "[unit][solitary][rpi_gc
         AND_WHEN("The command is parsed and executed with the option and the \'help\' option") {
             using CommandOptionStub = testing::NiceMock<gh_cmd::mocks::CommandOptionMock<CharType>>;
 
-            auto optionMock{tests::ConfigureCommandOptionMock<CommandOptionStub>(OPTION_NAME, true)};
-            auto helpOptionMock{tests::ConfigureCommandOptionMock<CommandOptionStub>(strings::commands::options::AUTOMATIC_WATERING_HELP.data(), true)};
+            auto optionMock{
+                tests::ConfigureCommandOptionMock<CommandOptionStub>(OPTION_NAME, true)};
+            auto helpOptionMock{tests::ConfigureCommandOptionMock<CommandOptionStub>(
+                strings::commands::options::AUTOMATIC_WATERING_HELP.data(), true)};
 
             EXPECT_CALL(*optionParserRef, getOptions())
                 .Times(1)
-                .WillOnce(testing::Return(std::vector<AutomaticWateringCommand::option_parser::option_pointer>{
-                    optionMock,
-                    helpOptionMock
-                }));
+                .WillOnce(testing::Return(
+                    std::vector<AutomaticWateringCommand::option_parser::option_pointer>{
+                        optionMock, helpOptionMock}));
             EXPECT_CALL(*optionParserRef, printHelp).Times(1);
 
             commandUnderTest.execute();
@@ -87,15 +92,16 @@ TEST_CASE("AutomaticWateringCommand Events unit tests", "[unit][solitary][rpi_gc
         AND_WHEN("The command is parsed and executed with the option and the \'stop\' option") {
             using CommandOptionStub = testing::NiceMock<gh_cmd::mocks::CommandOptionMock<CharType>>;
 
-            auto optionStub{tests::ConfigureCommandOptionMock<CommandOptionStub>(OPTION_NAME, true)};
-            auto stopOptionStub{tests::ConfigureCommandOptionMock<CommandOptionStub>(strings::commands::options::AUTOMATIC_WATERING_STOP.data(), true)};
+            auto optionStub{
+                tests::ConfigureCommandOptionMock<CommandOptionStub>(OPTION_NAME, true)};
+            auto stopOptionStub{tests::ConfigureCommandOptionMock<CommandOptionStub>(
+                strings::commands::options::AUTOMATIC_WATERING_STOP.data(), true)};
 
             EXPECT_CALL(*optionParserRef, getOptions())
                 .Times(1)
-                .WillOnce(testing::Return(std::vector<AutomaticWateringCommand::option_parser::option_pointer>{
-                    optionStub,
-                    stopOptionStub
-                }));
+                .WillOnce(testing::Return(
+                    std::vector<AutomaticWateringCommand::option_parser::option_pointer>{
+                        optionStub, stopOptionStub}));
 
             commandUnderTest.execute();
             THEN("The command should NOT trigger the event as stop is executed first") {

@@ -19,7 +19,7 @@ namespace rpi_gc::commands_factory {
 namespace details {
 constexpr std::string_view PROJECT_CMD_OPTION_PARSER_DESCRIPTION{"Project Command Options"};
 constexpr std::string_view PROJECT_CMD_CREATE_OPTION_LONG_NAME{"create"};
-}  // namespace details
+} // namespace details
 
 ProjectCommandFactory::ProjectCommandFactory(
     std::ostream& ost, std::istream& ist, gc_project::ProjectController& projectController) noexcept
@@ -41,10 +41,10 @@ auto ProjectCommandFactory::create_option_parser() const -> command_type::option
         std::make_shared<gh_cmd::Switch<char>>('h', "help", "Displays the help page"));
 
     optionParser->addOption(std::make_shared<gh_cmd::Value<char, std::string>>(
-        'c',                                                        // short name
-        std::string{details::PROJECT_CMD_CREATE_OPTION_LONG_NAME},  // long name
-        "Creates a new project with the specified name.",           // Description
-        "gc-project"                                                // Default value.
+        'c',                                                       // short name
+        std::string{details::PROJECT_CMD_CREATE_OPTION_LONG_NAME}, // long name
+        "Creates a new project with the specified name.",          // Description
+        "gc-project"                                               // Default value.
         ));
 
     optionParser->addSwitch(std::make_shared<gh_cmd::Switch<char>>(
@@ -219,4 +219,4 @@ void ProjectCommandFactory::save_current_project(const std::string& customMessag
     *projectWriter << project;
 }
 
-}  // namespace rpi_gc::commands_factory
+} // namespace rpi_gc::commands_factory

@@ -9,14 +9,18 @@
 // C++ STL
 #include <array>
 
-TEST_CASE("ProjectController unit tests", "[unit][sociable][rpi_gc][gc-project][ProjectController]") {
+TEST_CASE("ProjectController unit tests",
+          "[unit][sociable][rpi_gc][gc-project][ProjectController]") {
     using namespace rpi_gc::gc_project;
 
     ProjectController projectControllerUnderTest{};
 
     WHEN("A new project is set") {
         gc::project_management::Project dummyProject{
-            gc::project_management::Project::time_point_type{}, "DummyProject", semver::version{1, 0, 0}};
+            gc::project_management::Project::time_point_type{},
+            "DummyProject",
+            semver::version{1, 0, 0}
+        };
 
         projectControllerUnderTest.setCurrentProject(std::move(dummyProject));
 
@@ -28,14 +32,17 @@ TEST_CASE("ProjectController unit tests", "[unit][sociable][rpi_gc][gc-project][
     GIVEN("A project controller with a project") {
         using namespace gc::project_management;
 
-        Project dummyProject{Project::time_point_type{}, "test-project", semver::version{1, 2, 3}};
+        Project dummyProject{
+            Project::time_point_type{},
+            "test-project", semver::version{1, 2, 3}
+        };
         projectControllerUnderTest.setCurrentProject(std::move(dummyProject));
 
         WHEN("The project saving is triggered") {
             THEN("The project components all should be queried") {
                 std::array<mocks::ProjectComponentMock, 2> projectComponents{};
 
-                for(auto& comp : projectComponents) {
+                for (auto& comp : projectComponents) {
                     EXPECT_CALL(comp, saveToProject).Times(1);
 
                     projectControllerUnderTest.registerProjectComponent(comp);
@@ -49,7 +56,7 @@ TEST_CASE("ProjectController unit tests", "[unit][sociable][rpi_gc][gc-project][
             THEN("loadConfigFromProject() should be called on all components") {
                 std::array<mocks::ProjectComponentMock, 2> projectComponents{};
 
-                for(auto& comp : projectComponents) {
+                for (auto& comp : projectComponents) {
                     EXPECT_CALL(comp, loadConfigFromProject).Times(1);
 
                     projectControllerUnderTest.registerProjectComponent(comp);
@@ -65,7 +72,7 @@ TEST_CASE("ProjectController unit tests", "[unit][sociable][rpi_gc][gc-project][
             THEN("No component should be queried") {
                 std::array<mocks::ProjectComponentMock, 2> projectComponents{};
 
-                for(auto& comp : projectComponents) {
+                for (auto& comp : projectComponents) {
                     EXPECT_CALL(comp, saveToProject).Times(0);
 
                     projectControllerUnderTest.registerProjectComponent(comp);
@@ -79,7 +86,7 @@ TEST_CASE("ProjectController unit tests", "[unit][sociable][rpi_gc][gc-project][
             THEN("No component should be queried") {
                 std::array<mocks::ProjectComponentMock, 2> projectComponents{};
 
-                for(auto& comp : projectComponents) {
+                for (auto& comp : projectComponents) {
                     EXPECT_CALL(comp, loadConfigFromProject).Times(0);
 
                     projectControllerUnderTest.registerProjectComponent(comp);

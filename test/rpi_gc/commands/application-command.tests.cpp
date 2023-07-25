@@ -5,11 +5,12 @@
 #include <user-interface/application-strings.hpp>
 
 // Test Doubles
-#include <gh_cmd/test-doubles/option-parser.mock.hpp>
 #include <gh_cmd/test-doubles/command-option.mock.hpp>
+#include <gh_cmd/test-doubles/option-parser.mock.hpp>
 #include <rpi_gc/test-doubles/commands/bivalent-command.mock.hpp>
 
-TEST_CASE("ApplicationCommand option parsing unit tests", "[unit][solitary][rpi_gc][ApplicationCommand][parsing]") {
+TEST_CASE("ApplicationCommand option parsing unit tests",
+          "[unit][solitary][rpi_gc][ApplicationCommand][parsing]") {
     using namespace rpi_gc;
     using OptionParserMock = gh_cmd::mocks::OptionParserMock<CharType>;
 
@@ -23,10 +24,7 @@ TEST_CASE("ApplicationCommand option parsing unit tests", "[unit][solitary][rpi_
 
         AND_GIVEN("A generic and valid input line") {
             std::vector<ApplicationCommand::string_type> inputLine{
-                StringType{strings::application::EXECUTABLE_NAME},
-                "--option",
-                "--",
-                "test"};
+                StringType{strings::application::EXECUTABLE_NAME}, "--option", "--", "test"};
             WHEN("the input line is processed by the command") {
                 THEN("The options should be parsed by the option parser") {
                     EXPECT_CALL(optionParserMock, parse(inputLine)).Times(1);
@@ -45,7 +43,8 @@ TEST_CASE("ApplicationCommand option parsing unit tests", "[unit][solitary][rpi_
     }
 }
 
-TEST_CASE("ApplicationCommand generic unit tests", "[unit][solitary][rpi_gc][ApplicationCommand][generic]") {
+TEST_CASE("ApplicationCommand generic unit tests",
+          "[unit][solitary][rpi_gc][ApplicationCommand][generic]") {
     using namespace rpi_gc;
     using BivalentCommandMock = rpi_gc::mocks::BivalentCommandMock<CharType>;
     using OptionParserMock = gh_cmd::mocks::OptionParserMock<CharType>;
@@ -54,14 +53,16 @@ TEST_CASE("ApplicationCommand generic unit tests", "[unit][solitary][rpi_gc][App
     OutputStringStream outputStream{};
 
     SECTION("addBivalentCommand() method") {
-        using testing::StrictMock;
         using testing::NiceMock;
+        using testing::StrictMock;
 
         SECTION("Should query the command as option") {
             // In this test we don't care about the option parser.
             NiceMock<OptionParserMock> optionParserMock{};
-            std::shared_ptr<NiceMock<CommandOptionMock>> commandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
-            ON_CALL(*commandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::HELP}));
+            std::shared_ptr<NiceMock<CommandOptionMock>> commandOptionMock{
+                std::make_shared<NiceMock<CommandOptionMock>>()};
+            ON_CALL(*commandOptionMock, getLongName)
+                .WillByDefault(testing::Return(StringType{strings::commands::HELP}));
 
             StrictMock<BivalentCommandMock> bivalentCommandMock{};
             EXPECT_CALL(bivalentCommandMock, getAsOption)
@@ -73,14 +74,19 @@ TEST_CASE("ApplicationCommand generic unit tests", "[unit][solitary][rpi_gc][App
         }
 
         SECTION("Should add the command as option to the option parser") {
-            std::shared_ptr<NiceMock<CommandOptionMock>> commandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
-            ON_CALL(*commandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::HELP}));
+            std::shared_ptr<NiceMock<CommandOptionMock>> commandOptionMock{
+                std::make_shared<NiceMock<CommandOptionMock>>()};
+            ON_CALL(*commandOptionMock, getLongName)
+                .WillByDefault(testing::Return(StringType{strings::commands::HELP}));
 
             NiceMock<BivalentCommandMock> bivalentCommandMock{};
-            ON_CALL(bivalentCommandMock, getAsOption).WillByDefault(testing::Return(commandOptionMock));
+            ON_CALL(bivalentCommandMock, getAsOption)
+                .WillByDefault(testing::Return(commandOptionMock));
 
             StrictMock<OptionParserMock> optionParserMock{};
-            EXPECT_CALL(optionParserMock, addOption(std::static_pointer_cast<gh_cmd::CommandOption<CharType>>(commandOptionMock)))
+            EXPECT_CALL(optionParserMock,
+                        addOption(std::static_pointer_cast<gh_cmd::CommandOption<CharType>>(
+                            commandOptionMock)))
                 .Times(1);
 
             ApplicationCommand commandUnderTest{outputStream, optionParserMock};
@@ -89,7 +95,8 @@ TEST_CASE("ApplicationCommand generic unit tests", "[unit][solitary][rpi_gc][App
     }
 }
 
-TEST_CASE("ApplicationCommand execution unit tests", "[unit][solitary][rpi_gc][ApplicationCommand][execution]") {
+TEST_CASE("ApplicationCommand execution unit tests",
+          "[unit][solitary][rpi_gc][ApplicationCommand][execution]") {
     using namespace rpi_gc;
     using testing::NiceMock;
     using testing::StrictMock;
@@ -106,15 +113,16 @@ TEST_CASE("ApplicationCommand execution unit tests", "[unit][solitary][rpi_gc][A
         using OptionPointer = std::shared_ptr<gh_cmd::CommandOption<CharType>>;
 
         std::vector<ApplicationCommand::string_type> inputLine{
-            StringType{strings::application::EXECUTABLE_NAME},
-            "--version"
-        };
+            StringType{strings::application::EXECUTABLE_NAME}, "--version"};
 
-        std::shared_ptr<NiceMock<CommandOptionMock>> commandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
-        ON_CALL(*commandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::VERSION}));
+        std::shared_ptr<NiceMock<CommandOptionMock>> commandOptionMock{
+            std::make_shared<NiceMock<CommandOptionMock>>()};
+        ON_CALL(*commandOptionMock, getLongName)
+            .WillByDefault(testing::Return(StringType{strings::commands::VERSION}));
         ON_CALL(*commandOptionMock, isSet).WillByDefault(testing::Return(true));
 
-        ON_CALL(optionParser, getOptions()).WillByDefault(testing::Return(std::vector<OptionPointer>{commandOptionMock}));
+        ON_CALL(optionParser, getOptions())
+            .WillByDefault(testing::Return(std::vector<OptionPointer>{commandOptionMock}));
 
         StrictMock<BivalentCommandMock> commandMock{};
         EXPECT_CALL(commandMock, getAsOption).WillRepeatedly(testing::Return(commandOptionMock));
@@ -124,9 +132,7 @@ TEST_CASE("ApplicationCommand execution unit tests", "[unit][solitary][rpi_gc][A
 
         WHEN("The command is executed") {
             THEN("It should be called the related command") {
-                EXPECT_CALL(commandMock, executeAsOption)
-                    .Times(1)
-                    .WillOnce(testing::Return(true));
+                EXPECT_CALL(commandMock, executeAsOption).Times(1).WillOnce(testing::Return(true));
 
                 commandUnderTest.execute();
             }
@@ -151,24 +157,31 @@ TEST_CASE("ApplicationCommand execution unit tests", "[unit][solitary][rpi_gc][A
         std::vector<ApplicationCommand::string_type> inputLine{
             StringType{strings::application::EXECUTABLE_NAME},
             "--help"
-            "--version"
-        };
+            "--version"};
 
-        std::shared_ptr<NiceMock<CommandOptionMock>> versionCommandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
-        ON_CALL(*versionCommandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::VERSION}));
+        std::shared_ptr<NiceMock<CommandOptionMock>> versionCommandOptionMock{
+            std::make_shared<NiceMock<CommandOptionMock>>()};
+        ON_CALL(*versionCommandOptionMock, getLongName)
+            .WillByDefault(testing::Return(StringType{strings::commands::VERSION}));
         ON_CALL(*versionCommandOptionMock, isSet).WillByDefault(testing::Return(true));
 
-        std::shared_ptr<NiceMock<CommandOptionMock>> helpCommandOptionMock{std::make_shared<NiceMock<CommandOptionMock>>()};
-        ON_CALL(*helpCommandOptionMock, getLongName).WillByDefault(testing::Return(StringType{strings::commands::HELP}));
+        std::shared_ptr<NiceMock<CommandOptionMock>> helpCommandOptionMock{
+            std::make_shared<NiceMock<CommandOptionMock>>()};
+        ON_CALL(*helpCommandOptionMock, getLongName)
+            .WillByDefault(testing::Return(StringType{strings::commands::HELP}));
         ON_CALL(*helpCommandOptionMock, isSet).WillByDefault(testing::Return(true));
 
-        ON_CALL(optionParser, getOptions()).WillByDefault(testing::Return(std::vector<OptionPointer>{versionCommandOptionMock, helpCommandOptionMock}));
+        ON_CALL(optionParser, getOptions())
+            .WillByDefault(testing::Return(
+                std::vector<OptionPointer>{versionCommandOptionMock, helpCommandOptionMock}));
 
         StrictMock<BivalentCommandMock> versionCommandMock{};
-        EXPECT_CALL(versionCommandMock, getAsOption).WillRepeatedly(testing::Return(versionCommandOptionMock));
+        EXPECT_CALL(versionCommandMock, getAsOption)
+            .WillRepeatedly(testing::Return(versionCommandOptionMock));
 
         StrictMock<BivalentCommandMock> helpCommandMock{};
-        EXPECT_CALL(helpCommandMock, getAsOption).WillRepeatedly(testing::Return(helpCommandOptionMock));
+        EXPECT_CALL(helpCommandMock, getAsOption)
+            .WillRepeatedly(testing::Return(helpCommandOptionMock));
 
         commandUnderTest.addBivalentCommand(versionCommandMock);
         commandUnderTest.addBivalentCommand(helpCommandMock);

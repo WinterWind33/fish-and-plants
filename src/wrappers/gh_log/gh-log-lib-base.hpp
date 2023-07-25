@@ -17,6 +17,6 @@ namespace gh_log {
 //!  loggers.
 using LogStringType = std::string;
 
-}  // namespace gh_log
+} // namespace gh_log
 
-#endif  // !GH_LOG_LIB_BASE_HPP
+#endif // !GH_LOG_LIB_BASE_HPP

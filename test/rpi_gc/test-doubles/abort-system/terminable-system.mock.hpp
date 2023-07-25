@@ -10,12 +10,12 @@
 
 namespace rpi_gc::abort_system::mocks {
 
-    class TerminableSystemMock : public TerminableSystem {
-    public:
-        ~TerminableSystemMock() noexcept override = default;
+class TerminableSystemMock : public TerminableSystem {
+public:
+    ~TerminableSystemMock() noexcept override = default;
 
-        MOCK_METHOD(void, requestShutdown, (), (noexcept, override));
-    };
+    MOCK_METHOD(void, requestShutdown, (), (noexcept, override));
+};
 
 } // namespace rpi_gc::abort_system::mocks
 

@@ -54,4 +54,4 @@ void GMCatch2Listener::OnTestPartResult(const testing::TestPartResult& result) {
     assertionHandler.complete();
 }
 
-#endif  // USE_CATCH2_AS_TESTING_FRAMEWORK && USE_GMOCK
+#endif // USE_CATCH2_AS_TESTING_FRAMEWORK && USE_GMOCK

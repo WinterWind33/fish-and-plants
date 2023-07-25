@@ -71,4 +71,4 @@ private:
     [[nodiscard]] command_type::event_handler_map create_event_handler_map();
 };
 
-}  // namespace rpi_gc::commands_factory
+} // namespace rpi_gc::commands_factory

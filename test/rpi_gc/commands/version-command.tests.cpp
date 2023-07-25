@@ -1,13 +1,13 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <commands/version-command.hpp>
 
+#include <testing-core.hpp>
 #include <user-interface/application-strings.hpp>
 #include <version/version-numbers.hpp>
-#include <testing-core.hpp>
 
 // C++ STL
-#include <sstream> // For ostream test double
 #include <functional> // For std::ref
+#include <sstream>    // For ostream test double
 #include <string>
 
 // These tests are sociable because the version command instantiate an option object inside
@@ -20,7 +20,8 @@ TEST_CASE("VersionCommand unit tests", "[unit][sociable][rpi_gc][commands][Versi
 
     SECTION("execute() method") {
         SECTION("Should correctly display the name and the version when executing it") {
-            const std::string expectedLine{std::string{strings::application::NAME} + " - Version " + version::getApplicationVersion().to_string()};
+            const std::string expectedLine{std::string{strings::application::NAME} + " - Version " +
+                                           version::getApplicationVersion().to_string()};
 
             [[maybe_unused]] const bool bExec{commandUnderTest.execute()};
 
@@ -39,8 +40,9 @@ TEST_CASE("VersionCommand unit tests", "[unit][sociable][rpi_gc][commands][Versi
     }
 
     SECTION("executeAsOption() method") {
-         SECTION("Should correctly display the name and the version when executing it") {
-            const std::string expectedLine{std::string{strings::application::NAME} + " - Version " + version::getApplicationVersion().to_string()};
+        SECTION("Should correctly display the name and the version when executing it") {
+            const std::string expectedLine{std::string{strings::application::NAME} + " - Version " +
+                                           version::getApplicationVersion().to_string()};
 
             [[maybe_unused]] const bool bExec{commandUnderTest.executeAsOption()};
 

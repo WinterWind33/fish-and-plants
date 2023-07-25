@@ -1,37 +1,38 @@
 // Copyright (c) 2023 Andrea ballestrazzi
 
-#include <src/project-io/json-project-reader.hpp>
 #include <project-management/project.hpp>
+#include <src/project-io/json-project-reader.hpp>
 
 #include <testing-core.hpp>
 
 // C++ STL
-#include <sstream>
 #include <chrono>
+#include <sstream>
 
 namespace tests {
 
-    template<gc::project_management::ProjectFieldValue ValueType>
-    ValueType createTestValue() {
-        if constexpr (std::is_same_v<ValueType, bool>)
-            return true;
-        if constexpr (std::is_integral_v<ValueType> && !std::is_same_v<ValueType, bool>) {
-            if constexpr (std::is_unsigned_v<ValueType>)
-                return 42u;
-            else
-                return -42;
-        }
-        if constexpr (std::is_floating_point_v<ValueType>)
-            return 42.0;
-        if constexpr (std::is_same_v<ValueType, std::string>)
-            return std::string{"test-str"};
-
-        return ValueType{};
+template <gc::project_management::ProjectFieldValue ValueType>
+ValueType createTestValue() {
+    if constexpr (std::is_same_v<ValueType, bool>)
+        return true;
+    if constexpr (std::is_integral_v<ValueType> && !std::is_same_v<ValueType, bool>) {
+        if constexpr (std::is_unsigned_v<ValueType>)
+            return 42u;
+        else
+            return -42;
     }
+    if constexpr (std::is_floating_point_v<ValueType>)
+        return 42.0;
+    if constexpr (std::is_same_v<ValueType, std::string>)
+        return std::string{"test-str"};
+
+    return ValueType{};
+}
 
 } // namespace tests
 
-TEST_CASE("JsonProjectReader unit tests", "[unit][sociable][project-management][project-io][JsonProjectReader]") {
+TEST_CASE("JsonProjectReader unit tests",
+          "[unit][sociable][project-management][project-io][JsonProjectReader]") {
     using namespace gc::project_management;
 
     GIVEN("A project with invalid version") {
@@ -68,7 +69,10 @@ TEST_CASE("JsonProjectReader unit tests", "[unit][sociable][project-management][
             }
         )")};
 
-        const Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
+        const Project expectedProject{
+            std::chrono::system_clock::from_time_t(1672576240), "test-title",
+            semver::version{1, 2, 3}
+        };
 
         project_io::JsonProjectReader projectReaderUnderTest{std::move(inputStream)};
 
@@ -83,8 +87,9 @@ TEST_CASE("JsonProjectReader unit tests", "[unit][sociable][project-management][
     }
 }
 
-TEMPLATE_TEST_CASE("JsonProjectReader values unit tests", "[unit][sociable][modules][project-management][JsonProjectReader][values]",
-    bool, std::int64_t, std::uint64_t, double, std::string) {
+TEMPLATE_TEST_CASE("JsonProjectReader values unit tests",
+                   "[unit][sociable][modules][project-management][JsonProjectReader][values]", bool,
+                   std::int64_t, std::uint64_t, double, std::string) {
     static_assert(gc::project_management::ProjectFieldValue<TestType>);
 
     using namespace gc::project_management;
@@ -115,7 +120,10 @@ TEMPLATE_TEST_CASE("JsonProjectReader values unit tests", "[unit][sociable][modu
 
         auto inputStream{std::make_unique<std::istringstream>(jsonStream.str())};
 
-        Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
+        Project expectedProject{
+            std::chrono::system_clock::from_time_t(1672576240), "test-title",
+            semver::version{1, 2, 3}
+        };
         expectedProject.addValue("test-value", 42);
 
         WHEN("The project is read") {
@@ -146,8 +154,8 @@ TEMPLATE_TEST_CASE("JsonProjectReader values unit tests", "[unit][sociable][modu
         const TestType testValue{tests::createTestValue<TestType>()};
 
         constexpr std::size_t ARRAY_SIZE{5};
-        for(std::size_t i{0}; i < ARRAY_SIZE; ++i) {
-            if(i != 0)
+        for (std::size_t i{0}; i < ARRAY_SIZE; ++i) {
+            if (i != 0)
                 jsonStream << ", ";
 
             if constexpr (std::is_same_v<TestType, bool>)
@@ -167,7 +175,10 @@ TEMPLATE_TEST_CASE("JsonProjectReader values unit tests", "[unit][sociable][modu
 
         auto inputStream{std::make_unique<std::istringstream>(jsonStream.str())};
 
-        Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
+        Project expectedProject{
+            std::chrono::system_clock::from_time_t(1672576240), "test-title",
+            semver::version{1, 2, 3}
+        };
         expectedProject.addValueArray("test-value-array", {testValue});
 
         WHEN("The project is read") {
@@ -182,7 +193,7 @@ TEMPLATE_TEST_CASE("JsonProjectReader values unit tests", "[unit][sociable][modu
                     REQUIRE(inputProject.containsValueArray("test-value-array"));
                     const auto& arr{inputProject.getValueArray("test-value-array")};
 
-                    for(const auto& val : arr)
+                    for (const auto& val : arr)
                         CHECK(std::get<TestType>(val) == testValue);
                 }
             }
@@ -190,7 +201,8 @@ TEMPLATE_TEST_CASE("JsonProjectReader values unit tests", "[unit][sociable][modu
     }
 }
 
-TEST_CASE("JsonProjectReader objects unit tests", "[unit][sociable][modules][project-management][JsonProjectReader][objects]") {
+TEST_CASE("JsonProjectReader objects unit tests",
+          "[unit][sociable][modules][project-management][JsonProjectReader][objects]") {
     using namespace gc::project_management;
     using namespace gc::project_management::project_io;
 
@@ -210,7 +222,10 @@ TEST_CASE("JsonProjectReader objects unit tests", "[unit][sociable][modules][pro
 
         auto inputStream{std::make_unique<std::istringstream>(jsonStream.str())};
 
-        Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
+        Project expectedProject{
+            std::chrono::system_clock::from_time_t(1672576240), "test-title",
+            semver::version{1, 2, 3}
+        };
 
         WHEN("The project is read") {
             project_io::JsonProjectReader projectReaderUnderTest{std::move(inputStream)};
@@ -232,7 +247,8 @@ TEST_CASE("JsonProjectReader objects unit tests", "[unit][sociable][modules][pro
     }
 }
 
-TEST_CASE("JsonProjectReader complex project structure unit tests", "[unit][sociable][modules][project-management][JsonProjectReader][objects]") {
+TEST_CASE("JsonProjectReader complex project structure unit tests",
+          "[unit][sociable][modules][project-management][JsonProjectReader][objects]") {
     using namespace gc::project_management;
     using namespace gc::project_management::project_io;
 
@@ -253,7 +269,10 @@ TEST_CASE("JsonProjectReader complex project structure unit tests", "[unit][soci
 
         auto inputStream{std::make_unique<std::istringstream>(jsonStream.str())};
 
-        Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
+        Project expectedProject{
+            std::chrono::system_clock::from_time_t(1672576240), "test-title",
+            semver::version{1, 2, 3}
+        };
         expectedProject.addValue("test-value", 42);
         expectedProject.addValueArray("test-value-array", {1, 2, 3});
 
@@ -321,7 +340,10 @@ TEST_CASE("JsonProjectReader complex project structure unit tests", "[unit][soci
 
         auto inputStream{std::make_unique<std::istringstream>(jsonStream.str())};
 
-        Project expectedProject{std::chrono::system_clock::from_time_t(1672576240), "test-title", semver::version{1, 2, 3}};
+        Project expectedProject{
+            std::chrono::system_clock::from_time_t(1672576240), "test-title",
+            semver::version{1, 2, 3}
+        };
         expectedProject.addValue("test-value", 42);
         expectedProject.addValueArray("test-value-array", {1, 2, 3});
 

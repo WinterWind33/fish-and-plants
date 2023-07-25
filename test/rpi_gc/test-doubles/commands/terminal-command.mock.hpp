@@ -10,23 +10,23 @@
 
 namespace rpi_gc::mocks {
 
-    template<typename CharT>
-    class TerminalCommandMock : public TerminalCommand<CharT> {
-    public:
-        using typename TerminalCommand<CharT>::name_type;
-        using typename TerminalCommand<CharT>::string_type;
-        using typename TerminalCommand<CharT>::help_ostream_type;
+template <typename CharT>
+class TerminalCommandMock : public TerminalCommand<CharT> {
+public:
+    using typename TerminalCommand<CharT>::name_type;
+    using typename TerminalCommand<CharT>::string_type;
+    using typename TerminalCommand<CharT>::help_ostream_type;
 
-        ~TerminalCommandMock() noexcept override = default;
+    ~TerminalCommandMock() noexcept override = default;
 
-        // From Command
-        MOCK_METHOD(name_type, getName, (), (const, noexcept, override));
-        MOCK_METHOD(bool, execute, (), (noexcept, override));
+    // From Command
+    MOCK_METHOD(name_type, getName, (), (const, noexcept, override));
+    MOCK_METHOD(bool, execute, (), (noexcept, override));
 
-        // From TerminalCommand
-        MOCK_METHOD(bool, processInputOptions, (const std::vector<string_type>&), (override));
-        MOCK_METHOD(void, printHelp, (help_ostream_type), (const, noexcept, override));
-    };
+    // From TerminalCommand
+    MOCK_METHOD(bool, processInputOptions, (const std::vector<string_type>&), (override));
+    MOCK_METHOD(void, printHelp, (help_ostream_type), (const, noexcept, override));
+};
 
 } // namespace rpi_gc::mocks
 

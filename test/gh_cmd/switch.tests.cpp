@@ -1,6 +1,6 @@
 // Copyright (c) 2022 Andrea Ballestrazzi
-#include <testing-core.hpp>
 #include <gh_cmd/gh_cmd.hpp>
+#include <testing-core.hpp>
 
 // Test doubles
 #include <gh_cmd/test-doubles/option-visitor.mock.hpp>
@@ -16,7 +16,8 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
         constexpr std::string_view EXPECTED_LONG_NAME{"help"};
         constexpr std::string_view EXPECTED_DESCRIPTION{"Produces help message"};
 
-        Switch<char> switchUnderTest{EXPECTED_SHORT_NAME, std::string{EXPECTED_LONG_NAME}, std::string{EXPECTED_DESCRIPTION}};
+        Switch<char> switchUnderTest{EXPECTED_SHORT_NAME, std::string{EXPECTED_LONG_NAME},
+                                     std::string{EXPECTED_DESCRIPTION}};
 
         SECTION("It should retrieve the correct short name") {
             CHECK(switchUnderTest.getShortName() == EXPECTED_SHORT_NAME);
@@ -36,7 +37,8 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
         constexpr std::string_view DUMMY_LONG_NAME{"help"};
         constexpr std::string_view DUMMY_DESCRIPTION{"Produces help message"};
 
-        Switch<char> switchUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME}, std::string{DUMMY_DESCRIPTION}};
+        Switch<char> switchUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME},
+                                     std::string{DUMMY_DESCRIPTION}};
 
         SECTION("Method: acceptVisitor() non-const") {
             using BaseOptionImplType = CommandOption<char>::base_impl_type;
@@ -52,7 +54,7 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
 
             SECTION("Should pass to the visit() method a valid pointer") {
                 OptionVisitorMockType optionVisitorMock{};
-                EXPECT_CALL(optionVisitorMock, visit).WillOnce([](VisitorArgumentType option){
+                EXPECT_CALL(optionVisitorMock, visit).WillOnce([](VisitorArgumentType option) {
                     CHECK(option != nullptr);
                 });
 
@@ -63,7 +65,8 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
         SECTION("Method: acceptVisitor() const") {
             using BaseOptionImplType = CommandOption<char>::base_impl_type;
             using VisitorArgumentType = std::shared_ptr<const BaseOptionImplType>;
-            using OptionVisitorMockType = testing::StrictMock<mocks::ConstOptionVisitorMock<VisitorArgumentType>>;
+            using OptionVisitorMockType =
+                testing::StrictMock<mocks::ConstOptionVisitorMock<VisitorArgumentType>>;
 
             SECTION("Should call the visitor visit() method") {
                 OptionVisitorMockType optionVisitorMock{};
@@ -74,7 +77,7 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
 
             SECTION("Should pass to the visit() method a valid pointer") {
                 OptionVisitorMockType optionVisitorMock{};
-                EXPECT_CALL(optionVisitorMock, visit).WillOnce([](VisitorArgumentType option){
+                EXPECT_CALL(optionVisitorMock, visit).WillOnce([](VisitorArgumentType option) {
                     CHECK(option != nullptr);
                 });
 
@@ -88,7 +91,8 @@ TEST_CASE("Switch sociable unit tests", "[unit][sociable][gh_cmd][Switch]") {
         constexpr std::string_view DUMMY_LONG_NAME{"help"};
         constexpr std::string_view DUMMY_DESCRIPTION{"Produces help message"};
 
-        Switch<char> switchUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME}, std::string{DUMMY_DESCRIPTION}};
+        Switch<char> switchUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME},
+                                     std::string{DUMMY_DESCRIPTION}};
         WHEN("Switch::clear() is called") {
             switchUnderTest.clear();
 

@@ -6,8 +6,8 @@
 
 namespace gh_hal::hardware_access {
 
-    std::unique_ptr<BoardChip> BoardChipFactory::openChipByPath(std::filesystem::path chipPath) {
-        return std::make_unique<internal::BoardChipImpl>(std::move(chipPath));
-    }
+std::unique_ptr<BoardChip> BoardChipFactory::openChipByPath(std::filesystem::path chipPath) {
+    return std::make_unique<internal::BoardChipImpl>(std::move(chipPath));
+}
 
-} // namespace hardware_access
+} // namespace gh_hal::hardware_access

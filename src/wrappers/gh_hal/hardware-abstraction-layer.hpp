@@ -2,29 +2,29 @@
 #pragma once
 
 // C++ STL
-#include <string>
 #include <cstdint>
+#include <string>
 
 namespace gh_hal {
 
+//!!
+//! \brief Utility class, used to retrieve info about the
+//! backend module.
+//!
+class BackendModule final {
+public:
+    using name_type = std::string;
+    using version_type = std::string;
+
     //!!
-    //! \brief Utility class, used to retrieve info about the
-    //! backend module.
+    //! \brief Get the Backend Module Name
     //!
-    class BackendModule final {
-    public:
-        using name_type = std::string;
-        using version_type = std::string;
+    static auto GetBackendModuleName() noexcept -> name_type;
 
-        //!!
-        //! \brief Get the Backend Module Name
-        //!
-        static auto GetBackendModuleName() noexcept -> name_type;
-
-        //!!
-        //! \brief Get the Backend Module Version
-        //!
-        static auto GetBackendModuleVersion() noexcept -> version_type;
-    };
+    //!!
+    //! \brief Get the Backend Module Version
+    //!
+    static auto GetBackendModuleVersion() noexcept -> version_type;
+};
 
 } // namespace gh_hal

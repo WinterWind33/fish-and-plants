@@ -17,36 +17,38 @@
 
 namespace gh_hal::internal {
 
-    namespace details {
+namespace details {
 #ifdef USE_LIBGPIOD
-        using BackendChipType = gpiod::chip;
+using BackendChipType = gpiod::chip;
 #else
-        using BackendChipType = backends::simulated::SimulatedChip;
+using BackendChipType = backends::simulated::SimulatedChip;
 #endif // USE_LIBGPIOD
-    } // namespace details
+} // namespace details
 
-    class BoardChipImpl final : public gh_hal::hardware_access::BoardChip {
-    public:
-        using chip_unique_ptr = std::unique_ptr<details::BackendChipType>;
-        using offsets_vector = std::vector<hardware_access::BoardDigitalPin::offset_type>;
+class BoardChipImpl final : public gh_hal::hardware_access::BoardChip {
+public:
+    using chip_unique_ptr = std::unique_ptr<details::BackendChipType>;
+    using offsets_vector = std::vector<hardware_access::BoardDigitalPin::offset_type>;
 
-        explicit BoardChipImpl(const std::filesystem::path& chipPath);
+    explicit BoardChipImpl(const std::filesystem::path& chipPath);
 
-        // Line requests
-        std::unique_ptr<hardware_access::BoardDigitalPin> requestDigitalPin(std::string consumer,
-            hardware_access::BoardDigitalPin::offset_type offset,
-            const hardware_access::DigitalPinRequestDirection direction) noexcept override;
+    // Line requests
+    std::unique_ptr<hardware_access::BoardDigitalPin> requestDigitalPin(
+        std::string consumer, hardware_access::BoardDigitalPin::offset_type offset,
+        const hardware_access::DigitalPinRequestDirection direction) noexcept override;
 
-        std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> requestDigitalPinPool(std::string consumer,
-            std::vector<hardware_access::BoardDigitalPin::offset_type> offset, const hardware_access::DigitalPinRequestDirection direction) noexcept override;
+    std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> requestDigitalPinPool(
+        std::string consumer, std::vector<hardware_access::BoardDigitalPin::offset_type> offset,
+        const hardware_access::DigitalPinRequestDirection direction) noexcept override;
 
-        bool releaseRequest(std::vector<hardware_access::BoardDigitalPin::offset_type> offsets) noexcept override;
+    bool releaseRequest(
+        std::vector<hardware_access::BoardDigitalPin::offset_type> offsets) noexcept override;
 
-        explicit operator bool() const noexcept;
+    explicit operator bool() const noexcept;
 
-    private:
-        chip_unique_ptr m_chipPtr{};
-        std::vector<std::pair<offsets_vector, LineRequest>> m_lineRequests{};
-    };
+private:
+    chip_unique_ptr m_chipPtr{};
+    std::vector<std::pair<offsets_vector, LineRequest>> m_lineRequests{};
+};
 
 } // namespace gh_hal::internal

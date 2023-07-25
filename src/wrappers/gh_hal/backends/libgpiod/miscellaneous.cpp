@@ -5,8 +5,8 @@
 
 namespace gh_hal::backends::libgpiod_impl {
 
-    VersionString GetLibraryVersion() noexcept {
-        return VersionString{gpiod::api_version()};
-    }
+VersionString GetLibraryVersion() noexcept {
+    return VersionString{gpiod::api_version()};
+}
 
 } // namespace gh_hal::backends::libgpiod_impl

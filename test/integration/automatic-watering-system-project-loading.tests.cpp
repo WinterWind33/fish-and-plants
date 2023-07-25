@@ -4,14 +4,15 @@
 #include <gc-project/project-controller.hpp>
 
 // Test doubles
+#include <gh_hal/test-doubles/hardware-access/board-digital-pin.mock.hpp>
+#include <gh_log/test-doubles/logger.mock.hpp>
 #include <rpi_gc/test-doubles/automatic-watering/hardware-controllers/watering-system-hardware-controller.mock.hpp>
 #include <rpi_gc/test-doubles/automatic-watering/time-providers/watering-system-time-provider.mock.hpp>
-#include <gh_log/test-doubles/logger.mock.hpp>
-#include <gh_hal/test-doubles/hardware-access/board-digital-pin.mock.hpp>
 
 #include <testing-core.hpp>
 
-SCENARIO("AWS configuration loading integration tests", "[integration][AutomaticWateringSystem][Project][ProjectController]") {
+SCENARIO("AWS configuration loading integration tests",
+         "[integration][AutomaticWateringSystem][Project][ProjectController]") {
     using namespace rpi_gc::gc_project;
     using namespace gc::project_management;
     using namespace rpi_gc::automatic_watering;
@@ -19,31 +20,33 @@ SCENARIO("AWS configuration loading integration tests", "[integration][Automatic
     using ::testing::NiceMock;
     using ::testing::StrictMock;
 
-    std::shared_ptr<StrictMock<gh_log::mocks::LoggerMock>> mainLoggerMock{std::make_shared<StrictMock<gh_log::mocks::LoggerMock>>()};
-    std::shared_ptr<StrictMock<gh_log::mocks::LoggerMock>> userLoggerMock{std::make_shared<StrictMock<gh_log::mocks::LoggerMock>>()};
+    std::shared_ptr<StrictMock<gh_log::mocks::LoggerMock>> mainLoggerMock{
+        std::make_shared<StrictMock<gh_log::mocks::LoggerMock>>()};
+    std::shared_ptr<StrictMock<gh_log::mocks::LoggerMock>> userLoggerMock{
+        std::make_shared<StrictMock<gh_log::mocks::LoggerMock>>()};
 
     std::unique_ptr<StrictMock<mocks::WateringSystemHardwareControllerMock>> hardwareControllerMock{
-        std::make_unique<StrictMock<mocks::WateringSystemHardwareControllerMock>>()
-    };
+        std::make_unique<StrictMock<mocks::WateringSystemHardwareControllerMock>>()};
 
-    std::atomic<WateringSystemHardwareController*> atomicHardwareController{hardwareControllerMock.get()};
+    std::atomic<WateringSystemHardwareController*> atomicHardwareController{
+        hardwareControllerMock.get()};
     mocks::WateringSystemHardwareControllerMock& hardwareControllerMockRef{*hardwareControllerMock};
 
     // Create the daily cycle automatic watering system under test
-    std::shared_ptr<StrictMock<mocks::WateringSystemTimeProviderMock>> timeProviderMock{std::make_shared<StrictMock<mocks::WateringSystemTimeProviderMock>>()};
+    std::shared_ptr<StrictMock<mocks::WateringSystemTimeProviderMock>> timeProviderMock{
+        std::make_shared<StrictMock<mocks::WateringSystemTimeProviderMock>>()};
     std::atomic<WateringSystemTimeProvider*> timeProviderAtomic{timeProviderMock.get()};
     std::mutex hardwareAccessMutex{};
 
     DailyCycleAutomaticWateringSystem awsUnderTest{
-        std::ref(hardwareAccessMutex),
-        mainLoggerMock,
-        userLoggerMock,
-        std::ref(atomicHardwareController),
-        std::ref(timeProviderAtomic)
-    };
+        std::ref(hardwareAccessMutex), mainLoggerMock, userLoggerMock,
+        std::ref(atomicHardwareController), std::ref(timeProviderAtomic)};
 
     ProjectController projectController{};
-    Project project{Project::time_point_type{}, "TestProject", semver::version{1, 1, 0}};
+    Project project{
+        Project::time_point_type{},
+        "TestProject", semver::version{1, 1, 0}
+    };
 
     // Add the automatic watering system configuration to the project
     ProjectNode automaticWateringSystemNode{}, awsFlowNode{};
@@ -68,9 +71,15 @@ SCENARIO("AWS configuration loading integration tests", "[integration][Automatic
         THEN("The AWS should load its configuration from the project") {
             EXPECT_CALL(hardwareControllerMockRef, setWaterValveDigitalOutputID(23)).Times(1);
             EXPECT_CALL(hardwareControllerMockRef, setWaterPumpDigitalOutputID(26)).Times(1);
-            EXPECT_CALL(*timeProviderMock, setWateringSystemActivationDuration(std::chrono::milliseconds(600))).Times(1);
-            EXPECT_CALL(*timeProviderMock, setWateringSystemDeactivationDuration(std::chrono::milliseconds(1200))).Times(1);
-            EXPECT_CALL(*timeProviderMock, setPumpValveDeactivationTimeSeparation(std::chrono::milliseconds(300))).Times(1);
+            EXPECT_CALL(*timeProviderMock,
+                        setWateringSystemActivationDuration(std::chrono::milliseconds(600)))
+                .Times(1);
+            EXPECT_CALL(*timeProviderMock,
+                        setWateringSystemDeactivationDuration(std::chrono::milliseconds(1200)))
+                .Times(1);
+            EXPECT_CALL(*timeProviderMock,
+                        setPumpValveDeactivationTimeSeparation(std::chrono::milliseconds(300)))
+                .Times(1);
 
             CHECK_NOTHROW(projectController.loadProjectData());
         }

@@ -5,7 +5,7 @@
 
 #ifdef USE_GMOCK
 #include <gmock/gmock.h>
-#endif  // USE_GMOCK
+#endif // USE_GMOCK
 
 // C++ STL
 #include <cstdint>

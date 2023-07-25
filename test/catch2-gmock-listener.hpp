@@ -21,5 +21,5 @@ public:
     void OnTestPartResult(const testing::TestPartResult& result) override;
 };
 
-#endif  // USE_CATCH2_AS_TESTING_FRAMEWORK && USE_GMOCK
-#endif  // !CATCH2_GMOCK_LISTENER_HPP
+#endif // USE_CATCH2_AS_TESTING_FRAMEWORK && USE_GMOCK
+#endif // !CATCH2_GMOCK_LISTENER_HPP

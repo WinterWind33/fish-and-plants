@@ -44,7 +44,7 @@ CreateConfigurableAWSTimeProvider() noexcept {
         defaultTimeProvider.getPumpValveDeactivationTimeSeparation());
 }
 
-}  // namespace automatic_watering
+} // namespace automatic_watering
 
 namespace constants {
 
@@ -53,7 +53,7 @@ constexpr rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_o
 constexpr rpi_gc::automatic_watering::DailyCycleAWSHardwareController::digital_output_id
     WATER_PUMP_PIN_ID{23};
 
-}  // namespace constants
+} // namespace constants
 
 namespace commands_factory {
 
@@ -195,13 +195,13 @@ template <typename WateringSystemPointer, typename OptionParserType>
                                            std::cout);
 }
 
-}  // namespace commands_factory
+} // namespace commands_factory
 
 namespace hardware_chip_paths {
 
 constexpr std::string_view RASPBERRY_PI_3B_PLUS_CHIP_PATH_GPIO0{"/dev/gpiochip0"};
 
-}  // namespace hardware_chip_paths
+} // namespace hardware_chip_paths
 
 namespace details {
 
@@ -216,7 +216,7 @@ T ClampWithError(const T value, const T minVal, const T maxVal, gh_log::Logger& 
     return clampedValue;
 }
 
-}  // namespace details
+} // namespace details
 
 // This is the entry point of the application. Here, it starts
 // the main execution of the greenhouse controller.

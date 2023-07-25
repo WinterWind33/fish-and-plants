@@ -6,58 +6,55 @@
 #include <project-management/project.hpp>
 
 // C++ STL
-#include <optional>
 #include <filesystem>
-#include <vector>
 #include <functional>
+#include <optional>
+#include <vector>
 
 namespace rpi_gc::gc_project {
 
+//!!
+//! \brief Controller of a Greenhouse CAD project.
+//!
+class ProjectController final {
+public:
+    using project_type = gc::project_management::Project;
+
+    [[nodiscard]] bool hasProject() const noexcept {
+        return m_currentProject.has_value();
+    }
+
+    [[nodiscard]] const project_type& getCurrentProject() const {
+        return m_currentProject.value();
+    }
+
     //!!
-    //! \brief Controller of a Greenhouse CAD project.
+    //! \brief Sets the current project of this project controller. Closes
+    //!  the previous one if set.
     //!
-    class ProjectController final {
-    public:
-        using project_type = gc::project_management::Project;
+    //! \param project The new project to control.
+    void setCurrentProject(project_type&& project);
 
-        [[nodiscard]]
-        bool hasProject() const noexcept {
-            return m_currentProject.has_value();
-        }
+    void setCurrentProjectFilePath(std::filesystem::path filepath) noexcept {
+        m_currentProjectFilePath = std::move(filepath);
+    }
 
-        [[nodiscard]]
-        const project_type& getCurrentProject() const {
-            return m_currentProject.value();
-        }
+    void collectProjectData();
+    void loadProjectData();
 
-        //!!
-        //! \brief Sets the current project of this project controller. Closes
-        //!  the previous one if set.
-        //!
-        //! \param project The new project to control.
-        void setCurrentProject(project_type&& project);
+    void registerProjectComponent(ProjectComponent& projectComponent) {
+        m_projectComponents.push_back(std::ref(projectComponent));
+    }
 
-        void setCurrentProjectFilePath(std::filesystem::path filepath) noexcept {
-            m_currentProjectFilePath = std::move(filepath);
-        }
+    [[nodiscard]] const auto& getCurrentProjectFilePath() const noexcept {
+        return m_currentProjectFilePath;
+    }
 
-        void collectProjectData();
-        void loadProjectData();
-
-        void registerProjectComponent(ProjectComponent& projectComponent) {
-            m_projectComponents.push_back(std::ref(projectComponent));
-        }
-
-        [[nodiscard]]
-        const auto& getCurrentProjectFilePath() const noexcept {
-            return m_currentProjectFilePath;
-        }
-
-    private:
-        void close_current_project() noexcept;
-        std::optional<project_type> m_currentProject{};
-        std::filesystem::path m_currentProjectFilePath{};
-        std::vector<std::reference_wrapper<ProjectComponent>> m_projectComponents{};
-    };
+private:
+    void close_current_project() noexcept;
+    std::optional<project_type> m_currentProject{};
+    std::filesystem::path m_currentProjectFilePath{};
+    std::vector<std::reference_wrapper<ProjectComponent>> m_projectComponents{};
+};
 
 } // namespace rpi_gc::gc_project
