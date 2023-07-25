@@ -22,11 +22,11 @@ public:
     constexpr void activate() const noexcept {}
     constexpr void deactivate() const noexcept {}
 
-    constexpr offset_type getOffsetValue() const noexcept {
+    [[nodiscard]] constexpr offset_type getOffsetValue() const noexcept {
         return m_pinOffset;
     }
 
-    constexpr explicit operator bool() const noexcept {
+    [[nodiscard]] constexpr explicit operator bool() const noexcept {
         return m_pinOffset != INVALID_OFFSET;
     }
 

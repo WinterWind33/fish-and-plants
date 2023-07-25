@@ -32,14 +32,14 @@ public:
     //!!
     //! \brief Retrieves the path used to open this chip.
     //!
-    chip_path getChipPath() const noexcept {
+    [[nodiscard]] chip_path getChipPath() const noexcept {
         return m_chipPath;
     }
 
     //!!
     //! \brief Checks whether or not the simulation is active for this chip object.
     //!
-    explicit operator bool() const noexcept {
+    [[nodiscard]] explicit operator bool() const noexcept {
         return m_bIsOpened;
     }
 

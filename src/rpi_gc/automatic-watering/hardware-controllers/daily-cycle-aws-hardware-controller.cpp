@@ -15,8 +15,8 @@ constexpr std::string_view HARDWARE_CONTROLLER_CONSUMER{"FeP_Daily_Cycle_AWS_Har
 DailyCycleAWSHardwareController::DailyCycleAWSHardwareController(
     mutex_reference mutex, chip_reference chipRef, const digital_output_id waterValvePinId,
     const digital_output_id waterPumpValvePinId) noexcept
-    : m_mutex{std::move(mutex)},
-      m_chipRef{std::move(chipRef)} {
+    : m_mutex{mutex},
+      m_chipRef{chipRef} {
     m_waterValveDigitalOut = std::make_pair(
         waterValvePinId, m_chipRef.get().requestDigitalPin(
                              std::string{details::HARDWARE_CONTROLLER_CONSUMER}, waterValvePinId,

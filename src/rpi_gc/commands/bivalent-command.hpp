@@ -20,7 +20,7 @@ struct BivalentCommand : public TerminalCommand<CharType> {
     using option_type = gh_cmd::CommandOption<char_type>;
     using option_pointer = std::shared_ptr<option_type>;
 
-    ~BivalentCommand() noexcept override = default;
+    virtual ~BivalentCommand() noexcept override = default;
 
     //!!
     //! \brief Builds and retrieves an option starting from the command state.

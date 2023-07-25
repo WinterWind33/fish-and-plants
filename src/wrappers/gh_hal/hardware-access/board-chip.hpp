@@ -70,7 +70,7 @@ public:
     //! \param chipPath The path of the chip to be opened.
     //! \return A pointer to the opened chip or nullptr in case of an error.
     [[nodiscard]] static std::unique_ptr<board_chip_type> openChipByPath(
-        std::filesystem::path chipPath);
+        const std::filesystem::path& chipPath);
 };
 
 //!!
