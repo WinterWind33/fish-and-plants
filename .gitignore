@@ -124,5 +124,6 @@ releases
 
 # We exclude the GTest package as it's automatically downloaded when running
 # cmake build
-src/third-party/*
+src/third-party/spdlog-*
+src/third-party/libgpiod*
 src/third-party/_temp*
