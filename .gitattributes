@@ -15,6 +15,7 @@
 .gitmodules text eol=lf
 .clang-format text eol=lf
 .clang-tidy text eol=lf
+.pre-commit-config.yaml text eol=lf
 *.yml text eol=lf
 
 *.sln text eol=crlf
