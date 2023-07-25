@@ -43,7 +43,7 @@ jobs:
 
         - name: Run pre-commit hooks on tests
           if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-          run: pre-commit run --files $(git diff --name-only origin/main | grep "tests/")
+          run: pre-commit run --files $(git diff --name-only origin/main | grep "test/")
 
           # Since pre-commit hooks also check yaml files, we run the job even in
           # the .github folder.
