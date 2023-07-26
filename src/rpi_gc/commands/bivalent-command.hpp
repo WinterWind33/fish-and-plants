@@ -14,6 +14,7 @@ namespace rpi_gc {
 //! \brief Represents a command that can be used either as a normal command
 //!  or as an option for another command.
 //! \tparam CharType The type of the characters to be used.
+// NOLINTNEXTLINE(cppcoreguidelines-explicit-virtual-functions,modernize-use-override)
 template <typename CharType>
 struct BivalentCommand : public TerminalCommand<CharType> {
     using typename TerminalCommand<CharType>::char_type;
