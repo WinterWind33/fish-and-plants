@@ -2,9 +2,11 @@
 
 set(GC_FOLDER_PROVIDER_SOURCE_FILES
     "src/folder-provider.cpp"
+    "src/folder-provider-impl.cpp"
 )
 set(GC_FOLDER_PROVIDER_HEADER_FILES
     "include/folder-provider/folder-provider.hpp"
+    "src/folder-provider-impl.hpp"
 )
 
 add_library(gc_folder_provider STATIC ${GC_FOLDER_PROVIDER_SOURCE_FILES} ${GC_FOLDER_PROVIDER_HEADER_FILES})
