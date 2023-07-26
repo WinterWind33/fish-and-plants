@@ -53,6 +53,7 @@ option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
 option(USE_POPL20 "Use popl20 header-only library as command line parser." ON)
 option(USE_SEMVER "Use Neargye/semver third-library software as semantic versioning library." ON)
 option(GC_USE_NLOHMANN_JSON "Use nlohmann/json as json engine" ON)
+option(GC_USE_SAGO_PLATFORM_FOLDERS "Use sago/platform_folders as platform folders library" ON)
 
 # === Project dependencies ===
 include(FetchContent)
@@ -90,6 +91,24 @@ if(USE_SPDLOG)
     FetchContent_MakeAvailable(spdlog)
 
     set_target_properties(spdlog
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
+    )
+endif()
+
+if(GC_USE_SAGO_PLATFORM_FOLDERS)
+    message(STATUS "Using sago/PlatformFolders third-party library")
+
+    FetchContent_Declare(platform_folders
+        GIT_REPOSITORY "https://github.com/sago007/PlatformFolders.git"
+        GIT_TAG "4.2.0"
+    )
+
+    FetchContent_MakeAvailable(platform_folders)
+
+    set_target_properties(platform_folders
         PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
         LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
