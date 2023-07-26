@@ -31,8 +31,9 @@ TEST_CASE("Project fields static tests", "[static][modules][project-management][
     STATIC_CHECK(ProjectFieldKey<const char*>);
 }
 
-TEMPLATE_TEST_CASE("ProjectNode unit tests", "[unit][solitary][modules][project-management][ProjectNode]",
-    std::int64_t, double, std::string) {
+TEMPLATE_TEST_CASE("ProjectNode unit tests",
+                   "[unit][solitary][modules][project-management][ProjectNode]", std::int64_t,
+                   double, std::string) {
     using namespace gc::project_management;
 
     GIVEN("An empty ProjectNode object") {
@@ -53,10 +54,8 @@ TEMPLATE_TEST_CASE("ProjectNode unit tests", "[unit][solitary][modules][project-
 
         WHEN("A new value array is added") {
             constexpr std::string_view KEY_VAL("key-value");
-            nodeUnderTest.addValueArray(std::string{KEY_VAL}, std::vector<TestType>{
-                TestType{0},
-                TestType{0}
-            });
+            nodeUnderTest.addValueArray(std::string{KEY_VAL},
+                                        std::vector<TestType>{TestType{0}, TestType{0}});
 
             THEN("The node should not have one single values") {
                 const auto& values{nodeUnderTest.getValues()};
@@ -91,8 +90,10 @@ TEMPLATE_TEST_CASE("ProjectNode unit tests", "[unit][solitary][modules][project-
     }
 }
 
-TEMPLATE_TEST_CASE("ProjectNode queries unit tests", "[unit][solitary][modules][project-management][ProjectNode][queries]",
-   bool, char, std::int16_t, std::int32_t, std::int64_t, std::uint16_t, std::uint32_t, std::uint64_t, float, double, std::string) {
+TEMPLATE_TEST_CASE("ProjectNode queries unit tests",
+                   "[unit][solitary][modules][project-management][ProjectNode][queries]", bool,
+                   char, std::int16_t, std::int32_t, std::int64_t, std::uint16_t, std::uint32_t,
+                   std::uint64_t, float, double, std::string) {
     using namespace gc::project_management;
 
     ProjectNode nodeUnderTest{};

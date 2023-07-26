@@ -10,20 +10,20 @@
 
 namespace gh_log::mocks {
 
-    class LoggerMock : public gh_log::Logger {
-    public:
-        ~LoggerMock() noexcept override = default;
+class LoggerMock : public gh_log::Logger {
+public:
+    ~LoggerMock() noexcept override = default;
 
-        MOCK_METHOD(void, logMessage, (const ELoggingLevel, LogStringType), (override));
-        MOCK_METHOD(void, logTrace, (const LogStringType&), (override));
-        MOCK_METHOD(void, logDebug, (const LogStringType&), (override));
-        MOCK_METHOD(void, logInfo, (const LogStringType&), (override));
-        MOCK_METHOD(void, logWarning, (const LogStringType&), (override));
-        MOCK_METHOD(void, logError, (const LogStringType&), (override));
-        MOCK_METHOD(void, logCritical, (const LogStringType&), (override));
-        MOCK_METHOD(void, flush, (), (override));
-        MOCK_METHOD(void, setAutomaticFlushLevel, (const ELoggingLevel), (override));
-    };
+    MOCK_METHOD(void, logMessage, (const ELoggingLevel, LogStringType), (override));
+    MOCK_METHOD(void, logTrace, (const LogStringType&), (override));
+    MOCK_METHOD(void, logDebug, (const LogStringType&), (override));
+    MOCK_METHOD(void, logInfo, (const LogStringType&), (override));
+    MOCK_METHOD(void, logWarning, (const LogStringType&), (override));
+    MOCK_METHOD(void, logError, (const LogStringType&), (override));
+    MOCK_METHOD(void, logCritical, (const LogStringType&), (override));
+    MOCK_METHOD(void, flush, (), (override));
+    MOCK_METHOD(void, setAutomaticFlushLevel, (const ELoggingLevel), (override));
+};
 
 } // namespace gh_log::mocks
 

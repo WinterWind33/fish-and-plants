@@ -10,31 +10,31 @@
 
 namespace gh_hal {
 
-    namespace details {
+namespace details {
 
 #ifdef USE_LIBGPIOD
-        constexpr std::string_view BACKEND_MODULE_NAME{"libgpiod"};
+constexpr std::string_view BACKEND_MODULE_NAME{"libgpiod"};
 
-        auto GetBackendModuleVersionString() noexcept -> backends::libgpiod_impl::VersionString {
-            return backends::libgpiod_impl::GetLibraryVersion();
-        }
+auto GetBackendModuleVersionString() noexcept -> backends::libgpiod_impl::VersionString {
+    return backends::libgpiod_impl::GetLibraryVersion();
+}
 #else
-        constexpr std::string_view BACKEND_MODULE_NAME{"[None - Simulated]"};
-        constexpr std::string_view BACKEND_MODULE_VERSION_STRING{"[None - Simulated]"};
+constexpr std::string_view BACKEND_MODULE_NAME{"[None - Simulated]"};
+constexpr std::string_view BACKEND_MODULE_VERSION_STRING{"[None - Simulated]"};
 
-        constexpr std::string_view GetBackendModuleVersionString() noexcept {
-            return BACKEND_MODULE_VERSION_STRING;
-        }
+constexpr std::string_view GetBackendModuleVersionString() noexcept {
+    return BACKEND_MODULE_VERSION_STRING;
+}
 #endif // USE_LIBGPIOD
 
-    } // namespace details
+} // namespace details
 
-    auto BackendModule::GetBackendModuleName() noexcept -> name_type {
-        return name_type{details::BACKEND_MODULE_NAME};
-    }
+auto BackendModule::GetBackendModuleName() noexcept -> name_type {
+    return name_type{details::BACKEND_MODULE_NAME};
+}
 
-    auto BackendModule::GetBackendModuleVersion() noexcept -> version_type {
-        return version_type{details::GetBackendModuleVersionString()};
-    }
+auto BackendModule::GetBackendModuleVersion() noexcept -> version_type {
+    return version_type{details::GetBackendModuleVersionString()};
+}
 
 } // namespace gh_hal

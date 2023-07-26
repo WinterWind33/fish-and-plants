@@ -7,34 +7,34 @@
 
 namespace rpi_gc::strings::commands {
 
-    constexpr StringViewType HELP{"help"};
-    constexpr StringViewType VERSION{"version"};
-    constexpr StringViewType APPLICATION{strings::application::EXECUTABLE_NAME};
-    constexpr StringViewType ABORT{"abort"};
-    constexpr StringViewType EXIT{"exit"};
-    constexpr StringViewType AUTOMATIC_WATERING{"auto-watering"};
-    constexpr StringViewType STATUS{"status"};
-    constexpr StringViewType PROJECT{"project"};
+constexpr StringViewType HELP{"help"};
+constexpr StringViewType VERSION{"version"};
+constexpr StringViewType APPLICATION{strings::application::EXECUTABLE_NAME};
+constexpr StringViewType ABORT{"abort"};
+constexpr StringViewType EXIT{"exit"};
+constexpr StringViewType AUTOMATIC_WATERING{"auto-watering"};
+constexpr StringViewType STATUS{"status"};
+constexpr StringViewType PROJECT{"project"};
 
-    namespace feedbacks {
-        constexpr StringViewType TYPE_HELP{"Type \'help\' for a list of the available commands."};
-        constexpr StringViewType UNRECOGNIZED_COMMAND{"Command not recognized."};
-        constexpr StringViewType TEARING_DOWN{"Tearing down..."};
-        constexpr StringViewType GOODBYE{"Goodbye."};
+namespace feedbacks {
+constexpr StringViewType TYPE_HELP{"Type \'help\' for a list of the available commands."};
+constexpr StringViewType UNRECOGNIZED_COMMAND{"Command not recognized."};
+constexpr StringViewType TEARING_DOWN{"Tearing down..."};
+constexpr StringViewType GOODBYE{"Goodbye."};
 
-        namespace abort {
-            constexpr StringViewType EMERGENCY_ABORT_SYSTEM_LOGGER_NAME{"Emergency Abort"};
-            constexpr StringViewType ABORT_ISSUED{"ABORT COMMAND ISSUED."};
-            constexpr StringViewType STARTING_EMERGENCY_ABORT{"Starting emergency abort."};
-            constexpr StringViewType EMERGENCY_ABORT_FINISHED{"Emergency abort finished."};
-        } // namespace abort
-    } // namespace feedbacks
+namespace abort {
+constexpr StringViewType EMERGENCY_ABORT_SYSTEM_LOGGER_NAME{"Emergency Abort"};
+constexpr StringViewType ABORT_ISSUED{"ABORT COMMAND ISSUED."};
+constexpr StringViewType STARTING_EMERGENCY_ABORT{"Starting emergency abort."};
+constexpr StringViewType EMERGENCY_ABORT_FINISHED{"Emergency abort finished."};
+} // namespace abort
+} // namespace feedbacks
 
-    namespace options {
-        constexpr StringViewType AUTOMATIC_WATERING_HELP{"help"};
-        constexpr StringViewType AUTOMATIC_WATERING_STOP{"stop"};
-    } // namespace options
+namespace options {
+constexpr StringViewType AUTOMATIC_WATERING_HELP{"help"};
+constexpr StringViewType AUTOMATIC_WATERING_STOP{"stop"};
+} // namespace options
 
-} // namespace rpi_gc
+} // namespace rpi_gc::strings::commands
 
 #endif // !COMMANDS_STRINGS_HPP

@@ -4,48 +4,53 @@
 #include <gc-project/project-controller.hpp>
 
 // Test doubles
-#include <rpi_gc/test-doubles/automatic-watering/hardware-controllers/watering-system-hardware-controller.mock.hpp>
-#include <gh_log/test-doubles/logger.mock.hpp>
 #include <gh_hal/test-doubles/hardware-access/board-digital-pin.mock.hpp>
+#include <gh_log/test-doubles/logger.mock.hpp>
+#include <rpi_gc/test-doubles/automatic-watering/hardware-controllers/watering-system-hardware-controller.mock.hpp>
 
 #include <testing-core.hpp>
 
-SCENARIO("Daily-Cycle AWS project data saving", "[integration][AutomaticWateringSystem][Project][ProjectController]") {
+SCENARIO("Daily-Cycle AWS project data saving",
+         "[integration][AutomaticWateringSystem][Project][ProjectController]") {
     using namespace rpi_gc::gc_project;
     using namespace gc::project_management;
     using namespace rpi_gc::automatic_watering;
     using ::testing::NiceMock;
 
-    std::shared_ptr<NiceMock<gh_log::mocks::LoggerMock>> mainLoggerMock{std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
-    std::shared_ptr<NiceMock<gh_log::mocks::LoggerMock>> userLoggerMock{std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
+    std::shared_ptr<NiceMock<gh_log::mocks::LoggerMock>> mainLoggerMock{
+        std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
+    std::shared_ptr<NiceMock<gh_log::mocks::LoggerMock>> userLoggerMock{
+        std::make_shared<NiceMock<gh_log::mocks::LoggerMock>>()};
 
     std::unique_ptr<NiceMock<mocks::WateringSystemHardwareControllerMock>> hardwareControllerMock{
-        std::make_unique<NiceMock<mocks::WateringSystemHardwareControllerMock>>()
-    };
+        std::make_unique<NiceMock<mocks::WateringSystemHardwareControllerMock>>()};
     mocks::WateringSystemHardwareControllerMock& hardwareControllerMockRef{*hardwareControllerMock};
     NiceMock<gh_hal::hardware_access::mocks::BoardDigitalPinMock> valvePinMock{}, pumpPinMock{};
     ON_CALL(valvePinMock, getOffset).WillByDefault(testing::Return(23));
     ON_CALL(pumpPinMock, getOffset).WillByDefault(testing::Return(26));
-    ON_CALL(hardwareControllerMockRef, getWaterValveDigitalOut).WillByDefault(::testing::Return(&valvePinMock));
-    ON_CALL(hardwareControllerMockRef, getWaterPumpDigitalOut).WillByDefault(::testing::Return(&pumpPinMock));
+    ON_CALL(hardwareControllerMockRef, getWaterValveDigitalOut)
+        .WillByDefault(::testing::Return(&valvePinMock));
+    ON_CALL(hardwareControllerMockRef, getWaterPumpDigitalOut)
+        .WillByDefault(::testing::Return(&pumpPinMock));
 
-    std::atomic<WateringSystemHardwareController*> atomicHardwareController{hardwareControllerMock.get()};
+    std::atomic<WateringSystemHardwareController*> atomicHardwareController{
+        hardwareControllerMock.get()};
 
-    std::shared_ptr<DailyCycleAWSTimeProvider> timeProvider{std::make_shared<DailyCycleAWSTimeProvider>()};
+    std::shared_ptr<DailyCycleAWSTimeProvider> timeProvider{
+        std::make_shared<DailyCycleAWSTimeProvider>()};
 
     std::atomic<WateringSystemTimeProvider*> timeProviderAtomic{timeProvider.get()};
     std::mutex hardwareAccessMutex{};
 
     DailyCycleAutomaticWateringSystem awsUnderTest{
-        std::ref(hardwareAccessMutex),
-        mainLoggerMock,
-        userLoggerMock,
-        std::ref(atomicHardwareController),
-        std::ref(timeProviderAtomic)
-    };
+        std::ref(hardwareAccessMutex), mainLoggerMock, userLoggerMock,
+        std::ref(atomicHardwareController), std::ref(timeProviderAtomic)};
 
     ProjectController projectController{};
-    Project project{Project::time_point_type{}, "TestProject", semver::version{1, 1, 0}};
+    Project project{
+        Project::time_point_type{},
+        "TestProject", semver::version{1, 1, 0}
+    };
 
     projectController.setCurrentProject(std::move(project));
     projectController.registerProjectComponent(awsUnderTest);
@@ -85,9 +90,12 @@ SCENARIO("Daily-Cycle AWS project data saving", "[integration][AutomaticWatering
                     CHECK(std::get<bool>(awsFlowValues.at("isWaterPumpEnabled")) == true);
                     CHECK(std::get<std::uint64_t>(awsFlowValues.at("valvePinID")) == 23);
                     CHECK(std::get<std::uint64_t>(awsFlowValues.at("pumpPinID")) == 26);
-                    CHECK(std::get<std::int64_t>(awsFlowValues.at("activationTime")) == timeProvider->getWateringSystemActivationDuration().count());
-                    CHECK(std::get<std::int64_t>(awsFlowValues.at("deactivationTime")) == timeProvider->getWateringSystemDeactivationDuration().count());
-                    CHECK(std::get<std::int64_t>(awsFlowValues.at("deactivationSepTime")) == timeProvider->getPumpValveDeactivationTimeSeparation().count());
+                    CHECK(std::get<std::int64_t>(awsFlowValues.at("activationTime")) ==
+                          timeProvider->getWateringSystemActivationDuration().count());
+                    CHECK(std::get<std::int64_t>(awsFlowValues.at("deactivationTime")) ==
+                          timeProvider->getWateringSystemDeactivationDuration().count());
+                    CHECK(std::get<std::int64_t>(awsFlowValues.at("deactivationSepTime")) ==
+                          timeProvider->getPumpValveDeactivationTimeSeparation().count());
                 }
             }
         }

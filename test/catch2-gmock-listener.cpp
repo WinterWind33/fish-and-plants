@@ -2,8 +2,8 @@
 #include <catch2-gmock-listener.hpp>
 
 // C++ STL
-#include <string>
 #include <sstream>
+#include <string>
 
 #if defined(USE_CATCH2_AS_TESTING_FRAMEWORK) && defined(USE_GMOCK)
 
@@ -26,7 +26,7 @@ void GMCatch2Listener::OnTestPartResult(const testing::TestPartResult& result) {
     // name and the line-number.
     const char* const fileName{result.file_name()};
     std::string sourceFilename{};
-    if(fileName != nullptr)
+    if (fileName != nullptr)
         sourceFilename = fileName;
     std::size_t lineNumber{};
 

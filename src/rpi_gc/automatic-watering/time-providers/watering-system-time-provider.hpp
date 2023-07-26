@@ -7,20 +7,20 @@
 
 namespace rpi_gc::automatic_watering {
 
-    class WateringSystemTimeProvider {
-    public:
-        using time_unit = std::chrono::milliseconds;
+class WateringSystemTimeProvider {
+public:
+    using time_unit = std::chrono::milliseconds;
 
-        virtual ~WateringSystemTimeProvider() noexcept = default;
+    virtual ~WateringSystemTimeProvider() noexcept = default;
 
-        [[nodiscard]] virtual time_unit getWateringSystemActivationDuration() const noexcept = 0;
-        [[nodiscard]] virtual time_unit getWateringSystemDeactivationDuration() const noexcept = 0;
-        [[nodiscard]] virtual time_unit getPumpValveDeactivationTimeSeparation() const noexcept = 0;
+    [[nodiscard]] virtual time_unit getWateringSystemActivationDuration() const noexcept = 0;
+    [[nodiscard]] virtual time_unit getWateringSystemDeactivationDuration() const noexcept = 0;
+    [[nodiscard]] virtual time_unit getPumpValveDeactivationTimeSeparation() const noexcept = 0;
 
-        virtual void setWateringSystemActivationDuration(const time_unit duration) noexcept = 0;
-        virtual void setWateringSystemDeactivationDuration(const time_unit duration) noexcept = 0;
-        virtual void setPumpValveDeactivationTimeSeparation(const time_unit duration) noexcept = 0;
-    };
+    virtual void setWateringSystemActivationDuration(const time_unit duration) noexcept = 0;
+    virtual void setWateringSystemDeactivationDuration(const time_unit duration) noexcept = 0;
+    virtual void setPumpValveDeactivationTimeSeparation(const time_unit duration) noexcept = 0;
+};
 
 } // namespace rpi_gc::automatic_watering
 

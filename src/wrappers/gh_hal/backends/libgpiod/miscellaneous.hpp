@@ -6,16 +6,15 @@
 
 namespace gh_hal::backends::libgpiod_impl {
 
-    //!!
-    //! \brief The type of the string that will contain the version
-    //!  of the libgpiod library.
-    using VersionString = std::string;
+//!!
+//! \brief The type of the string that will contain the version
+//!  of the libgpiod library.
+using VersionString = std::string;
 
-    //!!
-    //! \brief Retrieves the version of the libgpiod library.
-    //!
-    //! \return The version of the libgpiod library.
-    [[nodiscard]]
-    auto GetLibraryVersion() noexcept -> VersionString;
+//!!
+//! \brief Retrieves the version of the libgpiod library.
+//!
+//! \return The version of the libgpiod library.
+[[nodiscard]] auto GetLibraryVersion() noexcept -> VersionString;
 
 } // namespace gh_hal::backends::libgpiod_impl

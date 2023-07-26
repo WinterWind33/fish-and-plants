@@ -15,38 +15,38 @@
 
 namespace gh_hal::internal {
 
-    class BoardDigitalPinImpl final : public hardware_access::BoardDigitalPin {
-    public:
+class BoardDigitalPinImpl final : public hardware_access::BoardDigitalPin {
+public:
 #ifdef USE_LIBGPIOD
-        using backend_type = backends::libgpiod_impl::NativeLineRequestType;
+    using backend_type = backends::libgpiod_impl::NativeLineRequestType;
 #else
-        using backend_type = const backends::simulated::DigitalBoardPin;
+    using backend_type = const backends::simulated::DigitalBoardPin;
 #endif // USE_LIBGPIOD
 
-        using backend_type_reference = std::reference_wrapper<backend_type>;
+    using backend_type_reference = std::reference_wrapper<backend_type>;
 
-        explicit BoardDigitalPinImpl(const hardware_access::BoardDigitalPin::offset_type offsetValue,
-            const hardware_access::DigitalPinRequestDirection direction, backend_type_reference backImpl) noexcept;
+    explicit BoardDigitalPinImpl(const hardware_access::BoardDigitalPin::offset_type offsetValue,
+                                 const hardware_access::DigitalPinRequestDirection direction,
+                                 backend_type_reference backImpl) noexcept;
 
-        [[nodiscard]]
-        hardware_access::DigitalPinRequestDirection getDirection() const noexcept override {
-            return m_direction;
-        }
+    [[nodiscard]] hardware_access::DigitalPinRequestDirection getDirection()
+        const noexcept override {
+        return m_direction;
+    }
 
-        void activate() noexcept override;
-        void deactivate() noexcept override;
+    void activate() noexcept override;
+    void deactivate() noexcept override;
 
-        void printStatus(std::ostream& ostream) const noexcept override;
+    void printStatus(std::ostream& ostream) const noexcept override;
 
-        [[nodiscard]]
-        inline offset_type getOffset() const noexcept override {
-            return m_offset;
-        }
+    [[nodiscard]] inline offset_type getOffset() const noexcept override {
+        return m_offset;
+    }
 
-    private:
-        const hardware_access::BoardDigitalPin::offset_type m_offset{};
-        const hardware_access::DigitalPinRequestDirection m_direction{};
-        backend_type_reference m_backendReference;
-    };
+private:
+    const hardware_access::BoardDigitalPin::offset_type m_offset{};
+    const hardware_access::DigitalPinRequestDirection m_direction{};
+    backend_type_reference m_backendReference;
+};
 
 } // namespace gh_hal::internal

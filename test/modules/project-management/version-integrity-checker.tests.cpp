@@ -3,7 +3,9 @@
 
 #include <testing-core.hpp>
 
-TEST_CASE("VersionIntegrityChecker unit tests", "[unit][solitary][modules][project-management][integrity-check][VersionIntegrityChecker]") {
+TEST_CASE(
+    "VersionIntegrityChecker unit tests",
+    "[unit][solitary][modules][project-management][integrity-check][VersionIntegrityChecker]") {
     using namespace gc::project_management;
 
     constexpr semver::version OLD_VERSION{1, 0, 0};

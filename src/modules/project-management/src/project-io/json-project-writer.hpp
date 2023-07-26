@@ -6,23 +6,24 @@
 #include <nlohmann/json.hpp>
 
 // C++ STL
-#include <ostream>
 #include <functional> // for std::reference_wrapper
+#include <ostream>
 
 namespace gc::project_management::project_io {
 
-    //!!
-    //! \brief Serialize the given project to an output stream using
-    //!  a JSON format.
-    class JsonProjectWriter final : public ProjectWriter {
-    public:
-        explicit JsonProjectWriter(std::unique_ptr<std::ostream> outputStream) noexcept;
+//!!
+//! \brief Serialize the given project to an output stream using
+//!  a JSON format.
+class JsonProjectWriter final : public ProjectWriter {
+public:
+    explicit JsonProjectWriter(std::unique_ptr<std::ostream> outputStream) noexcept;
 
-        void serializeProject(const Project& project) override;
-    private:
-        std::unique_ptr<std::ostream> m_outputStream;
+    void serializeProject(const Project& project) override;
 
-        void serializeProjectNode(const ProjectNode& node, nlohmann::json& parentJson);
-    };
+private:
+    std::unique_ptr<std::ostream> m_outputStream;
+
+    void serializeProjectNode(const ProjectNode& node, nlohmann::json& parentJson);
+};
 
 } // namespace gc::project_management::project_io

@@ -13,9 +13,9 @@
 
 namespace gh_log {
 
-    //! \brief Represents the type of the string used by
-    //!  loggers.
-    using LogStringType = std::string;
+//! \brief Represents the type of the string used by
+//!  loggers.
+using LogStringType = std::string;
 
 } // namespace gh_log
 

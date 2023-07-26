@@ -4,15 +4,14 @@
 
 #if defined(USE_CATCH2_AS_TESTING_FRAMEWORK) && defined(USE_GMOCK)
 
-#include <testing-core.hpp>
 #include <gmock/gmock.h>
+#include <testing-core.hpp>
 
 //! \brief Represents the listener used by GMock when using its
 //!  constructs to do tests (e.g. EXPECT_CALL, ON_CALL etc...)
 //!	 This basically inherits from a defaulted event listener.
 class GMCatch2Listener : public testing::EmptyTestEventListener {
 public:
-
     //! \brief Called after test partial result. This will transform
     //!	 GMock tests data into Catch2 test data that can be used by
     //!  Catch2 to provide feedback and fail tests.

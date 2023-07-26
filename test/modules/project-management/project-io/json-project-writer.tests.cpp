@@ -1,8 +1,8 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <src/project-io/json-project-writer.hpp>
 
-#include <testing-core.hpp>
 #include <nlohmann/json.hpp>
+#include <testing-core.hpp>
 
 // C++ STL
 #include <sstream>
@@ -10,43 +10,46 @@
 
 namespace tests {
 
-    nlohmann::json readJsonFromString(const std::string& str) {
-        nlohmann::json actualJson{};
-        std::istringstream ist{str};
+nlohmann::json readJsonFromString(const std::string& str) {
+    nlohmann::json actualJson{};
+    std::istringstream ist{str};
 
-        ist >> actualJson;
+    ist >> actualJson;
 
-        return actualJson;
-    }
+    return actualJson;
+}
 
-    void checkBasicProjectData(const nlohmann::json& actualJson, const gc::project_management::Project& expectedProjectData) {
-        REQUIRE(actualJson.contains("title"));
-        CHECK(actualJson["title"] == expectedProjectData.getTitle());
+void checkBasicProjectData(const nlohmann::json& actualJson,
+                           const gc::project_management::Project& expectedProjectData) {
+    REQUIRE(actualJson.contains("title"));
+    CHECK(actualJson["title"] == expectedProjectData.getTitle());
 
-        REQUIRE(actualJson.contains("version"));
-        CHECK(actualJson["version"] == expectedProjectData.getVersion().to_string());
+    REQUIRE(actualJson.contains("version"));
+    CHECK(actualJson["version"] == expectedProjectData.getVersion().to_string());
 
-        REQUIRE(actualJson.contains("creation_timedate"));
-        CHECK(actualJson["creation_timedate"] == std::chrono::system_clock::to_time_t(expectedProjectData.getCreationTime()));
-    }
+    REQUIRE(actualJson.contains("creation_timedate"));
+    CHECK(actualJson["creation_timedate"] ==
+          std::chrono::system_clock::to_time_t(expectedProjectData.getCreationTime()));
+}
 
-    template<typename T>
-    T createGenericValue() noexcept {
-        if constexpr (std::is_same_v<T, bool>)
-            return false;
-        else if constexpr (std::is_same_v<T, std::int64_t>)
-            return 42;
-        else if constexpr (std::is_same_v<T, double>)
-            return -56.0;
-        else if constexpr (std::is_same_v<T, std::string>)
-            return "temp-value";
+template <typename T>
+T createGenericValue() noexcept {
+    if constexpr (std::is_same_v<T, bool>)
+        return false;
+    else if constexpr (std::is_same_v<T, std::int64_t>)
+        return 42;
+    else if constexpr (std::is_same_v<T, double>)
+        return -56.0;
+    else if constexpr (std::is_same_v<T, std::string>)
+        return "temp-value";
 
-        return T{};
-    }
+    return T{};
+}
 
 } // namespace tests
 
-TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-management][JsonProjectWriter]") {
+TEST_CASE("JsonProjectWriter unit tests",
+          "[unit][sociable][modules][project-management][JsonProjectWriter]") {
     using namespace gc::project_management;
     using namespace gc::project_management::project_io;
 
@@ -58,7 +61,10 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
 
         WHEN("A trivial project is serialized") {
             // Here "trivial" means a project without fields.
-            const Project trivialProject{Project::time_point_type{}, "test-title", semver::version{1, 2, 3}};
+            const Project trivialProject{
+                Project::time_point_type{},
+                "test-title", semver::version{1, 2, 3}
+            };
 
             writerUnderTest << trivialProject;
 
@@ -71,7 +77,9 @@ TEST_CASE("JsonProjectWriter unit tests", "[unit][sociable][modules][project-man
     }
 }
 
-TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][sociable][modules][project-management][JsonProjectWriter][JSON-Formatting]",
+TEMPLATE_TEST_CASE(
+    "JsonProjectWriter JSON formatting unit tests",
+    "[unit][sociable][modules][project-management][JsonProjectWriter][JSON-Formatting]",
     std::int64_t, double, bool, std::string) {
     using namespace gc::project_management;
     using namespace gc::project_management::project_io;
@@ -85,7 +93,8 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
         constexpr std::string_view PROJECT_TITLE{"test-title"};
         constexpr semver::version PROJECT_VERSION{1, 2, 3};
 
-        Project projectToWrite{Project::time_point_type{}, std::string{PROJECT_TITLE}, PROJECT_VERSION};
+        Project projectToWrite{Project::time_point_type{}, std::string{PROJECT_TITLE},
+                               PROJECT_VERSION};
 
         AND_GIVEN("A project with a value field") {
             constexpr std::string_view FIELD_KEY{"test-key"};
@@ -113,11 +122,8 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
         AND_GIVEN("A project with a value array") {
             constexpr std::string_view FIELD_KEY{"test-key"};
             const std::vector<TestType> values{
-                tests::createGenericValue<TestType>(),
-                tests::createGenericValue<TestType>(),
-                tests::createGenericValue<TestType>(),
-                tests::createGenericValue<TestType>()
-            };
+                tests::createGenericValue<TestType>(), tests::createGenericValue<TestType>(),
+                tests::createGenericValue<TestType>(), tests::createGenericValue<TestType>()};
 
             projectToWrite.addValueArray(FIELD_KEY.data(), values);
 
@@ -135,7 +141,7 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
 
                     const TestType expectedValue{tests::createGenericValue<TestType>()};
 
-                    for(const auto& val : actualJson.at(FIELD_KEY.data())) {
+                    for (const auto& val : actualJson.at(FIELD_KEY.data())) {
                         CHECK(val.get<TestType>() == expectedValue);
                     }
                 }
@@ -176,7 +182,8 @@ TEMPLATE_TEST_CASE("JsonProjectWriter JSON formatting unit tests", "[unit][socia
     }
 }
 
-SCENARIO("JsonProjectWriter with complex project structures", "[unit][sociable][modules][project-management][JsonProjectWriter][complex-structures]") {
+SCENARIO("JsonProjectWriter with complex project structures",
+         "[unit][sociable][modules][project-management][JsonProjectWriter][complex-structures]") {
     using namespace gc::project_management;
     using namespace gc::project_management::project_io;
 

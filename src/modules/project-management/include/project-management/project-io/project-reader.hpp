@@ -8,30 +8,30 @@
 
 namespace gc::project_management::project_io {
 
+//!!
+//! \brief Reads a project from an input source.
+//!
+struct ProjectReader {
+    virtual ~ProjectReader() noexcept = default;
+
     //!!
-    //! \brief Reads a project from an input source.
+    //! \brief Reads the project associated with this reader.
     //!
-    struct ProjectReader {
-        virtual ~ProjectReader() noexcept = default;
+    //! \return Project The project to be read.
+    [[nodiscard]] virtual Project readProject() = 0;
+};
 
-        //!!
-        //! \brief Reads the project associated with this reader.
-        //!
-        //! \return Project The project to be read.
-        [[nodiscard]]
-        virtual Project readProject() = 0;
-    };
+inline ProjectReader& operator>>(ProjectReader& reader, Project& inputProject) {
+    inputProject = reader.readProject();
+    return reader;
+}
 
-    inline ProjectReader& operator>>(ProjectReader& reader, Project& inputProject) {
-        inputProject = reader.readProject();
-        return reader;
-    }
-
-    //!!
-    //! \brief Create a Json Project File Reader object with the specified path.
-    //!  If the file doesn't exist it throws an std::system_error.
-    //! \param path
-    //! \return std::unique_ptr<ProjectReader>
-    [[nodiscard]] std::unique_ptr<ProjectReader> CreateJsonProjectFileReader(const std::filesystem::path& path);
+//!!
+//! \brief Create a Json Project File Reader object with the specified path.
+//!  If the file doesn't exist it throws an std::system_error.
+//! \param path
+//! \return std::unique_ptr<ProjectReader>
+[[nodiscard]] std::unique_ptr<ProjectReader> CreateJsonProjectFileReader(
+    const std::filesystem::path& path);
 
 } // namespace gc::project_management::project_io

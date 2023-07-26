@@ -16,7 +16,8 @@ TEST_CASE("DefaultOptionParser integration tests", "[integration][gh_cmd][Defaul
             constexpr char SWITCH_SHORT_NAME{'h'};
             constexpr std::string_view SWITCH_LONG_NAME{"help"};
             constexpr std::string_view SWITCH_DESCRIPTION{"Prints the help page"};
-            std::shared_ptr<Switch<char>> switchOption{std::make_shared<Switch<char>>(SWITCH_SHORT_NAME, std::string{SWITCH_LONG_NAME}, std::string{SWITCH_DESCRIPTION})};
+            std::shared_ptr<Switch<char>> switchOption{std::make_shared<Switch<char>>(
+                SWITCH_SHORT_NAME, std::string{SWITCH_LONG_NAME}, std::string{SWITCH_DESCRIPTION})};
 
             parserUnderTest.addSwitch(switchOption);
 
@@ -89,7 +90,8 @@ TEST_CASE("DefaultOptionParser integration tests", "[integration][gh_cmd][Defaul
             AND_WHEN("parse() is invoked with the switch (long name) and non-option arguments") {
                 constexpr std::string_view NON_OPTION_ARG{"test-arg"};
 
-                parserUnderTest.parse({"dummy-command", "--help", "--", std::string{NON_OPTION_ARG}});
+                parserUnderTest.parse(
+                    {"dummy-command", "--help", "--", std::string{NON_OPTION_ARG}});
 
                 THEN("It shouldn\'t have any unknown options") {
                     CHECK(parserUnderTest.getUnknownOptions().empty());
@@ -118,13 +120,13 @@ TEST_CASE("DefaultOptionParser integration tests", "[integration][gh_cmd][Defaul
         WHEN("A single value is added") {
             constexpr char VALUE_SHORT_NAME{'T'};
             constexpr std::string_view VALUE_LONG_NAME{"activation-time"};
-            constexpr std::string_view VALUE_DESCRIPTION{"Sets the time duration of the watering system."};
+            constexpr std::string_view VALUE_DESCRIPTION{
+                "Sets the time duration of the watering system."};
 
-            std::shared_ptr<Value<char, std::int32_t>> valueOption{std::make_shared<Value<char, std::int32_t>>(
-                VALUE_SHORT_NAME,
-                std::string{VALUE_LONG_NAME},
-                std::string{VALUE_DESCRIPTION}
-            )};
+            std::shared_ptr<Value<char, std::int32_t>> valueOption{
+                std::make_shared<Value<char, std::int32_t>>(VALUE_SHORT_NAME,
+                                                            std::string{VALUE_LONG_NAME},
+                                                            std::string{VALUE_DESCRIPTION})};
 
             parserUnderTest.addOption(valueOption);
 
@@ -169,7 +171,8 @@ TEST_CASE("DefaultOptionParser integration tests", "[integration][gh_cmd][Defaul
             }
 
             AND_WHEN("parse() is invoked with a valid command twice") {
-                parserUnderTest.parse({"dummy-command", "--activation-time", "32", "--activation-time", "42"});
+                parserUnderTest.parse(
+                    {"dummy-command", "--activation-time", "32", "--activation-time", "42"});
 
                 THEN("The value option should be set") {
                     CHECK(valueOption->isSet());

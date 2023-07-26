@@ -3,10 +3,10 @@
 
 namespace gc::project_management::integrity_check {
 
-    bool TitleIntegrityChecker::tryApplyIntegrityFixes(Project& project)  {
-        project = Project(project.getCreationTime(), m_defaultTitle, project.getVersion());
+bool TitleIntegrityChecker::tryApplyIntegrityFixes(Project& project) {
+    project = Project(project.getCreationTime(), m_defaultTitle, project.getVersion());
 
-        return true;
-    }
+    return true;
+}
 
 } // namespace gc::project_management::integrity_check

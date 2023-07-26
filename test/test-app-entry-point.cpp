@@ -17,7 +17,7 @@
 //!
 //! \tparam T The type of the pointed-to value by *pointer that needs to be deleted.
 //! \param pointer The pointer-to the pointed value that needs to be deleted.
-template<typename T>
+template <typename T>
 static void SinkPointer(T** pointer) {
     if (pointer == nullptr || *pointer == nullptr)
         return;
@@ -39,7 +39,8 @@ int main(int argc, char* argv[]) {
 
     testing::UnitTest* gmockUnitTestInstance = testing::UnitTest::GetInstance();
     if (!gmockUnitTestInstance) {
-        std::cerr << "[FATAL] => Failed to initialize GMock: unit test instance in NULL." << std::endl;
+        std::cerr << "[FATAL] => Failed to initialize GMock: unit test instance in NULL."
+                  << std::endl;
 
         // INVALID_HANDLE error
         return 6;

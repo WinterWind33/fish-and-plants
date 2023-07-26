@@ -10,38 +10,30 @@
 
 namespace rpi_gc {
 
+//!!
+//! \brief Represents a command that can be used either as a normal command
+//!  or as an option for another command.
+//! \tparam CharType The type of the characters to be used.
+template <typename CharType>
+struct BivalentCommand : public TerminalCommand<CharType> {
+    using typename TerminalCommand<CharType>::char_type;
+    using option_type = gh_cmd::CommandOption<char_type>;
+    using option_pointer = std::shared_ptr<option_type>;
+
+    virtual ~BivalentCommand() noexcept = default;
+
     //!!
-    //! \brief Represents a command that can be used either as a normal command
-    //!  or as an option for another command.
-    //! \tparam CharType The type of the characters to be used.
-    template<typename CharType>
-    struct BivalentCommand : public TerminalCommand<CharType> {
-        using typename TerminalCommand<CharType>::char_type;
-        using option_type = gh_cmd::CommandOption<char_type>;
-        using option_pointer = std::shared_ptr<option_type>;
+    //! \brief Builds and retrieves an option starting from the command state.
+    //!
+    //! \return option_pointer The command represented as an option.
+    virtual option_pointer getAsOption() const noexcept = 0;
 
-        ~BivalentCommand() noexcept override = default;
-
-        //!!
-        //! \brief Builds and retrieves an option starting from the command state.
-        //!
-        //! \return option_pointer The command represented as an option.
-        virtual option_pointer getAsOption() const noexcept = 0;
-
-        //!!
-        //! \brief Executes the command but as an option of another command.
-        //!
-        //! \return bool True if the execution succeeded, false otherwise.
-        virtual bool executeAsOption() noexcept = 0;
-    };
-
-    template<typename CharType>
-    void PrintHelpAsOption(const BivalentCommand<CharType>& bivalentCommand, typename BivalentCommand<CharType>::help_ostream_type& outputStream) noexcept {
-        typename BivalentCommand<CharType>::option_pointer asOption{bivalentCommand.getAsOption()};
-        assert(asOption != nullptr);
-
-        outputStream << asOption->getDescription() << std::endl;
-    }
+    //!!
+    //! \brief Executes the command but as an option of another command.
+    //!
+    //! \return bool True if the execution succeeded, false otherwise.
+    virtual bool executeAsOption() noexcept = 0;
+};
 
 } // namespace rpi_gc
 

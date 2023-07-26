@@ -8,14 +8,13 @@
 #include <testing-core.hpp>
 
 // C++ STL
-#include <cstdint>
 #include <chrono>
+#include <cstdint>
 #include <string>
 #include <string_view>
 
-TEMPLATE_TEST_CASE("Value unit tests", "[unit][sociable][gh_cmd][Value]",
-    std::int32_t, float, double, std::string) {
-
+TEMPLATE_TEST_CASE("Value unit tests", "[unit][sociable][gh_cmd][Value]", std::int32_t, float,
+                   double, std::string) {
     using namespace gh_cmd;
 
     SECTION("Getters") {
@@ -23,7 +22,8 @@ TEMPLATE_TEST_CASE("Value unit tests", "[unit][sociable][gh_cmd][Value]",
         constexpr std::string_view EXPECTED_LONG_NAME{"help"};
         constexpr std::string_view EXPECTED_DESCRIPTION{"Produces help message"};
 
-        Value<char, TestType> valueUnderTest{EXPECTED_SHORT_NAME, std::string{EXPECTED_LONG_NAME}, std::string{EXPECTED_DESCRIPTION}};
+        Value<char, TestType> valueUnderTest{EXPECTED_SHORT_NAME, std::string{EXPECTED_LONG_NAME},
+                                             std::string{EXPECTED_DESCRIPTION}};
 
         SECTION("It should retrieve the correct short name") {
             CHECK(valueUnderTest.getShortName() == EXPECTED_SHORT_NAME);
@@ -47,7 +47,8 @@ TEMPLATE_TEST_CASE("Value unit tests", "[unit][sociable][gh_cmd][Value]",
         constexpr std::string_view DUMMY_LONG_NAME{"help"};
         constexpr std::string_view DUMMY_DESCRIPTION{"Produces help message"};
 
-        Value<char, TestType> valueUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME}, std::string{DUMMY_DESCRIPTION}};
+        Value<char, TestType> valueUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME},
+                                             std::string{DUMMY_DESCRIPTION}};
 
         SECTION("Method: acceptVisitor() non-const") {
             using BaseOptionImplType = CommandOption<char>::base_impl_type;
@@ -63,7 +64,7 @@ TEMPLATE_TEST_CASE("Value unit tests", "[unit][sociable][gh_cmd][Value]",
 
             SECTION("Should pass to the visit() method a valid pointer") {
                 OptionVisitorMockType optionVisitorMock{};
-                EXPECT_CALL(optionVisitorMock, visit).WillOnce([](VisitorArgumentType option){
+                EXPECT_CALL(optionVisitorMock, visit).WillOnce([](VisitorArgumentType option) {
                     CHECK(option != nullptr);
                 });
 
@@ -74,7 +75,8 @@ TEMPLATE_TEST_CASE("Value unit tests", "[unit][sociable][gh_cmd][Value]",
         SECTION("Method: acceptVisitor() const") {
             using BaseOptionImplType = CommandOption<char>::base_impl_type;
             using VisitorArgumentType = std::shared_ptr<const BaseOptionImplType>;
-            using OptionVisitorMockType = testing::StrictMock<mocks::ConstOptionVisitorMock<VisitorArgumentType>>;
+            using OptionVisitorMockType =
+                testing::StrictMock<mocks::ConstOptionVisitorMock<VisitorArgumentType>>;
 
             SECTION("Should call the visitor visit() method") {
                 OptionVisitorMockType optionVisitorMock{};
@@ -85,7 +87,7 @@ TEMPLATE_TEST_CASE("Value unit tests", "[unit][sociable][gh_cmd][Value]",
 
             SECTION("Should pass to the visit() method a valid pointer") {
                 OptionVisitorMockType optionVisitorMock{};
-                EXPECT_CALL(optionVisitorMock, visit).WillOnce([](VisitorArgumentType option){
+                EXPECT_CALL(optionVisitorMock, visit).WillOnce([](VisitorArgumentType option) {
                     CHECK(option != nullptr);
                 });
 
@@ -98,7 +100,8 @@ TEMPLATE_TEST_CASE("Value unit tests", "[unit][sociable][gh_cmd][Value]",
             constexpr std::string_view DUMMY_LONG_NAME{"help"};
             constexpr std::string_view DUMMY_DESCRIPTION{"Produces help message"};
 
-            Value<char, TestType> valueUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME}, std::string{DUMMY_DESCRIPTION}};
+            Value<char, TestType> valueUnderTest{DUMMY_SHORT_NAME, std::string{DUMMY_LONG_NAME},
+                                                 std::string{DUMMY_DESCRIPTION}};
             WHEN("Value::clear() is called") {
                 valueUnderTest.clear();
 

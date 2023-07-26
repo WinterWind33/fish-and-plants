@@ -10,28 +10,28 @@
 
 namespace rpi_gc::mocks {
 
-    template<typename CharT>
-    class BivalentCommandMock : public BivalentCommand<CharT> {
-    public:
-        using typename TerminalCommand<CharT>::name_type;
-        using typename TerminalCommand<CharT>::string_type;
-        using typename TerminalCommand<CharT>::help_ostream_type;
-        using typename BivalentCommand<CharT>::option_pointer;
+template <typename CharT>
+class BivalentCommandMock : public BivalentCommand<CharT> {
+public:
+    using typename TerminalCommand<CharT>::name_type;
+    using typename TerminalCommand<CharT>::string_type;
+    using typename TerminalCommand<CharT>::help_ostream_type;
+    using typename BivalentCommand<CharT>::option_pointer;
 
-        ~BivalentCommandMock() noexcept override = default;
+    ~BivalentCommandMock() noexcept override = default;
 
-        // From Command
-        MOCK_METHOD(name_type, getName, (), (const, noexcept, override));
-        MOCK_METHOD(bool, execute, (), (noexcept, override));
+    // From Command
+    MOCK_METHOD(name_type, getName, (), (const, noexcept, override));
+    MOCK_METHOD(bool, execute, (), (noexcept, override));
 
-        // From TerminalCommand
-        MOCK_METHOD(bool, processInputOptions, (const std::vector<string_type>&), (noexcept, override));
-        MOCK_METHOD(void, printHelp, (help_ostream_type), (const, noexcept, override));
+    // From TerminalCommand
+    MOCK_METHOD(bool, processInputOptions, (const std::vector<string_type>&), (noexcept, override));
+    MOCK_METHOD(void, printHelp, (help_ostream_type), (const, noexcept, override));
 
-        // From BivalentCommand
-        MOCK_METHOD(option_pointer, getAsOption, (),  (const, noexcept, override));
-        MOCK_METHOD(bool, executeAsOption, (), (noexcept, override));
-    };
+    // From BivalentCommand
+    MOCK_METHOD(option_pointer, getAsOption, (), (const, noexcept, override));
+    MOCK_METHOD(bool, executeAsOption, (), (noexcept, override));
+};
 
 } // namespace rpi_gc::mocks
 
