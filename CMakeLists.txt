@@ -20,7 +20,6 @@ project(FishAndPlants CXX)
 enable_language(CXX)
 
 # === C++ and Compilation Configuration ===
-
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -44,7 +43,6 @@ set(PRODUCTION_EXE_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/bin")
 set(PRODUCTION_LIB_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/lib")
 
 # === Options ===
-
 set(CATCH2_VERSION "3.4.0")
 set(SPDLOG_VERSION "1.12.0")
 set(LIBGPIOD_VERSION "2.0.1")
@@ -56,10 +54,34 @@ option(USE_POPL20 "Use popl20 header-only library as command line parser." ON)
 option(USE_SEMVER "Use Neargye/semver third-library software as semantic versioning library." ON)
 option(GC_USE_NLOHMANN_JSON "Use nlohmann/json as json engine" ON)
 
+# === Project dependencies ===
+include(FetchContent)
+
+if(USE_SEMVER)
+    message(STATUS "Using semver.")
+
+    FetchContent_Declare(semver
+        GIT_REPOSITORY "https://github.com/Neargye/semver.git"
+        GIT_TAG origin/master
+    )
+
+    FetchContent_MakeAvailable(semver)
+endif()
+
+if(GC_USE_NLOHMANN_JSON)
+    message(STATUS "Using NLohmann/json as json engine")
+
+    FetchContent_Declare(nlohmann_json
+        GIT_REPOSITORY "https://github.com/nlohmann/json.git"
+        GIT_TAG v3.11.2
+    )
+
+    FetchContent_MakeAvailable(nlohmann_json)
+endif()
+
 # === SUB-PROJECTS ===
 
 # Add third party libraries.
-add_subdirectory("third-party")
 add_subdirectory("src/third-party")
 
 # Add wrapper libraries.
