@@ -3,6 +3,7 @@
 
 // C++ STL
 #include <filesystem>
+#include <memory>
 
 namespace gc::folder_provider {
 
@@ -11,6 +12,8 @@ namespace gc::folder_provider {
 //!  the utilities OS folders independently from the platform.
 struct FolderProvider {
     virtual ~FolderProvider() noexcept = default;
+
+    static std::unique_ptr<FolderProvider> create();
 
     //!!
     //! \brief Retrieves the "AppData" folder, i.e. the folder
