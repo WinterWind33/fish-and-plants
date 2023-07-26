@@ -79,6 +79,24 @@ if(GC_USE_NLOHMANN_JSON)
     FetchContent_MakeAvailable(nlohmann_json)
 endif()
 
+if(USE_SPDLOG)
+    message(STATUS "Using spdlog v${SPDLOG_VERSION} as logger framework.")
+
+    FetchContent_Declare(spdlog
+        GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
+        GIT_TAG "v${SPDLOG_VERSION}"
+    )
+
+    FetchContent_MakeAvailable(spdlog)
+
+    set_target_properties(spdlog
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
+    )
+endif()
+
 # === SUB-PROJECTS ===
 
 # Add third party libraries.
