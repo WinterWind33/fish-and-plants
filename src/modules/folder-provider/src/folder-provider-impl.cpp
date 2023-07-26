@@ -1,3 +1,13 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
+#include <folder-provider-impl.hpp>
 
-namespace gc::folder_provider::internal {} // namespace gc::folder_provider::internal
+// Third-party
+#include <platform_folders.h>
+
+namespace gc::folder_provider::internal {
+
+std::filesystem::path FolderProviderImpl::getAppDataFolder() const {
+    return sago::getDataHome();
+}
+
+} // namespace gc::folder_provider::internal
