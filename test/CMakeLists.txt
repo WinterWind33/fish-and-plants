@@ -24,6 +24,8 @@ set(TEST_APP_HEADER_FILES
     "rpi_gc/test-doubles/automatic-watering/time-providers/watering-system-time-provider.mock.hpp"
     "rpi_gc/test-doubles/diagnostics/diagnostic-status-probeable.mock.hpp"
     "rpi_gc/test-doubles/gc-project/project-component.mock.hpp"
+
+    "modules/folder-provider/folder-provider.mock.hpp"
 )
 
 set(TEST_APP_SOURCE_FILES
