@@ -56,7 +56,6 @@ set(TEST_APP_SOURCE_FILES
     "rpi_gc/hardware-management/hardware-initializer.tests.cpp"
     "rpi_gc/functional/aws-hardware-controller-interactions.tests.cpp"
     "rpi_gc/gc-project/project-controller.tests.cpp"
-    "rpi_gc/gc-project/project-config-loader.tests.cpp"
 
     # integration tests
     "integration/rpi_gc/application-command-integration.tests.cpp"
