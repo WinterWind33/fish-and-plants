@@ -13,14 +13,14 @@ namespace gc::folder_provider {
 struct FolderProvider {
     virtual ~FolderProvider() noexcept = default;
 
-    static std::unique_ptr<FolderProvider> create();
+    [[nodiscard]] static std::unique_ptr<FolderProvider> create();
 
     //!!
     //! \brief Retrieves the "AppData" folder, i.e. the folder
     //!  where the application can store its data.
     //!
     //! \return The path to the "AppData" folder.
-    virtual std::filesystem::path getAppDataFolder() const = 0;
+    [[nodiscard]] virtual std::filesystem::path getAppDataFolder() const = 0;
 };
 
 } // namespace gc::folder_provider

@@ -18,7 +18,7 @@ do
             -Isrc/rpi_gc -Isrc/wrappers/ \
             -Isrc/third-party/popl20 -Isrc/third-party/libgpiod-2.0.1/include -Isrc/third-party/spdlog-1.12.0/include \
             -Ibuild/_deps/semver-src/include -Ibuild/_deps/nlohmann_json-src/include -Isrc/modules/project-management/include \
-            -Isrc/modules/project-management/src
+            -Isrc/modules/project-management/src -Isrc/modules/folder-provider/include
     else
         echo "[INFO] => Skipping $file because it's not C++ code."
         continue
