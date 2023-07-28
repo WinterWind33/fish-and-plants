@@ -84,6 +84,7 @@ set(RPI_GC_EXECUTABLE_HEADER_FILES
 
 set(RPI_GC_EXECUTABLE_SOURCE_FILES
     "entry-point.cpp"
+    "initial-project-loader.cpp"
 )
 
 add_executable(rpi_gc ${RPI_GC_EXECUTABLE_SOURCE_FILES} ${RPI_GC_EXECUTABLE_HEADER_FILES})
