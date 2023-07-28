@@ -51,10 +51,6 @@ set(RPI_GC_SOURCE_FILES
     "automatic-watering/time-providers/configurable-daily-cycle-aws-time-provider.cpp"
 )
 
-set(RPI_GC_EXECUTABLE_SOURCE_FILES
-    "entry-point.cpp"
-)
-
 # Here we add a library target so we can use it to link it against
 # the test app.
 add_library(rpi_gc_lib STATIC ${RPI_GC_HEADER_FILES} ${RPI_GC_SOURCE_FILES})
@@ -82,7 +78,15 @@ target_link_libraries(rpi_gc_lib PUBLIC gh_log)
 target_link_libraries(rpi_gc_lib PUBLIC gh_cmd)
 target_link_libraries(rpi_gc_lib PUBLIC project_management_static)
 
-add_executable(rpi_gc ${RPI_GC_EXECUTABLE_SOURCE_FILES})
+set(RPI_GC_EXECUTABLE_HEADER_FILES
+    "initial-project-loader.hpp"
+)
+
+set(RPI_GC_EXECUTABLE_SOURCE_FILES
+    "entry-point.cpp"
+)
+
+add_executable(rpi_gc ${RPI_GC_EXECUTABLE_SOURCE_FILES} ${RPI_GC_EXECUTABLE_HEADER_FILES})
 set_target_properties(rpi_gc
     PROPERTIES
     VERSION "1.0.0"
