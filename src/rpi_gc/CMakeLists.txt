@@ -109,7 +109,6 @@ configure_file(
 # Dependencies
 # Here we don't want to include gh_hal and gh_log directly as this will result
 # in possible includes clash. Instead, we include their parent directory.
-target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/rpi_gc")
-target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/wrappers")
-target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/modules/project-management/include")
 target_link_libraries(rpi_gc PRIVATE rpi_gc_lib)
+target_link_libraries(rpi_gc PRIVATE gc_folder_provider)
+target_link_libraries(rpi_gc PRIVATE nlohmann_json)
