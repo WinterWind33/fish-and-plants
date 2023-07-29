@@ -4,7 +4,6 @@
 set(RPI_GC_HEADER_FILES
     "version/version-numbers.hpp"
     "greenhouse-controller-application.hpp"
-    "commands-factory.hpp"
     "abort-system/emergency-stoppable-system.hpp"
     "abort-system/terminable-system.hpp"
     "application/application.hpp"
@@ -37,7 +36,6 @@ set(RPI_GC_HEADER_FILES
 # RPI_GC's source files
 set(RPI_GC_SOURCE_FILES
     "greenhouse-controller-application.cpp"
-    "commands-factory.cpp"
     "commands/application-command.cpp"
     "commands/version-command.cpp"
     "commands/help-command.cpp"
@@ -80,11 +78,13 @@ target_link_libraries(rpi_gc_lib PUBLIC project_management_static)
 
 set(RPI_GC_EXECUTABLE_HEADER_FILES
     "initial-project-loader.hpp"
+    "commands-factory.hpp"
 )
 
 set(RPI_GC_EXECUTABLE_SOURCE_FILES
     "entry-point.cpp"
     "initial-project-loader.cpp"
+    "commands-factory.cpp"
 )
 
 add_executable(rpi_gc ${RPI_GC_EXECUTABLE_SOURCE_FILES} ${RPI_GC_EXECUTABLE_HEADER_FILES})
