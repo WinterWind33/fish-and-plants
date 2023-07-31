@@ -17,14 +17,15 @@ namespace details {
 
 // Logs the error if the given error code is not valid.
 [[nodiscard]] bool logErrorIfNotValid(std::error_code& errorCode, gh_log::Logger& logger) noexcept {
+    // The following cast is true when the error code represents a failed error code.
     const bool bRes{static_cast<bool>(errorCode)};
-    if (!bRes) {
+    if (bRes) {
         logger.logError("Error while trying to load project config. Error code: " +
                         std::to_string(errorCode.value()));
         logger.logError("Error message: " + errorCode.message());
     }
 
-    return bRes;
+    return !bRes;
 }
 
 // Creates the standard config file
