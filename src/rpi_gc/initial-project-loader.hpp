@@ -18,8 +18,9 @@ namespace rpi_gc {
 //!  app data folder of the operating system.
 class InitialProjectLoader final {
 public:
-    explicit InitialProjectLoader(gh_log::Logger& logger,
-                                  gc::folder_provider::FolderProvider& folder_provider) noexcept;
+    explicit InitialProjectLoader(
+        gh_log::Logger& logger,
+        const gc::folder_provider::FolderProvider& folder_provider) noexcept;
 
     //!!
     //! \brief Searches for the app data folder it the operating system folders
@@ -37,7 +38,7 @@ public:
 
 private:
     std::reference_wrapper<gh_log::Logger> m_logger;
-    std::reference_wrapper<gc::folder_provider::FolderProvider> m_folderProvider;
+    std::reference_wrapper<const gc::folder_provider::FolderProvider> m_folderProvider;
 };
 
 } // namespace rpi_gc

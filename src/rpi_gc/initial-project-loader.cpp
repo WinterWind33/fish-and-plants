@@ -48,14 +48,14 @@ void createStandardConfigFile(const std::filesystem::path& configFilePath,
 } // namespace details
 
 InitialProjectLoader::InitialProjectLoader(
-    gh_log::Logger& logger, gc::folder_provider::FolderProvider& folder_provider) noexcept
+    gh_log::Logger& logger, const gc::folder_provider::FolderProvider& folder_provider) noexcept
     : m_logger{logger},
       m_folderProvider{folder_provider} {}
 
 std::optional<std::pair<gc::project_management::Project, std::filesystem::path>>
 InitialProjectLoader::tryLoadCachedProject() noexcept {
     using namespace gc::project_management;
-    m_logger.get().logInfo("Loading cached project");
+    m_logger.get().logInfo("Initiating cached project loading flow...");
 
     const auto rpigcFolder = m_folderProvider.get().getAppDataFolder() /
                              std::filesystem::path{"FishAndPlants"} /
