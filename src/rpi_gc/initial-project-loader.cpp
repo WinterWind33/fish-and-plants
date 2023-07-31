@@ -1,6 +1,8 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <initial-project-loader.hpp>
 
+#include <project-loader.hpp>
+
 #include <nlohmann/json.hpp>
 #include <project-management/project-io/project-reader.hpp>
 #include <version/version-numbers.hpp>
@@ -132,14 +134,15 @@ InitialProjectLoader::tryLoadCachedProject() noexcept {
     }
 
     // If we are here this means that the project location is valid. We can
-    // load the project. We load it using a JSON project reader.
-    Project project{};
-
-    auto projectReader{project_io::CreateJsonProjectFileReader(projectLocation)};
-    *projectReader >> project;
+    // load the project and send it to the standard integrity checks.
+    auto projectOpt{LoadProjectAndCheckIntegrity(projectLocation, m_logger.get())};
+    if (!projectOpt.has_value()) {
+        m_logger.get().logError("Project loading with integrity checks failed.");
+        return std::nullopt;
+    }
 
     m_logger.get().logInfo("Project loaded successfully");
-    return std::make_pair(project, projectLocation);
+    return std::make_pair(projectOpt.value(), projectLocation);
 }
 
 } // namespace rpi_gc
