@@ -19,7 +19,7 @@ do
             -Isrc/third-party/popl20 -Isrc/third-party/libgpiod-2.0.1/include \
             -Ibuild/_deps/semver-src/include -Ibuild/_deps/nlohmann_json-src/include -Isrc/modules/project-management/include \
             -Isrc/modules/project-management/src -Isrc/modules/folder-provider/include -Isrc/modules/folder-provider/src \
-            -Ibuild/_deps/platform_folders-src/sago -Ibuild/_deps/spdlog-src/include \
+            -Ibuild/_deps/platform_folders-src/sago -Ibuild/_deps/spdlog-src/include
     else
         echo "[INFO] => Skipping $file because it's not C++ code."
         continue
