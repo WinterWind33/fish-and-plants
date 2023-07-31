@@ -7,7 +7,7 @@ namespace gc::folder_provider::internal {
 
 class FolderProviderImpl final : public FolderProvider {
 public:
-    std::filesystem::path getAppDataFolder() const override;
+    [[nodiscard]] std::filesystem::path getAppDataFolder() const override;
 };
 
 } // namespace gc::folder_provider::internal
