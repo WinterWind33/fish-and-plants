@@ -79,12 +79,14 @@ target_link_libraries(rpi_gc_lib PUBLIC project_management_static)
 set(RPI_GC_EXECUTABLE_HEADER_FILES
     "initial-project-loader.hpp"
     "commands-factory.hpp"
+    "project-loader.hpp"
 )
 
 set(RPI_GC_EXECUTABLE_SOURCE_FILES
     "entry-point.cpp"
     "initial-project-loader.cpp"
     "commands-factory.cpp"
+    "project-loader.cpp"
 )
 
 add_executable(rpi_gc ${RPI_GC_EXECUTABLE_SOURCE_FILES} ${RPI_GC_EXECUTABLE_HEADER_FILES})
