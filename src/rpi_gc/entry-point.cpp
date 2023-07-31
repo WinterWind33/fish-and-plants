@@ -480,7 +480,7 @@ int main(int argc, char* argv[]) {
     // flow configuration.
     if (lastLoadedProject.has_value()) {
         mainLogger->logInfo("Restoring the last loaded project.");
-        // projectController.loadProjectData();
+        projectController.loadProjectData();
     }
 
     auto projectCommand =
