@@ -108,7 +108,21 @@ InitialProjectLoader::tryLoadCachedProject() noexcept {
 
     // Now we parse the JSON.
     nlohmann::json configJson{};
-    configFile >> configJson;
+    try {
+        configFile >> configJson;
+    } catch (const std::exception& e) {
+        m_logger.get().logError("Error while trying to parse the config file");
+        m_logger.get().logError("Error message: " + std::string{e.what()});
+        return std::nullopt;
+    }
+
+    // If the configuration file is empty we cannot load anything and
+    // we create a standard json.
+    if (configJson.empty()) {
+        m_logger.get().logWarning("Config file is empty. Creating a standard one...");
+        details::createStandardConfigFile(configFilePath, m_logger.get());
+        return std::nullopt;
+    }
 
     // We check if the version is the same as the current one.
     const auto version = configJson["version"].get<std::string>();
