@@ -1,9 +1,13 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <commands-factory.hpp>
 
+#include <application-configuration.hpp>
+
 #include <gh_cmd/gh_cmd.hpp>
 #include <version/version-numbers.hpp>
 
+// Third-party
+#include <folder-provider/folder-provider.hpp>
 #include <project-management/integrity-check/title-integrity-checker.hpp>
 #include <project-management/integrity-check/version-integrity-checker.hpp>
 #include <project-management/project-io/project-reader.hpp>
@@ -11,8 +15,8 @@
 
 // C++ STL
 #include <chrono>
+#include <fstream>
 #include <stdexcept>
-#include <string_view>
 
 namespace rpi_gc::commands_factory {
 
@@ -217,6 +221,16 @@ void ProjectCommandFactory::save_current_project(const std::string& customMessag
     m_projectController.get().collectProjectData();
 
     *projectWriter << project;
+
+    // Now we update the project path inside the application
+    // configuration.
+    const ApplicationConfiguration configData{
+        CreateDefaultApplicationConfiguration(std::filesystem::absolute(outputFilePath))};
+
+    auto folderProvider{gc::folder_provider::FolderProvider::create()};
+
+    std::ofstream configFile{GetDefaultApplicationConfigFilePath(*folderProvider)};
+    configFile << configData;
 }
 
 } // namespace rpi_gc::commands_factory

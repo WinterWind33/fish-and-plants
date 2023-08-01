@@ -4,7 +4,6 @@
 set(RPI_GC_HEADER_FILES
     "version/version-numbers.hpp"
     "greenhouse-controller-application.hpp"
-    "commands-factory.hpp"
     "abort-system/emergency-stoppable-system.hpp"
     "abort-system/terminable-system.hpp"
     "application/application.hpp"
@@ -37,7 +36,6 @@ set(RPI_GC_HEADER_FILES
 # RPI_GC's source files
 set(RPI_GC_SOURCE_FILES
     "greenhouse-controller-application.cpp"
-    "commands-factory.cpp"
     "commands/application-command.cpp"
     "commands/version-command.cpp"
     "commands/help-command.cpp"
@@ -49,10 +47,6 @@ set(RPI_GC_SOURCE_FILES
     "automatic-watering/daily-cycle-automatic-watering-system.cpp"
     "automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.cpp"
     "automatic-watering/time-providers/configurable-daily-cycle-aws-time-provider.cpp"
-)
-
-set(RPI_GC_EXECUTABLE_SOURCE_FILES
-    "entry-point.cpp"
 )
 
 # Here we add a library target so we can use it to link it against
@@ -69,6 +63,10 @@ if(USE_SEMVER)
     target_link_libraries(rpi_gc_lib PUBLIC semver)
 endif()
 
+if(GC_USE_SAGO_PLATFORM_FOLDERS)
+    target_link_libraries(rpi_gc_lib PUBLIC platform_folders)
+endif()
+
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/modules/project-management/include")
@@ -78,7 +76,21 @@ target_link_libraries(rpi_gc_lib PUBLIC gh_log)
 target_link_libraries(rpi_gc_lib PUBLIC gh_cmd)
 target_link_libraries(rpi_gc_lib PUBLIC project_management_static)
 
-add_executable(rpi_gc ${RPI_GC_EXECUTABLE_SOURCE_FILES})
+set(RPI_GC_EXECUTABLE_HEADER_FILES
+    "initial-project-loader.hpp"
+    "commands-factory.hpp"
+    "project-loader.hpp"
+    "application-configuration.hpp"
+)
+
+set(RPI_GC_EXECUTABLE_SOURCE_FILES
+    "entry-point.cpp"
+    "initial-project-loader.cpp"
+    "commands-factory.cpp"
+    "project-loader.cpp"
+)
+
+add_executable(rpi_gc ${RPI_GC_EXECUTABLE_SOURCE_FILES} ${RPI_GC_EXECUTABLE_HEADER_FILES})
 set_target_properties(rpi_gc
     PROPERTIES
     VERSION "1.0.0"
@@ -89,9 +101,9 @@ set_target_properties(rpi_gc
 set(RPI_GC_VERSION_MAJOR 1)
 set(RPI_GC_VERSION_MINOR 0)
 set(RPI_GC_VERSION_PATCH 0)
-# Uncomment this for an RC version.
-#set(RPI_GC_VERSION_RC_NUM 0)
 
+# Uncomment this for an RC version.
+# set(RPI_GC_VERSION_RC_NUM 0)
 configure_file(
     "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp.in" "${PROJECT_SOURCE_DIR}/src/rpi_gc/version/version-numbers.hpp"
     NEWLINE_STYLE LF
@@ -100,7 +112,6 @@ configure_file(
 # Dependencies
 # Here we don't want to include gh_hal and gh_log directly as this will result
 # in possible includes clash. Instead, we include their parent directory.
-target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/rpi_gc")
-target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/wrappers")
-target_include_directories(rpi_gc PRIVATE "${PROJECT_SOURCE_DIR}/src/modules/project-management/include")
 target_link_libraries(rpi_gc PRIVATE rpi_gc_lib)
+target_link_libraries(rpi_gc PRIVATE gc_folder_provider)
+target_link_libraries(rpi_gc PRIVATE nlohmann_json)

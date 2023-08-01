@@ -1,6 +1,8 @@
 // Copyright (C) 2023 Andrea Ballestrazzi
 #include <greenhouse-controller-application.hpp>
 
+#include <initial-project-loader.hpp>
+
 #include <automatic-watering/daily-cycle-automatic-watering-system.hpp>
 #include <automatic-watering/hardware-controllers/daily-cycle-aws-hardware-controller.hpp>
 #include <automatic-watering/time-providers/configurable-daily-cycle-aws-time-provider.hpp>
@@ -22,11 +24,13 @@
 #include <commands/version-command.hpp>
 
 #include <common/types.hpp>
+#include <folder-provider/folder-provider.hpp>
 #include <gh_cmd/gh_cmd.hpp>
 
 // C++ STL
 #include <algorithm>
 #include <atomic>
+#include <filesystem>
 #include <iostream>
 #include <limits>
 #include <memory>
@@ -235,7 +239,29 @@ int main(int argc, char* argv[]) {
     LoggerPointer userLogger{gh_log::SPLLogger::createColoredStdOutLogger("Reporter")};
     userLogger->setAutomaticFlushLevel(gh_log::ELoggingLevel::Info);
 
-    OutputStringStream applicationHelpStream{};
+    mainLogger->logInfo("Trying loading the configuration file.");
+    // We try to load the configuration file that contains the eventual
+    // last loaded project.
+    std::optional<std::pair<gc::project_management::Project, std::filesystem::path>>
+        lastLoadedProject{};
+    {
+        auto folderProvider{gc::folder_provider::FolderProvider::create()};
+        InitialProjectLoader projectLoader{*mainLogger, *folderProvider};
+
+        lastLoadedProject = projectLoader.tryLoadCachedProject();
+    }
+
+    gc_project::ProjectController projectController{};
+    if (lastLoadedProject.has_value()) {
+        // If the project have been successfully loaded we need to retrieve the
+        // various configurations.
+        mainLogger->logInfo("Project loaded successfully. Loading flows configurations.");
+
+        // If the project have been loaded successfully, we need to set it inside the
+        // project controller.
+        projectController.setCurrentProject(std::move(std::get<0>(lastLoadedProject.value())));
+        projectController.setCurrentProjectFilePath(std::get<1>(lastLoadedProject.value()));
+    }
 
     mainLogger->logInfo("Initiating hardware abstraction layer.");
     rpi_gc::hardware_management::HardwareInitializer<gh_hal::hardware_access::BoardChipFactory>
@@ -448,8 +474,14 @@ int main(int argc, char* argv[]) {
         ::commands_factory::CreateStatusCommand<AutomaticWateringSystemPointer,
                                                 DefaultOptionParser>(automaticWateringSystem);
 
-    gc_project::ProjectController projectController{};
     projectController.registerProjectComponent(*automaticWateringSystem);
+
+    // If the last project was loaded successfully, we need to restore the last
+    // flow configuration.
+    if (lastLoadedProject.has_value()) {
+        mainLogger->logInfo("Restoring the last loaded project.");
+        projectController.loadProjectData();
+    }
 
     auto projectCommand =
         rpi_gc::commands_factory::ProjectCommandFactory{std::cout, std::cin, projectController}
@@ -470,6 +502,7 @@ int main(int argc, char* argv[]) {
     applicationCommand->addBivalentCommand(*versionCommand);
     applicationCommand->addBivalentCommand(*helpCommand);
 
+    OutputStringStream applicationHelpStream{};
     applicationOptionParser->printHelp(applicationHelpStream);
     helpCommand->setApplicationHelp(applicationHelpStream.str());
 
