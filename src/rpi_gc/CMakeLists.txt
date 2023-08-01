@@ -80,6 +80,7 @@ set(RPI_GC_EXECUTABLE_HEADER_FILES
     "initial-project-loader.hpp"
     "commands-factory.hpp"
     "project-loader.hpp"
+    "application-configuration.hpp"
 )
 
 set(RPI_GC_EXECUTABLE_SOURCE_FILES
