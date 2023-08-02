@@ -7,6 +7,8 @@ to automate it.
 
 In this paragraph are listed all the features' summaries that the application has to offer. If you want to deepen each aspect, you can follow their linked reference page.
 
+- [Project management](./features/project-management.md) : the application can manage multiple projects, each one with its own configurations;
+
 ### Commands
 
 Being the application based on a TUI, you can use the application, and thus control the greenhouse automation, through the implemented commands:
