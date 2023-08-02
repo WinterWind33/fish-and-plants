@@ -2,20 +2,6 @@
 
 The `project` command is responsible to manage the lifetime and configuration of a Greenhouse. It can be used to create, save and load projects configurations for your `rpi_gc` application.
 
-**NOTE: THIS DOCUMENTATION IS WIP AND THE DEVELOPMENT AS WELL.**
-
-## Structure of a project
-
-In this section, we'll see how the project is structured and represented.
-
-### Basic project data
-
-The basic data of a project is a set of these values:
-
-- `version` : this represents the version of the `rpi_gc` application that last loaded the project. The version is automatically upgraded if a newer version of `rpi_gc` is launched with the project that was generated from an older version;
-- `creation time` : this represents the time and date of the creation of the project. This field will be useful for statistical analysis;
-- `title` : the name of the project;
-
 ## Command usage
 
 ### `--create` option
@@ -40,7 +26,7 @@ The project is loaded and parsed. The application has a `title` and `version` in
 
 If the JSON syntax is broken **it will result in undefined behavior**: the project can be loaded, discarded or partially loaded. Be careful.
 
-#### AWS Running
+#### When the AWS is Running
 
 If the AWS is running while performing a `project --load` operation, the AWS is stopped, its configuration saved to the current project (if open) and the new project is loaded:
 
@@ -54,3 +40,13 @@ The following command will load the project contained inside the file `my-projec
 ```bash
 project --load my-project.json
 ```
+
+## General behaviors
+
+When a project is created, loaded or saved, the last used project data, if any, is saved inside the application configuration data. This means that the next time the application is launched, the last used project will be automatically loaded.
+
+### When loading a project
+
+When a new project is loaded the last loaded project path is saved inside the application configuration data, inside the `rpi_gc_config.json` file under the `AppData` folder.
+
+**NOTE: When loading the new project, only the old project data will be saved.** This means that if you are working with a project `A` and then you load a project `B`, the project `A` will be saved inside the application configuration as the last used project and the project `B` will be loaded into memory but its data will not be saved until the user saves it manually or when the application ends. This is done to prevent data loss and to increase the probability to run a valid configuration inside the greenhouse.

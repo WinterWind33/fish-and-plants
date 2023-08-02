@@ -100,20 +100,22 @@ InitialProjectLoader::tryLoadCachedProject() noexcept {
     // If we are here this means that the application data folder exists and
     // the application config file as well. We can load the information about
     // the last opened project location.
-    std::ifstream configFile{configFilePath};
-    if (!configFile.is_open()) {
-        m_logger.get().logError("Error while trying to open the config file");
-        return std::nullopt;
-    }
-
-    // Now we parse the JSON.
     nlohmann::json configJson{};
-    try {
-        configFile >> configJson;
-    } catch (const std::exception& e) {
-        m_logger.get().logError("Error while trying to parse the config file");
-        m_logger.get().logError("Error message: " + std::string{e.what()});
-        return std::nullopt;
+    {
+        std::ifstream configFile{configFilePath};
+        if (!configFile.is_open()) {
+            m_logger.get().logError("Error while trying to open the config file");
+            return std::nullopt;
+        }
+
+        // Now we parse the JSON.
+        try {
+            configFile >> configJson;
+        } catch (const std::exception& e) {
+            m_logger.get().logError("Error while trying to parse the config file");
+            m_logger.get().logError("Error message: " + std::string{e.what()});
+            return std::nullopt;
+        }
     }
 
     // If the configuration file is empty we cannot load anything and
@@ -136,7 +138,7 @@ InitialProjectLoader::tryLoadCachedProject() noexcept {
 
     // We check if the project location is present.
     if (!configJson.contains("lastProjectLocation")) {
-        m_logger.get().logWarning("Project location not found in the config file");
+        m_logger.get().logWarning("Project location JSON entry not found in the config file.");
         return std::nullopt;
     }
 
@@ -144,7 +146,16 @@ InitialProjectLoader::tryLoadCachedProject() noexcept {
     const auto projectLocation =
         std::filesystem::path{configJson["lastProjectLocation"].get<std::string>()};
     if (!std::filesystem::exists(projectLocation, errorCode)) {
-        m_logger.get().logWarning("Project location not found");
+        m_logger.get().logWarning(
+            "The requested project does not exist in the specified location. Removing it from the "
+            "config file.");
+
+        // If it doesn't exist the project in the given location we need to remove
+        // it from the JSON object.
+        configJson.erase("lastProjectLocation");
+        std::ofstream outConfigFile{configFilePath};
+        outConfigFile << configJson.dump(4);
+
         return std::nullopt;
     }
 

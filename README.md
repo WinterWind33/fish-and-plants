@@ -44,7 +44,8 @@ If you want to contribute to the prject, before you commit anything you need to 
 
 ## Application reference
 
-[Here](./docs/reference/rpi_gc.md) you can find the main application reference.
+- [Project summary](./docs/project/summary.md) in this file you can find a brief description of what we are doing and why;
+- [Here](./docs/reference/rpi_gc.md) you can find the main application reference;
 
 ## License
 
@@ -61,6 +62,7 @@ These are the third party libraries used for the application.
 - [libgpiod](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/)
 - [semver](https://github.com/Neargye/semver)
 - [nlohmann json](https://github.com/nlohmann/json)
+- [PlatformFolders](https://github.com/sago007/PlatformFolders)
 
 ### Testing code
 
