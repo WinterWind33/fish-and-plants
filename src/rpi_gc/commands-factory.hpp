@@ -77,6 +77,10 @@ namespace utils {
 //! \brief Saves the project data and updates the application configuration file with
 //!  the project folder.
 //!
+//! \param projectController The project controller.
+//! \param userLogger The user logger.
+//! \param mainLogger The main logger.
+//! \param customMessage The custom message to log.
 void SaveProjectAndUpdateConfigFile(gc_project::ProjectController& projectController,
                                     std::shared_ptr<gh_log::Logger> userLogger,
                                     std::shared_ptr<gh_log::Logger> mainLogger,

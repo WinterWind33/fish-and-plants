@@ -530,8 +530,10 @@ int main(int argc, char* argv[]) {
     mainLogger->logInfo("Starting application loop.");
     mainApplication.run();
 
-    mainLogger->logInfo("Saving project data to rpi_gc_config.json.");
-    projectController.collectProjectData();
+    mainLogger->logInfo("Saving last project data.");
+    rpi_gc::commands_factory::utils::SaveProjectAndUpdateConfigFile(
+        projectController, userLogger, mainLogger,
+        "Saving last loaded project and updating application config file.");
 
     mainLogger->logInfo("Exiting now [Result: 0].");
     return 0;

@@ -213,6 +213,12 @@ void SaveProjectAndUpdateConfigFile(gc_project::ProjectController& projectContro
                                     std::shared_ptr<gh_log::Logger> userLogger,
                                     std::shared_ptr<gh_log::Logger> mainLogger,
                                     const std::string& customMessage) {
+    if (!projectController.hasProject()) {
+        userLogger->logWarning("No project is loaded. Nothing will be saved.");
+        mainLogger->logWarning("No project is loaded. Nothing will be saved.");
+        return;
+    }
+
     const auto& project{projectController.getCurrentProject()};
     const std::filesystem::path outputFilePath{projectController.getCurrentProjectFilePath()};
     auto projectWriter{
