@@ -203,22 +203,37 @@ auto ProjectCommandFactory::create_event_handler_map() -> command_type::event_ha
 }
 
 void ProjectCommandFactory::save_current_project(const std::string& customMessage) {
-    const auto& project{m_projectController.get().getCurrentProject()};
-    const std::filesystem::path outputFilePath{
-        m_projectController.get().getCurrentProjectFilePath()};
+    utils::SaveProjectAndUpdateConfigFile(m_projectController.get(), m_userLogger, m_mainLogger,
+                                          customMessage);
+}
+
+namespace utils {
+
+void SaveProjectAndUpdateConfigFile(gc_project::ProjectController& projectController,
+                                    const std::shared_ptr<gh_log::Logger>& userLogger,
+                                    const std::shared_ptr<gh_log::Logger>& mainLogger,
+                                    const std::string& customMessage) {
+    if (!projectController.hasProject()) {
+        userLogger->logWarning("No project is loaded. Nothing will be saved.");
+        mainLogger->logWarning("No project is loaded. Nothing will be saved.");
+        return;
+    }
+
+    const auto& project{projectController.getCurrentProject()};
+    const std::filesystem::path outputFilePath{projectController.getCurrentProjectFilePath()};
     auto projectWriter{
         gc::project_management::project_io::createJsonProjectFileWriter(outputFilePath)};
 
     if (customMessage.empty()) {
-        m_userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
-        m_mainLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+        userLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
+        mainLogger->logInfo("Saving project to " + outputFilePath.string() + ".");
     } else {
-        m_userLogger->logInfo(customMessage);
-        m_mainLogger->logInfo(customMessage);
+        userLogger->logInfo(customMessage);
+        mainLogger->logInfo(customMessage);
     }
 
     // Now we make all components save the configuration to the project.
-    m_projectController.get().collectProjectData();
+    projectController.collectProjectData();
 
     *projectWriter << project;
 
@@ -232,5 +247,7 @@ void ProjectCommandFactory::save_current_project(const std::string& customMessag
     std::ofstream configFile{GetDefaultApplicationConfigFilePath(*folderProvider)};
     configFile << configData;
 }
+
+} // namespace utils
 
 } // namespace rpi_gc::commands_factory

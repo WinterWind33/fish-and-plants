@@ -43,3 +43,15 @@ The last project information is stored inside the `rpi_gc_config.json` file. Thi
 If inside the `rpi_gc_config.json` file there is a path that doesn't exist, the application will remove the entry from it. If the file doesn't exist, the application will create it.
 
 The last project information is automatically saved every time a new project is loaded, created or saved, as specified in the `project` command reference.
+
+## Project automatic saving
+
+The application automatically saves the project every time a new project is loaded, created or saved, as specified in the `project` command reference.
+
+### Last project data
+
+Every time the application terminates, the project is automatically saved. If the application is terminated using the `Ctrl+C` command, the project is not saved.
+
+When the project is successfully saved at application termination, the application will update the `rpi_gc_config.json` file with the path of the saved project so that the next time the application starts, it will load the last saved project.
+
+If no project is loaded, the application won't save the project and will not update the `rpi_gc_config.json` file.
