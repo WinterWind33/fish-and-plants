@@ -2,18 +2,6 @@
 
 The `project` command is responsible to manage the lifetime and configuration of a Greenhouse. It can be used to create, save and load projects configurations for your `rpi_gc` application.
 
-## Structure of a project
-
-In this section, we'll see how the project is structured and represented.
-
-### Basic project data
-
-The basic data of a project is a set of these values:
-
-- `version` : this represents the version of the `rpi_gc` application that last loaded the project. The version is automatically upgraded if a newer version of `rpi_gc` is launched with the project that was generated from an older version;
-- `creation time` : this represents the time and date of the creation of the project. This field will be useful for statistical analysis;
-- `title` : the name of the project;
-
 ## Command usage
 
 ### `--create` option

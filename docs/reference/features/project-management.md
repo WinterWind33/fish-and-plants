@@ -20,19 +20,21 @@ The basic data of a project is a set of these values:
 
 The automatic watering system configuration is a set of values that are used to configure the AWS flow. The AWS configuration is a set of these values:
 
-- `mode`: the mode of the AWS flow. The mode can only be `cycled`, i.e. the automatic watering system runs automatically alternating active and inactive periods. The inactive periods are used to let the soil dry;
+- `mode`: the mode of the AWS flow. The mode can only be `cycled`, i.e. the automatic watering system runs automatically alternating active and inactive periods. The inactive periods are used to let the plants roots dry;
 - `flow`: the flow of the AWS flow. The flow is the structure of every cycles of the AWS. The cycle is repeated at the end of every inactive period. The flow is a set of these values:
   - `activationTime` **[milliseconds]**: the duration of the active period of the cycle. During this period, the pump and the valve will be activated and the water will be pumped into the greenhouse;
-  - `deactivationTime` **[milliseconds]**: the interval of time between the end of the active period and the start of the next active period. During this period, the pump and the valve will be deactivated and the soil will dry;
+  - `deactivationTime` **[milliseconds]**: the interval of time between the end of the active period and the start of the next active period. During this period, the pump and the valve will be deactivated and the plants roots will dry;
   - `deactivationSepTime` **[milliseconds]**: the interval of time between the deactivation of the valve and the deactivation of the valve to let the water pressure inside the pipes to stabilize to not damage the pump;
   - `isWaterValveEnabled` **[boolean]**: a boolean value that indicates if the water valve will be used during the active period of the cycle;
-  - `isWaterPumpEnabled` **[boolean]**: a boolean value that indicates if the water pump will be used during the active period of the cycle.
+  - `isWaterPumpEnabled` **[boolean]**: a boolean value that indicates if the water pump will be used during the active period of the cycle;
   - `pumpPinID`: the ID of the board that will be attached to the pump that will be used during the active period of the cycle. This is only used if the `isWaterValveEnabled` is set to `true`;
   - `valvePinID`: the ID of the board that will be attached to the valve that will be used during the active period of the cycle. This is only used if the `isWaterPumpEnabled` is set to `true`;
 
 ## Project automatic loading
 
 The application automatically loads the last project that was used. If the application is launched for the first time, it will create a new project with the default configurations.
+
+Even though the last project is automatically loaded, the flows that are defines inside it are not automatically started. To start a flow, the user must use the [`auto-watering`](../commands/auto-watering.md) command.
 
 ### Last project data
 

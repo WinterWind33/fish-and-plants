@@ -60,7 +60,7 @@ These are the third party libraries used for the application.
 - [popl](https://github.com/badaix/popl)
 - [libgpiod](https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/)
 - [semver](https://github.com/Neargye/semver)
-- [nlohmann json](https://github.com/nlohmann/json),
+- [nlohmann json](https://github.com/nlohmann/json)
 - [PlatformFolders](https://github.com/sago007/PlatformFolders)
 
 ### Testing code
