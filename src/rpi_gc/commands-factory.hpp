@@ -71,4 +71,17 @@ private:
     [[nodiscard]] command_type::event_handler_map create_event_handler_map();
 };
 
+namespace utils {
+
+//!!
+//! \brief Saves the project data and updates the application configuration file with
+//!  the project folder.
+//!
+void SaveProjectAndUpdateConfigFile(gc_project::ProjectController& projectController,
+                                    std::shared_ptr<gh_log::Logger> userLogger,
+                                    std::shared_ptr<gh_log::Logger> mainLogger,
+                                    const std::string& customMessage = {});
+
+} // namespace utils
+
 } // namespace rpi_gc::commands_factory
