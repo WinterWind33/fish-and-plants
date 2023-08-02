@@ -2,7 +2,7 @@
 name: Feature request
 about: Add a new feature to the application
 title: ''
-labels: ''
+labels: 'Type: Enhancement'
 assignees: ''
 
 ---
@@ -15,5 +15,5 @@ Add a description of the feature to add to the application.
 
 When this feature can be considered done?
 
-- [ ] Update developers documentation;
-- [ ] Update REAMDE.md
+- [ ] Update features documentation;
+- [ ] Update REAMDE.md;
