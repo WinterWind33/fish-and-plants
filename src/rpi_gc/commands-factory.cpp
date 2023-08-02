@@ -210,8 +210,8 @@ void ProjectCommandFactory::save_current_project(const std::string& customMessag
 namespace utils {
 
 void SaveProjectAndUpdateConfigFile(gc_project::ProjectController& projectController,
-                                    std::shared_ptr<gh_log::Logger> userLogger,
-                                    std::shared_ptr<gh_log::Logger> mainLogger,
+                                    const std::shared_ptr<gh_log::Logger>& userLogger,
+                                    const std::shared_ptr<gh_log::Logger>& mainLogger,
                                     const std::string& customMessage) {
     if (!projectController.hasProject()) {
         userLogger->logWarning("No project is loaded. Nothing will be saved.");

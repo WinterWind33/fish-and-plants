@@ -82,8 +82,8 @@ namespace utils {
 //! \param mainLogger The main logger.
 //! \param customMessage The custom message to log.
 void SaveProjectAndUpdateConfigFile(gc_project::ProjectController& projectController,
-                                    std::shared_ptr<gh_log::Logger> userLogger,
-                                    std::shared_ptr<gh_log::Logger> mainLogger,
+                                    const std::shared_ptr<gh_log::Logger>& userLogger,
+                                    const std::shared_ptr<gh_log::Logger>& mainLogger,
                                     const std::string& customMessage = {});
 
 } // namespace utils
