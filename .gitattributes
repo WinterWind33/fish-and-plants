@@ -18,6 +18,7 @@
 .clang-tidy text eol=lf
 .pre-commit-config.yaml text eol=lf
 *.yml text eol=lf
+*.cmake text eol=lf
 
 *.sln text eol=crlf
 *.vcxproj text eol=crlf
