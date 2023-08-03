@@ -588,6 +588,24 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
         }
 
         return;
+    } catch (const std::exception& exc) {
+        m_userLogger->logError(
+            format_log_string("Error while loading the AWS configuration. No AWS configuration "
+                              "will be loaded. See log for more."));
+        m_mainLogger->logError(format_log_string(
+            "Error while loading the AWS configuration. No AWS configuration will be loaded."));
+        m_mainLogger->logError(format_log_string("Error message: "s + exc.what()));
+
+        if (bWasRunning) {
+            const StringType formattedLogString{format_log_string(
+                "Automatic watering system was running. Restoring the old configuration.")};
+            m_mainLogger->logWarning(formattedLogString);
+            m_userLogger->logWarning(formattedLogString);
+
+            startAutomaticWatering();
+        }
+
+        return;
     }
 
     m_bWaterValveEnabled.store(bValveEnabled);
