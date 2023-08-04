@@ -11,7 +11,7 @@
 namespace rpi_gc::version {
 namespace details {
 constexpr std::uint16_t RPI_GC_VERSION_MAJOR{1};
-constexpr std::uint16_t RPI_GC_VERSION_MINOR{0};
+constexpr std::uint16_t RPI_GC_VERSION_MINOR{1};
 constexpr std::uint16_t RPI_GC_VERSION_PATCH{0};
 
 namespace prerelease {
