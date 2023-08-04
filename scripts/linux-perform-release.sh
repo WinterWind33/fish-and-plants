@@ -17,7 +17,7 @@ echo "[INFO] => Compiling for Linux x64"
 rm -r -f ./*
 rm -r -f ../src/third-party/libgpiod-*
 rm ../bin/rpi_gc*
-cmake ..
+cmake .. --toolchain "toolchains/linux-toolchain.cmake"
 cmake --build . --target rpi_gc --config Release -j8
 echo "[INFO] => Copying to bin/release/linux-x64"
 mkdir -p ../bin/Release/linux-x64
