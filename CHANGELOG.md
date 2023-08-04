@@ -10,7 +10,7 @@
 
 ### Bug fixes
 
-- (**crash**) Fixed crash when the user entered an invalid option;
+- (**Crash**) Fixed crash when the user entered an invalid option;
 
 ### Tests
 
@@ -19,6 +19,7 @@
 
 ### Dev Ops
 
-- Removed `qemu` build and test job after PR merge;
+- Updated Linux toolchains: now for ARM64 we target gcc-12 and g++-12 while for x86_64 we target gcc-13 and g++-13;
 - Updated `clang-tidy` checks to remove some warnings as errors;
 - Updated the mainstream `build-and-tests` job to build with `-j8` command during cmake build.
+- Removed `qemu` build and test job after PR merge;
