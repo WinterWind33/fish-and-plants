@@ -5,7 +5,9 @@ namespace rpi_gc::gc_project {
 
 void ProjectController::setCurrentProject(project_type&& newProject) {
     // We need to close the old project before setting the new one.
-    close_current_project();
+    if (hasProject())
+        close_current_project();
+
     m_currentProject = std::move(newProject);
     m_currentProjectFilePath = std::filesystem::path{m_currentProject.value().getTitle() + ".json"};
 }

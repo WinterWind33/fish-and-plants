@@ -16,6 +16,37 @@
 
 namespace rpi_gc::hardware_management {
 
+#ifdef _DEBUG
+class FakeBoardChip final : public gh_hal::hardware_access::BoardChip {
+public:
+    bool releaseRequest(std::vector<board_digital_out::offset_type> offsets) noexcept override {
+        return true;
+    }
+
+    std::unique_ptr<board_digital_out> requestDigitalPin(
+        std::string consumer, board_digital_out::offset_type offset,
+        const gh_hal::hardware_access::DigitalPinRequestDirection direction) noexcept override {
+        return nullptr;
+    }
+
+    std::vector<std::unique_ptr<board_digital_out>> requestDigitalPinPool(
+        std::string consumer, std::vector<board_digital_out::offset_type> offset,
+        const gh_hal::hardware_access::DigitalPinRequestDirection direction) noexcept override {
+        return {};
+    }
+};
+
+class FakeBoardChipFactory final {
+public:
+    using board_chip_type = FakeBoardChip;
+
+    static std::unique_ptr<board_chip_type> openChipByPath(std::filesystem::path chipPath) {
+        return std::make_unique<board_chip_type>();
+    }
+};
+
+#endif // _DEBUG
+
 template <gh_hal::hardware_access::BoardChipFactoryType ChipFactory>
 class HardwareInitializer final {
 public:

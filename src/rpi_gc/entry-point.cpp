@@ -253,7 +253,7 @@ int main(int argc, char* argv[]) {
 
     gc_project::ProjectController projectController{};
     if (lastLoadedProject.has_value()) {
-        // If the project have been successfully loaded we need to retrieve the
+        // If the project has been successfully loaded we need to retrieve the
         // various configurations.
         mainLogger->logInfo("Project loaded successfully. Loading flows configurations.");
 
@@ -483,11 +483,10 @@ int main(int argc, char* argv[]) {
         projectController.loadProjectData();
     }
 
+    rpi_gc::commands_factory::ProjectCommandFactory projectCommandFactory{std::cout, std::cin,
+                                                                          projectController};
     auto projectCommand =
-        rpi_gc::commands_factory::ProjectCommandFactory{std::cout, std::cin, projectController}
-            .setMainLogger(mainLogger)
-            .setUserLogger(userLogger)
-            .create();
+        projectCommandFactory.setMainLogger(mainLogger).setUserLogger(userLogger).create();
 
     auto helpCommand = std::make_unique<HelpCommand>(
         std::cout,
