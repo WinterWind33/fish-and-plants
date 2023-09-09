@@ -51,7 +51,7 @@ struct BoardChip {
     //!  nothing will be released.
     //!
     //! \param offsets The offsets pool that identifies the line request to be released.
-    //! \return Trus if a request has beed freed, false otherwise.
+    //! \return True if a request has beed freed, false otherwise.
     virtual bool releaseRequest(std::vector<board_digital_out::offset_type> offsets) noexcept = 0;
 };
 
