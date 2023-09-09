@@ -14,7 +14,8 @@
 				"--target",
 				"ALL_BUILD",
 				"--config",
-				"Debug"
+				"Debug",
+				"-j8"
 			],
 			"problemMatcher": [],
 			"group": "build"
