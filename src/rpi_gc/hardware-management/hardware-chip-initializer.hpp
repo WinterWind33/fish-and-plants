@@ -45,7 +45,6 @@ public:
     }
 };
 
-using FakeHardwareInitializer = HardwareInitializer<FakeBoardChipFactory>;
 #endif // _DEBUG
 
 template <gh_hal::hardware_access::BoardChipFactoryType ChipFactory>
