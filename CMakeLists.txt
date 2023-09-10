@@ -39,9 +39,9 @@ if(NOT MSVC)
 endif()
 
 # === External Dependencies ===
-# ==== Microsoft GSL ====
 
 find_package(Microsoft.GSL CONFIG REQUIRED)
+find_package(Catch2 CONFIG REQUIRED)
 
 # = Output folders =
 set(PRODUCTION_EXE_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/bin")

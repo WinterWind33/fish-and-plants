@@ -109,20 +109,7 @@ endif()
 
 # === Third party submodules configuration ===
 if(USE_CATCH2_AS_TESTING_FRAMEWORK)
-    message(STATUS "Using Catch2 v${CATCH2_VERSION} as testing framework.")
-
-    set(CATCH2_DIR "${PROJECT_SOURCE_DIR}/test/third-party/Catch2-${CATCH2_VERSION}")
-    set(AMALGAMATED_HPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.hpp")
-    set(AMALGAMATED_CPP_FILE "${CATCH2_DIR}/include/catch2/catch_amalgamated.cpp")
-
-    FetchContent_Declare(Catch2
-        GIT_REPOSITORY "https://github.com/catchorg/Catch2.git"
-        GIT_TAG v3.4.0
-    )
-
-    FetchContent_MakeAvailable(Catch2)
-
-    target_link_libraries(test_app PRIVATE Catch2)
+    target_link_libraries(test_app PRIVATE Catch2::Catch2)
     target_compile_definitions(test_app PRIVATE "USE_CATCH2_AS_TESTING_FRAMEWORK")
 endif()
 
