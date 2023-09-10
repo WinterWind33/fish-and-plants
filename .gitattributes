@@ -19,6 +19,7 @@
 .pre-commit-config.yaml text eol=lf
 *.yml text eol=lf
 *.cmake text eol=lf
+Dockerfile text eol=lf
 
 *.sln text eol=crlf
 *.vcxproj text eol=crlf
