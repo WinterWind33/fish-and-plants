@@ -1,0 +1,5 @@
+name: "linux-ubuntu-action"
+description: "Github action used to setup dependencies for rpi_gc"
+runs:
+    using: "docker"
+    image: "../../../.devcontainer/Dockerfile"
