@@ -27,6 +27,8 @@
 #include <folder-provider/folder-provider.hpp>
 #include <gh_cmd/gh_cmd.hpp>
 
+#include <gsl/gsl>
+
 // C++ STL
 #include <algorithm>
 #include <atomic>
