@@ -24,6 +24,41 @@ hardware interface is simulated.*
 
 ## Setup the Repo
 
+The repository depends on various external dependencies, installed outside the project.
+
+### Dependencies
+
+#### Windows
+
+If you want to work on Windows, you need to install [vcpkg](https://github.com/microsoft/vcpkg) and then install the following packages:
+
+```ps
+cd \path\to\vcpkg
+.\vcpkg install ms-gsl catch2 --triplet x64-windows
+```
+
+#### Linux
+
+If you want to work on Linux, you need to install the following packages:
+
+```bash
+sudo apt-get install catch2 -y
+```
+
+For Microsoft GSL, you can't install it from the package manager, so you need to build it from source:
+
+```bash
+git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
+cd GSL
+mkdir build
+cd build
+cmake ..
+sudo make
+sudo make install
+```
+
+### Clone and build the repo
+
 If you want to clone the repository to your local machine and play with the code or build the executable yourself, you can follow these steps:
 
 ```bash
