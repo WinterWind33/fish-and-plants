@@ -62,7 +62,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: External dependencies setup
+      - name: Setup Microsoft GSL
         run: |
           git clone https://github.com/microsoft/GSL.git /repos/GSL
           cd /repos/GSL
@@ -71,6 +71,13 @@ jobs:
           cmake ..
           make
           make install
+      - name: Setup Catch2
+        run: |
+          git clone  https://github.com/catchorg/Catch2.git /repos/Catch2
+          cd /repos/Catch2
+          mkdir build
+          cmake -Bbuild -H. -DBUILD_TESTING=OFF
+          cmake --build build/ --target install
 
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf

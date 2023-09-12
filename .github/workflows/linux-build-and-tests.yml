@@ -32,8 +32,8 @@ jobs:
     - name: Package configuration
       run: sudo apt-get install autoconf-archive pkg-config m4 libtool automake autoconf
 
-      # Install Microsoft.GSL by cloning from GitHub and building.
-    - name: Configure external dependencies
+      # Install Microsoft.GSL by cloning from GitHub and building.`1
+    - name: Setup Microsoft GSL
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
       run: |
         git clone https://github.com/microsoft/GSL.git /repos/GSL
@@ -43,6 +43,14 @@ jobs:
         cmake ..
         make
         make install
+    - name: Setup Catch2
+      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+      run: |
+        git clone  https://github.com/catchorg/Catch2.git /repos/Catch2
+        cd /repos/Catch2
+        mkdir build
+        cmake -Bbuild -H. -DBUILD_TESTING=OFF
+        cmake --build build/ --target install
 
     - name: CMake Configure
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
