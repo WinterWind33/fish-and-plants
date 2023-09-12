@@ -40,7 +40,7 @@ jobs:
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-13-aarch64-linux-gnu g++-13-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf-y
+          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-12-aarch64-linux-gnu g++-12-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf -y
 
       - name: Linux Release Build
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'

@@ -41,11 +41,19 @@ cd \path\to\vcpkg
 
 If you want to work on Linux, you need to install the following packages:
 
+*Catch2*:
+
 ```bash
-sudo apt-get install catch2 -y
+
+git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git
+cd Catch2
+mkdir build
+sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
+sudo cmake --build build/ --target install -j 10
+
 ```
 
-For Microsoft GSL, you can't install it from the package manager, so you need to build it from source:
+*Microsoft GSL*:
 
 ```bash
 git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
