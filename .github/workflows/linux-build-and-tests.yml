@@ -50,7 +50,7 @@ jobs:
         cd Catch2
         mkdir build
         sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
-        sudo cmake --build build/ --target install
+        sudo cmake --build build/ --target install -j 22
 
     - name: CMake Configure
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'

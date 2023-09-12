@@ -77,7 +77,7 @@ jobs:
           cd Catch2
           mkdir build
           sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
-          sudo cmake --build build/ --target install
+          sudo cmake --build build/ --target install -j 22
 
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
