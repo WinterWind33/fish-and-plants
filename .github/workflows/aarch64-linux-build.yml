@@ -32,11 +32,12 @@ jobs:
 
       - name: Setup external dependencies
         run: |
-          git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+          git clone --depth 1 https://github.com/microsoft/vcpkg.git ~/vcpkg
           cd ~/vcpkg
           ./bootstrap-vcpkg.sh
           sudo ./vcpkg integrate install
-          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders --triplet aarch64-linux
+          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders --triplet arm64-linux-release
+          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders --triplet x64-linux
 
       - name: Linux Release Build
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
