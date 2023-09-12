@@ -41,16 +41,16 @@ jobs:
         mkdir build
         cd build
         cmake ..
-        make
-        make install
+        sudo make
+        sudo make install
     - name: Setup Catch2
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
       run: |
         git clone  https://github.com/catchorg/Catch2.git
         cd Catch2
         mkdir build
-        cmake -Bbuild -H. -DBUILD_TESTING=OFF
-        cmake --build build/ --target install
+        sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
+        sudo cmake --build build/ --target install
 
     - name: CMake Configure
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'

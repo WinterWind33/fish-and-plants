@@ -69,15 +69,15 @@ jobs:
           mkdir build
           cd build
           cmake ..
-          make
-          make install
+          sudo make
+          sudo make install
       - name: Setup Catch2
         run: |
           git clone  https://github.com/catchorg/Catch2.git
           cd Catch2
           mkdir build
-          cmake -Bbuild -H. -DBUILD_TESTING=OFF
-          cmake --build build/ --target install
+          sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
+          sudo cmake --build build/ --target install
 
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
