@@ -8,7 +8,7 @@ on:
       - "main"
 
 jobs:
-  build:
+  gcc-13:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -22,10 +22,9 @@ jobs:
             test/**
             scripts/**
             toolchains/**
+            .github/workflows/aarch64-linux-build.yml
 
-      - name: Setup third-party dependencies
-        run: sudo apt-get install catch2 -y
-
+       # In order to build rpi_gc we don't need test dependencies.
       - name: Setup Microsoft GSL
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
@@ -41,7 +40,7 @@ jobs:
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-12-aarch64-linux-gnu g++-12-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf gcc-13 g++-13 -y
+          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-13-aarch64-linux-gnu g++-13-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf-y
 
       - name: Linux Release Build
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
