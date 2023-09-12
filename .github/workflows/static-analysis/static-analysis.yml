@@ -12,44 +12,46 @@ env:
 
 jobs:
   pre-commit-hooks:
-      runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-      steps:
-        - uses: actions/checkout@v3
-          with:
-            fetch-depth: 0
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-        - name: Setup pre-commit
-          run: sudo apt-get install -y python3-pip
-        - name: Install pre-commit
-          run: pip3 install pre-commit
-        - name: Install pre-commit hooks
-          run: pre-commit install
+      - name: Setup pre-commit
+        run: sudo apt-get install -y python3-pip
 
-        - name: (RPI_GC) Check changed files
-          id: RPI_GC-changed-files
-          uses: tj-actions/changed-files@v35
-          with:
-            files: |
-              src/**
-              test/**
-              .github/**
+      - name: Install pre-commit
+        run: pip3 install pre-commit
+
+      - name: Install pre-commit hooks
+        run: pre-commit install
+
+      - name: (RPI_GC) Check changed files
+        id: RPI_GC-changed-files
+        uses: tj-actions/changed-files@v39
+        with:
+          files: |
+            src/**
+            test/**
+            .github/**
 
         # Run the pre-commit hooks only on those files that are
         # changed in the current MR.
-        - name: Run pre-commit hooks on production code
-          if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-          run: pre-commit run --files $(git diff --name-only origin/main | grep "src/")
+      - name: Run pre-commit hooks on production code
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: pre-commit run --files $(git diff --name-only origin/main | grep "src/")
 
-        - name: Run pre-commit hooks on tests
-          if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-          run: pre-commit run --files $(git diff --name-only origin/main | grep "test/")
+      - name: Run pre-commit hooks on tests
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: pre-commit run --files $(git diff --name-only origin/main | grep "test/")
 
-          # Since pre-commit hooks also check yaml files, we run the job even in
-          # the .github folder.
-        - name: Run pre-commit hooks on workflow files
-          if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-          run: pre-commit run --files $(git diff --name-only origin/main | grep ".github/")
+        # Since pre-commit hooks also check yaml files, we run the job even in
+        # the .github folder.
+      - name: Run pre-commit hooks on workflow files
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: pre-commit run --files $(git diff --name-only origin/main | grep ".github/")
 
   clang-tidy:
     needs: pre-commit-hooks
