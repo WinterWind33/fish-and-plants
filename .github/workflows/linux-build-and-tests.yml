@@ -3,9 +3,9 @@
 name: Linux Build and Tests
 
 on:
-  workflow_run:
-    workflows: ["Static Analysis"]
-    types: [completed]
+  push:
+    branches-ignore:
+      - main
 
 env:
   BUILD_TYPE: Release
