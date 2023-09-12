@@ -24,32 +24,19 @@ jobs:
             toolchains/**
             .github/workflows/aarch64-linux-build.yml
 
-
-      - name: Setup Microsoft GSL
-        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-        run: |
-          git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
-          cd GSL
-          mkdir build
-          cd build
-          cmake ..
-          sudo make
-          sudo make install
-
-      - name: Setup Catch2
-        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-        run: |
-          git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git
-          cd Catch2
-          mkdir build
-          sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
-          sudo cmake --build build/ --target install -j 22
-
       - name: Compiler Setup
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
           sudo apt-get update
           sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-12-aarch64-linux-gnu g++-12-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf gcc-13 g++-13 -y
+
+      - name: Setup external dependencies
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+          cd ~/vcpkg
+          ./bootstrap-vcpkg.sh
+          sudo ./vcpkg integrate install
+          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders --triplet aarch64-linux
 
       - name: Linux Release Build
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
@@ -57,4 +44,4 @@ jobs:
           mkdir buildLinux
           cd scripts
           chmod +x linux-perform-release.sh
-          ./linux-perform-release.sh
+          ./linux-perform-release.sh ~/vcpkg/scripts/buildsystems/vcpkg.cmake
