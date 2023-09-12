@@ -15,3 +15,9 @@ repos:
     rev: "v16.0.6" # Use the sha / tag you want to point at
     hooks:
       - id: clang-format
+        # We only want to run clang-format on C++ files
+        files: \.(cpp|h|ixx|hpp)$
+        # We only want to run clang-format on staged files
+        stages: [commit]
+        # We want to run clang-format with the default style
+        args: [--style=file]
