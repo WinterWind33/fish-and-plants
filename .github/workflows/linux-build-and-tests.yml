@@ -5,8 +5,7 @@ name: Linux Build and Test
 on:
   workflow_run:
     workflows: ["Static Analysis"]
-    types:
-      - completed
+    types: [completed]
 
 env:
   BUILD_TYPE: Release
@@ -36,7 +35,7 @@ jobs:
     - name: Setup Microsoft GSL
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
       run: |
-        git clone https://github.com/microsoft/GSL.git
+        git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
         cd GSL
         mkdir build
         cd build
@@ -46,7 +45,7 @@ jobs:
     - name: Setup Catch2
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
       run: |
-        git clone  https://github.com/catchorg/Catch2.git
+        git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git
         cd Catch2
         mkdir build
         sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF

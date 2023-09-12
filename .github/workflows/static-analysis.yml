@@ -64,7 +64,7 @@ jobs:
 
       - name: Setup Microsoft GSL
         run: |
-          git clone https://github.com/microsoft/GSL.git
+          git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
           cd GSL
           mkdir build
           cd build
@@ -73,7 +73,7 @@ jobs:
           sudo make install
       - name: Setup Catch2
         run: |
-          git clone  https://github.com/catchorg/Catch2.git
+          git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git
           cd Catch2
           mkdir build
           sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
