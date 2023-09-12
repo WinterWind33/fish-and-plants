@@ -36,8 +36,8 @@ jobs:
     - name: Setup Microsoft GSL
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
       run: |
-        git clone https://github.com/microsoft/GSL.git /repos/GSL
-        cd /repos/GSL
+        git clone https://github.com/microsoft/GSL.git
+        cd GSL
         mkdir build
         cd build
         cmake ..
@@ -46,8 +46,8 @@ jobs:
     - name: Setup Catch2
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
       run: |
-        git clone  https://github.com/catchorg/Catch2.git /repos/Catch2
-        cd /repos/Catch2
+        git clone  https://github.com/catchorg/Catch2.git
+        cd Catch2
         mkdir build
         cmake -Bbuild -H. -DBUILD_TESTING=OFF
         cmake --build build/ --target install
