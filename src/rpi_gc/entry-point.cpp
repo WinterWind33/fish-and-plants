@@ -343,7 +343,7 @@ int main(int argc, char* argv[]) {
             formatString << clampedValue;
             formatString << "ms.";
 
-            auto* const timeProvider =
+            const gsl::not_null timeProvider =
                 dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(
                     awsTimeProvider.load());
             timeProvider->setActivationTimeTicks(clampedValue);
@@ -374,7 +374,7 @@ int main(int argc, char* argv[]) {
             formatString << clampedValue;
             formatString << "ms.";
 
-            auto* const timeProvider =
+            const gsl::not_null timeProvider =
                 dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(
                     awsTimeProvider.load());
             timeProvider->setDeactivationTimeTicks(clampedValue);
@@ -405,7 +405,7 @@ int main(int argc, char* argv[]) {
             formatString << clampedValue;
             formatString << "ms.";
 
-            auto* const timeProvider =
+            const gsl::not_null timeProvider =
                 dynamic_cast<rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider*>(
                     awsTimeProvider.load());
             timeProvider->setPumpValveWaitTimeTicks(clampedValue);
@@ -424,7 +424,7 @@ int main(int argc, char* argv[]) {
                 option);
 
             assert(static_cast<bool>(valueOption));
-            auto* const hardwareController =
+            const gsl::not_null hardwareController =
                 dynamic_cast<rpi_gc::automatic_watering::DailyCycleAWSHardwareController*>(
                     hardwareControllerAtomic.load());
 
@@ -448,7 +448,7 @@ int main(int argc, char* argv[]) {
                 option);
 
             assert(static_cast<bool>(valueOption));
-            auto* const hardwareController =
+            const gsl::not_null hardwareController =
                 dynamic_cast<rpi_gc::automatic_watering::DailyCycleAWSHardwareController*>(
                     hardwareControllerAtomic.load());
 
