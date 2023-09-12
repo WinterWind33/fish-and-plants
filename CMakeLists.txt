@@ -39,9 +39,19 @@ if(NOT MSVC)
 endif()
 
 # === External Dependencies ===
-
 find_package(Microsoft.GSL CONFIG REQUIRED)
-find_package(Catch2 CONFIG REQUIRED)
+
+option(RPI_GC_BUILD_TESTS "Compile tests." ON)
+
+if(RPI_GC_BUILD_TESTS)
+    message(STATUS "Enabling tests compilation.")
+    enable_testing()
+
+    find_package(Catch2 CONFIG REQUIRED)
+    find_package(GTest CONFIG REQUIRED)
+else()
+    message(STATUS "Skipping tests compilation.")
+endif()
 
 # = Output folders =
 set(PRODUCTION_EXE_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/bin")
@@ -139,4 +149,6 @@ add_subdirectory("src/modules/folder-provider")
 add_subdirectory("src/rpi_gc")
 
 # Tests project
-add_subdirectory("test")
+if(RPI_GC_BUILD_TESTS)
+    add_subdirectory("test")
+endif()
