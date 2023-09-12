@@ -1,0 +1,70 @@
+# Copyright (C) 2023 Andrea Ballestrazzi
+
+name: Linux Build and Test
+
+on:
+  workflow_run:
+    workflows: ["Static Analysis"]
+    types:
+      - completed
+
+env:
+  BUILD_TYPE: Release
+
+
+jobs:
+  gcc-13:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: (RPI_GC) Check changed files
+      id: RPI_GC-changed-files
+      uses: tj-actions/changed-files@v39
+      with:
+        files: |
+          src/**
+          test/**
+
+    # This is used for the libgpiod library.
+    - name: Package configuration
+      run: sudo apt-get install autoconf-archive pkg-config m4 libtool automake autoconf
+
+      # Install Microsoft.GSL by cloning from GitHub and building.
+    - name: Configure external dependencies
+      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+      run: |
+        git clone https://github.com/microsoft/GSL.git /repos/GSL
+        cd /repos/GSL
+        mkdir build
+        cd build
+        cmake ..
+        make
+        make install
+
+    - name: CMake Configure
+      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -Wno-dev
+      env:
+        CC:   gcc-13
+        CXX:  g++-13
+
+    - name: CMake Build
+      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j8
+
+    - name: Static Tests Run
+      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+      run: ${{github.workspace}}/bin/test_app --order rand [static]
+
+    - name: Unit Tests Run
+      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+      run: ${{github.workspace}}/bin/test_app --order rand [unit]
+
+    - name: Integration Tests Run
+      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+      run: ${{github.workspace}}/bin/test_app --order rand [integration]
+
+    - name: Functional Tests Run
+      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+      run: ${{github.workspace}}/bin/test_app --order rand [functional]
