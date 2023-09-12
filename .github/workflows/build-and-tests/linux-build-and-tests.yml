@@ -18,6 +18,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    # Note: If we change the workflow, we want to run the tests again. For this,
+    # we need to check if any of the files in .github folder has changed.
     - name: (RPI_GC) Check changed files
       id: RPI_GC-changed-files
       uses: tj-actions/changed-files@v39
@@ -25,6 +27,7 @@ jobs:
         files: |
           src/**
           test/**
+          .github/**
 
     # This is used for the libgpiod library.
     - name: Package configuration
