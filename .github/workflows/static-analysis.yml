@@ -62,6 +62,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: External dependencies setup
+        run: |
+          git clone https://github.com/microsoft/GSL.git /repos/GSL
+          cd /repos/GSL
+          mkdir build
+          cd build
+          cmake ..
+          make
+          make install
+
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
 
