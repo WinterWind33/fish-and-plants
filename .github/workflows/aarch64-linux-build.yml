@@ -22,7 +22,7 @@ jobs:
             test/**
             scripts/**
             toolchains/**
-            .github/workflows/aarch64-linux-bui.yml
+            .github/workflows/aarch64-linux-build.yml
 
 
       - name: Setup Microsoft GSL
