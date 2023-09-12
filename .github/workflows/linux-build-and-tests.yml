@@ -29,7 +29,7 @@ jobs:
 
     # This is used for the libgpiod library.
     - name: Package configuration
-      run: sudo apt-get install autoconf-archive pkg-config m4 libtool automake autoconf catch2 -y
+      run: sudo apt-get install autoconf-archive pkg-config m4 libtool automake autoconf -y
 
     - name: Install gcc-13
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
@@ -39,7 +39,7 @@ jobs:
         sudo apt-get install -y gcc-13 g++-13
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 --slave /usr/bin/g++ g++ /usr/bin/g++-13
 
-      # Install Microsoft.GSL by cloning from GitHub and building.`1
+      # Install Microsoft.GSL by cloning from GitHub and building.
     - name: Setup Microsoft GSL
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
       run: |
@@ -50,6 +50,14 @@ jobs:
         cmake ..
         sudo make
         sudo make install
+    - name: Setup Catch2
+      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+      run: |
+        git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git
+        cd Catch2
+        mkdir build
+        sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
+        sudo cmake --build build/ --target install -j 22
 
     - name: CMake Configure
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
