@@ -1,6 +1,6 @@
 # Copyright (C) 2023 Andrea Ballestrazzi
 
-name: Linux Release Build
+name: Linux Release Builds
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       - "main"
 
 jobs:
-  gcc-12:
+  aarch64-gcc-12:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -28,7 +28,7 @@ jobs:
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-12-aarch64-linux-gnu g++-12-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf gcc-13 g++-13 -y
+          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-12-aarch64-linux-gnu g++-12-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf -y
 
       - name: Setup external dependencies
         run: |
@@ -37,6 +37,44 @@ jobs:
           ./bootstrap-vcpkg.sh
           sudo ./vcpkg integrate install
           sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders --triplet arm64-linux-release
+
+      - name: Linux Release Build
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          mkdir buildLinux
+          cd scripts
+          chmod +x aarch64-linux-perform-release.sh
+          ./aarch64-linux-perform-release.sh ~/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+  linux-gcc-13:
+    needs: aarch64-gcc-12
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: (RPI_GC) Check changed files
+        id: RPI_GC-changed-files
+        uses: tj-actions/changed-files@v35
+        with:
+          files: |
+            src/**
+            test/**
+            scripts/**
+            toolchains/**
+            .github/workflows/aarch64-linux-build.yml
+
+      - name: Compiler Setup
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install autoconf-archive pkg-config m4 libtool automake autoconf gcc-13 g++-13 -y
+
+      - name: Setup external dependencies
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+          cd ~/vcpkg
+          ./bootstrap-vcpkg.sh
+          sudo ./vcpkg integrate install
           sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders --triplet x64-linux
 
       - name: Linux Release Build
