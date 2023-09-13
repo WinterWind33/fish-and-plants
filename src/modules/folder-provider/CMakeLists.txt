@@ -21,5 +21,5 @@ set_target_properties(gc_folder_provider
 )
 
 if(GC_USE_SAGO_PLATFORM_FOLDERS)
-    target_link_libraries(gc_folder_provider PRIVATE platform_folders)
+    target_link_libraries(gc_folder_provider PRIVATE sago::platform_folders)
 endif()

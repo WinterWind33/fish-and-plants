@@ -40,5 +40,5 @@ if(USE_SEMVER)
 endif()
 
 if(GC_USE_NLOHMANN_JSON)
-    target_link_libraries(project_management_static PRIVATE nlohmann_json)
+    target_link_libraries(project_management_static PRIVATE nlohmann_json::nlohmann_json)
 endif()
