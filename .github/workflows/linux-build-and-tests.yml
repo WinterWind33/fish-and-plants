@@ -39,25 +39,13 @@ jobs:
         sudo apt-get install -y gcc-13 g++-13
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 --slave /usr/bin/g++ g++ /usr/bin/g++-13
 
-      # Install Microsoft.GSL by cloning from GitHub and building.
-    - name: Setup Microsoft GSL
-      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+    - name: Setup external dependencies
       run: |
-        git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
-        cd GSL
-        mkdir build
-        cd build
-        cmake ..
-        sudo make
-        sudo make install
-    - name: Setup Catch2
-      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-      run: |
-        git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git
-        cd Catch2
-        mkdir build
-        sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
-        sudo cmake --build build/ --target install -j 22
+        git clone --depth 1 https://github.com/microsoft/vcpkg.git ~/vcpkg
+        cd ~/vcpkg
+        ./bootstrap-vcpkg.sh
+        sudo ./vcpkg integrate install
+        sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders libgpiod catch2 gtest --triplet x64-linux
 
     - name: CMake Configure
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
