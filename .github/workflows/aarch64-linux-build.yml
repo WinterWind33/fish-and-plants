@@ -36,8 +36,8 @@ jobs:
           cd ~/vcpkg
           ./bootstrap-vcpkg.sh
           sudo ./vcpkg integrate install
-          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders libgpiod --triplet arm64-linux-release
-          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders libgpiod --triplet x64-linux
+          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders --triplet arm64-linux-release
+          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders --triplet x64-linux
 
       - name: Linux Release Build
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'

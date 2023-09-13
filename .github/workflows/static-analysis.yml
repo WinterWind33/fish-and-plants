@@ -68,7 +68,7 @@ jobs:
           cd ~/vcpkg
           ./bootstrap-vcpkg.sh
           sudo ./vcpkg integrate install
-          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders libgpiod --triplet x64-linux
+          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders --triplet x64-linux
 
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
