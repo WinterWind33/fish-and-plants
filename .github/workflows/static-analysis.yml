@@ -62,22 +62,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Microsoft GSL
+      - name: Setup external dependencies
         run: |
-          git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
-          cd GSL
-          mkdir build
-          cd build
-          cmake ..
-          sudo make
-          sudo make install
-      - name: Setup Catch2
-        run: |
-          git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git
-          cd Catch2
-          mkdir build
-          sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
-          sudo cmake --build build/ --target install -j 22
+          git clone --depth 1 https://github.com/microsoft/vcpkg.git ~/vcpkg
+          cd ~/vcpkg
+          ./bootstrap-vcpkg.sh
+          sudo ./vcpkg integrate install
+          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders libgpdiod --triplet arm64-linux-release
+          sudo ./vcpkg install ms-gsl spdlog nlohmann-json spdlog platform-folders libgpdiod --triplet x64-linux
 
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
