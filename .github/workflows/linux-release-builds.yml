@@ -37,10 +37,8 @@ jobs:
           cd ./scripts/env-config
           chmod +x linux-install-ms-gsl.sh
           chmod +x linux-install-spdlog.sh
-          chmod +x linux-install-nlohmann-json.sh
           ./linux-install-ms-gsl.sh
           ./linux-install-spdlog.sh
-          ./linux-install-nlohmann-json.sh
 
       - name: Linux Release Build
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
@@ -48,7 +46,7 @@ jobs:
           mkdir buildLinux
           cd scripts
           chmod +x aarch64-linux-perform-release.sh
-          ./aarch64-linux-perform-release.sh ~/vcpkg/scripts/buildsystems/vcpkg.cmake
+          ./aarch64-linux-perform-release.sh
 
   linux-gcc-13:
     needs: aarch64-gcc-12
