@@ -23,7 +23,7 @@ jobs:
             scripts/**
             toolchains/**
             .github/workflows/linux-release-builds.yml
-            CMakelists.txt
+            CMakeLists.txt
 
       - name: Compiler Setup
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
@@ -64,7 +64,7 @@ jobs:
             scripts/**
             toolchains/**
             .github/workflows/linux-release-builds.yml
-            CMakelists.txt
+            CMakeLists.txt
 
       - name: Compiler Setup
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
