@@ -23,6 +23,7 @@ jobs:
             scripts/**
             toolchains/**
             .github/workflows/aarch64-linux-build.yml
+            CMakelists.txt
 
       - name: Compiler Setup
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
@@ -65,6 +66,7 @@ jobs:
             scripts/**
             toolchains/**
             .github/workflows/aarch64-linux-build.yml
+            CMakelists.txt
 
       - name: Compiler Setup
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
