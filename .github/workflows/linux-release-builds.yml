@@ -30,14 +30,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-12-aarch64-linux-gnu g++-12-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf -y
 
-      - name: Setup external dependencies
+      - name: Setup Microsoft GSL
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
-          git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
-          cd ~/vcpkg
-          ./bootstrap-vcpkg.sh
-          sudo ./vcpkg integrate install
-          sudo ./vcpkg install ms-gsl --triplet arm64-linux # Need to be installed separately for some reason.
-          sudo ./vcpkg install spdlog nlohmann-json spdlog platform-folders --triplet arm64-linux
+          git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
+          cd GSL
+          mkdir build
+          cd build
+          cmake ..
+          sudo make
+          sudo make install
 
       - name: Linux Release Build
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
