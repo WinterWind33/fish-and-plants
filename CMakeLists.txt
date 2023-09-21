@@ -40,9 +40,9 @@ endif()
 
 # === External Dependencies ===
 find_package(Microsoft.GSL CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
 
 if(NOT COMPILE_AARCH64_ON_LINUX)
+    find_package(nlohmann_json CONFIG REQUIRED)
     find_package(platform_folders CONFIG REQUIRED)
 endif()
 
@@ -92,6 +92,17 @@ if(USE_SEMVER)
 endif()
 
 if(COMPILE_AARCH64_ON_LINUX)
+    if(GC_USE_NLOHMANN_JSON)
+        message(STATUS "Using NLohmann/json as json engine")
+
+        FetchContent_Declare(nlohmann_json
+            GIT_REPOSITORY "https://github.com/nlohmann/json.git"
+            GIT_TAG v3.11.2
+        )
+
+        FetchContent_MakeAvailable(nlohmann_json)
+    endif()
+
     if(GC_USE_SAGO_PLATFORM_FOLDERS)
         message(STATUS "Using sago/PlatformFolders third-party library")
 
