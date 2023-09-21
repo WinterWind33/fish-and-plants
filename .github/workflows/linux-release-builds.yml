@@ -15,14 +15,14 @@ jobs:
 
       - name: (RPI_GC) Check changed files
         id: RPI_GC-changed-files
-        uses: tj-actions/changed-files@v35
+        uses: tj-actions/changed-files@v39
         with:
           files: |
             src/**
             test/**
             scripts/**
             toolchains/**
-            .github/workflows/aarch64-linux-build.yml
+            .github/workflows/linux-release-builds.yml
             CMakelists.txt
 
       - name: Compiler Setup
@@ -58,14 +58,14 @@ jobs:
 
       - name: (RPI_GC) Check changed files
         id: RPI_GC-changed-files
-        uses: tj-actions/changed-files@v35
+        uses: tj-actions/changed-files@v39
         with:
           files: |
             src/**
             test/**
             scripts/**
             toolchains/**
-            .github/workflows/aarch64-linux-build.yml
+            .github/workflows/linux-release-builds.yml
             CMakelists.txt
 
       - name: Compiler Setup
