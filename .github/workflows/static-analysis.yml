@@ -62,22 +62,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Microsoft GSL
+      - name: Setup external dependencies
         run: |
-          git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
-          cd GSL
-          mkdir build
-          cd build
-          cmake ..
-          sudo make
-          sudo make install
-      - name: Setup Catch2
-        run: |
-          git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git
-          cd Catch2
-          mkdir build
-          sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
-          sudo cmake --build build/ --target install -j 22
+          git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+          cd ~/vcpkg
+          ./bootstrap-vcpkg.sh
+          sudo ./vcpkg integrate install
+          sudo ./vcpkg install ms-gsl --triplet x64-linux # Need to be installed separately for some reason.
+          sudo ./vcpkg install spdlog nlohmann-json spdlog platform-folders catch2 gtest --triplet x64-linux
 
       - name: Setup clang-tidy
         run: sudo apt-get install -y clang clang-tidy autoconf-archive pkg-config m4 libtool automake autoconf
@@ -88,9 +80,10 @@ jobs:
           CXX:  clang++
         run: |
           mkdir build
-          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -Wno-dev
+          cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=~/vcpkg/scripts/buildsystems/vcpkg.cmake -Wno-dev
 
       - name: Execute clang-tidy on production code
         run: |
           chmod +x ./scripts/static-analyze-files.sh
-          ./scripts/static-analyze-files.sh $(git diff --name-only origin/main | grep "src/")
+          # We need to add the vcpkg include
+          ./scripts/static-analyze-files.sh ~/vcpkg/installed/x64-linux/include $(git diff --name-only origin/main | grep "src/")

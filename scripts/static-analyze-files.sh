@@ -2,6 +2,11 @@
 
 bShouldFail=false
 
+externalDependenciesIncludes=$1
+
+# Shift the positional parameters to the left by one. This will discard the first argument and keep the rest.
+shift
+
 for file in "$@";
 do
     # We only want to process .hpp and .cpp files.
@@ -17,9 +22,9 @@ do
             -DUSE_POPL20 -DUSE_LIBGPIOD -DUSE_SPDLOG \
             -Isrc/rpi_gc -Isrc/wrappers/ \
             -Isrc/third-party/popl20 -Isrc/third-party/libgpiod-2.0.1/include \
-            -Ibuild/_deps/semver-src/include -Ibuild/_deps/nlohmann_json-src/include -Isrc/modules/project-management/include \
+            -Ibuild/_deps/semver-src/include -Isrc/modules/project-management/include \
             -Isrc/modules/project-management/src -Isrc/modules/folder-provider/include -Isrc/modules/folder-provider/src \
-            -Ibuild/_deps/platform_folders-src/sago -Ibuild/_deps/spdlog-src/include
+            -I$externalDependenciesIncludes
     else
         echo "[INFO] => Skipping $file because it's not C++ code."
         continue

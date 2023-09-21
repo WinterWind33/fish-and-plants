@@ -64,7 +64,7 @@ if(USE_SEMVER)
 endif()
 
 if(GC_USE_SAGO_PLATFORM_FOLDERS)
-    target_link_libraries(rpi_gc_lib PUBLIC platform_folders)
+    target_link_libraries(rpi_gc_lib PUBLIC sago::platform_folders)
 endif()
 
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
@@ -109,4 +109,4 @@ configure_file(
 # Dependencies
 # Here we don't want to include gh_hal and gh_log directly as this will result
 # in possible includes clash. Instead, we include their parent directory.
-target_link_libraries(rpi_gc PRIVATE rpi_gc_lib gc_folder_provider nlohmann_json Microsoft.GSL::GSL)
+target_link_libraries(rpi_gc PRIVATE rpi_gc_lib gc_folder_provider nlohmann_json::nlohmann_json Microsoft.GSL::GSL)

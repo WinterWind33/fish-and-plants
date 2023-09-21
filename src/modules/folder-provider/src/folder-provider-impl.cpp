@@ -2,7 +2,7 @@
 #include <folder-provider-impl.hpp>
 
 // Third-party
-#include <platform_folders.h>
+#include <sago/platform_folders.h>
 
 namespace gc::folder_provider::internal {
 

@@ -114,23 +114,7 @@ if(USE_CATCH2_AS_TESTING_FRAMEWORK)
 endif()
 
 if(USE_GMOCK)
-    message(STATUS "Using GMock as test doubles framework.")
-
-    FetchContent_Declare(GoogleTest
-        GIT_REPOSITORY "https://github.com/google/googletest.git"
-        GIT_TAG "v1.13.0"
-    )
-
-    # For Windows: Prevent overriding the parent project's compiler/linker settings
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-    # We only want GMock.
-    set(BUILD_GTEST OFF CACHE BOOL "" FORCE)
-
-    FetchContent_MakeAvailable(GoogleTest)
-
-    target_compile_definitions(test_app PRIVATE USE_GMOCK)
-
     # We ony want the google mock subdirectory.
     target_link_libraries(test_app PRIVATE GTest::gmock)
+    target_compile_definitions(test_app PRIVATE "USE_GMOCK")
 endif()

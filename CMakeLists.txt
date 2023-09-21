@@ -39,9 +39,25 @@ if(NOT MSVC)
 endif()
 
 # === External Dependencies ===
-
 find_package(Microsoft.GSL CONFIG REQUIRED)
-find_package(Catch2 CONFIG REQUIRED)
+
+if(NOT COMPILE_AARCH64_ON_LINUX)
+    find_package(nlohmann_json CONFIG REQUIRED)
+    find_package(platform_folders CONFIG REQUIRED)
+    find_package(spdlog CONFIG REQUIRED)
+endif()
+
+option(RPI_GC_BUILD_TESTS "Compile tests." ON)
+
+if(RPI_GC_BUILD_TESTS)
+    message(STATUS "Enabling tests compilation.")
+    enable_testing()
+
+    find_package(Catch2 CONFIG REQUIRED)
+    find_package(GTest CONFIG REQUIRED)
+else()
+    message(STATUS "Skipping tests compilation.")
+endif()
 
 # = Output folders =
 set(PRODUCTION_EXE_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/bin")
@@ -74,51 +90,35 @@ if(USE_SEMVER)
     FetchContent_MakeAvailable(semver)
 endif()
 
-if(GC_USE_NLOHMANN_JSON)
-    message(STATUS "Using NLohmann/json as json engine")
+if(COMPILE_AARCH64_ON_LINUX)
+    if(GC_USE_NLOHMANN_JSON)
+        message(STATUS "Using NLohmann/json as json engine")
 
-    FetchContent_Declare(nlohmann_json
-        GIT_REPOSITORY "https://github.com/nlohmann/json.git"
-        GIT_TAG v3.11.2
-    )
+        FetchContent_Declare(nlohmann_json
+            GIT_REPOSITORY "https://github.com/nlohmann/json.git"
+            GIT_TAG v3.11.2
+        )
 
-    FetchContent_MakeAvailable(nlohmann_json)
-endif()
+        FetchContent_MakeAvailable(nlohmann_json)
+    endif()
 
-if(USE_SPDLOG)
-    message(STATUS "Using spdlog v${SPDLOG_VERSION} as logger framework.")
+    if(GC_USE_SAGO_PLATFORM_FOLDERS)
+        message(STATUS "Using sago/PlatformFolders third-party library")
 
-    FetchContent_Declare(spdlog
-        GIT_REPOSITORY "https://github.com/gabime/spdlog.git"
-        GIT_TAG "v${SPDLOG_VERSION}"
-    )
+        FetchContent_Declare(platform_folders
+            GIT_REPOSITORY "https://github.com/sago007/PlatformFolders.git"
+            GIT_TAG "4.2.0"
+        )
 
-    FetchContent_MakeAvailable(spdlog)
+        FetchContent_MakeAvailable(platform_folders)
 
-    set_target_properties(spdlog
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
-endif()
-
-if(GC_USE_SAGO_PLATFORM_FOLDERS)
-    message(STATUS "Using sago/PlatformFolders third-party library")
-
-    FetchContent_Declare(platform_folders
-        GIT_REPOSITORY "https://github.com/sago007/PlatformFolders.git"
-        GIT_TAG "4.2.0"
-    )
-
-    FetchContent_MakeAvailable(platform_folders)
-
-    set_target_properties(platform_folders
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
-        RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
-    )
+        set_target_properties(platform_folders
+            PROPERTIES
+            ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+            LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+            RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
+        )
+    endif()
 endif()
 
 # === SUB-PROJECTS ===
@@ -139,4 +139,6 @@ add_subdirectory("src/modules/folder-provider")
 add_subdirectory("src/rpi_gc")
 
 # Tests project
-add_subdirectory("test")
+if(RPI_GC_BUILD_TESTS)
+    add_subdirectory("test")
+endif()

@@ -1,0 +1,90 @@
+# Copyright (C) 2023 Andrea Ballestrazzi
+
+name: Linux Release Builds
+
+on:
+  push:
+    branches-ignore:
+      - "main"
+
+jobs:
+  aarch64-gcc-12:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: (RPI_GC) Check changed files
+        id: RPI_GC-changed-files
+        uses: tj-actions/changed-files@v39
+        with:
+          files: |
+            src/**
+            test/**
+            scripts/**
+            toolchains/**
+            .github/workflows/linux-release-builds.yml
+            CMakeLists.txt
+
+      - name: Compiler Setup
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-12-aarch64-linux-gnu g++-12-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf -y
+
+      - name: Setup external dependencies
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          cd ./scripts/env-config
+          chmod +x linux-install-ms-gsl.sh
+          chmod +x linux-install-spdlog.sh
+          ./linux-install-ms-gsl.sh
+          ./linux-install-spdlog.sh
+
+      - name: Linux Release Build
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          mkdir buildLinux
+          cd scripts
+          chmod +x aarch64-linux-perform-release.sh
+          ./aarch64-linux-perform-release.sh
+
+  linux-gcc-13:
+    needs: aarch64-gcc-12
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: (RPI_GC) Check changed files
+        id: RPI_GC-changed-files
+        uses: tj-actions/changed-files@v39
+        with:
+          files: |
+            src/**
+            test/**
+            scripts/**
+            toolchains/**
+            .github/workflows/linux-release-builds.yml
+            CMakeLists.txt
+
+      - name: Compiler Setup
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install autoconf-archive pkg-config m4 libtool automake autoconf gcc-13 g++-13 -y
+
+      - name: Setup external dependencies
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+          cd ~/vcpkg
+          ./bootstrap-vcpkg.sh
+          sudo ./vcpkg integrate install
+          sudo ./vcpkg install ms-gsl --triplet x64-linux # Need to be installed separately for some reason.
+          sudo ./vcpkg install spdlog nlohmann-json spdlog platform-folders --triplet x64-linux
+
+      - name: Linux Release Build
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          mkdir buildLinux
+          cd scripts
+          chmod +x linux-perform-release.sh
+          ./linux-perform-release.sh ~/vcpkg/scripts/buildsystems/vcpkg.cmake
