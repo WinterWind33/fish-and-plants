@@ -41,7 +41,11 @@ endif()
 # === External Dependencies ===
 find_package(Microsoft.GSL CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
-find_package(platform_folders CONFIG REQUIRED)
+
+if(NOT COMPILE_AARCH64_ON_LINUX)
+    find_package(platform_folders CONFIG REQUIRED)
+endif()
+
 find_package(spdlog CONFIG REQUIRED)
 
 option(RPI_GC_BUILD_TESTS "Compile tests." ON)
