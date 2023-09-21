@@ -87,6 +87,26 @@ if(USE_SEMVER)
     FetchContent_MakeAvailable(semver)
 endif()
 
+if(COMPILE_AARCH64_ON_LINUX)
+    if(GC_USE_SAGO_PLATFORM_FOLDERS)
+        message(STATUS "Using sago/PlatformFolders third-party library")
+
+        FetchContent_Declare(platform_folders
+            GIT_REPOSITORY "https://github.com/sago007/PlatformFolders.git"
+            GIT_TAG "4.2.0"
+        )
+
+        FetchContent_MakeAvailable(platform_folders)
+
+        set_target_properties(platform_folders
+            PROPERTIES
+            ARCHIVE_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+            LIBRARY_OUTPUT_DIRECTORY ${PRODUCTION_LIB_COMPILATION_OUTPUT_DIR}
+            RUNTIME_OUTPUT_DIRECTORY ${PRODUCTION_EXE_COMPILATION_OUTPUT_DIR}
+        )
+    endif()
+endif()
+
 # === SUB-PROJECTS ===
 
 # Add third party libraries.

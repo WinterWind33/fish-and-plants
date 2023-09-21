@@ -30,16 +30,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-12-aarch64-linux-gnu g++-12-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf -y
 
-      - name: Setup Microsoft GSL
+      - name: Setup external dependencies
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
         run: |
-          git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
-          cd GSL
-          mkdir build
-          cd build
-          cmake ..
-          sudo make
-          sudo make install
+          cd ./scripts/env-config
+          chmod +x linux-install-ms-gsl.sh
+          chmod +x linux-install-spdlog.sh
+          chmod +x linux-install-nlohmann-json.sh
+          ./linux-install-ms-gsl.sh
+          ./linux-install-spdlog.sh
+          ./linux-install-nlohmann-json.sh
 
       - name: Linux Release Build
         if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
