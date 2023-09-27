@@ -46,7 +46,7 @@ jobs:
         git clone https://github.com/microsoft/vcpkg.git
         cd vcpkg
         sudo ./bootstrap-vcpkg.sh
-        sudo ./vcpkg install gsl catch2 gtest
+        sudo ./vcpkg install ms-gsl catch2 gtest
 
     - name: CMake Configure
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
