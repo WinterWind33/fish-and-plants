@@ -1,0 +1,96 @@
+# Copyright (C) 2023 Andrea Ballestrazzi
+
+name: Linux Release Build
+
+on:
+  push:
+    branches-ignore:
+      - "main"
+
+jobs:
+  arm64-gcc-12:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: (RPI_GC) Check changed files
+        id: RPI_GC-changed-files
+        uses: tj-actions/changed-files@v39
+        with:
+          files: |
+            src/**
+            test/**
+            scripts/**
+            toolchains/**
+            .github/workflows/linux-release-build.yml
+
+
+      - name: Setup Microsoft GSL
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
+          cd GSL
+          mkdir build
+          cd build
+          cmake ..
+          sudo make
+          sudo make install
+
+      - name: Compiler Setup
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu gcc-12-aarch64-linux-gnu g++-12-aarch64-linux-gnu autoconf-archive pkg-config m4 libtool automake autoconf gcc-13 g++-13 -y
+
+      - name: Linux Release Build
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          mkdir buildLinux
+          cd scripts
+          chmod +x linux-arm64-perform-release.sh
+          ./linux-arm64-perform-release.sh
+
+  x64-gcc-13:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: (RPI_GC) Check changed files
+        id: RPI_GC-changed-files
+        uses: tj-actions/changed-files@v39
+        with:
+          files: |
+            src/**
+            test/**
+            scripts/**
+            toolchains/**
+            .github/workflows/linux-release-build.yml
+
+        # This is used for the libgpiod library.
+      - name: Package configuration
+        run: sudo apt-get install autoconf-archive pkg-config m4 libtool automake autoconf -y
+
+      - name: Install gcc-13
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install -y gcc-13 g++-13
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 --slave /usr/bin/g++ g++ /usr/bin/g++-13
+
+        # Install Microsoft.GSL by cloning from GitHub and building.
+      - name: Setup third party dependencies
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          cd vcpkg
+          sudo ./bootstrap-vcpkg.sh
+          sudo ./vcpkg install ms-gsl catch2 gtest
+
+      - name: Linux release build
+        if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
+        run: |
+          mkdir buildLinux
+          cd scripts
+          chmod +x linux-x64-perform-release.sh
+          ./linux-x64-perform-release.sh
