@@ -25,7 +25,7 @@ jobs:
         files: |
           src/**
           test/**
-          .github/**
+          .github/workflows/linux-build-and-tests.yml
 
     # This is used for the libgpiod library.
     - name: Package configuration
