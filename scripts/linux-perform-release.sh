@@ -6,7 +6,7 @@ cd ../buildLinux
 rm -r -f ./*
 rm -r -f ../src/third-party/libgpiod-*
 rm ../bin/rpi_gc*
-cmake .. -DCOMPILE_AARCH64_ON_LINUX=True --toolchain "toolchains/aarch64-toolchain.cmake"
+cmake .. -DCOMPILE_AARCH64_ON_LINUX=True --toolchain "toolchains/aarch64-toolchain.cmake" -DRPI_GC_BUILD_TESTS=False
 cmake --build . --target rpi_gc --config Release -j8
 echo "[INFO] => Copying to bin/release/aarch64-linux"
 mkdir -p ../bin/Release/aarch64-linux
@@ -17,7 +17,7 @@ echo "[INFO] => Compiling for Linux x64"
 rm -r -f ./*
 rm -r -f ../src/third-party/libgpiod-*
 rm ../bin/rpi_gc*
-cmake .. --toolchain "toolchains/linux-toolchain.cmake"
+cmake .. --toolchain "toolchains/linux-toolchain.cmake" -DRPI_GC_BUILD_TESTS=False
 cmake --build . --target rpi_gc --config Release -j8
 echo "[INFO] => Copying to bin/release/linux-x64"
 mkdir -p ../bin/Release/linux-x64
