@@ -94,4 +94,4 @@ jobs:
           mkdir buildLinux
           cd scripts
           chmod +x linux-x64-perform-release.sh
-          ./linux-x64-perform-release.sh
+          ./linux-x64-perform-release.sh ${{github.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake
