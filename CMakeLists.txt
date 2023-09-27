@@ -37,7 +37,7 @@ find_package(Microsoft.GSL CONFIG REQUIRED)
 option(RPI_GC_BUILD_TESTS "Build the tests project." ON)
 
 if(RPI_GC_BUILD_TESTS)
-    option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 ${CATCH2_VERSION} as testing framework." ON)
+    option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 as testing framework." ON)
     option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
 
     find_package(Catch2 CONFIG REQUIRED)
