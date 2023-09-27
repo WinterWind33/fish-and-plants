@@ -51,6 +51,7 @@ jobs:
           ./linux-arm64-perform-release.sh
 
   x64-gcc-13:
+    needs: arm64-gcc-12
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
