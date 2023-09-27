@@ -52,19 +52,10 @@ namespace details {
 
 NativeLineRequestType requestLines(NativeChipType& chip, const std::string& consumer,
                                    const std::vector<NativeLineOffsetType>& offsets,
-                                   const NativeLineDirectionType direction) {
-    return details::requestLinesImpl(
-        chip, consumer, offsets,
-        details::createLineSettings(direction, /*bUseActiveLow = */ false));
+                                   const NativeLineDirectionType direction,
+                                   const bool bIsActiveLow) {
+    return details::requestLinesImpl(chip, consumer, offsets,
+                                     details::createLineSettings(direction, bIsActiveLow));
 }
-
-namespace active_low {
-NativeLineRequestType requestLines(NativeChipType& chip, const std::string& consumer,
-                                   const std::vector<NativeLineOffsetType>& offsets,
-                                   const NativeLineDirectionType direction) {
-    return details::requestLinesImpl(
-        chip, consumer, offsets, details::createLineSettings(direction, /*bUseActiveLow = */ true));
-}
-} // namespace active_low
 
 } // namespace gh_hal::backends::libgpiod_impl

@@ -27,22 +27,6 @@ using NativeLineOffsetType = std::uint32_t;
 
 //!!
 //! \brief Performs a request for the given lines to the given chip. It converts
-//!  the given offsets to ::gpiod::line::offsets objects first.
-//!
-//! \param chip The chip to which perform the line request.
-//! \param consumer The consumer that will use the requested lines. Can be a simple string with the
-//! name
-//!  of the service.
-//! \param offsets The GPIO pins IDs that are going to be requested.
-//! \param direction The direction (input/output) of the requested lines
-//! \return A newly opened line request.
-[[nodiscard]] NativeLineRequestType requestLines(NativeChipType& chip, const std::string& consumer,
-                                                 const std::vector<NativeLineOffsetType>& offsets,
-                                                 const NativeLineDirectionType direction);
-
-namespace active_low {
-//!!
-//! \brief Performs a request for the given lines to the given chip. It converts
 //!  the given offsets to ::gpiod::line::offsets objects first. The final request will be
 //!  an "active-low" request, i.e. the I/O pins logics will be inverted.
 //!
@@ -55,7 +39,7 @@ namespace active_low {
 //! \return A newly opened line request.
 [[nodiscard]] NativeLineRequestType requestLines(NativeChipType& chip, const std::string& consumer,
                                                  const std::vector<NativeLineOffsetType>& offsets,
-                                                 const NativeLineDirectionType direction);
-} // namespace active_low
+                                                 const NativeLineDirectionType direction,
+                                                 const bool bIsActiveLow = true);
 
 } // namespace gh_hal::backends::libgpiod_impl

@@ -99,12 +99,12 @@ public:
         const noexcept;
 
 private:
+    hardware_access::DigitalOutPinActivationState m_activationState{};
     std::unique_ptr<backend_type> m_lineRequest{};
 
     void request_lines(const consumer_type& consumer, chip_reference chip,
                        const std::vector<offset_type>& offsets,
-                       const hardware_access::DigitalPinRequestDirection direction,
-                       const bool bRequestActiveLow) noexcept;
+                       const hardware_access::DigitalPinRequestDirection direction) noexcept;
 };
 
 } // namespace gh_hal::internal
