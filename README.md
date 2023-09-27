@@ -28,41 +28,11 @@ The repository depends on various external dependencies, installed outside the p
 
 ### Dependencies
 
-#### Windows
-
-If you want to work on Windows, you need to install [vcpkg](https://github.com/microsoft/vcpkg) and then install the following packages:
+If you want to work either on Windows or Linux, you need to install [vcpkg](https://github.com/microsoft/vcpkg) and then install the following packages:
 
 ```ps
 cd \path\to\vcpkg
-.\vcpkg install ms-gsl catch2 --triplet x64-windows
-```
-
-#### Linux
-
-If you want to work on Linux, you need to install the following packages:
-
-*Catch2*:
-
-```bash
-
-git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git
-cd Catch2
-mkdir build
-sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
-sudo cmake --build build/ --target install -j 10
-
-```
-
-*Microsoft GSL*:
-
-```bash
-git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
-cd GSL
-mkdir build
-cd build
-cmake ..
-sudo make
-sudo make install
+.\vcpkg install ms-gsl gtest catch2 --triplet x64-windows
 ```
 
 ### Clone and build the repo

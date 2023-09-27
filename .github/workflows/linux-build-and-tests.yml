@@ -25,7 +25,7 @@ jobs:
         files: |
           src/**
           test/**
-          .github/**
+          .github/workflows/linux-build-and-tests.yml
 
     # This is used for the libgpiod library.
     - name: Package configuration
@@ -40,32 +40,21 @@ jobs:
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 --slave /usr/bin/g++ g++ /usr/bin/g++-13
 
       # Install Microsoft.GSL by cloning from GitHub and building.
-    - name: Setup Microsoft GSL
+    - name: Setup third party dependencies
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
       run: |
-        git clone --depth 1 --branch v4.0.0 https://github.com/microsoft/GSL.git
-        cd GSL
-        mkdir build
-        cd build
-        cmake ..
-        sudo make
-        sudo make install
-    - name: Setup Catch2
-      if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-      run: |
-        git clone --depth 1 --branch v3.4.0 https://github.com/catchorg/Catch2.git
-        cd Catch2
-        mkdir build
-        sudo cmake -Bbuild -H. -DBUILD_TESTING=OFF
-        sudo cmake --build build/ --target install -j 22
+        git clone https://github.com/microsoft/vcpkg.git
+        cd vcpkg
+        sudo ./bootstrap-vcpkg.sh
+        sudo ./vcpkg install ms-gsl catch2 gtest
 
     - name: CMake Configure
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -Wno-dev
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE=${{github.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
     - name: CMake Build
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j8
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 10
 
     - name: Static Tests Run
       if: steps.RPI_GC-changed-files.outputs.any_changed == 'true'

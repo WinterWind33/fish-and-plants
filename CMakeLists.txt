@@ -23,13 +23,6 @@ enable_language(CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# If we are compiling with gcc or clang we need to pass the -fconcpets
-# option in order to compile with concepts.
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT CMAKE_EXPORT_COMPILE_COMMANDS)
-    message(STATUS "Compiling with: -fconcepts.")
-    add_compile_options(-fconcepts)
-endif()
-
 if(NOT MSVC)
     message(STATUS "Compiling with -g option")
 
@@ -39,22 +32,28 @@ if(NOT MSVC)
 endif()
 
 # === External Dependencies ===
-
 find_package(Microsoft.GSL CONFIG REQUIRED)
-find_package(Catch2 CONFIG REQUIRED)
+
+option(RPI_GC_BUILD_TESTS "Build the tests project." ON)
+
+if(RPI_GC_BUILD_TESTS)
+    option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 as testing framework." ON)
+    option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
+
+    find_package(Catch2 CONFIG REQUIRED)
+    find_package(GTest CONFIG REQUIRED)
+endif()
 
 # = Output folders =
 set(PRODUCTION_EXE_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/bin")
 set(PRODUCTION_LIB_COMPILATION_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/lib")
 
 # === Options ===
-set(CATCH2_VERSION "3.4.0")
 set(SPDLOG_VERSION "1.12.0")
 set(LIBGPIOD_VERSION "2.0.1")
-option(USE_CATCH2_AS_TESTING_FRAMEWORK "Use Catch2 ${CATCH2_VERSION} as testing framework." ON)
+
 option(USE_SPDLOG "Use SPDLOG ${SPDLOG_VERSION} submodule as logging framework." ON)
 option(USE_LIBGPIOD "Use libgpiod ${LIBGPIOD_VERSION} module as the main I/O ports communication module." ON)
-option(USE_GMOCK "Use gmock submodule as the main mock framework." ON)
 option(USE_POPL20 "Use popl20 header-only library as command line parser." ON)
 option(USE_SEMVER "Use Neargye/semver third-library software as semantic versioning library." ON)
 option(GC_USE_NLOHMANN_JSON "Use nlohmann/json as json engine" ON)
