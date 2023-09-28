@@ -74,12 +74,14 @@ SCENARIO(
 
     EXPECT_CALL(boardChipMock,
                 requestDigitalPin(testing::_, tests::constants::VALVE_DUMMY_ID,
-                                  gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                                  gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                  gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
         .WillOnce(testing::Return(testing::ByMove(std::move(valveMockUniquePtr))));
 
     EXPECT_CALL(boardChipMock,
                 requestDigitalPin(testing::_, tests::constants::PUMP_DUMMY_ID,
-                                  gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                                  gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                  gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
         .WillOnce(testing::Return(testing::ByMove(std::move(pumpMockUniquePtr))));
 
     rpi_gc::automatic_watering::DailyCycleAWSHardwareController awsController{
@@ -120,9 +122,9 @@ SCENARIO(
                                                   .Times(1)
                                                   .After(valveSecondDeactivationExp)
                                                   .WillOnce(testing::Return(true));
-            EXPECT_CALL(
-                boardChipMock,
-                requestDigitalPin(testing::_, tests::constants::NEW_VALVE_DUMMY_ID, testing::_))
+            EXPECT_CALL(boardChipMock,
+                        requestDigitalPin(testing::_, tests::constants::NEW_VALVE_DUMMY_ID,
+                                          testing::_, testing::_))
                 .After(releaseExp);
 
             THEN("It should wait for the cycle to complete before changing the PIN") {
@@ -140,9 +142,9 @@ SCENARIO(
                                                   .Times(1)
                                                   .After(pumpSecondDeactivationExp)
                                                   .WillOnce(testing::Return(true));
-            EXPECT_CALL(
-                boardChipMock,
-                requestDigitalPin(testing::_, tests::constants::NEW_PUMP_DUMMY_ID, testing::_))
+            EXPECT_CALL(boardChipMock,
+                        requestDigitalPin(testing::_, tests::constants::NEW_PUMP_DUMMY_ID,
+                                          testing::_, testing::_))
                 .After(releaseExp);
 
             THEN("It should wait for the cycle to complete before changing the PIN") {
@@ -161,9 +163,9 @@ SCENARIO(
                                                        .After(valveSecondDeactivationExp)
                                                        .WillOnce(testing::Return(true));
             testing::Expectation newValveReqExp =
-                EXPECT_CALL(
-                    boardChipMock,
-                    requestDigitalPin(testing::_, tests::constants::NEW_VALVE_DUMMY_ID, testing::_))
+                EXPECT_CALL(boardChipMock,
+                            requestDigitalPin(testing::_, tests::constants::NEW_VALVE_DUMMY_ID,
+                                              testing::_, testing::_))
                     .After(valveReleaseExp);
 
             testing::Expectation pumpSecondDeactivationExp =
@@ -172,9 +174,9 @@ SCENARIO(
                                                       .Times(1)
                                                       .After(pumpSecondDeactivationExp)
                                                       .WillOnce(testing::Return(true));
-            EXPECT_CALL(
-                boardChipMock,
-                requestDigitalPin(testing::_, tests::constants::NEW_PUMP_DUMMY_ID, testing::_))
+            EXPECT_CALL(boardChipMock,
+                        requestDigitalPin(testing::_, tests::constants::NEW_PUMP_DUMMY_ID,
+                                          testing::_, testing::_))
                 .After(pumpReleaseExp);
 
             THEN("It should wait for the cycle to complete before changing the PINs") {

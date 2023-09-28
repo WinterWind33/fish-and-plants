@@ -43,7 +43,8 @@ BoardChipImpl::operator bool() const noexcept {
 
 std::unique_ptr<hardware_access::BoardDigitalPin> BoardChipImpl::requestDigitalPin(
     std::string consumer, hardware_access::BoardDigitalPin::offset_type offset,
-    const hardware_access::DigitalPinRequestDirection direction) noexcept {
+    const hardware_access::DigitalPinRequestDirection direction,
+    const hardware_access::DigitalOutPinActivationState activationState) noexcept {
     assert(static_cast<bool>(*m_chipPtr));
 
     // Before going on, there shouldn't be any offset inside the requests map.
@@ -61,9 +62,10 @@ std::unique_ptr<hardware_access::BoardDigitalPin> BoardChipImpl::requestDigitalP
 
     offsets_vector offsets{offset};
 
-    auto newLineRequest{
-        std::make_pair(offsets, LineRequest{consumer, std::ref(*m_chipPtr), offsets, direction,
-                                            /*bRequestActiveLow = */ true})};
+    auto newLineRequest{std::make_pair(
+        offsets,
+        LineRequest{consumer, std::ref(*m_chipPtr), offsets, direction,
+                    activationState == hardware_access::DigitalOutPinActivationState::ActiveLow})};
 
     auto boardPins{std::get<1>(newLineRequest).getBoardPins()};
     m_lineRequests.push_back(std::move(newLineRequest));
@@ -76,7 +78,8 @@ std::unique_ptr<hardware_access::BoardDigitalPin> BoardChipImpl::requestDigitalP
 
 std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> BoardChipImpl::requestDigitalPinPool(
     std::string consumer, std::vector<hardware_access::BoardDigitalPin::offset_type> offsets,
-    const hardware_access::DigitalPinRequestDirection direction) noexcept {
+    const hardware_access::DigitalPinRequestDirection direction,
+    const hardware_access::DigitalOutPinActivationState activationState) noexcept {
     assert(static_cast<bool>(*m_chipPtr));
 
     // Before going on, there shouldn't be any offset inside the requests map.
@@ -94,9 +97,10 @@ std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> BoardChipImpl::re
         }
     }
 
-    auto newLineRequest{
-        std::make_pair(offsets, LineRequest{consumer, std::ref(*m_chipPtr), offsets, direction,
-                                            /*bRequestActiveLow = */ true})};
+    auto newLineRequest{std::make_pair(
+        offsets,
+        LineRequest{consumer, std::ref(*m_chipPtr), offsets, direction,
+                    activationState == hardware_access::DigitalOutPinActivationState::ActiveLow})};
 
     auto boardPins{std::get<1>(newLineRequest).getBoardPins()};
     m_lineRequests.push_back(std::move(newLineRequest));

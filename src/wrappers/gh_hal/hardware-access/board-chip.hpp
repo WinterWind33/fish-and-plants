@@ -29,7 +29,9 @@ struct BoardChip {
     //! \return A pointer to the resource used to communicate with the requested PIN.
     [[nodiscard]] virtual std::unique_ptr<board_digital_out> requestDigitalPin(
         std::string consumer, board_digital_out::offset_type offset,
-        const DigitalPinRequestDirection direction) noexcept = 0;
+        const DigitalPinRequestDirection direction,
+        const DigitalOutPinActivationState activationState =
+            DigitalOutPinActivationState::ActiveLow) noexcept = 0;
 
     //!!
     //! \brief Performs a line request to retrieve the resources to communicate with
@@ -43,7 +45,9 @@ struct BoardChip {
     //! \return A vector of pointers to the resources used to communicate with the requested PINs.
     [[nodiscard]] virtual std::vector<std::unique_ptr<board_digital_out>> requestDigitalPinPool(
         std::string consumer, std::vector<board_digital_out::offset_type> offset,
-        const DigitalPinRequestDirection direction) noexcept = 0;
+        const DigitalPinRequestDirection direction,
+        const DigitalOutPinActivationState activationState =
+            DigitalOutPinActivationState::ActiveLow) noexcept = 0;
 
     //!!
     //! \brief Releases the request identified by the given offset.
