@@ -109,6 +109,25 @@ public:
         return *this;
     }
 
+    //!!
+    //! \brief Add an object array to the node. If the object is already present, it will be
+    //! overwritten.
+    //!
+    auto& addObjectArray(ProjectFieldKey auto&& key, std::ranges::range auto&& arr) {
+        std::vector<ProjectNode> finalArr{};
+
+        // We need to construct the final array starting from the given one.
+        // To do this, we transform the first array and we move the object to the new
+        // one.
+        std::transform(std::begin(arr), std::end(arr), std::back_inserter(finalArr),
+                       [](auto&& val) -> ProjectNode {
+                           return ProjectNode{std::forward<decltype(val)>(val)};
+                       });
+
+        m_objectsArrays[std::forward<decltype(key)>(key)] = std::move(finalArr);
+        return *this;
+    }
+
     [[nodiscard]] bool contains(ProjectFieldKey auto&& key) const noexcept {
         return m_values.contains(std::forward<decltype(key)>(key)) ||
                m_valuesArrays.contains(std::forward<decltype(key)>(key)) ||
@@ -168,6 +187,7 @@ protected:
     std::map<std::string, value_impl_type> m_values{};
     std::map<std::string, std::vector<value_impl_type>> m_valuesArrays{};
     std::map<std::string, ProjectNode> m_objects{};
+    std::map<std::string, std::vector<ProjectNode>> m_objectsArrays{};
 };
 
 using ProjectFieldObject = ProjectNode;
