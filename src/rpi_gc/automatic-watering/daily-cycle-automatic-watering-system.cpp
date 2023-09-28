@@ -562,15 +562,6 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
             std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationTime"s)};
         deactivationSepTime =
             std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationSepTime"s)};
-
-        if (bWasRunning) {
-            const StringType formattedLogString{
-                format_log_string("Automatic watering system was running. Restarting it.")};
-            m_mainLogger->logWarning(formattedLogString);
-            m_userLogger->logWarning(formattedLogString);
-
-            startAutomaticWatering();
-        }
     } catch (const std::bad_variant_access& exc) {
         m_userLogger->logError(
             format_log_string("The given AWS configuration contains a JSON format not recognized. "
@@ -622,6 +613,15 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
     m_timeProvider.get().load()->setWateringSystemActivationDuration(activationTime);
     m_timeProvider.get().load()->setWateringSystemDeactivationDuration(deactivationTime);
     m_timeProvider.get().load()->setPumpValveDeactivationTimeSeparation(deactivationSepTime);
+
+    if (bWasRunning) {
+        const StringType formattedLogString{
+            format_log_string("Automatic watering system was running. Restarting it.")};
+        m_mainLogger->logWarning(formattedLogString);
+        m_userLogger->logWarning(formattedLogString);
+
+        startAutomaticWatering();
+    }
 }
 
 } // namespace rpi_gc::automatic_watering
