@@ -69,8 +69,10 @@ SCENARIO("AWS configuration loading integration tests",
 
     WHEN("The configuration loading for the AWS is triggered") {
         THEN("The AWS should load its configuration from the project") {
-            EXPECT_CALL(hardwareControllerMockRef, setWaterValveDigitalOutputID(23)).Times(1);
-            EXPECT_CALL(hardwareControllerMockRef, setWaterPumpDigitalOutputID(26)).Times(1);
+            EXPECT_CALL(hardwareControllerMockRef, setWaterValveDigitalOutputID(23, ::testing::_))
+                .Times(1);
+            EXPECT_CALL(hardwareControllerMockRef, setWaterPumpDigitalOutputID(26, ::testing::_))
+                .Times(1);
             EXPECT_CALL(*timeProviderMock,
                         setWateringSystemActivationDuration(std::chrono::milliseconds(600)))
                 .Times(1);

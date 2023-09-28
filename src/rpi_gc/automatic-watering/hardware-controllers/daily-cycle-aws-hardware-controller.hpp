@@ -21,9 +21,11 @@ public:
     using chip_reference = std::reference_wrapper<gh_hal::hardware_access::BoardChip>;
     using mutex_reference = std::reference_wrapper<std::mutex>;
 
-    explicit DailyCycleAWSHardwareController(mutex_reference mutex, chip_reference chipRef,
-                                             const digital_output_id waterValvePinId,
-                                             const digital_output_id waterPumpValvePinId) noexcept;
+    explicit DailyCycleAWSHardwareController(
+        mutex_reference mutex, chip_reference chipRef, const digital_output_id waterValvePinId,
+        const digital_output_id waterPumpValvePinId,
+        const activation_state valveActivationState = activation_state::ActiveLow,
+        const activation_state pumpActivationState = activation_state::ActiveLow) noexcept;
 
     inline digital_output_type* getWaterValveDigitalOut() noexcept override {
         return std::get<1>(m_waterValveDigitalOut).get();
@@ -33,8 +35,12 @@ public:
         return std::get<1>(m_waterPumpDigitalOut).get();
     }
 
-    void setWaterValveDigitalOutputID(const digital_output_id id) noexcept override;
-    void setWaterPumpDigitalOutputID(const digital_output_id id) noexcept override;
+    void setWaterValveDigitalOutputID(
+        const digital_output_id id,
+        const activation_state newActivationState = activation_state::ActiveLow) noexcept override;
+    void setWaterPumpDigitalOutputID(
+        const digital_output_id id,
+        const activation_state newActivationState = activation_state::ActiveLow) noexcept override;
 
 private:
     mutex_reference m_mutex;
@@ -44,7 +50,7 @@ private:
 
     void change_digital_out(
         std::pair<digital_output_id, std::unique_ptr<digital_output_type>>& oldPin,
-        const digital_output_id newPinID) noexcept;
+        const digital_output_id newPinID, const activation_state newActivationState) noexcept;
 };
 
 } // namespace rpi_gc::automatic_watering
