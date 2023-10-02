@@ -699,11 +699,13 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
     m_bWaterPumpEnabled.store(bPumpEnabled);
 
     if (bValveEnabled) {
-        m_hardwareController.get().load()->setWaterValveDigitalOutputID(valvePinID);
+        m_hardwareController.get().load()->setWaterValveDigitalOutputID(valvePinID,
+                                                                        valveActivationState);
     }
 
     if (bPumpEnabled) {
-        m_hardwareController.get().load()->setWaterPumpDigitalOutputID(pumpPinID);
+        m_hardwareController.get().load()->setWaterPumpDigitalOutputID(pumpPinID,
+                                                                       pumpActivationState);
     }
 
     m_timeProvider.get().load()->setWateringSystemActivationDuration(activationTime);
