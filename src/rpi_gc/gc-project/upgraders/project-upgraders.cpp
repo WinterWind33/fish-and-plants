@@ -6,6 +6,11 @@
 
 namespace rpi_gc::gc_project::upgraders {
 
+bool ProjectUpgrader_V1_1ToV1_2::checkIntegrity(
+    const gc::project_management::Project& project) const noexcept {
+    return project.getVersion() >= semver::version{1, 2, 0};
+}
+
 bool ProjectUpgrader_V1_1ToV1_2::tryApplyIntegrityFixes(gc::project_management::Project& project) {
     // We need to upgrade the old board digital pins representation.
     // In the V1.1.x versions the board digital pins were represented as a single value

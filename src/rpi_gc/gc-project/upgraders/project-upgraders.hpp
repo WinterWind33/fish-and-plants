@@ -9,10 +9,8 @@ namespace rpi_gc::gc_project::upgraders {
 class ProjectUpgrader_V1_1ToV1_2 final
     : public gc::project_management::integrity_check::ProjectIntegrityChecker {
 public:
-    [[nodiscard]] constexpr bool checkIntegrity(
-        const gc::project_management::Project& project) const noexcept override {
-        return false;
-    }
+    [[nodiscard]] bool checkIntegrity(
+        const gc::project_management::Project& project) const noexcept override;
 
     [[nodiscard]] bool tryApplyIntegrityFixes(gc::project_management::Project& project) override;
 };
