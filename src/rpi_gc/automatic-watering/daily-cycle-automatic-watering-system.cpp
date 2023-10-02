@@ -490,51 +490,45 @@ void DailyCycleAutomaticWateringSystem::saveToProject(gc::project_management::Pr
     const bool bPumpEnabled{m_bWaterPumpEnabled.load()};
 
     ProjectNode flowNode{};
-    flowNode.addValue("isWaterValveEnabled"s, bValveEnabled);
-    flowNode.addValue("isWaterPumpEnabled"s, bPumpEnabled);
-
     std::array<ProjectNode, 2> devicesNodes{};
 
-    if (bValveEnabled) {
-        ProjectNode valveNode{};
+    ProjectNode valveNode{};
 
-        // We need to put the valve ID and the valve activation
-        // state inside the object node.
-        valveNode.addValue("name"s, "waterValve"s);
+    // We need to put the valve ID and the valve activation
+    // state inside the object node.
+    valveNode.addValue("name"s, "waterValve"s);
 
-        valveNode.addValue(
-            "pinID"s,
-            static_cast<std::uint64_t>(
-                m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()));
+    valveNode.addValue(
+        "pinID"s, static_cast<std::uint64_t>(
+                      m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()));
 
-        valveNode.addValue("activationState"s,
-                           details::ActivationStateToString(m_hardwareController.get()
-                                                                .load()
-                                                                ->getWaterValveDigitalOut()
-                                                                ->getActivationState()));
+    valveNode.addValue(
+        "activationState"s,
+        details::ActivationStateToString(
+            m_hardwareController.get().load()->getWaterValveDigitalOut()->getActivationState()));
 
-        devicesNodes[0] = std::move(valveNode);
-    }
+    valveNode.addValue("enabled"s, bValveEnabled);
 
-    if (bPumpEnabled) {
-        // We need to put the pump ID and the pump activation
-        // state inside the object node.
-        ProjectNode pumpNode{};
+    devicesNodes[0] = std::move(valveNode);
 
-        pumpNode.addValue("name"s, "waterPump"s);
+    // We need to put the pump ID and the pump activation
+    // state inside the object node.
+    ProjectNode pumpNode{};
 
-        pumpNode.addValue(
-            "pinID"s,
-            static_cast<std::uint64_t>(
-                m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()));
+    pumpNode.addValue("name"s, "waterPump"s);
 
-        pumpNode.addValue(
-            "activationState"s,
-            details::ActivationStateToString(
-                m_hardwareController.get().load()->getWaterPumpDigitalOut()->getActivationState()));
+    pumpNode.addValue(
+        "pinID"s, static_cast<std::uint64_t>(
+                      m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()));
 
-        devicesNodes[1] = std::move(pumpNode);
-    }
+    pumpNode.addValue(
+        "activationState"s,
+        details::ActivationStateToString(
+            m_hardwareController.get().load()->getWaterPumpDigitalOut()->getActivationState()));
+
+    pumpNode.addValue("enabled"s, bPumpEnabled);
+
+    devicesNodes[1] = std::move(pumpNode);
 
     // Now we need to put the devices nodes inside the flow node.
     flowNode.addObjectArray("devices"s, std::move(devicesNodes));
