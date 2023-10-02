@@ -45,6 +45,11 @@ public:
         return m_offset;
     }
 
+    [[nodiscard]] inline hardware_access::DigitalOutPinActivationState getActivationState()
+        const noexcept override {
+        return m_activationState;
+    }
+
 private:
     const hardware_access::BoardDigitalPin::offset_type m_offset{};
     const hardware_access::DigitalPinRequestDirection m_direction{};

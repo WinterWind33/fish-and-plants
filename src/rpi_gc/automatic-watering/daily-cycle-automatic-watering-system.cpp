@@ -388,6 +388,21 @@ struct AWSStateDiagnosticConverter final {
     }
 };
 
+std::string ActivationStateToString(
+    const WateringSystemHardwareController::activation_state activationState) noexcept {
+    using namespace gh_hal::hardware_access;
+
+    switch (activationState) {
+        case WateringSystemHardwareController::activation_state::ActiveHigh:
+            return "Active High";
+        case WateringSystemHardwareController::activation_state::ActiveLow:
+            return "Active Low";
+        default:
+            assert(false);
+            return "Unknown";
+    }
+}
+
 } // namespace details
 
 void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) const noexcept {
@@ -425,12 +440,23 @@ void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) const
     if (bValveEnabled) {
         ost << "\t [Water valve output PIN]: "
             << m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()
+            << std::endl
+            << "\t [Valve Activation State:] "
+            << details::ActivationStateToString(m_hardwareController.get()
+                                                    .load()
+                                                    ->getWaterValveDigitalOut()
+                                                    ->getActivationState())
             << std::endl;
     }
 
     if (bPumpEnabled) {
         ost << "\t [Water pump output PIN]: "
-            << m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()
+            << m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset() << std::endl
+            << "\t [Pump Activation State:] "
+            << details::ActivationStateToString(m_hardwareController.get()
+                                                    .load()
+                                                    ->getWaterPumpDigitalOut()
+                                                    ->getActivationState())
             << std::endl;
     }
 

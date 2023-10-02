@@ -47,6 +47,11 @@ struct BoardDigitalPin {
     [[nodiscard]] virtual DigitalPinRequestDirection getDirection() const noexcept = 0;
 
     //!!
+    //! \brief Retrieves the activation state of this digital pin if it is on the OUTPUT mode.
+    //!
+    [[nodiscard]] virtual DigitalOutPinActivationState getActivationState() const noexcept = 0;
+
+    //!!
     //! \brief If on the OUTPUT mode, it will activate the hardware's PIN.
     //!
     virtual void activate() noexcept = 0;
