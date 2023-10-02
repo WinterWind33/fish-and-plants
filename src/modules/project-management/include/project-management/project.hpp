@@ -131,7 +131,8 @@ public:
     [[nodiscard]] bool contains(ProjectFieldKey auto&& key) const noexcept {
         return m_values.contains(std::forward<decltype(key)>(key)) ||
                m_valuesArrays.contains(std::forward<decltype(key)>(key)) ||
-               m_objects.contains(std::forward<decltype(key)>(key));
+               m_objects.contains(std::forward<decltype(key)>(key)) ||
+               m_objectsArrays.contains(std::forward<decltype(key)>(key));
     }
 
     [[nodiscard]] bool containsValue(ProjectFieldKey auto&& key) const noexcept {
