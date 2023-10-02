@@ -493,19 +493,51 @@ void DailyCycleAutomaticWateringSystem::saveToProject(gc::project_management::Pr
     flowNode.addValue("isWaterValveEnabled"s, bValveEnabled);
     flowNode.addValue("isWaterPumpEnabled"s, bPumpEnabled);
 
+    std::array<ProjectNode, 2> devicesNodes{};
+
     if (bValveEnabled) {
-        flowNode.addValue(
+        ProjectNode valveNode{};
+
+        // We need to put the valve ID and the valve activation
+        // state inside the object node.
+        valveNode.addValue("name"s, "waterValve"s);
+
+        valveNode.addValue(
             "valvePinID"s,
             static_cast<std::uint64_t>(
                 m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()));
+
+        valveNode.addValue("activationState"s,
+                           details::ActivationStateToString(m_hardwareController.get()
+                                                                .load()
+                                                                ->getWaterValveDigitalOut()
+                                                                ->getActivationState()));
+
+        devicesNodes[0] = std::move(valveNode);
     }
 
     if (bPumpEnabled) {
-        flowNode.addValue(
+        // We need to put the pump ID and the pump activation
+        // state inside the object node.
+        ProjectNode pumpNode{};
+
+        pumpNode.addValue("name"s, "waterPump"s);
+
+        pumpNode.addValue(
             "pumpPinID"s,
             static_cast<std::uint64_t>(
                 m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()));
+
+        pumpNode.addValue(
+            "activationState"s,
+            details::ActivationStateToString(
+                m_hardwareController.get().load()->getWaterPumpDigitalOut()->getActivationState()));
+
+        devicesNodes[1] = std::move(pumpNode);
     }
+
+    // Now we need to put the devices nodes inside the flow node.
+    flowNode.addObjectArray("devices"s, std::move(devicesNodes));
 
     flowNode.addValue("activationTime"s,
                       std::chrono::milliseconds{
