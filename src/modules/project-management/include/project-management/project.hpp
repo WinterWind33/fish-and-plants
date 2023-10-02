@@ -171,6 +171,10 @@ public:
         return m_objects.at(std::forward<decltype(key)>(key));
     }
 
+    [[nodiscard]] auto& getObject(ProjectFieldKey auto&& key) {
+        return m_objects.at(std::forward<decltype(key)>(key));
+    }
+
     [[nodiscard]] const auto& getObjectArray(ProjectFieldKey auto&& key) const {
         return m_objectsArrays.at(std::forward<decltype(key)>(key));
     }
@@ -189,6 +193,10 @@ public:
 
     [[nodiscard]] const auto& getObjects() const noexcept {
         return m_objects;
+    }
+
+    void removeValue(ProjectFieldKey auto&& key) {
+        m_values.erase(std::forward<decltype(key)>(key));
     }
 
 protected:

@@ -503,7 +503,7 @@ void DailyCycleAutomaticWateringSystem::saveToProject(gc::project_management::Pr
         valveNode.addValue("name"s, "waterValve"s);
 
         valveNode.addValue(
-            "valvePinID"s,
+            "pinID"s,
             static_cast<std::uint64_t>(
                 m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()));
 
@@ -524,7 +524,7 @@ void DailyCycleAutomaticWateringSystem::saveToProject(gc::project_management::Pr
         pumpNode.addValue("name"s, "waterPump"s);
 
         pumpNode.addValue(
-            "pumpPinID"s,
+            "pinID"s,
             static_cast<std::uint64_t>(
                 m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()));
 
