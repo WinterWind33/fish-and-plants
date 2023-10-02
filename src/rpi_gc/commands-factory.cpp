@@ -4,6 +4,7 @@
 #include <application-configuration.hpp>
 
 #include <gh_cmd/gh_cmd.hpp>
+#include <project-loader.hpp>
 #include <version/version-numbers.hpp>
 
 // Third-party
@@ -113,91 +114,54 @@ auto ProjectCommandFactory::create_event_handler_map() -> command_type::event_ha
             save_current_project();
         });
 
-    eventHandlerMap.emplace("load", [this](const command_type::option_parser::const_option_pointer&
-                                               ptr) {
-        const auto& valueOption(dynamic_cast<const gh_cmd::Value<char, std::string>&>(*ptr));
+    eventHandlerMap.emplace(
+        "load", [this](const command_type::option_parser::const_option_pointer& ptr) {
+            const auto& valueOption(dynamic_cast<const gh_cmd::Value<char, std::string>&>(*ptr));
 
-        // If there is an open project we need to save it before proceeding.
-        if (m_projectController.get().hasProject()) {
-            save_current_project("Saving old project before switching to new project.");
-        }
+            // If there is an open project we need to save it before proceeding.
+            if (m_projectController.get().hasProject()) {
+                save_current_project("Saving old project before switching to new project.");
+            }
 
-        try {
-            auto inputJsonReader{gc::project_management::project_io::CreateJsonProjectFileReader(
-                valueOption.value())};
+            try {
+                std::optional inputProjectOpt{
+                    LoadProjectAndCheckIntegrity(valueOption.value(), *m_userLogger)};
 
-            gc::project_management::Project inputProject{};
-            *inputJsonReader >> inputProject;
+                auto& inputProject = inputProjectOpt.value();
 
-            if (m_projectController.get().hasProject() &&
-                gc::project_management::SoftCompareProjects(
-                    m_projectController.get().getCurrentProject(), inputProject)) {
-                m_userLogger->logWarning(
-                    "The loaded project is the same as the current one. Skipping this action.");
+                // Now we can set the new project in the project controller.
+                m_projectController.get().setCurrentProject(std::move(inputProject));
+                m_projectController.get().setCurrentProjectFilePath(valueOption.value());
+
+                // Now we make all components load the configuration from the project.
+                m_projectController.get().loadProjectData();
+
+                m_userLogger->logInfo("Switched to new project " + valueOption.value());
+                m_mainLogger->logInfo("Switched to new project " + valueOption.value());
+            } catch (const std::invalid_argument& exc) {
+                const std::string errorString{
+                    std::string{"Invalid argument. Cannot load the requested project. Message: "} +
+                    exc.what()};
+
+                m_userLogger->logError(errorString);
+                m_mainLogger->logError(errorString);
+                return;
+            } catch (const std::exception& exc) {
+                const std::string errorString{
+                    std::string{"Generic error. Cannot load the requested project. Message: "} +
+                    exc.what()};
+
+                m_userLogger->logError(errorString);
+                m_mainLogger->logError(errorString);
+                return;
+            } catch (...) {
+                const std::string errorString{"Unknown error. Cannot load the requested project."};
+
+                m_userLogger->logError(errorString);
+                m_mainLogger->logError(errorString);
                 return;
             }
-
-            // We need to pass it to the integrity checks.
-            gc::project_management::integrity_check::TitleIntegrityChecker titleIntegrityChecker{
-                "unknown-project-0"};
-            gc::project_management::integrity_check::VersionIntegrityChecker
-                versionIntegrityChecker{rpi_gc::version::getApplicationVersion()};
-
-            if (!titleIntegrityChecker.checkIntegrity(inputProject)) {
-                const bool bRes{titleIntegrityChecker.tryApplyIntegrityFixes(inputProject)};
-                if (!bRes) {
-                    m_userLogger->logError("Failed to fix the project title integrity");
-                    m_mainLogger->logError("Failed to fix the project title integrity");
-                } else {
-                    m_userLogger->logWarning(
-                        "Project title integrity restored to the value: \'uknown-project-0\'.");
-                }
-            }
-
-            if (!versionIntegrityChecker.checkIntegrity(inputProject)) {
-                const bool bRes{versionIntegrityChecker.tryApplyIntegrityFixes(inputProject)};
-                if (!bRes) {
-                    m_userLogger->logError("Failed to fix the project version integrity");
-                    m_mainLogger->logError("Failed to fix the project version integrity");
-                } else {
-                    m_userLogger->logInfo("Project version integrity restored to the value: " +
-                                          rpi_gc::version::getApplicationVersion().to_string());
-                }
-            }
-
-            // Now we can set the new project in the project controller.
-            m_projectController.get().setCurrentProject(std::move(inputProject));
-            m_projectController.get().setCurrentProjectFilePath(valueOption.value());
-
-            // Now we make all components load the configuration from the project.
-            m_projectController.get().loadProjectData();
-
-            m_userLogger->logInfo("Switched to new project " + valueOption.value());
-            m_mainLogger->logInfo("Switched to new project " + valueOption.value());
-        } catch (const std::invalid_argument& exc) {
-            const std::string errorString{
-                std::string{"Invalid argument. Cannot load the requested project. Message: "} +
-                exc.what()};
-
-            m_userLogger->logError(errorString);
-            m_mainLogger->logError(errorString);
-            return;
-        } catch (const std::exception& exc) {
-            const std::string errorString{
-                std::string{"Generic error. Cannot load the requested project. Message: "} +
-                exc.what()};
-
-            m_userLogger->logError(errorString);
-            m_mainLogger->logError(errorString);
-            return;
-        } catch (...) {
-            const std::string errorString{"Unknown error. Cannot load the requested project."};
-
-            m_userLogger->logError(errorString);
-            m_mainLogger->logError(errorString);
-            return;
-        }
-    });
+        });
 
     return eventHandlerMap;
 }
