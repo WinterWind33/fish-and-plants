@@ -599,19 +599,63 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
 
     bool bValveEnabled{}, bPumpEnabled{};
     std::uint64_t valvePinID{}, pumpPinID{};
+    automatic_watering::WateringSystemHardwareController::activation_state valveActivationState{},
+        pumpActivationState{};
     WateringSystemTimeProvider::time_unit activationTime{}, deactivationTime{},
         deactivationSepTime{};
 
     try {
-        bValveEnabled = flowNode.getValue<bool>("isWaterValveEnabled"s);
-        bPumpEnabled = flowNode.getValue<bool>("isWaterPumpEnabled"s);
+        // We need to read the devices and associate them to water valve and water pump
+        // objects.
+        const std::vector<ProjectNode>& devicesNodes{flowNode.getObjectArray("devices"s)};
+        for (const ProjectNode& deviceNode : devicesNodes) {
+            const StringType deviceName{deviceNode.getValue<StringType>("name"s)};
+            if (deviceName == "waterValve"s) {
+                bValveEnabled = deviceNode.getValue<bool>("enabled"s);
+                valvePinID = deviceNode.getValue<std::uint64_t>("pinID"s);
 
-        if (bValveEnabled) {
-            valvePinID = flowNode.getValue<std::uint64_t>("valvePinID"s);
-        }
+                // Read the activation state
+                const StringType activationStateStr{
+                    deviceNode.getValue<StringType>("activationState"s)};
+                if (activationStateStr == "Active High"s) {
+                    valveActivationState = automatic_watering::WateringSystemHardwareController::
+                        activation_state::ActiveHigh;
+                } else if (activationStateStr == "Active Low"s) {
+                    valveActivationState = automatic_watering::WateringSystemHardwareController::
+                        activation_state::ActiveLow;
+                }
+            } else if (deviceName == "waterPump"s) {
+                bPumpEnabled = deviceNode.getValue<bool>("enabled"s);
+                pumpPinID = deviceNode.getValue<std::uint64_t>("pinID"s);
 
-        if (bPumpEnabled) {
-            pumpPinID = flowNode.getValue<std::uint64_t>("pumpPinID"s);
+                // Read the activation state
+                const StringType activationStateStr{
+                    deviceNode.getValue<StringType>("activationState"s)};
+                if (activationStateStr == "Active High"s) {
+                    pumpActivationState = automatic_watering::WateringSystemHardwareController::
+                        activation_state::ActiveHigh;
+                } else if (activationStateStr == "Active Low"s) {
+                    pumpActivationState = automatic_watering::WateringSystemHardwareController::
+                        activation_state::ActiveLow;
+                }
+            } else {
+                m_userLogger->logError(
+                    format_log_string("The given AWS configuration contains a device name not "
+                                      "recognized. No AWS configuration will be loaded."));
+                m_userLogger->logWarning(
+                    format_log_string("Have you entered wrong values in the configuration?"));
+
+                if (bWasRunning) {
+                    const StringType formattedLogString{format_log_string(
+                        "Automatic watering system was running. Restoring the old configuration.")};
+                    m_mainLogger->logWarning(formattedLogString);
+                    m_userLogger->logWarning(formattedLogString);
+
+                    startAutomaticWatering();
+                }
+
+                return;
+            }
         }
 
         activationTime =
