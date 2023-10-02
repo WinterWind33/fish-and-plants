@@ -1,6 +1,9 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
 #include <project-loader.hpp>
 
+// Upgraders
+#include <gc-project/upgraders/project-upgraders.hpp>
+
 #include <version/version-numbers.hpp>
 
 #include <project-management/integrity-check/title-integrity-checker.hpp>
@@ -40,6 +43,17 @@ std::optional<gc::project_management::Project> LoadProjectAndCheckIntegrity(
     // If the project version need an integrity update we perform it.
     if (!versionIntegrityChecker.checkIntegrity(project)) {
         [[maybe_unused]] const bool bRes{versionIntegrityChecker.tryApplyIntegrityFixes(project)};
+    }
+
+    // Custom upgraders
+    std::array<std::unique_ptr<integrity_check::ProjectIntegrityChecker>, 1> upgraders{
+        std::make_unique<gc_project::upgraders::ProjectUpgrader_V1_1ToV1_2>()};
+
+    // Apply the upgraders.
+    for (auto& upgrader : upgraders) {
+        if (!upgrader->checkIntegrity(project)) {
+            [[maybe_unused]] const bool bRes{upgrader->tryApplyIntegrityFixes(project)};
+        }
     }
 
     return project;
