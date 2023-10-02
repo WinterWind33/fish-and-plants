@@ -171,6 +171,14 @@ public:
         return m_objects.at(std::forward<decltype(key)>(key));
     }
 
+    [[nodiscard]] const auto& getObjectArray(ProjectFieldKey auto&& key) const {
+        return m_objectsArrays.at(std::forward<decltype(key)>(key));
+    }
+
+    [[nodiscard]] const auto& getAllObjectArrays() const noexcept {
+        return m_objectsArrays;
+    }
+
     [[nodiscard]] const auto& getValues() const noexcept {
         return m_values;
     }

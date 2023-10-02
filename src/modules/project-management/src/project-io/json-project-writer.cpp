@@ -67,6 +67,22 @@ void JsonProjectWriter::serializeProjectNode(const ProjectNode& node, nlohmann::
 
         parentJson[std::get<0>(object)] = std::move(objectJsonNode);
     }
+
+    // Serialize all the objects arrays.
+    const auto& objectsArrays{node.getAllObjectArrays()};
+    for (const auto& arr : objectsArrays) {
+        const auto& key{std::get<0>(arr)};
+
+        nlohmann::json arrJson = nlohmann::json::array();
+        for (const auto& obj : std::get<1>(arr)) {
+            nlohmann::json objJsonNode{};
+            serializeProjectNode(obj, objJsonNode);
+
+            arrJson.push_back(std::move(objJsonNode));
+        }
+
+        parentJson[key] = std::move(arrJson);
+    }
 }
 
 } // namespace gc::project_management::project_io
