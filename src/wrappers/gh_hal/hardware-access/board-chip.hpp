@@ -26,6 +26,7 @@ struct BoardChip {
     //! \param consumer A string that represents the service that will use the pin.
     //! \param offset The value that identifies the PIN to be requested.
     //! \param direction The direction (input/output) of the request.
+    //! \param activationState The activation state of the requested line.
     //! \return A pointer to the resource used to communicate with the requested PIN.
     [[nodiscard]] virtual std::unique_ptr<board_digital_out> requestDigitalPin(
         std::string consumer, board_digital_out::offset_type offset,
@@ -42,6 +43,8 @@ struct BoardChip {
     //! \param consumer A string that represents the service that will use the pins.
     //! \param offset The value that identifies the PINs to be requested, one for every line.
     //! \param direction The direction (input/output) of the request. This applies to all the lines.
+    //! \param activationState The activation state of the requested lines. This applies to all the
+    //! lines.
     //! \return A vector of pointers to the resources used to communicate with the requested PINs.
     [[nodiscard]] virtual std::vector<std::unique_ptr<board_digital_out>> requestDigitalPinPool(
         std::string consumer, std::vector<board_digital_out::offset_type> offset,

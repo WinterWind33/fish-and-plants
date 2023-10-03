@@ -36,6 +36,8 @@ using NativeLineOffsetType = std::uint32_t;
 //!  of the service.
 //! \param offsets The GPIO pins IDs that are going to be requested.
 //! \param direction The direction (input/output) of the requested lines
+//! \param bIsActiveLow If true, the requested lines will be active-low, i.e. the I/O pins logics
+//! will be inverted (On = 0, Off = 1) otherwise it will be active-high.
 //! \return A newly opened line request.
 [[nodiscard]] NativeLineRequestType requestLines(NativeChipType& chip, const std::string& consumer,
                                                  const std::vector<NativeLineOffsetType>& offsets,
