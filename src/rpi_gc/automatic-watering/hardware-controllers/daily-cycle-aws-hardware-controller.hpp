@@ -15,12 +15,28 @@
 
 namespace rpi_gc::automatic_watering {
 
+//!!
+//! \brief Represents a hardware controller for a watering system that uses a daily cycle mode.
+//!
 class DailyCycleAWSHardwareController final : public WateringSystemHardwareController {
 public:
     using digital_output_id = gh_hal::hardware_access::BoardDigitalPin::offset_type;
     using chip_reference = std::reference_wrapper<gh_hal::hardware_access::BoardChip>;
     using mutex_reference = std::reference_wrapper<std::mutex>;
 
+    //!!
+    //! \brief Construct a new object with the given parameters.
+    //!
+    //! \param mutex A reference to the mutex that will be used to synchronize the access to the
+    //!  hardware.
+    //! \param chipRef A reference to the chip that will be used to create the hardware lines.
+    //! \param waterValvePinId The ID of the digital output that will be used to control the water
+    //!  valve.
+    //! \param waterPumpValvePinId The ID of the digital output that will be used to control the
+    //!  water pump.
+    //! \param valveActivationState The activation state of the water valve.
+    //! \param pumpActivationState The activation state of the water pump.
+    //!
     explicit DailyCycleAWSHardwareController(
         mutex_reference mutex, chip_reference chipRef, const digital_output_id waterValvePinId,
         const digital_output_id waterPumpValvePinId,
@@ -35,9 +51,21 @@ public:
         return std::get<1>(m_waterPumpDigitalOut).get();
     }
 
+    //!!
+    //! \brief Set the water valve digital output with the given activation state.
+    //!
+    //! \param id The ID of the digital output.
+    //! \param newActivationState The new activation state of the digital output.
     void setWaterValveDigitalOutputID(
         const digital_output_id id,
         const activation_state newActivationState = activation_state::ActiveLow) noexcept override;
+
+    //!!
+    //! \brief Set the water pump digital output with the given activation state.
+    //!
+    //! \param id The ID of the digital output.
+    //! \param newActivationState The new activation state of the digital output.
+    //!
     void setWaterPumpDigitalOutputID(
         const digital_output_id id,
         const activation_state newActivationState = activation_state::ActiveLow) noexcept override;

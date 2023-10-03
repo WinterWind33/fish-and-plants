@@ -113,6 +113,10 @@ public:
     //! \brief Add an object array to the node. If the object is already present, it will be
     //! overwritten.
     //!
+    //! \param key The key of the object.
+    //! \param arr The array to add.
+    //! \return A reference to this node.
+    //!
     auto& addObjectArray(ProjectFieldKey auto&& key, std::ranges::range auto&& arr) {
         std::vector<ProjectNode> finalArr{};
 
@@ -196,6 +200,11 @@ public:
         return m_objects;
     }
 
+    //!!
+    //! \brief Remove a value from the node.
+    //!
+    //! \param key The key of the value to remove.
+    //!
     void removeValue(ProjectFieldKey auto&& key) {
         m_values.erase(std::forward<decltype(key)>(key));
     }
