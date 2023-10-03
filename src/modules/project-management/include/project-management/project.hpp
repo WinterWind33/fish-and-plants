@@ -256,7 +256,7 @@ public:
     //! \param version The new version of the project.
     //!
     static void updateVersion(Project& project, project_version newVersion) noexcept {
-        project.m_projectVersion = std::move(newVersion);
+        project.m_projectVersion = newVersion;
     }
 
 private:
