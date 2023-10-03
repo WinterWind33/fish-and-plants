@@ -13,7 +13,11 @@ This file follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) f
     must specify the activation state in the project's JSON file. The default activation state is `active-low`. Old projects will be automatically updated to the new activation state considering
     the old activation state as `active-low`;
 
-## [v1.1.0]
+### Fixed
+
+- (**Bug**) Fixed bug that caused the project data to be lost when the application tried to update the project data to a new version;
+
+## [1.1.0]
 
 ### New features and improvements
 
