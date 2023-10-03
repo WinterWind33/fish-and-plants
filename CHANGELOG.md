@@ -1,6 +1,19 @@
 # RPI Greenhouse Controller Changelog
 
-## v1.1.0
+This file contains the changelog of the RPI Greenhouse Controller project. The changelog is divided into sections, each section
+contains the changes made in a specific version of the project.
+
+This file follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format and the [Semantic Versioning](https://semver.org/spec/v2.0.0.html) specification.
+
+## [Unreleased]
+
+### Added
+
+- (**New**) Added support for multiple hardware activation states. Now the user can choose between `active-high` and `active-low` activation states for the hardware. To do so he
+    must specify the activation state in the project's JSON file. The default activation state is `active-low`. Old projects will be automatically updated to the new activation state considering
+    the old activation state as `active-low`;
+
+## [v1.1.0]
 
 ### New features and improvements
 
