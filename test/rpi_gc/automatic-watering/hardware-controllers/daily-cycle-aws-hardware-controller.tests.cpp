@@ -47,14 +47,16 @@ TEST_CASE("DailyCycleAWSHardwareController unit tests",
             EXPECT_CALL(
                 boardChipMock,
                 requestDigitalPin(testing::_, tests::constants::VALVE_DUMMY_ID,
-                                  gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                                  gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                  gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
                 .Times(1)
                 .WillOnce(testing::Return(nullptr));
 
             EXPECT_CALL(
                 boardChipMock,
                 requestDigitalPin(testing::_, tests::constants::PUMP_DUMMY_ID,
-                                  gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                                  gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                  gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
                 .Times(1)
                 .WillOnce(testing::Return(nullptr));
 
@@ -67,12 +69,14 @@ TEST_CASE("DailyCycleAWSHardwareController unit tests",
             testing::NiceMock<chip_mock> boardChipMock{};
             ON_CALL(boardChipMock,
                     requestDigitalPin(testing::_, tests::constants::VALVE_DUMMY_ID,
-                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                      ::testing::_))
                 .WillByDefault(testing::Return(testing::ByMove(std::move(valveDigitalOutMock))));
 
             ON_CALL(boardChipMock,
                     requestDigitalPin(testing::_, tests::constants::PUMP_DUMMY_ID,
-                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                      ::testing::_))
                 .WillByDefault(testing::Return(testing::ByMove(std::move(pumpDigitalOutMock))));
 
             hardwareControllerUnderTest = std::make_unique<DailyCycleAWSHardwareController>(
@@ -87,15 +91,19 @@ TEST_CASE("DailyCycleAWSHardwareController unit tests",
     GIVEN("A DailyCycleAWSHardwareController object") {
         testing::StrictMock<chip_mock> boardChipMock{};
 
-        EXPECT_CALL(boardChipMock,
-                    requestDigitalPin(testing::_, tests::constants::VALVE_DUMMY_ID,
-                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+        EXPECT_CALL(
+            boardChipMock,
+            requestDigitalPin(testing::_, tests::constants::VALVE_DUMMY_ID,
+                              gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                              gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
             .Times(1)
             .WillOnce(testing::Return(testing::ByMove(std::move(valveDigitalOutMock))));
 
-        EXPECT_CALL(boardChipMock,
-                    requestDigitalPin(testing::_, tests::constants::PUMP_DUMMY_ID,
-                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+        EXPECT_CALL(
+            boardChipMock,
+            requestDigitalPin(testing::_, tests::constants::PUMP_DUMMY_ID,
+                              gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                              gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
             .Times(1)
             .WillOnce(testing::Return(testing::ByMove(std::move(pumpDigitalOutMock))));
         ;
@@ -114,10 +122,11 @@ TEST_CASE("DailyCycleAWSHardwareController unit tests",
                     .Times(1)
                     .WillOnce(testing::Return(true));
 
-                EXPECT_CALL(
-                    boardChipMock,
-                    requestDigitalPin(testing::_, tests::constants::NEW_VALVE_DUMMY_ID,
-                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                EXPECT_CALL(boardChipMock,
+                            requestDigitalPin(
+                                testing::_, tests::constants::NEW_VALVE_DUMMY_ID,
+                                gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
                     .Times(1)
                     .WillOnce(testing::Return(nullptr));
 
@@ -138,10 +147,11 @@ TEST_CASE("DailyCycleAWSHardwareController unit tests",
                         .WillOnce(testing::Return(true));
                 ;
 
-                EXPECT_CALL(
-                    boardChipMock,
-                    requestDigitalPin(testing::_, tests::constants::NEW_VALVE_DUMMY_ID,
-                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                EXPECT_CALL(boardChipMock,
+                            requestDigitalPin(
+                                testing::_, tests::constants::NEW_VALVE_DUMMY_ID,
+                                gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
                     .Times(1)
                     .After(releaseReqExp)
                     .WillOnce(testing::Return(nullptr));
@@ -166,10 +176,11 @@ TEST_CASE("DailyCycleAWSHardwareController unit tests",
                 std::unique_ptr<DailyCycleAWSHardwareController::digital_output_type>
                     newValveDigitalOut{std::move(newValveDigitalOutUniquePtr)};
 
-                EXPECT_CALL(
-                    boardChipMock,
-                    requestDigitalPin(testing::_, tests::constants::NEW_VALVE_DUMMY_ID,
-                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                EXPECT_CALL(boardChipMock,
+                            requestDigitalPin(
+                                testing::_, tests::constants::NEW_VALVE_DUMMY_ID,
+                                gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
                     .Times(1)
                     .WillOnce(testing::Return(testing::ByMove(std::move(newValveDigitalOut))));
 
@@ -191,10 +202,11 @@ TEST_CASE("DailyCycleAWSHardwareController unit tests",
                     .Times(1)
                     .WillOnce(testing::Return(true));
 
-                EXPECT_CALL(
-                    boardChipMock,
-                    requestDigitalPin(testing::_, tests::constants::NEW_PUMP_DUMMY_ID,
-                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                EXPECT_CALL(boardChipMock,
+                            requestDigitalPin(
+                                testing::_, tests::constants::NEW_PUMP_DUMMY_ID,
+                                gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
                     .Times(1)
                     .WillOnce(testing::Return(nullptr));
 
@@ -213,12 +225,12 @@ TEST_CASE("DailyCycleAWSHardwareController unit tests",
                         .Times(1)
                         .After(pumpShutoffExp)
                         .WillOnce(testing::Return(true));
-                ;
 
-                EXPECT_CALL(
-                    boardChipMock,
-                    requestDigitalPin(testing::_, tests::constants::NEW_PUMP_DUMMY_ID,
-                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                EXPECT_CALL(boardChipMock,
+                            requestDigitalPin(
+                                testing::_, tests::constants::NEW_PUMP_DUMMY_ID,
+                                gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
                     .Times(1)
                     .After(releaseReqExp)
                     .WillOnce(testing::Return(nullptr));
@@ -235,7 +247,6 @@ TEST_CASE("DailyCycleAWSHardwareController unit tests",
                 EXPECT_CALL(boardChipMock, releaseRequest(offsetsVec))
                     .Times(1)
                     .WillOnce(testing::Return(true));
-                ;
 
                 std::unique_ptr<digital_pin_mock> newPumpDigitalOutUniquePtr{
                     std::make_unique<digital_pin_mock>()};
@@ -243,10 +254,11 @@ TEST_CASE("DailyCycleAWSHardwareController unit tests",
                 std::unique_ptr<DailyCycleAWSHardwareController::digital_output_type>
                     newPumpDigitalOut{std::move(newPumpDigitalOutUniquePtr)};
 
-                EXPECT_CALL(
-                    boardChipMock,
-                    requestDigitalPin(testing::_, tests::constants::NEW_PUMP_DUMMY_ID,
-                                      gh_hal::hardware_access::DigitalPinRequestDirection::Output))
+                EXPECT_CALL(boardChipMock,
+                            requestDigitalPin(
+                                testing::_, tests::constants::NEW_PUMP_DUMMY_ID,
+                                gh_hal::hardware_access::DigitalPinRequestDirection::Output,
+                                gh_hal::hardware_access::DigitalOutPinActivationState::ActiveLow))
                     .Times(1)
                     .WillOnce(testing::Return(testing::ByMove(std::move(newPumpDigitalOut))));
 

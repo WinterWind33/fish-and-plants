@@ -12,11 +12,12 @@ namespace gh_hal::hardware_access::mocks {
 class BoardChipMock : public BoardChip {
 public:
     MOCK_METHOD((std::unique_ptr<BoardDigitalPin>), requestDigitalPin,
-                (std::string, BoardDigitalPin::offset_type, const DigitalPinRequestDirection),
+                (std::string, BoardDigitalPin::offset_type, const DigitalPinRequestDirection,
+                 const DigitalOutPinActivationState),
                 (noexcept, final));
     MOCK_METHOD((std::vector<std::unique_ptr<BoardDigitalPin>>), requestDigitalPinPool,
                 (std::string, std::vector<BoardDigitalPin::offset_type>,
-                 const DigitalPinRequestDirection),
+                 const DigitalPinRequestDirection, const DigitalOutPinActivationState),
                 (noexcept, final));
     MOCK_METHOD(bool, releaseRequest, (std::vector<BoardDigitalPin::offset_type>),
                 (noexcept, final));

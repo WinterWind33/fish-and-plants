@@ -1,6 +1,5 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
-#ifndef WATERING_SYSTEM_HARDWARE_CONTROLLER_MOCK_HPP
-#define WATERING_SYSTEM_HARDWARE_CONTROLLER_MOCK_HPP
+#pragma once
 
 #include <automatic-watering/hardware-controllers/watering-system-hardware-controller.hpp>
 
@@ -14,12 +13,12 @@ class WateringSystemHardwareControllerMock : public WateringSystemHardwareContro
 public:
     MOCK_METHOD(digital_output_type*, getWaterValveDigitalOut, (), (noexcept, override));
     MOCK_METHOD(digital_output_type*, getWaterPumpDigitalOut, (), (noexcept, override));
-    MOCK_METHOD(void, setWaterValveDigitalOutputID, (const digital_output_type::offset_type),
+    MOCK_METHOD(void, setWaterValveDigitalOutputID,
+                (const digital_output_type::offset_type, const activation_state),
                 (noexcept, override));
-    MOCK_METHOD(void, setWaterPumpDigitalOutputID, (const digital_output_type::offset_type),
+    MOCK_METHOD(void, setWaterPumpDigitalOutputID,
+                (const digital_output_type::offset_type, const activation_state),
                 (noexcept, override));
 };
 
 } // namespace rpi_gc::automatic_watering::mocks
-
-#endif // !WATERING_SYSTEM_HARDWARE_CONTROLLER_MOCK_HPP

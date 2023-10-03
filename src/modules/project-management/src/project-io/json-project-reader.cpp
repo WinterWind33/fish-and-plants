@@ -61,16 +61,27 @@ Project JsonProjectReader::readProject() {
         if (key == "creation_timedate" || key == "title" || key == "version")
             continue;
 
-        // If the value is an array, we read it as an array of values.
+        // If the value is an array, we read it as an array.
         if (value.is_array()) {
             std::vector<ProjectNode::value_impl_type> valueArray{};
+            std::vector<ProjectNode> objectArray{};
             for (const auto& arrayValue : value) {
+                // If the array value is an object, we read it as an object.
+                if (arrayValue.is_object()) {
+                    objectArray.push_back(read_project_node(arrayValue));
+                    continue;
+                }
+
                 // We need to instance a variant based on the array value type.
                 ProjectNode::value_impl_type finalValue{
                     details::createVariantFromJsonNode(arrayValue)};
                 valueArray.push_back(std::move(finalValue));
             }
-            finalProject.addValueArray(key, std::move(valueArray));
+
+            if (!objectArray.empty())
+                finalProject.addObjectArray(key, std::move(objectArray));
+            else if (!valueArray.empty())
+                finalProject.addValueArray(key, std::move(valueArray));
         }
 
         // If the value is an object, we read it as an object of values.
@@ -90,16 +101,27 @@ ProjectNode JsonProjectReader::read_project_node(const nlohmann::json& jsonNode)
     ProjectNode finalNode{};
 
     for (const auto& [key, value] : jsonNode.items()) {
-        // If the value is an array, we read it as an array of values.
+        // If the value is an array, we read it as an array.
         if (value.is_array()) {
             std::vector<ProjectNode::value_impl_type> valueArray{};
+            std::vector<ProjectNode> objectArray{};
             for (const auto& arrayValue : value) {
+                // If the array value is an object, we read it as an object.
+                if (arrayValue.is_object()) {
+                    objectArray.push_back(read_project_node(arrayValue));
+                    continue;
+                }
+
                 // We need to instance a variant based on the array value type.
                 ProjectNode::value_impl_type finalValue{
                     details::createVariantFromJsonNode(arrayValue)};
                 valueArray.push_back(std::move(finalValue));
             }
-            finalNode.addValueArray(key, std::move(valueArray));
+
+            if (!objectArray.empty())
+                finalNode.addObjectArray(key, std::move(objectArray));
+            else if (!valueArray.empty())
+                finalNode.addValueArray(key, std::move(valueArray));
         }
 
         // If the value is an object, we read it as an object of values.

@@ -8,27 +8,23 @@ namespace gh_hal::internal {
 LineRequest::LineRequest(const consumer_type& consumer, chip_reference chip,
                          const std::vector<offset_type>& offsets,
                          const hardware_access::DigitalPinRequestDirection direction,
-                         const bool bRequestActiveLow) noexcept {
-    request_lines(consumer, chip, offsets, direction, bRequestActiveLow);
+                         const bool bRequestActiveLow) noexcept
+    : m_activationState{bRequestActiveLow
+                            ? hardware_access::DigitalOutPinActivationState::ActiveLow
+                            : hardware_access::DigitalOutPinActivationState::ActiveHigh} {
+    request_lines(consumer, chip, offsets, direction);
 }
 
 #ifdef USE_LIBGPIOD
-void LineRequest::request_lines(const consumer_type& consumer, chip_reference chip,
-                                const std::vector<offset_type>& offsets,
-                                const hardware_access::DigitalPinRequestDirection direction,
-                                const bool bRequestActiveLow) noexcept {
+void LineRequest::request_lines(
+    const consumer_type& consumer, chip_reference chip, const std::vector<offset_type>& offsets,
+    const hardware_access::DigitalPinRequestDirection direction) noexcept {
     try {
-        if (bRequestActiveLow) {
-            m_lineRequest = std::make_unique<backend_type>(
-                direction,
-                backends::libgpiod_impl::active_low::requestLines(
-                    chip.get(), consumer, offsets, details::LibgpiodConverter.convert(direction)));
-        } else {
-            m_lineRequest = std::make_unique<backend_type>(
-                direction,
-                backends::libgpiod_impl::requestLines(
-                    chip.get(), consumer, offsets, details::LibgpiodConverter.convert(direction)));
-        }
+        m_lineRequest = std::make_unique<backend_type>(
+            direction,
+            backends::libgpiod_impl::requestLines(
+                chip.get(), consumer, offsets, details::LibgpiodConverter.convert(direction),
+                m_activationState == hardware_access::DigitalOutPinActivationState::ActiveLow));
     } catch (...) {}
 }
 
@@ -46,7 +42,8 @@ std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> LineRequest::getB
                    [this, requestedDirection](const ::gpiod::line::offset& offset) {
                        return std::make_unique<internal::BoardDigitalPinImpl>(
                            static_cast<internal::BoardDigitalPinImpl::offset_type>(offset),
-                           requestedDirection, std::ref(std::get<1>(*m_lineRequest)));
+                           requestedDirection, std::ref(std::get<1>(*m_lineRequest)),
+                           m_activationState);
                    });
 
     return result;
@@ -54,10 +51,10 @@ std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> LineRequest::getB
 
 #else
 
-void LineRequest::request_lines([[maybe_unused]] const consumer_type& consumer, chip_reference chip,
-                                const std::vector<offset_type>& offsets,
-                                const hardware_access::DigitalPinRequestDirection direction,
-                                [[maybe_unused]] const bool bRequestActiveLow) noexcept {
+void LineRequest::request_lines(
+    [[maybe_unused]] const consumer_type& consumer, chip_reference chip,
+    const std::vector<offset_type>& offsets,
+    const hardware_access::DigitalPinRequestDirection direction) noexcept {
     m_lineRequest = std::make_unique<backend_type>(
         direction, std::vector<backends::simulated::DigitalBoardPin>{});
 
@@ -77,9 +74,10 @@ std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> LineRequest::getB
     const auto& simulatedPins{std::get<1>(*m_lineRequest)};
 
     std::transform(simulatedPins.cbegin(), simulatedPins.cend(), std::back_inserter(resultVector),
-                   [requestDirection](const backends::simulated::DigitalBoardPin& boardPin) {
+                   [this, requestDirection](const backends::simulated::DigitalBoardPin& boardPin) {
                        return std::make_unique<internal::BoardDigitalPinImpl>(
-                           boardPin.getOffsetValue(), requestDirection, boardPin);
+                           boardPin.getOffsetValue(), requestDirection, boardPin,
+                           m_activationState);
                    });
 
     return resultVector;

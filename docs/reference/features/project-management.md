@@ -25,10 +25,11 @@ The automatic watering system configuration is a set of values that are used to 
   - `activationTime` **[milliseconds]**: the duration of the active period of the cycle. During this period, the pump and the valve will be activated and the water will be pumped into the greenhouse;
   - `deactivationTime` **[milliseconds]**: the interval of time between the end of the active period and the start of the next active period. During this period, the pump and the valve will be deactivated and the plants roots will dry;
   - `deactivationSepTime` **[milliseconds]**: the interval of time between the deactivation of the valve and the deactivation of the valve to let the water pressure inside the pipes to stabilize to not damage the pump;
-  - `isWaterValveEnabled` **[boolean]**: a boolean value that indicates if the water valve will be used during the active period of the cycle;
-  - `isWaterPumpEnabled` **[boolean]**: a boolean value that indicates if the water pump will be used during the active period of the cycle;
-  - `pumpPinID`: the ID of the board that will be attached to the pump that will be used during the active period of the cycle. This is only used if the `isWaterValveEnabled` is set to `true`;
-  - `valvePinID`: the ID of the board that will be attached to the valve that will be used during the active period of the cycle. This is only used if the `isWaterPumpEnabled` is set to `true`;
+  - `devices`: the devices that are activated during the active period of the cycle. The devices are a set of these values:
+    - `name`: the name of the device. The name must be one of the devices that are currently supported, i.e. `waterPump` or `waterValve`;
+    - `activationState`: the activation state of the device. The activation state can only be `active-high` or `active-low`. The activation state is used to specify with what kind of signal the devices are turned on. For example, `active-low` devices are turned on when the signal is `0`, while `active-high` devices are turned on when the signal is `1`;
+    - `pinID`: the pin ID of the device. The pin ID is the ID of the GPIO pin that is used to control the device. The pin ID must be an integer between `0` and `27` included;
+    - `enabled`: the enabled state of the device. The enabled state can only be `true` or `false`. If the device is not enabled, it will not be activated during the active period of the cycle;
 
 ## Project automatic loading
 

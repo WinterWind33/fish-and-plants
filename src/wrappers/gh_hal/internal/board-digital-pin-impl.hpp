@@ -25,9 +25,11 @@ public:
 
     using backend_type_reference = std::reference_wrapper<backend_type>;
 
-    explicit BoardDigitalPinImpl(const hardware_access::BoardDigitalPin::offset_type offsetValue,
-                                 const hardware_access::DigitalPinRequestDirection direction,
-                                 backend_type_reference backImpl) noexcept;
+    explicit BoardDigitalPinImpl(
+        const hardware_access::BoardDigitalPin::offset_type offsetValue,
+        const hardware_access::DigitalPinRequestDirection direction,
+        backend_type_reference backImpl,
+        const hardware_access::DigitalOutPinActivationState activationState) noexcept;
 
     [[nodiscard]] hardware_access::DigitalPinRequestDirection getDirection()
         const noexcept override {
@@ -43,9 +45,15 @@ public:
         return m_offset;
     }
 
+    [[nodiscard]] inline hardware_access::DigitalOutPinActivationState getActivationState()
+        const noexcept override {
+        return m_activationState;
+    }
+
 private:
     const hardware_access::BoardDigitalPin::offset_type m_offset{};
     const hardware_access::DigitalPinRequestDirection m_direction{};
+    const hardware_access::DigitalOutPinActivationState m_activationState{};
     backend_type_reference m_backendReference;
 };
 

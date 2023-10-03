@@ -20,13 +20,13 @@ public:
         : m_newVersion{version} {}
 
     //!!
-    //! \brief Checks whether or not the given project has the same version
+    //! \brief Checks whether or not the given project has the same version or a newer version
     //!  of the default one.
     //!
-    //! \param project The project whose version eed to be checked.
+    //! \param project The project whose version need to be checked.
     //! \return True if the version is up to date, false otherwise.
     [[nodiscard]] constexpr bool checkIntegrity(const Project& project) const noexcept override {
-        return m_newVersion == project.getVersion();
+        return project.getVersion() >= m_newVersion;
     }
 
     //!!

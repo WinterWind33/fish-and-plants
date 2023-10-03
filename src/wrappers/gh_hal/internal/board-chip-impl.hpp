@@ -35,11 +35,13 @@ public:
     // Line requests
     std::unique_ptr<hardware_access::BoardDigitalPin> requestDigitalPin(
         std::string consumer, hardware_access::BoardDigitalPin::offset_type offset,
-        const hardware_access::DigitalPinRequestDirection direction) noexcept override;
+        const hardware_access::DigitalPinRequestDirection direction,
+        const hardware_access::DigitalOutPinActivationState activationState) noexcept override;
 
     std::vector<std::unique_ptr<hardware_access::BoardDigitalPin>> requestDigitalPinPool(
         std::string consumer, std::vector<hardware_access::BoardDigitalPin::offset_type> offset,
-        const hardware_access::DigitalPinRequestDirection direction) noexcept override;
+        const hardware_access::DigitalPinRequestDirection direction,
+        const hardware_access::DigitalOutPinActivationState activationState) noexcept override;
 
     bool releaseRequest(
         std::vector<hardware_access::BoardDigitalPin::offset_type> offsets) noexcept override;

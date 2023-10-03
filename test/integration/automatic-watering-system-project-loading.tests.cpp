@@ -45,20 +45,33 @@ SCENARIO("AWS configuration loading integration tests",
     ProjectController projectController{};
     Project project{
         Project::time_point_type{},
-        "TestProject", semver::version{1, 1, 0}
+        "TestProject", semver::version{1, 2, 0}
     };
 
     // Add the automatic watering system configuration to the project
     ProjectNode automaticWateringSystemNode{}, awsFlowNode{};
 
     // Configure the flow node
-    awsFlowNode.addValue("isWaterValveEnabled", true);
-    awsFlowNode.addValue("isWaterPumpEnabled", true);
-    awsFlowNode.addValue("valvePinID", 23ull);
-    awsFlowNode.addValue("pumpPinID", 26ull);
     awsFlowNode.addValue("activationTime", 600ull);
     awsFlowNode.addValue("deactivationTime", 1200ull);
     awsFlowNode.addValue("deactivationSepTime", 300ull);
+
+    // We add two devices to the flow node inside an object array.
+    // The first device is the water valve, the second is the water pump.
+    std::array<ProjectNode, 2> devices{};
+    devices[0]
+        .addValue("name"s, "waterValve"s)
+        .addValue("pinID"s, 23ull)
+        .addValue("activationState"s, "Active Low"s)
+        .addValue("enabled"s, true);
+
+    devices[1]
+        .addValue("name"s, "waterPump"s)
+        .addValue("pinID"s, 26ull)
+        .addValue("activationState"s, "Active High"s)
+        .addValue("enabled"s, true);
+
+    awsFlowNode.addObjectArray("devices", std::move(devices));
 
     automaticWateringSystemNode.addObject("flow", std::move(awsFlowNode));
     automaticWateringSystemNode.addValue("mode", "cycled");
@@ -69,8 +82,14 @@ SCENARIO("AWS configuration loading integration tests",
 
     WHEN("The configuration loading for the AWS is triggered") {
         THEN("The AWS should load its configuration from the project") {
-            EXPECT_CALL(hardwareControllerMockRef, setWaterValveDigitalOutputID(23)).Times(1);
-            EXPECT_CALL(hardwareControllerMockRef, setWaterPumpDigitalOutputID(26)).Times(1);
+            EXPECT_CALL(hardwareControllerMockRef,
+                        setWaterValveDigitalOutputID(
+                            23, WateringSystemHardwareController::activation_state::ActiveLow))
+                .Times(1);
+            EXPECT_CALL(hardwareControllerMockRef,
+                        setWaterPumpDigitalOutputID(
+                            26, WateringSystemHardwareController::activation_state::ActiveHigh))
+                .Times(1);
             EXPECT_CALL(*timeProviderMock,
                         setWateringSystemActivationDuration(std::chrono::milliseconds(600)))
                 .Times(1);

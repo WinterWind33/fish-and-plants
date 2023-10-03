@@ -388,6 +388,21 @@ struct AWSStateDiagnosticConverter final {
     }
 };
 
+std::string ActivationStateToString(
+    const WateringSystemHardwareController::activation_state activationState) noexcept {
+    using namespace gh_hal::hardware_access;
+
+    switch (activationState) {
+        case WateringSystemHardwareController::activation_state::ActiveHigh:
+            return "Active High";
+        case WateringSystemHardwareController::activation_state::ActiveLow:
+            return "Active Low";
+        default:
+            assert(false);
+            return "Unknown";
+    }
+}
+
 } // namespace details
 
 void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) const noexcept {
@@ -425,12 +440,23 @@ void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) const
     if (bValveEnabled) {
         ost << "\t [Water valve output PIN]: "
             << m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()
+            << std::endl
+            << "\t [Valve Activation State:] "
+            << details::ActivationStateToString(m_hardwareController.get()
+                                                    .load()
+                                                    ->getWaterValveDigitalOut()
+                                                    ->getActivationState())
             << std::endl;
     }
 
     if (bPumpEnabled) {
         ost << "\t [Water pump output PIN]: "
-            << m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()
+            << m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset() << std::endl
+            << "\t [Pump Activation State:] "
+            << details::ActivationStateToString(m_hardwareController.get()
+                                                    .load()
+                                                    ->getWaterPumpDigitalOut()
+                                                    ->getActivationState())
             << std::endl;
     }
 
@@ -464,22 +490,48 @@ void DailyCycleAutomaticWateringSystem::saveToProject(gc::project_management::Pr
     const bool bPumpEnabled{m_bWaterPumpEnabled.load()};
 
     ProjectNode flowNode{};
-    flowNode.addValue("isWaterValveEnabled"s, bValveEnabled);
-    flowNode.addValue("isWaterPumpEnabled"s, bPumpEnabled);
+    std::array<ProjectNode, 2> devicesNodes{};
 
-    if (bValveEnabled) {
-        flowNode.addValue(
-            "valvePinID"s,
-            static_cast<std::uint64_t>(
-                m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()));
-    }
+    ProjectNode valveNode{};
 
-    if (bPumpEnabled) {
-        flowNode.addValue(
-            "pumpPinID"s,
-            static_cast<std::uint64_t>(
-                m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()));
-    }
+    // We need to put the valve ID and the valve activation
+    // state inside the object node.
+    valveNode.addValue("name"s, "waterValve"s);
+
+    valveNode.addValue(
+        "pinID"s, static_cast<std::uint64_t>(
+                      m_hardwareController.get().load()->getWaterValveDigitalOut()->getOffset()));
+
+    valveNode.addValue(
+        "activationState"s,
+        details::ActivationStateToString(
+            m_hardwareController.get().load()->getWaterValveDigitalOut()->getActivationState()));
+
+    valveNode.addValue("enabled"s, bValveEnabled);
+
+    devicesNodes[0] = std::move(valveNode);
+
+    // We need to put the pump ID and the pump activation
+    // state inside the object node.
+    ProjectNode pumpNode{};
+
+    pumpNode.addValue("name"s, "waterPump"s);
+
+    pumpNode.addValue(
+        "pinID"s, static_cast<std::uint64_t>(
+                      m_hardwareController.get().load()->getWaterPumpDigitalOut()->getOffset()));
+
+    pumpNode.addValue(
+        "activationState"s,
+        details::ActivationStateToString(
+            m_hardwareController.get().load()->getWaterPumpDigitalOut()->getActivationState()));
+
+    pumpNode.addValue("enabled"s, bPumpEnabled);
+
+    devicesNodes[1] = std::move(pumpNode);
+
+    // Now we need to put the devices nodes inside the flow node.
+    flowNode.addObjectArray("devices"s, std::move(devicesNodes));
 
     flowNode.addValue("activationTime"s,
                       std::chrono::milliseconds{
@@ -541,19 +593,63 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
 
     bool bValveEnabled{}, bPumpEnabled{};
     std::uint64_t valvePinID{}, pumpPinID{};
+    automatic_watering::WateringSystemHardwareController::activation_state valveActivationState{},
+        pumpActivationState{};
     WateringSystemTimeProvider::time_unit activationTime{}, deactivationTime{},
         deactivationSepTime{};
 
     try {
-        bValveEnabled = flowNode.getValue<bool>("isWaterValveEnabled"s);
-        bPumpEnabled = flowNode.getValue<bool>("isWaterPumpEnabled"s);
+        // We need to read the devices and associate them to water valve and water pump
+        // objects.
+        const std::vector<ProjectNode>& devicesNodes{flowNode.getObjectArray("devices"s)};
+        for (const ProjectNode& deviceNode : devicesNodes) {
+            const StringType deviceName{deviceNode.getValue<StringType>("name"s)};
+            if (deviceName == "waterValve"s) {
+                bValveEnabled = deviceNode.getValue<bool>("enabled"s);
+                valvePinID = deviceNode.getValue<std::uint64_t>("pinID"s);
 
-        if (bValveEnabled) {
-            valvePinID = flowNode.getValue<std::uint64_t>("valvePinID"s);
-        }
+                // Read the activation state
+                const StringType activationStateStr{
+                    deviceNode.getValue<StringType>("activationState"s)};
+                if (activationStateStr == "Active High"s) {
+                    valveActivationState = automatic_watering::WateringSystemHardwareController::
+                        activation_state::ActiveHigh;
+                } else if (activationStateStr == "Active Low"s) {
+                    valveActivationState = automatic_watering::WateringSystemHardwareController::
+                        activation_state::ActiveLow;
+                }
+            } else if (deviceName == "waterPump"s) {
+                bPumpEnabled = deviceNode.getValue<bool>("enabled"s);
+                pumpPinID = deviceNode.getValue<std::uint64_t>("pinID"s);
 
-        if (bPumpEnabled) {
-            pumpPinID = flowNode.getValue<std::uint64_t>("pumpPinID"s);
+                // Read the activation state
+                const StringType activationStateStr{
+                    deviceNode.getValue<StringType>("activationState"s)};
+                if (activationStateStr == "Active High"s) {
+                    pumpActivationState = automatic_watering::WateringSystemHardwareController::
+                        activation_state::ActiveHigh;
+                } else if (activationStateStr == "Active Low"s) {
+                    pumpActivationState = automatic_watering::WateringSystemHardwareController::
+                        activation_state::ActiveLow;
+                }
+            } else {
+                m_userLogger->logError(
+                    format_log_string("The given AWS configuration contains a device name not "
+                                      "recognized. No AWS configuration will be loaded."));
+                m_userLogger->logWarning(
+                    format_log_string("Have you entered wrong values in the configuration?"));
+
+                if (bWasRunning) {
+                    const StringType formattedLogString{format_log_string(
+                        "Automatic watering system was running. Restoring the old configuration.")};
+                    m_mainLogger->logWarning(formattedLogString);
+                    m_userLogger->logWarning(formattedLogString);
+
+                    startAutomaticWatering();
+                }
+
+                return;
+            }
         }
 
         activationTime =
@@ -562,15 +658,6 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
             std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationTime"s)};
         deactivationSepTime =
             std::chrono::milliseconds{flowNode.getValue<std::uint64_t>("deactivationSepTime"s)};
-
-        if (bWasRunning) {
-            const StringType formattedLogString{
-                format_log_string("Automatic watering system was running. Restarting it.")};
-            m_mainLogger->logWarning(formattedLogString);
-            m_userLogger->logWarning(formattedLogString);
-
-            startAutomaticWatering();
-        }
     } catch (const std::bad_variant_access& exc) {
         m_userLogger->logError(
             format_log_string("The given AWS configuration contains a JSON format not recognized. "
@@ -612,16 +699,27 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
     m_bWaterPumpEnabled.store(bPumpEnabled);
 
     if (bValveEnabled) {
-        m_hardwareController.get().load()->setWaterValveDigitalOutputID(valvePinID);
+        m_hardwareController.get().load()->setWaterValveDigitalOutputID(valvePinID,
+                                                                        valveActivationState);
     }
 
     if (bPumpEnabled) {
-        m_hardwareController.get().load()->setWaterPumpDigitalOutputID(pumpPinID);
+        m_hardwareController.get().load()->setWaterPumpDigitalOutputID(pumpPinID,
+                                                                       pumpActivationState);
     }
 
     m_timeProvider.get().load()->setWateringSystemActivationDuration(activationTime);
     m_timeProvider.get().load()->setWateringSystemDeactivationDuration(deactivationTime);
     m_timeProvider.get().load()->setPumpValveDeactivationTimeSeparation(deactivationSepTime);
+
+    if (bWasRunning) {
+        const StringType formattedLogString{
+            format_log_string("Automatic watering system was running. Restarting it.")};
+        m_mainLogger->logWarning(formattedLogString);
+        m_userLogger->logWarning(formattedLogString);
+
+        startAutomaticWatering();
+    }
 }
 
 } // namespace rpi_gc::automatic_watering

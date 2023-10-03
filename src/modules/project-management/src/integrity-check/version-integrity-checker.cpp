@@ -4,7 +4,7 @@
 namespace gc::project_management::integrity_check {
 
 bool VersionIntegrityChecker::tryApplyIntegrityFixes(Project& project) {
-    project = Project{project.getCreationTime(), project.getTitle(), m_newVersion};
+    Project::updateVersion(project, m_newVersion);
 
     return true;
 }

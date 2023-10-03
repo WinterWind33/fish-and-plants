@@ -10,12 +10,25 @@ namespace gh_hal::hardware_access {
 //!!
 //! \brief Represents the direction of a line request, i.e. if the
 //!  pins of the line request must be configured in output or input modes.
+//!
 enum class DigitalPinRequestDirection {
     // The PIN's resource will read from the hardware PIN.
     Input,
 
     // The PIN's resouce will write to the hardware PIN.
     Output
+};
+
+//!!
+//! \brief Represents the activation state of a line request, i.e. if the
+//!  pins of the line request must be activated using a low or high state.
+//! \note This is used only for output lines.
+enum class DigitalOutPinActivationState {
+    // The PIN is activated using a low state.
+    ActiveLow,
+
+    // The PIN is activated using a high state.
+    ActiveHigh
 };
 
 //!!
@@ -32,6 +45,11 @@ struct BoardDigitalPin {
     //!
     //! \return The direction of the digital pin.
     [[nodiscard]] virtual DigitalPinRequestDirection getDirection() const noexcept = 0;
+
+    //!!
+    //! \brief Retrieves the activation state of this digital pin if it is on the OUTPUT mode.
+    //!
+    [[nodiscard]] virtual DigitalOutPinActivationState getActivationState() const noexcept = 0;
 
     //!!
     //! \brief If on the OUTPUT mode, it will activate the hardware's PIN.

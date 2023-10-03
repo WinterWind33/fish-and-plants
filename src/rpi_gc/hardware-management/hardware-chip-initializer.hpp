@@ -25,13 +25,17 @@ public:
 
     std::unique_ptr<board_digital_out> requestDigitalPin(
         std::string consumer, board_digital_out::offset_type offset,
-        const gh_hal::hardware_access::DigitalPinRequestDirection direction) noexcept override {
+        const gh_hal::hardware_access::DigitalPinRequestDirection direction,
+        const gh_hal::hardware_access::DigitalOutPinActivationState activationState) noexcept
+        override {
         return nullptr;
     }
 
     std::vector<std::unique_ptr<board_digital_out>> requestDigitalPinPool(
         std::string consumer, std::vector<board_digital_out::offset_type> offset,
-        const gh_hal::hardware_access::DigitalPinRequestDirection direction) noexcept override {
+        const gh_hal::hardware_access::DigitalPinRequestDirection direction,
+        const gh_hal::hardware_access::DigitalOutPinActivationState activationState) noexcept
+        override {
         return {};
     }
 };

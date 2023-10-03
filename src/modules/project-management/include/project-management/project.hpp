@@ -109,10 +109,34 @@ public:
         return *this;
     }
 
+    //!!
+    //! \brief Add an object array to the node. If the object is already present, it will be
+    //! overwritten.
+    //!
+    //! \param key The key of the object.
+    //! \param arr The array to add.
+    //! \return A reference to this node.
+    //!
+    auto& addObjectArray(ProjectFieldKey auto&& key, std::ranges::range auto&& arr) {
+        std::vector<ProjectNode> finalArr{};
+
+        // We need to construct the final array starting from the given one.
+        // To do this, we transform the first array and we move the object to the new
+        // one.
+        std::transform(std::begin(arr), std::end(arr), std::back_inserter(finalArr),
+                       [](auto&& val) -> ProjectNode {
+                           return ProjectNode{std::forward<decltype(val)>(val)};
+                       });
+
+        m_objectsArrays[std::forward<decltype(key)>(key)] = std::move(finalArr);
+        return *this;
+    }
+
     [[nodiscard]] bool contains(ProjectFieldKey auto&& key) const noexcept {
         return m_values.contains(std::forward<decltype(key)>(key)) ||
                m_valuesArrays.contains(std::forward<decltype(key)>(key)) ||
-               m_objects.contains(std::forward<decltype(key)>(key));
+               m_objects.contains(std::forward<decltype(key)>(key)) ||
+               m_objectsArrays.contains(std::forward<decltype(key)>(key));
     }
 
     [[nodiscard]] bool containsValue(ProjectFieldKey auto&& key) const noexcept {
@@ -152,6 +176,18 @@ public:
         return m_objects.at(std::forward<decltype(key)>(key));
     }
 
+    [[nodiscard]] auto& getObject(ProjectFieldKey auto&& key) {
+        return m_objects.at(std::forward<decltype(key)>(key));
+    }
+
+    [[nodiscard]] const auto& getObjectArray(ProjectFieldKey auto&& key) const {
+        return m_objectsArrays.at(std::forward<decltype(key)>(key));
+    }
+
+    [[nodiscard]] const auto& getAllObjectArrays() const noexcept {
+        return m_objectsArrays;
+    }
+
     [[nodiscard]] const auto& getValues() const noexcept {
         return m_values;
     }
@@ -164,10 +200,20 @@ public:
         return m_objects;
     }
 
+    //!!
+    //! \brief Remove a value from the node.
+    //!
+    //! \param key The key of the value to remove.
+    //!
+    void removeValue(ProjectFieldKey auto&& key) {
+        m_values.erase(std::forward<decltype(key)>(key));
+    }
+
 protected:
     std::map<std::string, value_impl_type> m_values{};
     std::map<std::string, std::vector<value_impl_type>> m_valuesArrays{};
     std::map<std::string, ProjectNode> m_objects{};
+    std::map<std::string, std::vector<ProjectNode>> m_objectsArrays{};
 };
 
 using ProjectFieldObject = ProjectNode;
@@ -201,6 +247,16 @@ public:
 
     [[nodiscard]] constexpr project_version getVersion() const noexcept {
         return m_projectVersion;
+    }
+
+    //!!
+    //! \brief Updates the version of the given project.
+    //!
+    //! \param project The project to update.
+    //! \param version The new version of the project.
+    //!
+    static void updateVersion(Project& project, project_version newVersion) noexcept {
+        project.m_projectVersion = newVersion;
     }
 
 private:

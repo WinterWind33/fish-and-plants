@@ -26,10 +26,11 @@ constexpr void deactivateImpl(
 
 BoardDigitalPinImpl::BoardDigitalPinImpl(
     const hardware_access::BoardDigitalPin::offset_type offsetValue,
-    const hardware_access::DigitalPinRequestDirection direction,
-    backend_type_reference backImpl) noexcept
+    const hardware_access::DigitalPinRequestDirection direction, backend_type_reference backImpl,
+    const hardware_access::DigitalOutPinActivationState activationState) noexcept
     : m_offset{offsetValue},
       m_direction{direction},
+      m_activationState{activationState},
       m_backendReference{backImpl} {}
 
 void BoardDigitalPinImpl::activate() noexcept {

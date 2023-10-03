@@ -16,6 +16,7 @@ public:
     MOCK_METHOD(void, deactivate, (), (noexcept, final));
     MOCK_METHOD(void, printStatus, (std::ostream&), (const, noexcept, final));
     MOCK_METHOD(offset_type, getOffset, (), (const, noexcept, final));
+    MOCK_METHOD(DigitalOutPinActivationState, getActivationState, (), (const, noexcept, final));
 };
 
 } // namespace gh_hal::hardware_access::mocks

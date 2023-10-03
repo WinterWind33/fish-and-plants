@@ -49,7 +49,7 @@ SCENARIO("Daily-Cycle AWS project data saving",
     ProjectController projectController{};
     Project project{
         Project::time_point_type{},
-        "TestProject", semver::version{1, 1, 0}
+        "TestProject", semver::version{1, 2, 0}
     };
 
     projectController.setCurrentProject(std::move(project));
@@ -77,25 +77,58 @@ SCENARIO("Daily-Cycle AWS project data saving",
                 AND_THEN("The flow description should be correct") {
                     const auto& awsFlowValues{awsFlowObject.getValues()};
 
-                    REQUIRE(awsFlowValues.size() == 7);
-                    REQUIRE(awsFlowValues.contains("isWaterValveEnabled"));
-                    REQUIRE(awsFlowValues.contains("isWaterPumpEnabled"));
-                    REQUIRE(awsFlowValues.contains("valvePinID"));
-                    REQUIRE(awsFlowValues.contains("pumpPinID"));
+                    REQUIRE(awsFlowValues.size() == 3);
                     REQUIRE(awsFlowValues.contains("activationTime"));
                     REQUIRE(awsFlowValues.contains("deactivationTime"));
                     REQUIRE(awsFlowValues.contains("deactivationSepTime"));
 
-                    CHECK(std::get<bool>(awsFlowValues.at("isWaterValveEnabled")) == true);
-                    CHECK(std::get<bool>(awsFlowValues.at("isWaterPumpEnabled")) == true);
-                    CHECK(std::get<std::uint64_t>(awsFlowValues.at("valvePinID")) == 23);
-                    CHECK(std::get<std::uint64_t>(awsFlowValues.at("pumpPinID")) == 26);
                     CHECK(std::get<std::int64_t>(awsFlowValues.at("activationTime")) ==
                           timeProvider->getWateringSystemActivationDuration().count());
                     CHECK(std::get<std::int64_t>(awsFlowValues.at("deactivationTime")) ==
                           timeProvider->getWateringSystemDeactivationDuration().count());
                     CHECK(std::get<std::int64_t>(awsFlowValues.at("deactivationSepTime")) ==
                           timeProvider->getPumpValveDeactivationTimeSeparation().count());
+                }
+
+                AND_THEN("The flow should have two devices") {
+                    const auto& awsFlowSubObjects{awsFlowObject.getAllObjectArrays()};
+                    REQUIRE(awsFlowSubObjects.contains("devices"));
+                    const auto& awsFlowDevices{awsFlowSubObjects.at("devices")};
+
+                    REQUIRE(awsFlowDevices.size() == 2);
+
+                    const auto& valveDevice{awsFlowDevices[0]};
+                    const auto& pumpDevice{awsFlowDevices[1]};
+
+                    AND_THEN("The valve device should be correct") {
+                        const auto& valveValues{valveDevice.getValues()};
+                        REQUIRE(valveValues.size() == 4);
+                        REQUIRE(valveValues.contains("name"));
+                        REQUIRE(valveValues.contains("pinID"));
+                        REQUIRE(valveValues.contains("activationState"));
+                        REQUIRE(valveValues.contains("enabled"));
+
+                        CHECK(std::get<std::string>(valveValues.at("name")) == "waterValve");
+                        CHECK(std::get<std::uint64_t>(valveValues.at("pinID")) == 23);
+                        CHECK(std::get<std::string>(valveValues.at("activationState")) ==
+                              "Active Low");
+                        CHECK(std::get<bool>(valveValues.at("enabled")) == true);
+                    }
+
+                    AND_THEN("The pump device should be correct") {
+                        const auto& pumpValues{pumpDevice.getValues()};
+                        REQUIRE(pumpValues.size() == 4);
+                        REQUIRE(pumpValues.contains("name"));
+                        REQUIRE(pumpValues.contains("pinID"));
+                        REQUIRE(pumpValues.contains("activationState"));
+                        REQUIRE(pumpValues.contains("enabled"));
+
+                        CHECK(std::get<std::string>(pumpValues.at("name")) == "waterPump");
+                        CHECK(std::get<std::uint64_t>(pumpValues.at("pinID")) == 26);
+                        CHECK(std::get<std::string>(pumpValues.at("activationState")) ==
+                              "Active Low");
+                        CHECK(std::get<bool>(pumpValues.at("enabled")) == true);
+                    }
                 }
             }
         }
