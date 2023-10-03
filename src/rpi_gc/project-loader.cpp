@@ -38,13 +38,6 @@ std::optional<gc::project_management::Project> LoadProjectAndCheckIntegrity(
         [[maybe_unused]] const bool bRes{titleIntegrityChecker.tryApplyIntegrityFixes(project)};
     }
 
-    integrity_check::VersionIntegrityChecker versionIntegrityChecker{
-        version::getApplicationVersion()};
-    // If the project version need an integrity update we perform it.
-    if (!versionIntegrityChecker.checkIntegrity(project)) {
-        [[maybe_unused]] const bool bRes{versionIntegrityChecker.tryApplyIntegrityFixes(project)};
-    }
-
     // Custom upgraders
     std::array<std::unique_ptr<integrity_check::ProjectIntegrityChecker>, 1> upgraders{
         std::make_unique<gc_project::upgraders::ProjectUpgrader_V1_1ToV1_2>()};
@@ -54,6 +47,13 @@ std::optional<gc::project_management::Project> LoadProjectAndCheckIntegrity(
         if (!upgrader->checkIntegrity(project)) {
             [[maybe_unused]] const bool bRes{upgrader->tryApplyIntegrityFixes(project)};
         }
+    }
+
+    integrity_check::VersionIntegrityChecker versionIntegrityChecker{
+        version::getApplicationVersion()};
+    // If the project version need an integrity update we perform it.
+    if (!versionIntegrityChecker.checkIntegrity(project)) {
+        [[maybe_unused]] const bool bRes{versionIntegrityChecker.tryApplyIntegrityFixes(project)};
     }
 
     return project;

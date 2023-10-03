@@ -249,6 +249,16 @@ public:
         return m_projectVersion;
     }
 
+    //!!
+    //! \brief Updates the version of the given project.
+    //!
+    //! \param project The project to update.
+    //! \param version The new version of the project.
+    //!
+    static void updateVersion(Project& project, project_version newVersion) noexcept {
+        project.m_projectVersion = std::move(newVersion);
+    }
+
 private:
     time_point_type m_creationTimePoint;
     project_title m_projectTitle{};
