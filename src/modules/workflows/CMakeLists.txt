@@ -1,7 +1,12 @@
 # Copyright (c) 2023 Andrea Ballestrazzi
 
-set(FEP_WORKFLOWS_HEADER_FILES)
-set(FEP_WORKFLOWS_SOURCE_FILES)
+set(FEP_WORKFLOWS_HEADER_FILES
+    "include/workflows/workflow.hpp"
+)
+
+set(FEP_WORKFLOWS_SOURCE_FILES
+    "src/workflow.cpp"
+)
 
 add_library(fep_workflows STATIC ${FEP_WORKFLOWS_HEADER_FILES} ${FEP_WORKFLOWS_SOURCE_FILES})
 
