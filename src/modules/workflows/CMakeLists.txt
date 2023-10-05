@@ -3,7 +3,7 @@
 set(FEP_WORKFLOWS_HEADER_FILES)
 set(FEP_WORKFLOWS_SOURCE_FILES)
 
-add_library(fep_workflows ${FEP_WORKFLOWS_HEADER_FILES} ${FEP_WORKFLOWS_SOURCE_FILES})
+add_library(fep_workflows STATIC ${FEP_WORKFLOWS_HEADER_FILES} ${FEP_WORKFLOWS_SOURCE_FILES})
 
 # Set the output directories
 set_target_properties(fep_workflows
