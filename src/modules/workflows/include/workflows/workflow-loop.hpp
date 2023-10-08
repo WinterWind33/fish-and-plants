@@ -81,7 +81,7 @@ public:
         m_count = count;
     }
 
-    constexpr std::size_t count() const noexcept {
+    [[nodiscard]] constexpr std::size_t count() const noexcept {
         return m_count;
     }
 
