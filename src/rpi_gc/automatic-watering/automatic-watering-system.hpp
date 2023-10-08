@@ -1,6 +1,5 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
-#ifndef AUTOMATIC_WATERING_SYSTEM_HPP
-#define AUTOMATIC_WATERING_SYSTEM_HPP
+#pragma once
 
 namespace rpi_gc::automatic_watering {
 
@@ -18,5 +17,3 @@ public:
 };
 
 } // namespace rpi_gc::automatic_watering
-
-#endif // !AUTOMATIC_WATERING_SYSTEM_HPP
