@@ -17,8 +17,8 @@ public:
     using repeat_mode = R;
 
     explicit WorkflowLoop(Workflow& workflow, repeat_mode repeatMode) noexcept
-        : m_workflow(workflow),
-          m_repeatMode(std::move(repeatMode)) {}
+        : m_workflow{workflow},
+          m_repeatMode{std::move(repeatMode)} {}
 
     [[nodiscard]] bool loopWorkflow() noexcept {
         while (m_repeatMode.canRepeat()) {
