@@ -116,7 +116,7 @@ void DailyCycleAutomaticWateringSystem::emergencyAbort() noexcept {
     m_cyclesCounter.store(0);
 }
 
-void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
+void DailyCycleAutomaticWateringSystem::startAutomaticWatering(name_type awsName) noexcept {
     if (isRunning()) {
         const StringType formattedErrorString{
             format_log_string("Automatic watering system already running. Stop the previous "
