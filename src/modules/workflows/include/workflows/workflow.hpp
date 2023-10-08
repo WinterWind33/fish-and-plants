@@ -8,8 +8,11 @@
 
 namespace gc::workflows {
 
+using IdType = std::string;
+using IdView = std::string_view;
+
 struct WorkflowStep {
-    using id_type = std::string;
+    using id_type = IdType;
 
     virtual ~WorkflowStep() noexcept = default;
 
@@ -22,7 +25,7 @@ struct WorkflowStep {
 //!
 class Workflow final {
 public:
-    using id_type = std::string;
+    using id_type = IdType;
     using flow_type = std::list<std::unique_ptr<WorkflowStep>>;
 
     explicit Workflow(id_type workflowId) noexcept : m_id(std::move(workflowId)) {}
@@ -39,7 +42,37 @@ public:
         : m_id(std::move(workflowId)),
           m_flow(std::move(workflowFlow)) {}
 
+    //!!
+    //! \brief Execute the workflow
+    //!
+    //! \return True if the workflow has been executed successfully, false otherwise
+    //!
+    [[nodiscard]] bool execute() noexcept;
+
+    //!!
+    //! \brief Add a task to the workflow
+    //!
+    //! \param[in] step The task to add
+    //!
+    void addStep(std::unique_ptr<WorkflowStep> step) noexcept;
+
+    //!!
+    //! \brief Remove a task from the workflow
+    //!
+    //! \param[in] stepId The id of the task to remove
+    //!
+    void removeStep(IdView stepId) noexcept;
+
     // Getters
+
+    //!!
+    //! Checks wheter the workflow is empty or not
+    //!
+    //! \return True if the workflow is empty, false otherwise
+    //!
+    [[nodiscard]] bool empty() const noexcept {
+        return m_flow.empty();
+    }
 
     //!!
     //! \brief Get the name of the workflow
