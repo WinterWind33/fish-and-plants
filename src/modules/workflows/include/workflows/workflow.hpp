@@ -2,6 +2,7 @@
 #pragma once
 
 // C++ STL
+#include <functional>
 #include <list>
 #include <memory>
 #include <string>
@@ -87,5 +88,31 @@ private:
     id_type m_id;
     flow_type m_flow{};
 };
+
+namespace steps {
+
+//!!
+//! \brief A workflow step that executes a function
+//!
+class Function final : public WorkflowStep {
+public:
+    explicit Function(id_type stepId, std::function<bool()> function) noexcept
+        : m_id{std::move(stepId)},
+          m_function{std::move(function)} {}
+
+    [[nodiscard]] bool execute() noexcept override {
+        return m_function();
+    }
+
+    [[nodiscard]] id_type id() const noexcept override {
+        return m_id;
+    }
+
+private:
+    id_type m_id;
+    std::function<bool()> m_function;
+};
+
+} // namespace steps
 
 } // namespace gc::workflows
