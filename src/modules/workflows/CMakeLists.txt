@@ -2,10 +2,12 @@
 
 set(FEP_WORKFLOWS_HEADER_FILES
     "include/workflows/workflow.hpp"
+    "include/workflows/workflow-loop.hpp"
 )
 
 set(FEP_WORKFLOWS_SOURCE_FILES
     "src/workflow.cpp"
+    "src/workflow-loop.cpp"
 )
 
 add_library(fep_workflows STATIC ${FEP_WORKFLOWS_HEADER_FILES} ${FEP_WORKFLOWS_SOURCE_FILES})
