@@ -78,11 +78,15 @@ CreateAutomaticWateringCommand(WateringSystemPointer wateringSystem) {
     autoWateringOptionParser->addSwitch(
         std::make_shared<gh_cmd::Switch<CharType>>('h', "help", "Displays this help page."));
     autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>(
-        'S', "start", "Starts the automatic watering system in Daily-Cycle mode."));
-    autoWateringOptionParser->addSwitch(std::make_shared<gh_cmd::Switch<CharType>>(
         's', "stop",
         "Stops the automatic watering system waiting for resources to be "
         "released."));
+
+    autoWateringOptionParser->addOption(
+        std::make_shared<gh_cmd::ImplicitValue<CharType, std::string>>(
+            'S', "start", "Starts the automatic watering system in Daily-Cycle mode.",
+            "Unnamed-flow-1"));
+
     autoWateringOptionParser->addOption(
         std::make_shared<gh_cmd::Value<
             CharType, rpi_gc::automatic_watering::ConfigurableDailyCycleAWSTimeProvider::rep_type>>(
@@ -143,8 +147,15 @@ CreateAutomaticWateringCommand(WateringSystemPointer wateringSystem) {
     autoWateringCommand->registerOptionEvent(
         "start",
         [wateringSystem](
-            [[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&) {
-            wateringSystem->startAutomaticWatering();
+            [[maybe_unused]] const AutomaticWateringCommand::option_parser::const_option_pointer&
+                option) {
+            // We need to cast the option to a value option so that we can retrieve the
+            // automatic watering system flow name and pass it to the watering system.
+            const gsl::not_null valueOption{
+                std::static_pointer_cast<const gh_cmd::ImplicitValue<CharType, std::string>>(
+                    option)};
+
+            wateringSystem->startAutomaticWatering(valueOption->value());
         });
     autoWateringCommand->registerOptionEvent(
         "stop",
