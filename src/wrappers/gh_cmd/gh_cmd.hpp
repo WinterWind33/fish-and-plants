@@ -56,13 +56,13 @@ public:
     virtual ~CommandOption() noexcept = default;
 
     //! \brief Retrieves the short name of this option.
-    virtual short_name_type getShortName() const noexcept = 0;
+    [[nodiscard]] virtual short_name_type getShortName() const noexcept = 0;
 
     //! \brief Retrieves the long name of this option.
-    virtual long_name_type getLongName() const noexcept = 0;
+    [[nodiscard]] virtual long_name_type getLongName() const noexcept = 0;
 
     //! \brief Retrieves the description of this option.
-    virtual string_type getDescription() const noexcept = 0;
+    [[nodiscard]] virtual string_type getDescription() const noexcept = 0;
 
     //! \brief Accepts an external read-only visitor.
     virtual void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>&
@@ -173,16 +173,16 @@ public:
     explicit ImplicitValue(short_name_type shorName, long_name_type longName,
                            string_type description, value_type defaultValue) noexcept;
 
-    short_name_type getShortName() const noexcept override;
-    long_name_type getLongName() const noexcept override;
-    string_type getDescription() const noexcept override;
+    [[nodiscard]] short_name_type getShortName() const noexcept override;
+    [[nodiscard]] long_name_type getLongName() const noexcept override;
+    [[nodiscard]] string_type getDescription() const noexcept override;
 
     void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor)
         const noexcept override;
     void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
 
     [[nodiscard]] bool isSet() const noexcept override;
-    value_type value() const noexcept override;
+    [[nodiscard]] value_type value() const noexcept override;
     void clear() noexcept override;
 
 private:
