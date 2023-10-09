@@ -157,6 +157,11 @@ private:
     std::shared_ptr<impl_type> m_switchImpl{};
 };
 
+//!!
+//! \brief Represents an option with implicit value. This means that the
+//!  user does not need to type a value for this option, but it is implicitly
+//!  set to a default value if the user does not type anything.
+//!
 template <typename CharType, typename ValueType>
 class ImplicitValue : public ValuedOption<CharType, ValueType> {
 public:
