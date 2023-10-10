@@ -88,7 +88,7 @@ public:
     //! \note The automatic watering system won't start if both the water pump and the water valve
     //!  are disabled before this call. In that case, a log is printed to the main and user loggers.
     //!
-    void startAutomaticWatering() noexcept override;
+    void startAutomaticWatering(name_type awsName = name_type{}) noexcept override;
 
     //!!
     //! \brief Set the water pump enabled state.
@@ -124,6 +124,7 @@ private:
     std::atomic_bool m_bWaterValveEnabled{true};
     std::atomic<EDailyCycleAWSState> m_state{EDailyCycleAWSState::Disabled};
     std::atomic<std::uint64_t> m_cyclesCounter{};
+    name_type m_name{"Unnamed-project-1"};
 
     void run_automatic_watering(std::stop_token stopToken,
                                 const main_logger_pointer& logger) noexcept;

@@ -72,8 +72,9 @@ endif()
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/rpi_gc")
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/wrappers")
 target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/modules/project-management/include")
+target_include_directories(rpi_gc_lib PUBLIC "${PROJECT_SOURCE_DIR}/src/modules/workflows/include")
 
-target_link_libraries(rpi_gc_lib PUBLIC gh_hal gh_log gh_cmd project_management_static Microsoft.GSL::GSL)
+target_link_libraries(rpi_gc_lib PUBLIC gh_hal gh_log gh_cmd fep_workflows project_management_static Microsoft.GSL::GSL)
 
 set(RPI_GC_EXECUTABLE_HEADER_FILES
     "initial-project-loader.hpp"

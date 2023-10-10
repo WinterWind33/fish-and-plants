@@ -1,6 +1,5 @@
 // Copyright (c) 2023 Andrea Ballestrazzi
-#ifndef GH_CMD_HPP
-#define GH_CMD_HPP
+#pragma once
 
 #ifdef USE_POPL20
 #include <popl20/popl.hpp>
@@ -57,13 +56,13 @@ public:
     virtual ~CommandOption() noexcept = default;
 
     //! \brief Retrieves the short name of this option.
-    virtual short_name_type getShortName() const noexcept = 0;
+    [[nodiscard]] virtual short_name_type getShortName() const noexcept = 0;
 
     //! \brief Retrieves the long name of this option.
-    virtual long_name_type getLongName() const noexcept = 0;
+    [[nodiscard]] virtual long_name_type getLongName() const noexcept = 0;
 
     //! \brief Retrieves the description of this option.
-    virtual string_type getDescription() const noexcept = 0;
+    [[nodiscard]] virtual string_type getDescription() const noexcept = 0;
 
     //! \brief Accepts an external read-only visitor.
     virtual void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>&
@@ -156,6 +155,43 @@ private:
     // We use shared_ptr for now as the popl implementation
     // provides APIs with a shared ptr.
     std::shared_ptr<impl_type> m_switchImpl{};
+};
+
+//!!
+//! \brief Represents an option with implicit value. This means that the
+//!  user does not need to type a value for this option, but it is implicitly
+//!  set to a default value if the user does not type anything.
+//!
+template <typename CharType, typename ValueType>
+class ImplicitValue : public ValuedOption<CharType, ValueType> {
+public:
+    using typename CommandOption<CharType>::char_type;
+    using typename CommandOption<CharType>::string_type;
+    using typename CommandOption<CharType>::short_name_type;
+    using typename CommandOption<CharType>::long_name_type;
+    using typename CommandOption<CharType>::base_impl_type;
+    using typename ValuedOption<CharType, ValueType>::value_type;
+
+    using impl_type = popl::Implicit<ValueType>;
+    static_assert(std::is_same_v<char_type, char>, "Only char is accepted as a valid char type.");
+
+    explicit ImplicitValue(short_name_type shorName, long_name_type longName,
+                           string_type description, value_type defaultValue) noexcept;
+
+    [[nodiscard]] short_name_type getShortName() const noexcept override;
+    [[nodiscard]] long_name_type getLongName() const noexcept override;
+    [[nodiscard]] string_type getDescription() const noexcept override;
+
+    void acceptVisitor(const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor)
+        const noexcept override;
+    void acceptVisitor(OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept override;
+
+    [[nodiscard]] bool isSet() const noexcept override;
+    [[nodiscard]] value_type value() const noexcept override;
+    void clear() noexcept override;
+
+private:
+    std::shared_ptr<impl_type> m_implicitValueImpl{};
 };
 
 //! \brief Represents the basic interface of an option parser, i.e. an object that,
@@ -347,6 +383,59 @@ inline void Value<C, V>::clear() noexcept {
     m_valueImpl->set_value(value_type{});
 }
 
+// ImplicitValue implementation
+template <typename C, typename V>
+inline ImplicitValue<C, V>::ImplicitValue(short_name_type shortName, long_name_type longName,
+                                          string_type description, value_type defaultValue) noexcept
+    : m_implicitValueImpl{std::make_shared<impl_type>(std::string{shortName}, longName, description,
+                                                      defaultValue)} {}
+
+template <typename C, typename V>
+inline auto ImplicitValue<C, V>::getShortName() const noexcept -> short_name_type {
+    return m_implicitValueImpl->short_name();
+}
+
+template <typename C, typename V>
+inline auto ImplicitValue<C, V>::getLongName() const noexcept -> long_name_type {
+    return m_implicitValueImpl->long_name();
+}
+
+template <typename C, typename V>
+inline auto ImplicitValue<C, V>::getDescription() const noexcept -> string_type {
+    return m_implicitValueImpl->description();
+}
+
+template <typename C, typename V>
+inline void ImplicitValue<C, V>::acceptVisitor(
+    const ConstOptionVisitor<std::shared_ptr<const base_impl_type>>& visitor) const noexcept {
+    visitor.visit(m_implicitValueImpl);
+}
+
+template <typename C, typename V>
+inline void ImplicitValue<C, V>::acceptVisitor(
+    OptionVisitor<std::shared_ptr<base_impl_type>>& visitor) noexcept {
+    visitor.visit(m_implicitValueImpl);
+}
+
+template <typename C, typename V>
+inline bool ImplicitValue<C, V>::isSet() const noexcept {
+    // In this case, the value is set only if the user types a value.
+    // The default value is not considered.
+    return m_implicitValueImpl->count() > 0;
+}
+
+template <typename C, typename V>
+inline auto ImplicitValue<C, V>::value() const noexcept -> value_type {
+    // The index of the value to check for inside the popl internal state.
+    const std::size_t historyEntryIndex{m_implicitValueImpl->count() - 1};
+    return m_implicitValueImpl->value_or(value_type{}, historyEntryIndex);
+}
+
+template <typename C, typename V>
+inline void ImplicitValue<C, V>::clear() noexcept {
+    m_implicitValueImpl->set_value(value_type{});
+}
+
 // DefaultOptionParser implementation
 template <typename C>
 inline DefaultOptionParser<C>::DefaultOptionParser() noexcept
@@ -469,5 +558,3 @@ inline void ClearAllOptions(auto&& options) noexcept {
 } // namespace utility
 
 } // namespace gh_cmd
-
-#endif // !GH_CMD_HPP

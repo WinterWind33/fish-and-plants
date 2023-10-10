@@ -116,7 +116,7 @@ void DailyCycleAutomaticWateringSystem::emergencyAbort() noexcept {
     m_cyclesCounter.store(0);
 }
 
-void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
+void DailyCycleAutomaticWateringSystem::startAutomaticWatering(name_type awsName) noexcept {
     if (isRunning()) {
         const StringType formattedErrorString{
             format_log_string("Automatic watering system already running. Stop the previous "
@@ -127,6 +127,11 @@ void DailyCycleAutomaticWateringSystem::startAutomaticWatering() noexcept {
 
         return;
     }
+
+    // Set the name of the flow.
+    m_name = std::move(awsName);
+    if (m_name.empty())
+        m_name = "Unnamed-flow-1";
 
     // If the user disactivated both the water pump and the water valve then there is no
     // need to proceed and activate the watering system
@@ -408,6 +413,7 @@ std::string ActivationStateToString(
 void DailyCycleAutomaticWateringSystem::printDiagnostic(std::ostream& ost) const noexcept {
     ost << std::endl;
     ost << " [Diagnostic]:\tAutomatic watering system (AWS)" << std::endl;
+    ost << " [AWS Name]:\t" << m_name << std::endl;
     ost << " [AWS Mode]:\tCycled" << std::endl;
     try {
         const std::string_view statusStr{
@@ -485,6 +491,7 @@ void DailyCycleAutomaticWateringSystem::saveToProject(gc::project_management::Pr
     using namespace std::string_literals;
     ProjectNode awsNode{};
     awsNode.addValue("mode"s, "cycled"s);
+    awsNode.addValue("name"s, m_name);
 
     const bool bValveEnabled{m_bWaterValveEnabled.load()};
     const bool bPumpEnabled{m_bWaterPumpEnabled.load()};
@@ -569,6 +576,11 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
                               "mode isn\'t recognized. No AWS configuration will be loaded."));
         return;
     }
+
+    if (awsNode.containsValue("name"s))
+        m_name = awsNode.getValue<StringType>("name"s);
+    else
+        m_name = "Unnamed-flow-1";
 
     if (!awsNode.containsObject("flow"s)) {
         m_userLogger->logWarning(

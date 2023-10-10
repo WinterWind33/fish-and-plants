@@ -133,6 +133,7 @@ add_subdirectory("src/wrappers/gh_log")
 # Applications Modules
 add_subdirectory("src/modules/project-management")
 add_subdirectory("src/modules/folder-provider")
+add_subdirectory("src/modules/workflows")
 
 # Add the greenhouse controller application to the build system.
 add_subdirectory("src/rpi_gc")
