@@ -12,10 +12,14 @@ This file follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) f
 - (**New**) Added support for multiple hardware activation states. Now the user can choose between `active-high` and `active-low` activation states for the hardware. To do so he
     must specify the activation state in the project's JSON file. The default activation state is `active-low`. Old projects will be automatically updated to the new activation state considering
     the old activation state as `active-low`;
+- (**New**) Added new optional argument to the `auto-watering --start` option that takes the name of the flow to be executed. This is the first step to enable multiple flows execution at the same time.
+    Hope to implement this feature in the next release. The name is serialized in the project's JSON file.
+- Added new workflows module that will replace the automatic watering system and will be able to perform multiple flows at the same time and new tasks as well;
 
 ### Fixed
 
 - (**Bug**) Fixed bug that caused the project data to be lost when the application tried to update the project data to a new version;
+- Static analysis not working with the `gsl` library;
 
 ## [1.1.0]
 
