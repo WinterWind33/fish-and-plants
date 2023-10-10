@@ -12,12 +12,27 @@ namespace gc::workflows {
 using IdType = std::string;
 using IdView = std::string_view;
 
+//!!
+//! \brief A workflow step is a task that can be executed in a workflow. This is a unit
+//!  of work that can't be split into smaller tasks and cannot be executed in parallel.
+//!
 struct WorkflowStep {
     using id_type = IdType;
 
     virtual ~WorkflowStep() noexcept = default;
 
+    //!!
+    //! \brief Execute the task. Should not throw any exception.
+    //!
+    //! \return True if the task has been executed successfully, false otherwise
+    //!
     [[nodiscard]] virtual bool execute() noexcept = 0;
+
+    //!!
+    //! \brief Get the name of the task
+    //!
+    //! \return The name of the task
+    //!
     [[nodiscard]] virtual id_type id() const noexcept = 0;
 };
 

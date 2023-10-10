@@ -5,12 +5,25 @@
 
 namespace gc::workflows {
 
+//!!
+//! \brief A concept that defines the requirements for a repeat mode
+//!  to be used with the WorkflowLoop class. A repeat mode must have
+//!  a canRepeat() method that returns true if the workflow can be repeated
+//!  and false otherwise. It must also have an iterationDone() method that
+//!  is called after each iteration of the workflow.
+//!
 template <typename R>
 concept RepeatMode = requires(R r) {
     { r.canRepeat() } -> std::convertible_to<bool>;
     { r.iterationDone() } -> std::convertible_to<void>;
 };
 
+//!!
+//! \brief A class that executes a workflow in a loop, until the repeat mode
+//!  is satisfied.
+//!
+//! \tparam R The repeat mode to use
+//!
 template <RepeatMode R>
 class WorkflowLoop final {
 public:
@@ -20,12 +33,19 @@ public:
         : m_workflow{workflow},
           m_repeatMode{std::move(repeatMode)} {}
 
+    //!!
+    //! \brief Executes the workflow in a loop, until the repeat mode is satisfied.
+    //!
+    //! \return true if the workflow was executed successfully, false if the workflow
+    //!  returned false or an error occurred.
+    //!
     [[nodiscard]] bool loopWorkflow() noexcept {
         while (m_repeatMode.canRepeat()) {
             if (!m_workflow.execute()) {
                 return false;
             }
 
+            // Notify the repeat mode so that it can update its state
             m_repeatMode.iterationDone();
         }
         return true;
