@@ -30,7 +30,12 @@ std::optional<gc::project_management::Project> LoadProjectAndCheckIntegrity(
         gc::project_management::project_io::CreateJsonProjectFileReader(projectPath)};
 
     Project project{};
-    *projectReader >> project;
+    try {
+        *projectReader >> project;
+    } catch (const std::exception& e) {
+        logger.logError("Error while trying to load project: " + std::string{e.what()});
+        return std::nullopt;
+    }
 
     integrity_check::TitleIntegrityChecker titleIntegrityChecker{"unknown-project"};
     // If the project title need an integrity update we perform it.

@@ -124,7 +124,7 @@ private:
     std::atomic_bool m_bWaterValveEnabled{true};
     std::atomic<EDailyCycleAWSState> m_state{EDailyCycleAWSState::Disabled};
     std::atomic<std::uint64_t> m_cyclesCounter{};
-    name_type m_name{"Unnamed-project-1"};
+    name_type m_name{"Unnamed-flow-1"};
 
     void run_automatic_watering(std::stop_token stopToken,
                                 const main_logger_pointer& logger) noexcept;
