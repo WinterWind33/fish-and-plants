@@ -129,9 +129,10 @@ void DailyCycleAutomaticWateringSystem::startAutomaticWatering(name_type awsName
     }
 
     // Set the name of the flow.
-    m_name = std::move(awsName);
-    if (m_name.empty())
-        m_name = "Unnamed-flow-1";
+    // If the name is equal to the default value, then we can set the name
+    // to the AWS name given by the user. Otherwise we keep the name as it is.
+    if (m_name == "Unnamed-flow-1" || m_name.empty())
+        m_name = std::move(awsName);
 
     // If the user disactivated both the water pump and the water valve then there is no
     // need to proceed and activate the watering system

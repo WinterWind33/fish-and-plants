@@ -72,7 +72,7 @@ SCENARIO("Daily-Cycle AWS project data saving",
 
                 // Check the name of the flow
                 REQUIRE(values.contains("name"));
-                CHECK(std::get<std::string>(values.at("name")) == "Unnamed-project-1");
+                CHECK(std::get<std::string>(values.at("name")) == "Unnamed-flow-1");
 
                 const auto& awsSubObjects{awsObject.getObjects()};
                 REQUIRE(awsSubObjects.contains("flow"));
