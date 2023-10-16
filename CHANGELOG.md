@@ -19,6 +19,7 @@ This file follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) f
 ### Fixed
 
 - (**Bug**) Fixed bug that caused the project data to be lost when the application tried to update the project data to a new version;
+- (**Crash**) Fixed bug that caused the application to crash when the user tried to load a project that was empty;
 - Static analysis not working with the `gsl` library;
 
 ## [1.1.0]
