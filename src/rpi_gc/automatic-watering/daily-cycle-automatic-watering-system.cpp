@@ -116,7 +116,8 @@ void DailyCycleAutomaticWateringSystem::emergencyAbort() noexcept {
     m_cyclesCounter.store(0);
 }
 
-void DailyCycleAutomaticWateringSystem::startAutomaticWatering(name_type awsName) noexcept {
+void DailyCycleAutomaticWateringSystem::startAutomaticWatering(
+    std::optional<name_type> awsName) noexcept {
     if (isRunning()) {
         const StringType formattedErrorString{
             format_log_string("Automatic watering system already running. Stop the previous "
@@ -131,8 +132,8 @@ void DailyCycleAutomaticWateringSystem::startAutomaticWatering(name_type awsName
     // Set the name of the flow.
     // If the name is equal to the default value, then we can set the name
     // to the AWS name given by the user. Otherwise we keep the name as it is.
-    if (m_name == "Unnamed-flow-1" || m_name.empty())
-        m_name = std::move(awsName);
+    if (awsName.has_value())
+        m_name = awsName.value();
 
     // If the user disactivated both the water pump and the water valve then there is no
     // need to proceed and activate the watering system
@@ -578,11 +579,6 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
         return;
     }
 
-    if (awsNode.containsValue("name"s))
-        m_name = awsNode.getValue<StringType>("name"s);
-    else
-        m_name = "Unnamed-flow-1";
-
     if (!awsNode.containsObject("flow"s)) {
         m_userLogger->logWarning(
             format_log_string("The given project doesn\'t contain the flow configuration. Skipping "
@@ -658,7 +654,7 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
                     m_mainLogger->logWarning(formattedLogString);
                     m_userLogger->logWarning(formattedLogString);
 
-                    startAutomaticWatering();
+                    startAutomaticWatering({});
                 }
 
                 return;
@@ -684,7 +680,7 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
             m_mainLogger->logWarning(formattedLogString);
             m_userLogger->logWarning(formattedLogString);
 
-            startAutomaticWatering();
+            startAutomaticWatering({});
         }
 
         return;
@@ -702,7 +698,7 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
             m_mainLogger->logWarning(formattedLogString);
             m_userLogger->logWarning(formattedLogString);
 
-            startAutomaticWatering();
+            startAutomaticWatering({});
         }
 
         return;
@@ -725,13 +721,18 @@ void DailyCycleAutomaticWateringSystem::loadConfigFromProject(
     m_timeProvider.get().load()->setWateringSystemDeactivationDuration(deactivationTime);
     m_timeProvider.get().load()->setPumpValveDeactivationTimeSeparation(deactivationSepTime);
 
+    if (awsNode.containsValue("name"s))
+        m_name = awsNode.getValue<StringType>("name"s);
+    else
+        m_name = "Unnamed-flow-1";
+
     if (bWasRunning) {
         const StringType formattedLogString{
             format_log_string("Automatic watering system was running. Restarting it.")};
         m_mainLogger->logWarning(formattedLogString);
         m_userLogger->logWarning(formattedLogString);
 
-        startAutomaticWatering();
+        startAutomaticWatering({});
     }
 }
 

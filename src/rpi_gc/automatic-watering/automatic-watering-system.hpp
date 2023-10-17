@@ -2,6 +2,7 @@
 #pragma once
 
 // C++ STL
+#include <optional>
 #include <string>
 
 namespace rpi_gc::automatic_watering {
@@ -20,7 +21,7 @@ public:
     //!
     //! \param awsName The name of the automatic watering system.
     //!
-    virtual void startAutomaticWatering(name_type awsName = name_type{}) noexcept = 0;
+    virtual void startAutomaticWatering(std::optional<name_type> awsName) noexcept = 0;
 };
 
 } // namespace rpi_gc::automatic_watering

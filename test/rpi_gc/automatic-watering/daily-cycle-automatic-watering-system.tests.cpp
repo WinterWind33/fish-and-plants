@@ -80,7 +80,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests",
                     EXPECT_CALL(waterPumpOutput, activate).Times(1);
                     EXPECT_CALL(waterPumpOutput, deactivate).Times(1);
 
-                    awsUnderTest.startAutomaticWatering();
+                    awsUnderTest.startAutomaticWatering({});
 
                     // We must wait the start of the thread before requesting a stop.
                     std::this_thread::sleep_for(tests::WAIT_FOR_THREAD_TO_START);
@@ -100,7 +100,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests",
                     EXPECT_CALL(waterValveOutput, activate).Times(1);
                     EXPECT_CALL(waterValveOutput, deactivate).Times(1);
 
-                    awsUnderTest.startAutomaticWatering();
+                    awsUnderTest.startAutomaticWatering({});
 
                     // We must wait the start of the thread before requesting a stop.
                     std::this_thread::sleep_for(tests::WAIT_FOR_THREAD_TO_START);
@@ -119,7 +119,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests",
                 EXPECT_CALL(waterValveOutput, deactivate);
                 EXPECT_CALL(waterPumpOutput, deactivate);
 
-                awsUnderTest.startAutomaticWatering();
+                awsUnderTest.startAutomaticWatering({});
 
                 // We must wait the start of the thread before requesting a stop.
                 std::this_thread::sleep_for(tests::WAIT_FOR_THREAD_TO_START);
@@ -137,7 +137,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem unit tests",
 
                 EXPECT_CALL(waterPumpOutput, deactivate).Times(1).After(exp1);
 
-                awsUnderTest.startAutomaticWatering();
+                awsUnderTest.startAutomaticWatering({});
 
                 // We must wait the start of the thread before requesting a stop.
                 std::this_thread::sleep_for(tests::WAIT_FOR_THREAD_TO_START);
@@ -182,7 +182,7 @@ TEST_CASE("DailyCycleAutomaticWateringSystem integration tests",
         std::ref(atomicHardwareController), std::ref(timeProviderAtomic)};
 
     WHEN("The automatic watering system is activated") {
-        awsUnderTest.startAutomaticWatering();
+        awsUnderTest.startAutomaticWatering({});
 
         AND_WHEN("The aws is sent to IDLE mode") {
             std::this_thread::sleep_for(awsTimeProvider->getWateringSystemActivationDuration() +

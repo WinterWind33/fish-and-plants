@@ -113,7 +113,7 @@ SCENARIO(
         EXPECT_CALL(*valveMockPtr, printStatus).Times(testing::AtLeast(1));
         EXPECT_CALL(*pumpMockPtr, printStatus).Times(testing::AtLeast(1));
 
-        automaticWateringSystem.startAutomaticWatering();
+        automaticWateringSystem.startAutomaticWatering({});
 
         AND_WHEN("The user changes the ID of the valve PIN") {
             testing::Expectation valveSecondDeactivationExp =
