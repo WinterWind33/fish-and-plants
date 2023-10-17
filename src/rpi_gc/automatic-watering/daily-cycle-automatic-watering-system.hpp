@@ -88,7 +88,7 @@ public:
     //! \note The automatic watering system won't start if both the water pump and the water valve
     //!  are disabled before this call. In that case, a log is printed to the main and user loggers.
     //!
-    void startAutomaticWatering(name_type awsName = name_type{}) noexcept override;
+    void startAutomaticWatering(std::optional<name_type> awsName) noexcept override;
 
     //!!
     //! \brief Set the water pump enabled state.

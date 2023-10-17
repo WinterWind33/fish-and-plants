@@ -155,7 +155,12 @@ CreateAutomaticWateringCommand(WateringSystemPointer wateringSystem) {
                 std::static_pointer_cast<const gh_cmd::ImplicitValue<CharType, std::string>>(
                     option)};
 
-            wateringSystem->startAutomaticWatering(valueOption->value());
+            std::optional<std::string> flowName{};
+            if (const auto value{valueOption->value()}; !value.empty()) {
+                flowName = valueOption->value();
+            }
+
+            wateringSystem->startAutomaticWatering(std::move(flowName));
         });
     autoWateringCommand->registerOptionEvent(
         "stop",

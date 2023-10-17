@@ -428,7 +428,11 @@ template <typename C, typename V>
 inline auto ImplicitValue<C, V>::value() const noexcept -> value_type {
     // The index of the value to check for inside the popl internal state.
     const std::size_t historyEntryIndex{m_implicitValueImpl->count() - 1};
-    return m_implicitValueImpl->value_or(value_type{}, historyEntryIndex);
+    const auto val = m_implicitValueImpl->value_or(value_type{}, historyEntryIndex);
+    if (val == m_implicitValueImpl->get_default())
+        return value_type{};
+
+    return val;
 }
 
 template <typename C, typename V>
