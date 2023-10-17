@@ -7,6 +7,8 @@ This file follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) f
 
 ## [Unreleased]
 
+## [1.2.0]
+
 ### Added
 
 - (**New**) Added support for multiple hardware activation states. Now the user can choose between `active-high` and `active-low` activation states for the hardware. To do so he
